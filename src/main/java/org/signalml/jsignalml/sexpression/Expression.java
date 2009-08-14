@@ -57,8 +57,8 @@ public abstract class Expression {
 
 	public String toString()
 	{
-	    return this.left.toString() + " " + getTokenName(this.op)
-		+ " " + this.right;
+	    return String.format("%s %s %s",
+				 left, getTokenName(op), right);
 	}
     }
 
@@ -113,7 +113,7 @@ public abstract class Expression {
 
 	public String toString()
 	{
-	    return getTokenName(this.op) + " " + this.sub;
+	    return String.format("%s %s", getTokenName(op), sub);
 	}
     }
 
@@ -149,6 +149,29 @@ public abstract class Expression {
 	}
     }
 
+    static class Index extends Expression {
+	final Expression item;
+	final Expression index;
+
+	Index(Expression item, Expression index){
+	    this.item = item;
+	    this.index = index;
+	}
+	
+	public Type eval(CallHelper state)
+	    throws ExpressionFault
+	{
+	    Type vitem = this.item.eval(state);
+	    Type vindex = this.index.eval(state);
+	    return vitem.index(vindex);
+	}
+
+	public String toString()
+	{
+	    return String.format("%s[ %s ]", item, index);
+	}
+    }
+
     static class Const extends Expression {
 	public final Type value;
 
@@ -164,6 +187,32 @@ public abstract class Expression {
 	public Type eval(CallHelper dummy)
 	{
 	    return this.value;
+	}
+    }
+
+    static class Ternary extends Expression {
+	public final Expression q, a, b;
+
+	public Ternary(Expression q, Expression a, Expression b)
+	{
+	    this.q = q;
+	    this.a = a;
+	    this.b = b;
+	}
+
+	public Type eval(CallHelper state)
+	    throws ExpressionFault
+	{
+	    Type qvalue = this.q.eval(state);
+	    
+	    Expression which = qvalue.isTrue() ? this.a : this.b;
+	    Type value = which.eval(state);
+	    return value;
+	}
+
+	public String toString()
+	{
+	    return String.format("if %s then %s else %s", q, a, b);
 	}
     }
 }

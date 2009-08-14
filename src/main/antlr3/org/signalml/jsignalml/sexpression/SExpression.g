@@ -9,6 +9,7 @@ tokens {
     LIST;
     TERN;
     CALL;
+    INDEX;
 
     ADD         = '+';
     SUBTRACT    = '-';
@@ -27,6 +28,13 @@ tokens {
     LOGICAL_AND = 'and';
     LOGICAL_OR  = 'or';
     LOGICAL_NOT = 'not';
+
+    EQUALS      = '==';
+    NOTEQUALS   = '!=';
+    LESSTHAN    = '<';
+    MORETHAN    = '>';
+    LESSEQUALS  = '<=';
+    MOREEQUALS  = '>=';
 
     NEWLINE     = '\n';
 }
@@ -48,18 +56,32 @@ line:	expr NEWLINE
 singleexpr: expr EOF!
     ;
 
-expr: andorexpr
-    ( '?' s1=expr ':' s2=expr -> ^(TERN andorexpr $s1 $s2)
-    |                         -> andorexpr
-    )
+expr
+    : andorexpr
+        ( '?' s1=expr ':' s2=expr -> ^(TERN andorexpr $s1 $s2)
+        |                         -> andorexpr
+        )
     ;
 
 andorexpr: notexpr ((LOGICAL_AND^|LOGICAL_OR^) notexpr)*
 	;
 	
-notexpr: LOGICAL_NOT* addexpr
+notexpr
+    : (LOGICAL_NOT^ notexpr)
+    | compexpr
 	;
 	
+compexpr
+    : addexpr
+        (   (EQUALS^
+            |NOTEQUALS^
+            |LESSTHAN^
+            |MORETHAN^
+            |LESSEQUALS^
+            |MOREEQUALS^
+            ) addexpr   )*
+    ;
+
 addexpr	:	multexpr ((ADD^ |SUBTRACT^) multexpr)*
 	;
 	
@@ -68,28 +90,45 @@ multexpr:	powexpr ((MULTIPLY^ | FLOORDIV^ | TRUEDIV^ | MODULO^ |
 	;
 	
 
-// fixme: precedence is wrong!
-powexpr: atom (POWER^ atom)*
+powexpr
+    : accessor
+        ( POWER powexpr -> ^(POWER accessor powexpr)
+        |               -> accessor
+        )
     ;
 
-atom	:	INT
+accessor
+    : atom
+        ( index -> ^(INDEX atom index)
+        |       -> atom
+        )
+    | ID
+        ( index -> ^(INDEX ^(CALL ID) index)
+        | call  -> ^(CALL ID call)
+        |       -> ^(CALL ID)
+        )
+    ;
+
+index // TODO
+    : '['! expr ']'!
+    ;
+
+call
+    : '(' (expr (',' expr)*)? ')' -> expr*
+    ;
+
+atom
+    :	INT
 	|	FLOAT
 	|	STRING
-	|	call
 	|	'('! expr ')'!
     |   '[' expr (',' expr)* ','? ']' -> ^(LIST expr+)
 	;
 
-call: ID
-    ( '(' (expr (',' expr)*)? ')' -> ^(CALL ID expr*)
-    |                             -> ^(CALL ID)
-    )
-    ;
-
 ID  :	(LETTER|'_') (LETTER|DIGIT|'_')*
     ;
 
-INT :	DIGIT+
+INT :	('-'|'+')? DIGIT+
     ;
 
 FLOAT
@@ -117,15 +156,15 @@ fragment
 EXPONENT : ('e'|'E') ('+'|'-')? DIGIT+ ;
 
 fragment
-HEX_DIGIT : DIGIT | LETTER ;
+HEX_DIGIT : DIGIT | 'a'..'f'|'A'..'F' ;
 
 fragment
 ESC_SEQ
-    :   '\\' ('b'|'t'|'n'|'f'|'r'|'\"'|'\''|'\\')
+    :   '\\' ('t'|'n'|'r'|'\"'|'\''|'\\')
     ;
 
 fragment
 DIGIT : '0'..'9' ;
 
 fragment
-LETTER : 'a'..'f'|'A'..'F' ;
+LETTER : 'a'..'z'|'A'..'Z' ;
