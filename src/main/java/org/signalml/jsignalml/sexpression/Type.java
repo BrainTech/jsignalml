@@ -38,7 +38,7 @@ public abstract class Type {
 	    return new Int(0);
     }
 
-    static class Int extends Type {
+    public static class Int extends Type {
 	final int value;
 	public Int(int value){
 	    this.value = value;
@@ -76,7 +76,7 @@ public abstract class Type {
 	}
     }
 
-    static class Float extends Type {
+    public static class Float extends Type {
 	final double value;
 	public Float(double value){
 	    this.value = value;
@@ -114,7 +114,7 @@ public abstract class Type {
 	}
     }
 
-    static class String extends Type {
+    public static class String extends Type {
 	final java.lang.String value;
 	public String(java.lang.String value){
 	    this.value = value;

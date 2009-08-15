@@ -8,10 +8,20 @@ options {
 @header{
     package org.signalml.jsignalml.sexpression;
 
+    import java.util.List;
     import java.util.LinkedList;
 }
 
-//START
+script: line*
+    ;
+
+line returns [Expression value]
+    : ^( ASSIGN ID e=expr )
+        { $value = new Expression.Assign($ID.text, $e.value); }
+    | expr
+        { $value = $expr.value; }
+    ;
+
 expr returns [Expression value]
     : ^(    ( op=ADD
             | op=SUBTRACT | op=MULTIPLY

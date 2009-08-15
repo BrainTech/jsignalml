@@ -1,16 +1,9 @@
 package org.signalml.jsignalml.sexpression;
 
 import java.util.List;
-
-//import org.antlr.runtime.tree.CommonTree;
+import java.util.LinkedList;
 
 public abstract class Expression {
-    //    final CommonTree expr;
-
-    //    public Expression(CommonTree expr){
-    //	this.expr = expr;
-    //    }
-
     public abstract Type eval(CallHelper state)
 	throws ExpressionFault;
 
@@ -129,7 +122,13 @@ public abstract class Expression {
 	public Type eval(CallHelper state)
 	    throws ExpressionFault
 	{
-	    return state.call(this.name, this.args);
+	    List<Type> vals = new LinkedList<Type>();
+	    for(Expression arg: this.args){
+		Type val = arg.eval(state);
+		vals.add(val);
+	    }
+	    
+	    return state.call(this.name, vals);
 	}
 
 	public String toString()
@@ -213,6 +212,45 @@ public abstract class Expression {
 	public String toString()
 	{
 	    return String.format("if %s then %s else %s", q, a, b);
+	}
+    }
+
+    /*
+     * This is a helper expression node to be used in interactive 
+     * expression script parsing and execution.
+     */
+    static class Assign extends Expression {
+	public final String id;
+	public final List<Argument> args;
+	public final Expression value;
+
+	// TODO: find a better home for this class
+	public static class Argument {
+	    public final Type type;
+	    public final String name;
+	    public Argument(Type type, String name){
+		this.type = type;
+		this.name = name;
+	    }
+	}
+
+	// TODO: non-empty argument list
+	public Assign(String id, List<Argument> args, Expression value){
+	    this.id = id;
+	    this.args = args;
+	    this.value = value;
+
+	    assert args.size() == 0;
+	}
+
+	public Assign(String id, Expression value){
+	    this(id, new LinkedList<Argument>(), value);
+	}
+
+	public Type eval(CallHelper state)
+	{
+	    state.assign(this.id, this.value);
+	    return null;
 	}
     }
 }

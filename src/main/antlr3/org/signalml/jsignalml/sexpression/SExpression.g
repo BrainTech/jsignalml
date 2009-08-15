@@ -36,6 +36,8 @@ tokens {
     LESSEQUALS  = '<=';
     MOREEQUALS  = '>=';
 
+    ASSIGN      = '=';
+
     NEWLINE     = '\n';
 }
 
@@ -47,10 +49,15 @@ package org.signalml.jsignalml.sexpression;
 package org.signalml.jsignalml.sexpression;
 }
 
-multiline: line*
+script: line* EOF!
     ;
 
-line:	expr NEWLINE
+terminator: NEWLINE | EOF
+    ;
+
+line
+    :	expr terminator!
+    |   ID ASSIGN expr terminator -> ^(ASSIGN ID expr)
 	;
 
 singleexpr: expr EOF!
