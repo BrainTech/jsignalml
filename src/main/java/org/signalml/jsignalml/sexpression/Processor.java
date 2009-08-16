@@ -6,6 +6,10 @@ import java.util.NoSuchElementException;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
+
+import org.apache.log4j.BasicConfigurator;
+import org.signalml.jsignalml.Logger;
+
 import org.antlr.runtime.*;
 import org.antlr.runtime.tree.*;
 
@@ -92,7 +96,7 @@ public class Processor {
 	    try {
 		ast = parseLine(line);
 	    } catch(RecognitionException e){
-		System.out.println(e);
+		log.exception("parsing line", e);
 		continue;
 	    }
 	    System.out.format("tree: %s\n", ast.toStringTree());
@@ -101,7 +105,7 @@ public class Processor {
 	    try{
 		expr = processLine(ast);
 	    }catch(RecognitionException e){
-		System.out.println(e);
+		log.exception("transform ast to Expression tree", e);
 		continue;
 	    }
 	    System.out.format("expr: %s\n", expr);
@@ -111,7 +115,7 @@ public class Processor {
 		System.out.format("----> %s\n",
               		     value == null ? "null" : value.repr());
 	    } catch(ExpressionFault e) {
-		    System.out.println(e);
+		log.exception("Expression tree evaluation", e);
 	    }
 	}
     }
@@ -136,11 +140,16 @@ public class Processor {
 	}
     }
 
+    static Logger log = new Logger(Processor.class);
+
     public static void main(String ... args)
 	throws java.io.IOException, 
 	       java.io.FileNotFoundException,
 	       org.antlr.runtime.RecognitionException
     {
+	BasicConfigurator.configure();
+	log.info("start");
+
 	CallHelper state = new State();
 	if(args.length == 0){
 	    processInteractive(state, System.in);

@@ -1,12 +1,13 @@
 package org.signalml.jsignalml.sexpression;
 
+import org.signalml.jsignalml.Logger;
 import java.util.regex.Pattern;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.HashMap;
 
 public abstract class Type {
-    public abstract Object getValue();
+    static final Logger log = new Logger(Type.class);
 
     /* This goes here, and not within BinaryOp because of initialization
        order: enum instances are initialized before static variables of
@@ -28,7 +29,6 @@ public abstract class Type {
 	BIN_OR("|", SExpressionParser.BINARY_OR),
 	BIN_XOR("^", SExpressionParser.BINARY_XOR),
 	POW("**", SExpressionParser.POWER),
-	//AND("and"), OR("or"),
 	EQ("==", SExpressionParser.EQUALS), 
 	NE("!=", SExpressionParser.NOTEQUALS),
 	LT("<", SExpressionParser.LESSTHAN), 
@@ -42,9 +42,10 @@ public abstract class Type {
 	public final java.lang.String rep;
 
 	BinaryOp(java.lang.String rep, int opcode){
-	    System.out.format("init op: %s %d\n", rep, opcode);
 	    this.rep = rep;
 	    binOpTable.put(opcode, this);
+	    log.info(java.lang.String.format("BinaryOp registered: %s opcode=%d",
+					     rep, opcode));
 	}
 
 	public static BinaryOp get(int opcode)
@@ -53,11 +54,8 @@ public abstract class Type {
 	    BinaryOp op = binOpTable.get(opcode);
 	    if(op != null)
 		return op;
+
 	    throw new ExpressionFault.UnknownOperationError(BinaryOp.class, opcode);
-	    System.out.format("failed to find opcode: %d\n", opcode);
-	    for(Map.Entry<Integer,BinaryOp> entry: binOpTable.entrySet())
-		System.out.format("op: %d %s\n", entry.getKey(), entry.getValue());
-	    
 	}
     }
 
@@ -86,6 +84,7 @@ public abstract class Type {
 	}
     }
 
+    public abstract Object getValue();
 
     public Type binaryOp(BinaryOp op, Type other)
 	throws ExpressionFault.TypeError
