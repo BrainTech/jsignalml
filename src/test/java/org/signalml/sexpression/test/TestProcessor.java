@@ -23,7 +23,7 @@ public class TestProcessor {
     {
 	Processor.State state = new Processor.State();
 	Type result = eval(state, line);
-	assertEquals(expected, result);
+	assertTrue(expected.equals(result));
     }
 
     void assertLeqR(String line, int expected) throws Exception

@@ -44,8 +44,7 @@ public abstract class Type {
 	BinaryOp(java.lang.String rep, int opcode){
 	    this.rep = rep;
 	    binOpTable.put(opcode, this);
-	    log.info(java.lang.String.format("BinaryOp registered: %s opcode=%d",
-					     rep, opcode));
+	    log.info("BinaryOp registered: %s opcode=%d", rep, opcode);
 	}
 
 	public static BinaryOp get(int opcode)
@@ -114,22 +113,28 @@ public abstract class Type {
 	throws ExpressionFault.TypeError,
 	       ExpressionFault.IndexError
     {
-	    throw new ExpressionFault.TypeError();
+	throw new ExpressionFault.TypeError();
     }
 
     public abstract boolean isTrue();
     public abstract java.lang.String repr();
 
-    public boolean equals(Type other)
+    @Override
+    public boolean equals(Object other)
     {
-	if(other==null)
-	    return false;
 	try{
-	    return this.binaryOp(Type.BinaryOp.EQ, other).isTrue();
+	    return this.binaryOp(Type.BinaryOp.EQ, (Type)other).isTrue();
 	} catch(ExpressionFault.TypeError e){
 	    /* object of incompatible types are different by definition */
 	    return false;
+	} catch(ClassCastException e){
+	    return super.equals(other);
 	}
+    }
+
+    @Override
+    public int hashCode(){
+	return this.getValue().hashCode();
     }
 
     public Type logical_not(){
@@ -414,6 +419,17 @@ public abstract class Type {
 	    switch(op){
 	    case ADD:
 		return new String(this.value + other.value);
+
+	    case EQ:
+		return new Int(this.value.equals(other.value));
+	    case NE:
+		return new Int(!this.value.equals(other.value));
+
+	    case LT: /* should those be implemented ? */
+	    case GT:
+	    case LE:
+	    case GE:
+	       
 	    default:
 		throw new ExpressionFault.TypeError();
 	    }
