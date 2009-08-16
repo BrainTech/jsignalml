@@ -53,11 +53,11 @@ public abstract class Type {
 	    BinaryOp op = binOpTable.get(opcode);
 	    if(op != null)
 		return op;
+	    throw new ExpressionFault.UnknownOperationError(BinaryOp.class, opcode);
 	    System.out.format("failed to find opcode: %d\n", opcode);
 	    for(Map.Entry<Integer,BinaryOp> entry: binOpTable.entrySet())
 		System.out.format("op: %d %s\n", entry.getKey(), entry.getValue());
 	    
-	    throw new ExpressionFault.UnknownOperationError();
 	}
     }
 
@@ -82,7 +82,7 @@ public abstract class Type {
 	    Type.UnaryOp op = unOpTable.get(opcode);
 	    if(op != null)
 		return op;
-	    throw new ExpressionFault.UnknownOperationError();
+	    throw new ExpressionFault.UnknownOperationError(UnaryOp.class, opcode);
 	}
     }
 

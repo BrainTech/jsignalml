@@ -6,6 +6,12 @@ public abstract class ExpressionFault extends Exception {
     }
 
     static class UnknownOperationError extends RuntimeException {
+	public final Class<?> where;
+	public final int opcode;
+	public UnknownOperationError(Class<?> where, int opcode){
+	    this.where = where;
+	    this.opcode = opcode;
+	}
     }
 
     static class NameError extends ExpressionFault {
