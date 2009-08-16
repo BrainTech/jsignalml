@@ -2,21 +2,21 @@ package org.signalml.jsignalml.sexpression;
 
 import java.util.List;
 import java.util.LinkedList;
+import java.util.Map;
+import java.util.TreeMap;
 
 public abstract class Expression {
     public abstract Type eval(CallHelper state)
 	throws ExpressionFault;
 
-    static final String getTokenName(int op){
-	return SExpressionParser.tokenNames[op];
-    }
-
     static class BinaryOp extends Expression {
 	final Expression left, right;
-	final int op;
+	final Type.BinaryOp op;
 
-	public BinaryOp(int op, Expression left, Expression right){
-	    this.op = op;
+	public BinaryOp(int opcode, Expression left, Expression right)
+	    throws  ExpressionFault.UnknownOperationError
+	{
+	    this.op = Type.BinaryOp.get(opcode);
 	    this.left = left;
 	    this.right = right;
 	}
@@ -27,37 +27,21 @@ public abstract class Expression {
 	    Type left = this.left.eval(state);
 	    Type right = this.right.eval(state);
 
-	    switch(this.op){
-	    case SExpressionParser.ADD:      return left.add(right);
-	    case SExpressionParser.SUBTRACT: return left.subtract(right);
-
-	    case SExpressionParser.MULTIPLY: return left.multiply(right);
-	    case SExpressionParser.FLOORDIV: return left.floordiv(right);
-	    case SExpressionParser.TRUEDIV:  return left.truediv(right);
-	    case SExpressionParser.MODULO:   return left.modulo(right);
-
-	    case SExpressionParser.BINARY_AND: return left.binary_and(right);
-	    case SExpressionParser.BINARY_OR:  return left.binary_or(right);
-	    case SExpressionParser.BINARY_XOR: return left.binary_xor(right);
-
-	    case SExpressionParser.POWER:    return left.power(right);
-	    default:
-		assert false;
-	    }
-
-	    return null;
+	    return left.binaryOp(this.op, right);
 	}
 
 	public String toString()
 	{
 	    return String.format("%s %s %s",
-				 left, getTokenName(op), right);
+				 left, op.rep, right);
 	}
     }
 
     static class LogicalBinaryOp extends BinaryOp{
-	public LogicalBinaryOp(int op, Expression left, Expression right){
-	    super(op, left, right);
+	public LogicalBinaryOp(int opcode, Expression left, Expression right)
+	    throws ExpressionFault.UnknownOperationError
+	{
+	    super(opcode, left, right);
 	}
 
 	public Type eval(CallHelper state)
@@ -65,11 +49,11 @@ public abstract class Expression {
 	{
 	    Type left = this.left.eval(state);
 	    switch(this.op){
-	    case SExpressionParser.LOGICAL_AND:{
+	    case LOG_AND:{
 		if(!left.isTrue())
 		    return left;
 	    }
-	    case SExpressionParser.LOGICAL_OR:{
+	    case LOG_OR:{
 		if(left.isTrue())
 		    return left;
 	    }
@@ -83,11 +67,13 @@ public abstract class Expression {
     }
 
     static class UnaryOp extends Expression {
-	final int op;
+	final Type.UnaryOp op;
 	final Expression sub;
 	
-	public UnaryOp(int op, Expression sub){
-	    this.op = op;
+	public UnaryOp(int opcode, Expression sub)
+	    throws  ExpressionFault.UnknownOperationError
+	{
+	    this.op = Type.UnaryOp.get(opcode);
 	    this.sub = sub;
 	}
 	
@@ -96,7 +82,7 @@ public abstract class Expression {
 	{
 	    Type sub = this.sub.eval(state);
 	    switch(this.op){
-	    case SExpressionParser.LOGICAL_NOT: return sub.logical_not();
+	    case LOG_NOT: return sub.logical_not();
 	    default:
 		assert false;
 	    }
@@ -106,7 +92,7 @@ public abstract class Expression {
 
 	public String toString()
 	{
-	    return String.format("%s %s", getTokenName(op), sub);
+	    return String.format("%s %s", op.rep, sub);
 	}
     }
 

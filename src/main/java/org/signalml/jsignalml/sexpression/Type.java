@@ -1,25 +1,115 @@
 package org.signalml.jsignalml.sexpression;
 
 import java.util.regex.Pattern;
-import java.util.HashMap;
 import java.util.Map;
+import java.util.TreeMap;
+import java.util.HashMap;
 
 public abstract class Type {
     public abstract Object getValue();
 
-    public abstract Type add(Type other) throws ExpressionFault.TypeError;
-    public Type subtract(Type other){ return null; }
+    /* This goes here, and not within BinaryOp because of initialization
+       order: enum instances are initialized before static variables of
+       the enum class. This is a result of the order or declarations
+       in code, which cannot be reversed, because enum ids must be located
+       directly at the begging of enum class definition.
+    */
+    static final Map<Integer, BinaryOp> binOpTable
+	= new TreeMap<Integer, BinaryOp>();
 
-    public Type multiply(Type other){ return null; }
-    public Type floordiv(Type other){ return null; }
-    public Type truediv(Type other){ return null; }
-    public Type modulo(Type other){ return null; }
+    public enum BinaryOp {
+	ADD("+", SExpressionParser.ADD),
+	SUB("-", SExpressionParser.SUBTRACT), 
+	MUL("*", SExpressionParser.MULTIPLY), 
+	DIV("/", SExpressionParser.TRUEDIV), 
+	FLOORDIV("//", SExpressionParser.FLOORDIV),
+	MOD("%", SExpressionParser.MODULO),
+	BIN_AND("&", SExpressionParser.BINARY_AND),
+	BIN_OR("|", SExpressionParser.BINARY_OR),
+	BIN_XOR("^", SExpressionParser.BINARY_XOR),
+	POW("**", SExpressionParser.POWER),
+	//AND("and"), OR("or"),
+	EQ("==", SExpressionParser.EQUALS), 
+	NE("!=", SExpressionParser.NOTEQUALS),
+	LT("<", SExpressionParser.LESSTHAN), 
+	GT(">", SExpressionParser.MORETHAN), 
+	LE("<=", SExpressionParser.LESSEQUALS), 
+	GE(">=", SExpressionParser.MOREEQUALS),
 
-    public Type binary_and(Type other){ return null; }
-    public Type binary_or(Type other){ return null; }
-    public Type binary_xor(Type other){ return null; }
+	LOG_AND("and", SExpressionParser.LOGICAL_AND),
+	LOG_OR("or", SExpressionParser.LOGICAL_OR);
 
-    public Type power(Type other){ return null; }
+	public final java.lang.String rep;
+
+	BinaryOp(java.lang.String rep, int opcode){
+	    System.out.format("init op: %s %d\n", rep, opcode);
+	    this.rep = rep;
+	    binOpTable.put(opcode, this);
+	}
+
+	public static BinaryOp get(int opcode)
+	    throws ExpressionFault.UnknownOperationError
+	{
+	    BinaryOp op = binOpTable.get(opcode);
+	    if(op != null)
+		return op;
+	    System.out.format("failed to find opcode: %d\n", opcode);
+	    for(Map.Entry<Integer,BinaryOp> entry: binOpTable.entrySet())
+		System.out.format("op: %d %s\n", entry.getKey(), entry.getValue());
+	    
+	    throw new ExpressionFault.UnknownOperationError();
+	}
+    }
+
+    static final Map<Integer, UnaryOp> unOpTable
+	= new TreeMap<Integer, UnaryOp>();
+
+    public enum UnaryOp {
+	LOG_NOT("not", SExpressionParser.LOGICAL_NOT);
+
+	public final java.lang.String rep;
+	public static /*final*/ Map<Integer, UnaryOp> opTable
+	    = new TreeMap<Integer, Type.UnaryOp>();
+
+	UnaryOp(java.lang.String rep, int opcode){
+	    this.rep = rep;
+	    unOpTable.put(opcode, this);
+	}
+
+	public static UnaryOp get(int opcode)
+	    throws ExpressionFault.UnknownOperationError
+	{
+	    Type.UnaryOp op = unOpTable.get(opcode);
+	    if(op != null)
+		return op;
+	    throw new ExpressionFault.UnknownOperationError();
+	}
+    }
+
+
+    public Type binaryOp(BinaryOp op, Type other)
+	throws ExpressionFault.TypeError
+    {
+	try {
+	    return this.binaryOp(op, (Int) other);
+	} catch(ClassCastException e){}
+	try {
+	    return this.binaryOp(op, (Float) other);
+	} catch(ClassCastException e){}
+	try {
+	    return this.binaryOp(op, (String) other);
+	} catch(ClassCastException e){}
+
+	assert false;
+	return null;
+    }
+
+    public abstract Type binaryOp(BinaryOp op, Int other)
+	throws ExpressionFault.TypeError;
+    public abstract Type binaryOp(BinaryOp op, Float other)
+	throws ExpressionFault.TypeError;
+    public abstract Type binaryOp(BinaryOp op, String other)
+	throws ExpressionFault.TypeError;
 
     public Type index(Type sub)
 	throws ExpressionFault.TypeError,
@@ -30,6 +120,7 @@ public abstract class Type {
 
     public abstract boolean isTrue();
     public abstract java.lang.String repr();
+    //    public abstract boolean equals(Type other);
 
     public Type logical_not(){
 	if(this.isTrue())
@@ -46,6 +137,12 @@ public abstract class Type {
 	public Int(java.lang.String text){
 	    this(new Integer(text));
 	}
+	public Int(long value){
+	    this((int)value);
+	}
+	public Int(boolean value){
+	    this(value?1:0);
+	}
 	
 	public Integer getValue(){
 	    return this.value;
@@ -59,20 +156,98 @@ public abstract class Type {
 	    return java.lang.String.valueOf(this.value);
 	}
 
-	public Type add(Type other)
+	public Type binaryOp(BinaryOp op, Int other)
 	    throws ExpressionFault.TypeError
 	{
-	    try {
-		Int right = (Int)other;
-		return new Int(this.value + right.value);
-	    } catch(ClassCastException e){}
+	    switch(op){
+	    case ADD:
+		return new Int(this.value + other.value);
+	    case SUB:
+		return new Int(this.value - other.value);
+	    case MUL:
+		return new Int(this.value * other.value);
+	    case DIV:
+		return new Float(this.value / other.value);
+	    case FLOORDIV:
+		return new Int(this.value / other.value);
+	    case MOD:
+		return new Int(this.value % other.value);
+		// XXX: fix for negative values in modulo
+	    case BIN_AND:
+		return new Int(this.value & other.value);
+	    case BIN_OR:
+		return new Int(this.value | other.value);
+	    case BIN_XOR:
+		return new Int(this.value ^ other.value);
+	    case POW:
+		return new Int(Math.round(Math.pow(this.value, other.value)));
+	    case EQ:
+		return new Int(this.value == other.value);
+	    case NE:
+		return new Int(this.value != other.value);
+	    case LT:
+		return new Int(this.value < other.value);
+	    case GT:
+		return new Int(this.value > other.value);
+	    case LE:
+		return new Int(this.value <= other.value);
+	    case GE:
+		return new Int(this.value >= other.value);
+	    default:
+		throw new ExpressionFault.TypeError();
+	    }
+	}
 
-	    try {
-		Float right = (Float)other;
-		return new Float(this.value + right.value);
-	    } catch(ClassCastException e){}
+	public Type binaryOp(BinaryOp op, Float other)
+	    throws ExpressionFault.TypeError
+	{
+	    switch(op){
+	    case ADD:
+		return new Float(this.value + other.value);
+	    case SUB:
+		return new Float(this.value - other.value);
+	    case MUL:
+		return new Float(this.value * other.value);
+	    case DIV:
+		return new Float(this.value / other.value);
+	    case FLOORDIV:
+		return new Int(Math.round(Math.floor(this.value / other.value)));
+	    case MOD:
+		return new Float(this.value % other.value);
+		// XXX: fix for negative values in modulo
+	    case POW:
+		return new Float(Math.pow(this.value, other.value));
 
-	    throw new ExpressionFault.TypeError();
+	    case EQ:
+		return new Int(this.value == other.value);
+	    case NE:
+		return new Int(this.value != other.value);
+	    case LT:
+		return new Int(this.value < other.value);
+	    case GT:
+		return new Int(this.value > other.value);
+	    case LE:
+		return new Int(this.value <= other.value);
+	    case GE:
+		return new Int(this.value >= other.value);
+
+	    case BIN_AND:
+	    case BIN_OR:
+	    case BIN_XOR:
+	    default:
+		throw new ExpressionFault.TypeError();
+	    }
+	}
+
+	public Type binaryOp(BinaryOp op, String other)
+	    throws ExpressionFault.TypeError
+	{
+	    switch(op){
+	    case MUL:
+		return other.binaryOp(op, this);
+	    default:
+		throw new ExpressionFault.TypeError();
+	    }
 	}
     }
 
@@ -97,19 +272,89 @@ public abstract class Type {
 	    return java.lang.String.valueOf(this.value);
 	}
 
-	public Float add(Type other)
+	public Type binaryOp(BinaryOp op, Int other)
 	    throws ExpressionFault.TypeError
 	{
-	    try {
-		Int right = (Int)other;
-		return new Float(this.value + right.value);
-	    } catch(ClassCastException e){}
+	    switch(op){
+	    case ADD:
+		return new Float(this.value + other.value);
+	    case SUB:
+		return new Float(this.value - other.value);
+	    case MUL:
+		return new Float(this.value * other.value);
+	    case DIV:
+		return new Float(this.value / other.value);
+	    case FLOORDIV:
+		return new Int(Math.round(Math.floor(this.value / other.value)));
+	    case MOD:
+		return new Float(this.value % other.value);
+		// XXX: fix for negative values in modulo
+	    case POW:
+		return new Float(Math.pow(this.value, other.value));
+	    case EQ:
+		return new Int(this.value == other.value);
+	    case NE:
+		return new Int(this.value != other.value);
+	    case LT:
+		return new Int(this.value < other.value);
+	    case GT:
+		return new Int(this.value > other.value);
+	    case LE:
+		return new Int(this.value <= other.value);
+	    case GE:
+		return new Int(this.value >= other.value);
+	    case BIN_AND:
+	    case BIN_OR:
+	    case BIN_XOR:
+	    default:
+		throw new ExpressionFault.TypeError();
+	    }
+	}
 
-	    try {
-		Float right = (Float)other;
-		return new Float(this.value + right.value);
-	    } catch(ClassCastException e){}
+	public Type binaryOp(BinaryOp op, Float other)
+	    throws ExpressionFault.TypeError
+	{
+	    switch(op){
+	    case ADD:
+		return new Float(this.value + other.value);
+	    case SUB:
+		return new Float(this.value - other.value);
+	    case MUL:
+		return new Float(this.value * other.value);
+	    case DIV:
+		return new Float(this.value / other.value);
+	    case FLOORDIV:
+		return new Int(Math.round(Math.floor(this.value / other.value)));
+	    case MOD:
+		return new Float(this.value % other.value);
+		// XXX: fix for negative values in modulo
+	    case POW:
+		return new Float(Math.pow(this.value, other.value));
+		
+	    case EQ:
+		return new Int(this.value == other.value);
+	    case NE:
+		return new Int(this.value != other.value);
+	    case LT:
+		return new Int(this.value < other.value);
+	    case GT:
+		return new Int(this.value > other.value);
+	    case LE:
+		return new Int(this.value <= other.value);
+	    case GE:
+		return new Int(this.value >= other.value);
 
+	    case BIN_AND:
+	    case BIN_OR:
+	    case BIN_XOR:
+	    default:
+		throw new ExpressionFault.TypeError();
+	    }
+	}
+
+	public Type binaryOp(BinaryOp op, String other)
+	    throws ExpressionFault.TypeError
+	{
 	    throw new ExpressionFault.TypeError();
 	}
     }
@@ -136,15 +381,32 @@ public abstract class Type {
 	    return this.value;
 	}
 
-	public String add(Type other)
+	public Type binaryOp(BinaryOp op, Int other)
 	    throws ExpressionFault.TypeError
 	{
-	    try {
-		String right = (String)other;
-		return new String(this.value + right.value);
-	    } catch(ClassCastException e){}
+	    switch(op){
+	    case MUL:
+		// TODO
+	    default:
+		throw new ExpressionFault.TypeError();
+	    }
+	}
 
+	public Type binaryOp(BinaryOp op, Float other)
+	    throws ExpressionFault.TypeError
+	{
 	    throw new ExpressionFault.TypeError();
+	}
+
+	public Type binaryOp(BinaryOp op, String other)
+	    throws ExpressionFault.TypeError
+	{
+	    switch(op){
+	    case ADD:
+		return new String(this.value + other.value);
+	    default:
+		throw new ExpressionFault.TypeError();
+	    }
 	}
 
 	public Type index(Type sub)

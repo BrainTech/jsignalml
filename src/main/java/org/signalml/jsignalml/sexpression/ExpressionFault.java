@@ -5,6 +5,9 @@ public abstract class ExpressionFault extends Exception {
     static class TypeError extends ExpressionFault {
     }
 
+    static class UnknownOperationError extends RuntimeException {
+    }
+
     static class NameError extends ExpressionFault {
 	public final String name;
 	public NameError(java.lang.String name){
