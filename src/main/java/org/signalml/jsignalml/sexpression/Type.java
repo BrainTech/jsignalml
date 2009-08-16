@@ -119,7 +119,18 @@ public abstract class Type {
 
     public abstract boolean isTrue();
     public abstract java.lang.String repr();
-    //    public abstract boolean equals(Type other);
+
+    public boolean equals(Type other)
+    {
+	if(other==null)
+	    return false;
+	try{
+	    return this.binaryOp(Type.BinaryOp.EQ, other).isTrue();
+	} catch(ExpressionFault.TypeError e){
+	    /* object of incompatible types are different by definition */
+	    return false;
+	}
+    }
 
     public Type logical_not(){
 	if(this.isTrue())
