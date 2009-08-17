@@ -6,6 +6,7 @@ import static org.junit.Assert.*;
 
 import org.signalml.jsignalml.sexpression.Processor;
 import org.signalml.jsignalml.sexpression.Expression;
+import org.signalml.jsignalml.sexpression.SyntaxError;
 
 public class TestParsing {
     void parse(String line) throws Exception
@@ -37,14 +38,14 @@ public class TestParsing {
 	parse("0o00000");
     }
 
-    @Test(expected= org.antlr.runtime.RecognitionException.class)
+    @Test(expected= SyntaxError.class)
     public void parse_bad_octal() throws Exception
     {
 	parse("0o8");
 	parse("0oa");
     }
 
-    @Test(expected= org.antlr.runtime.RecognitionException.class)
+    @Test(expected= SyntaxError.class)
     public void parse_bad_hexadecimal() throws Exception
     {
 	parse("0xfggg");

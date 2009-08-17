@@ -41,13 +41,56 @@ tokens {
     NEWLINE     = '\n';
 }
 
-@header{
-package org.signalml.jsignalml.sexpression;
+@lexer::header{
+    package org.signalml.jsignalml.sexpression;
+
+    import org.signalml.jsignalml.Logger;
 }
 
-@lexer::header{
-package org.signalml.jsignalml.sexpression;
+@parser::header{
+    package org.signalml.jsignalml.sexpression;
+
+    import org.signalml.jsignalml.Logger;
 }
+
+@lexer::members {
+        static Logger log = new Logger(SExpressionLexer.class);
+
+        @Override
+        public void displayRecognitionError(String[] tokenNames,
+                                            RecognitionException e)
+        {
+            log.error("displayRecognitionError()", e);
+            super.displayRecognitionError(tokenNames, e);
+        }
+
+        @Override
+        public void emitErrorMessage(String msg){
+            log.error(msg);
+        }
+    }
+
+@parser::members {
+        static Logger log = new Logger(SExpressionParser.class);
+
+        @Override public void recover(IntStream input, RecognitionException re){
+            throw new SyntaxError.RuntimeFlavour(re);
+        }
+
+        @Override
+        public void displayRecognitionError(String[] tokenNames,
+                                            RecognitionException e)
+        {
+            log.exception("displayRecognitionError()", e);
+            super.displayRecognitionError(tokenNames, e);
+        }
+
+        @Override
+        public void emitErrorMessage(String msg){
+            log.error(msg);
+        }
+    }
+
 
 script: line* EOF!
     ;

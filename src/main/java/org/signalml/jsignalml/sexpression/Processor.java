@@ -13,14 +13,16 @@ import org.signalml.jsignalml.Logger;
 import org.antlr.runtime.*;
 import org.antlr.runtime.tree.*;
 
+import org.antlr.runtime.RecognitionException;
+
 public class Processor {
+
     public static void processFile(CallHelper state, String path)
 	throws java.io.FileNotFoundException,
 	       java.io.IOException,
-	       org.antlr.runtime.RecognitionException
+	       SyntaxError
     {
-	CommonTree ast =
-	    parseScript(new FileReader(path));
+	CommonTree ast = parseScript(new FileReader(path));
 	// TODO:  this.processNonInteractive();
     }
 
@@ -40,38 +42,55 @@ public class Processor {
     }
 
     public static CommonTree parseScript(Reader reader)
-	throws org.antlr.runtime.RecognitionException,
-	       java.io.IOException
+	throws java.io.IOException, SyntaxError
     {
 	SExpressionParser parser =
 	    new SExpressionParser(getTokenStream(reader));
-	SExpressionParser.script_return result =
-	    parser.script();
+
+	SExpressionParser.script_return result;
+	try{
+	    result = parser.script();
+	}catch(RecognitionException e){
+	    throw new SyntaxError(e);
+	}catch(SyntaxError.RuntimeFlavour e){
+	    throw e.unrunify();
+	}
 	reader.close();
 	return (CommonTree) result.getTree();
     }
 
     public static CommonTree parseLine(String line)
-	throws org.antlr.runtime.RecognitionException
+	throws SyntaxError
     {
 	SExpressionParser parser =
 	    new SExpressionParser(getTokenStream(line));
-	SExpressionParser.line_return result = parser.line();
+	SExpressionParser.line_return result;
+
+	try{
+	    result = parser.line();
+	}catch(RecognitionException e){
+	    throw new SyntaxError(e);
+	}catch(SyntaxError.RuntimeFlavour e){
+	    throw e.unrunify();
+	}
 
 	CommonTree ast = (CommonTree) result.getTree();
-	if(ast==null)
-	    throw new RecognitionException();
-
 	return ast;
     }
 
     public static Expression processLine(CommonTree ast)
-	throws org.antlr.runtime.RecognitionException
+	throws SyntaxError
     {
 	STree tree = new STree(new CommonTreeNodeStream(ast));
-	Expression expr = tree.line();
-	if(expr == null)
-	    throw new org.antlr.runtime.RecognitionException();
+	Expression expr;
+	try{
+	    expr = tree.line();
+	}catch(RecognitionException e){
+	    throw new SyntaxError(e);
+	}catch(SyntaxError.RuntimeFlavour e){
+	    throw e.unrunify();
+	}
+	    
 	return expr;
     }
 
@@ -95,7 +114,7 @@ public class Processor {
 	    CommonTree ast;
 	    try {
 		ast = parseLine(line);
-	    } catch(RecognitionException e){
+	    } catch(SyntaxError e){
 		log.exception("parsing line", e);
 		continue;
 	    }
@@ -104,7 +123,7 @@ public class Processor {
 	    Expression expr;
 	    try{
 		expr = processLine(ast);
-	    }catch(RecognitionException e){
+	    }catch(SyntaxError e){
 		log.exception("transform ast to Expression tree", e);
 		continue;
 	    }
@@ -145,10 +164,15 @@ public class Processor {
     public static void main(String ... args)
 	throws java.io.IOException, 
 	       java.io.FileNotFoundException,
-	       org.antlr.runtime.RecognitionException
+	       SyntaxError
     {
 	BasicConfigurator.configure();
-	log.info("start");
+	log.info("lexer grammar %s",
+		 new SExpressionLexer(null).getGrammarFileName());
+	log.info("parser grammar %s",
+		 new SExpressionParser(null).getGrammarFileName());
+	log.info("tree grammar %s",
+		 new STree(null).getGrammarFileName());
 
 	CallHelper state = new State();
 	if(args.length == 0){
