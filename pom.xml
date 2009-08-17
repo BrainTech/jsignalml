@@ -38,6 +38,7 @@
 
   <build>
     <plugins>
+
       <plugin>
 	<groupId>org.apache.maven.plugins</groupId>
 	<artifactId>maven-compiler-plugin</artifactId>
@@ -66,7 +67,6 @@
               <goals>
                 <goal>antlr</goal>
               </goals>
-
           </execution>
 	</executions>
       </plugin>
@@ -107,7 +107,25 @@
 	  </execution>
 	</executions>
       </plugin>
-    </plugins>
 
+    </plugins>
   </build>
+
+  <!--
+       http://www.antlr.org/pipermail/antlr-interest/2009-May/034285.html
+    -->
+  <pluginRepositories>
+      <!--
+           This is the ANTLR snapshot repository.
+        -->
+      <pluginRepository>
+	  <id>antlr-snapshot</id>
+	  <name>ANTLR Testing Snapshot Repository</name>
+	  <url>http://antlr.org/antlr-snapshot</url>
+	  <snapshots>
+	      <enabled>true</enabled>
+	  </snapshots>
+      </pluginRepository>
+  </pluginRepositories>
+
 </project>
