@@ -184,7 +184,7 @@ public abstract class Type {
 	    case MUL:
 		return new Int(this.value * other.value);
 	    case DIV:
-		return new Float(this.value / other.value);
+		return new Float((double)this.value / other.value);
 	    case FLOORDIV:
 		return new Int(this.value / other.value);
 	    case MOD:

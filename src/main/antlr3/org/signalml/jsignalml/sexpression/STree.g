@@ -25,7 +25,7 @@ line returns [Expression value]
 expr returns [Expression value]
     : ^(    ( op=ADD
             | op=SUBTRACT | op=MULTIPLY
-            | op=FLOORDIR | op=TRUEDIV | op=MODULO
+            | op=FLOORDIV | op=TRUEDIV | op=MODULO
             | op=BINARY_AND | op=BINARY_OR | op=BINARY_XOR
             | op=LOGICAL_AND | op=LOGICAL_OR
             | op=EQUALS | op=NOTEQUALS

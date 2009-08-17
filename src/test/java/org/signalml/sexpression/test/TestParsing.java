@@ -74,9 +74,22 @@ public class TestParsing {
 	parse("+0b01");
     }
 
-    @Test public void parse_additions() throws Exception
+    @Test public void parse_add_with_no_spaces() throws Exception
     {
 	parse("1+1");
+    }
+
+    @Test public void parse_additions_with_spaces() throws Exception
+    {
+	parse("1+-1");
+	parse("1++1");
+	parse("+1++1");
+	parse("-1++1");
+	parse("--1++1");
+    }
+
+    @Test public void parse_additions_without_spaces() throws Exception
+    {
 	parse("1+-1");
 	parse("1++1");
 	parse("+1++1");
