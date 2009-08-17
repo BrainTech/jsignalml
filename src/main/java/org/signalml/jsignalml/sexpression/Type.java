@@ -150,7 +150,9 @@ public abstract class Type {
 	    this.value = value;
 	}
 	public Int(java.lang.String text){
-	    this(new Integer(text));
+	    this(new Integer(text.startsWith("+") ?
+			     text.substring(1) :
+			     text));
 	}
 	public Int(long value){
 	    this((int)value);
