@@ -161,5 +161,22 @@ public class TestOperations {
     {
 	// like in Python and Java
 	equal("0**0", 1);
+
+    @Test public void eval_binary_and() throws Exception
+    {
+	equal("1 & 2", 0);
+	equal("4 & 5", 4);
+    }
+
+    @Test public void eval_binary_or() throws Exception
+    {
+	equal("1 | 2", 3);
+	equal("4 | 5", 5);
+    }
+
+    @Test public void eval_binary_xor() throws Exception
+    {
+	equal("1 ^ 2", 3);
+	equal("4 ^ 5", 1);
     }
 }
