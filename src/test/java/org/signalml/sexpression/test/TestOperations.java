@@ -156,4 +156,10 @@ public class TestOperations {
 	equal("-1. % 2.", 1.);
 	equal("-21. % 13", 5.);
     }
+
+    @Test public void eval_0_pow_0() throws Exception
+    {
+	// like in Python and Java
+	equal("0**0", 1);
+    }
 }
