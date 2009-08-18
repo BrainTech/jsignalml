@@ -349,4 +349,22 @@ public class TestOperations {
 	equal("-2.!=1",1);
 	equal("-2.!=1.",1);
     }
+
+@Test public void eval_or() throws Exception
+    {
+	equal("0 or 0", 0);
+	equal("0. or 0", 0);
+	equal("0 or 0.", 0.);
+	equal("0. or 0.", 0.);
+	equal("1 or 0", 1);
+	equal("0 or 1", 1);
+	equal("1 or 1", 1);
+	equal("1. or 1", 1.);
+	equal("1 or 1.", 1);
+	equal("1. or 1.", 1);
+	equal("10 or 1.", 10);
+	equal("10. or 1.", 10.);
+	equal("10. or 1", 10.);
+	equal("10. or 10", 10.);
+    }
 }
