@@ -1,6 +1,7 @@
 package org.signalml.jsignalml;
 
 import java.io.File;
+import java.io.InputStream;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.Document;
@@ -10,40 +11,67 @@ import javax.xml.xpath.XPathConstants;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
+import org.signalml.jsignalml.Logger;
+
 public class XMLDocument
 {
+    public class NoNodeError extends Exception {
+	public final String xpath;
+	public NoNodeError(String xpath){
+	    this.xpath = xpath;
+	}	    
+    }
+
+    static final Logger log = new Logger(XMLDocument.class);
+    static final XPathFactory xfactory;
+    static final DocumentBuilderFactory builderFactory;
+    static {
+	builderFactory = DocumentBuilderFactory.newInstance();
+	builderFactory.setNamespaceAware(true);
+	xfactory = XPathFactory.newInstance();
+	log.info("builderFactory is %s", builderFactory.getClass());
+    }
+
     final Document document;
-    final XPathFactory xfactory;
 
     public XMLDocument(String filename)
 	throws java.io.IOException,
 	       org.xml.sax.SAXException,
 	       javax.xml.parsers.ParserConfigurationException
     {
+	final DocumentBuilder docbuilder
+	    = builderFactory.newDocumentBuilder();
 	// parse the XML as a W3C Document
-	DocumentBuilderFactory builderFactory = 
-	    DocumentBuilderFactory.newInstance();
-	builderFactory.setNamespaceAware(true);
-	DocumentBuilder builder =
-	    builderFactory.newDocumentBuilder();
 	File file = new File(filename);
-	this.document = builder.parse(file);
-	this.xfactory = XPathFactory.newInstance(); 
+	this.document = docbuilder.parse(file);
+    }
+    public XMLDocument(InputStream stream)
+	throws java.io.IOException,
+	       org.xml.sax.SAXException,
+	       javax.xml.parsers.ParserConfigurationException
+    {
+	final DocumentBuilder docbuilder
+	    = builderFactory.newDocumentBuilder();
+	// parse the XML as a W3C Document
+	this.document = docbuilder.parse(stream);
     }
 
-    Node getNode(String xpath)
-	throws javax.xml.xpath.XPathExpressionException
+    public Node getNode(String xpath)
+	throws javax.xml.xpath.XPathExpressionException,
+	       NoNodeError
     {
-	XPath getter = this.xfactory.newXPath();
+	XPath getter = xfactory.newXPath();
 	Object node = getter.evaluate(xpath, this.document,
 				      XPathConstants.NODE);
+	if(node == null)
+	    throw new NoNodeError(xpath);
 	return (Node) node;
     }
 
-    Iterable<Node> getNodes(String xpath)
+    public Iterable<Node> getNodes(String xpath)
 	throws javax.xml.xpath.XPathExpressionException
     {
-	XPath getter = this.xfactory.newXPath();
+	XPath getter = xfactory.newXPath();
 	Object nodes = getter.evaluate(xpath, this.document,
 				       XPathConstants.NODESET);
 	return new NodeIterable((NodeList) nodes);

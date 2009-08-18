@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+
+<root>
+    <node1>
+	<subnode />	<subnode />	<subnode />	<subnode />
+    </node1>
+    <node2 arg='arg_of_node2' />
+</root>
