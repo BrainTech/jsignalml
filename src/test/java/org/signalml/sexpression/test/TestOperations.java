@@ -68,7 +68,7 @@ public class TestOperations {
 	equal("-2**3", -8);
 	equal("-2**3", -8);
 	equal("2**10", 1024);
-    }	
+    }
 
     @Test public void eval_float_int_pow() throws Exception
     {
@@ -76,7 +76,7 @@ public class TestOperations {
 	equal("-2.**3", -8.);
 	equal("-2.**3", -8.);
 	equal("2.**10", 1024.);
-    }	
+    }
 
     @Test public void eval_float_float_pow() throws Exception
     {
@@ -161,6 +161,7 @@ public class TestOperations {
     {
 	// like in Python and Java
 	equal("0**0", 1);
+    }
 
     @Test public void eval_binary_and() throws Exception
     {
@@ -178,5 +179,83 @@ public class TestOperations {
     {
 	equal("1 ^ 2", 3);
 	equal("4 ^ 5", 1);
+    }
+
+    @Test public void eval_multiply_paren_add() throws Exception
+    {
+	equal("2 * ( 4 + 5 )", 18);
+	equal("-3 * ( 4 + 5 )", -27);
+    }
+
+    @Test public void eval_pow_multiply() throws Exception
+    {
+	equal("2**2*3**2", 36);
+	equal("3**2*2**2", 36);
+	equal("-3**2*2**2", -36);
+
+    }
+
+    @Test public void eval_smaller_than() throws Exception
+    {
+	equal("2<2.", 0);
+	equal("2<3", 1);
+	equal("2<3.", 1);
+	equal("2<2", 0);
+	equal("2<1",0);
+	equal("2<1.",0);
+	equal("2<-1",0);
+	equal("2<-1.",0);
+	equal("-2<-1",1);
+	equal("-2<-1.",1);
+	equal("-2<3", 1);
+	equal("-2<3.", 1);
+    }
+
+    @Test public void eval_grater_than() throws Exception
+    {
+	equal("2>2.", 0);
+	equal("2>3", 0);
+	equal("2>3.", 0);
+	equal("2>2", 0);
+	equal("2>1",1);
+	equal("2>1.",1);
+	equal("2>-1",1);
+	equal("2>-1.",1);
+	equal("-2>-1",0);
+	equal("-2>-1.",0);
+	equal("-2>1",0);
+	equal("-2>1.",0);
+
+    }
+
+    @Test public void eval_equal_smaller_than() throws Exception
+    {	equal("2<=2.", 1);
+	equal("2<=3", 1);
+	equal("2<=3.", 1);
+	equal("2<=2", 1);
+	equal("2<1",0);
+	equal("2<1.",0);
+	equal("2<-1",0);
+	equal("2<-1.",0);
+	equal("-2>-1",0);
+	equal("-2>-1.",0);
+	equal("-2<=3.", 1);
+	equal("-2<=2", 1);
+    }
+
+    @Test public void eval_equal_grater_than() throws Exception
+    {
+	equal("2>=2.", 1);
+	equal("2>=3", 0);
+	equal("2>=3.", 0);
+	equal("2>=2", 1);
+	equal("2>=-1",1);
+	equal("2>=-1.",1);
+	equal("2>=1",1);
+	equal("2>=1.",1);
+	equal("-2>=-1",0);
+	equal("-2>=-1.",0);
+	equal("-2>=1",0);
+	equal("-2>=1.",0);
     }
 }
