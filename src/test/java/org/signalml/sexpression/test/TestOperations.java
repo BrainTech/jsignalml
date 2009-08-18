@@ -225,7 +225,18 @@ public class TestOperations {
 	equal("-2>-1.",0);
 	equal("-2>1",0);
 	equal("-2>1.",0);
-
+	equal("2.>2.", 0);
+	equal("2.>3", 0);
+	equal("2.>3.", 0);
+	equal("2.>2", 0);
+	equal("2.>1",1);
+	equal("2.>1.",1);
+	equal("2.>-1",1);
+	equal("2.>-1.",1);
+	equal("-2.>-1",0);
+	equal("-2.>-1.",0);
+	equal("-2.>1",0);
+	equal("-2.>1.",0);
     }
 
     @Test public void eval_equal_smaller_than() throws Exception
@@ -241,6 +252,18 @@ public class TestOperations {
 	equal("-2>-1.",0);
 	equal("-2<=3.", 1);
 	equal("-2<=2", 1);
+	equal("2.<=2.", 1);
+	equal("2.<=3", 1);
+	equal("2.<=3.", 1);
+	equal("2.<=2", 1);
+	equal("2.<1",0);
+	equal("2.<1.",0);
+	equal("2.<-1",0);
+	equal("2.<-1.",0);
+	equal("-2.>-1",0);
+	equal("-2.>-1.",0);
+	equal("-2.<=3.", 1);
+	equal("-2.<=2", 1);
     }
 
     @Test public void eval_equal_grater_than() throws Exception
@@ -257,5 +280,73 @@ public class TestOperations {
 	equal("-2>=-1.",0);
 	equal("-2>=1",0);
 	equal("-2>=1.",0);
+	equal("2.>=2.", 1);
+	equal("2.>=3", 0);
+	equal("2.>=3.", 0);
+	equal("2.>=2", 1);
+	equal("2.>=-1",1);
+	equal("2.>=-1.",1);
+	equal("2.>=1",1);
+	equal("2.>=1.",1);
+	equal("-2.>=-1",0);
+	equal("-2.>=-1.",0);
+	equal("-2.>=1",0);
+	equal("-2.>=1.",0);
+    }
+
+ @Test public void eval_equal_to() throws Exception
+    {
+	equal("2==2.", 1);
+	equal("2==3", 0);
+	equal("2==3.", 0);
+	equal("2==2", 1);
+	equal("2==-1",0);
+	equal("2==-1.",0);
+	equal("2==1",0);
+	equal("2==1.",0);
+	equal("-2==-1",0);
+	equal("-2==-1.",0);
+	equal("-2==1",0);
+	equal("-2==1.",0);
+	equal("2.==2.", 1);
+	equal("2.==3", 0);
+	equal("2.==3.", 0);
+	equal("2.==2", 1);
+	equal("2.==-1",0);
+	equal("2.==-1.",0);
+	equal("2.==1",0);
+	equal("2.==1.",0);
+	equal("-2.==-1",0);
+	equal("-2.==-1.",0);
+	equal("-2.==1",0);
+	equal("-2.==1.",0);
+    }
+
+ @Test public void eval_un_equal_to() throws Exception
+    {
+	equal("2!=2.", 0);
+	equal("2!=3", 1);
+	equal("2!=3.", 1);
+	equal("2!=2", 0);
+	equal("2!=-1",1);
+	equal("2!=-1.",1);
+	equal("2!=1",1);
+	equal("2!=1.",1);
+	equal("-2!=-1",1);
+	equal("-2!=-1.",1);
+	equal("-2!=1",1);
+	equal("-2!=1.",1);
+	equal("2.!=2.", 0);
+	equal("2.!=3", 1);
+	equal("2.!=3.", 1);
+	equal("2.!=2", 0);
+	equal("2.!=-1",1);
+	equal("2.!=-1.",1);
+	equal("2.!=1",1);
+	equal("2.!=1.",1);
+	equal("-2.!=-1",1);
+	equal("-2.!=-1.",1);
+	equal("-2.!=1",1);
+	equal("-2.!=1.",1);
     }
 }
