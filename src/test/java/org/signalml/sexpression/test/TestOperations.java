@@ -211,7 +211,7 @@ public class TestOperations {
 	equal("-2<3.", 1);
     }
 
-    @Test public void eval_grater_than() throws Exception
+    @Test public void eval_greater_than() throws Exception
     {
 	equal("2>2.", 0);
 	equal("2>3", 0);
@@ -266,7 +266,7 @@ public class TestOperations {
 	equal("-2.<=2", 1);
     }
 
-    @Test public void eval_equal_grater_than() throws Exception
+    @Test public void eval_equal_greater_than() throws Exception
     {
 	equal("2>=2.", 1);
 	equal("2>=3", 0);
@@ -361,10 +361,49 @@ public class TestOperations {
 	equal("1 or 1", 1);
 	equal("1. or 1", 1.);
 	equal("1 or 1.", 1);
-	equal("1. or 1.", 1);
+	equal("1. or 1.", 1.);
 	equal("10 or 1.", 10);
 	equal("10. or 1.", 10.);
 	equal("10. or 1", 10.);
 	equal("10. or 10", 10.);
+	equal("-1 or 0", -1);
+	equal("0 or -1", -1);
+	equal("-1 or 1", -1);
+	equal("1 or -1", 1);
+	equal("-1. or 1", -1.);
+	equal("1 or -1.", 1);
+	equal("-1. or 1.", -1.);
+	equal("10 or -1.", 10);
+	equal("10. or -1.", 10.);
+	equal("-10. or 1", -10.);
+	equal("-10. or 10", -10.);
+    }
+@Test public void eval_and() throws Exception
+    {
+	equal("0 and 0", 0);
+	equal("0. and 0", 0.);
+	equal("0 and 0.", 0);
+	equal("0. and 0.", 0.);
+	equal("1 and 0", 0);
+	equal("0 and 1", 0);
+	equal("1 and 1", 1);
+	equal("1. and 1", 1);
+	equal("1 and 1.", 1.);
+	equal("1. and 1.", 1.);
+	equal("10 and 1.", 1.);
+	equal("10. and 1.", 1.);
+	equal("10. and 1", 1);
+	equal("10. and 10", 10);
+	equal("-1 and 0", 0);
+	equal("0 and -1", 0);
+	equal("-1 and 1", 1);
+	equal("1 and -1", -1);
+	equal("-1. and 1", 1);
+	equal("1 and -1.", -1.);
+	equal("-1. and 1.", 1.);
+	equal("10 and -1.", -1.);
+	equal("10. and -1.", -1.);
+	equal("-10. and 1", 1);
+	equal("-10. and 10", 10);
     }
 }
