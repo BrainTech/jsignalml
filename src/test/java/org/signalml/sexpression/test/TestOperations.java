@@ -192,7 +192,6 @@ public class TestOperations {
 	equal("2**2*3**2", 36);
 	equal("3**2*2**2", 36);
 	equal("-3**2*2**2", -36);
-
     }
 
     @Test public void eval_smaller_than() throws Exception
@@ -378,6 +377,7 @@ public class TestOperations {
 	equal("-10. or 1", -10.);
 	equal("-10. or 10", -10.);
     }
+
 @Test public void eval_and() throws Exception
     {
 	equal("0 and 0", 0);
@@ -405,5 +405,21 @@ public class TestOperations {
 	equal("10. and -1.", -1.);
 	equal("-10. and 1", 1);
 	equal("-10. and 10", 10);
+    }
+
+@Test public void eval_not() throws Exception
+    {
+	equal("not 4",0);
+	equal("not -4.",0);
+	equal("not 0",1);
+	equal("not 4.",0);
+	equal("not -4",0);
+	equal("not (4-3)",0);
+	equal("not (4 - 2*2)",1);
+	equal("not (8 - 2**3)",1);
+	equal("not 4-3",0);
+	equal("not 4 - 2*2",1);
+	equal("not 8 - 2**3",1);
+	equal("not -1 +1",1);
     }
 }
