@@ -32,6 +32,11 @@ public class TestOperations {
 	assertTrue(eval(line).equals(new Type.String(expected)));
     }
 
+    void verifyIsTrue(String line, boolean expected) throws Exception
+    {
+	assertEquals(eval(line).isTrue(), expected);
+    }
+
     @Test public void check_int_atom_values() throws Exception
     {
 	equal("1", 1);
@@ -105,6 +110,10 @@ public class TestOperations {
     @Test public void eval_pow_paren_with_negation() throws Exception
     {
 	equal("-11**(1 + 1)", -121);
+    }
+
+    @Test public void eval_pow_paren_with_negation_2() throws Exception
+    {
 	equal("-11**2**2", -14641);
     }
 
@@ -293,7 +302,7 @@ public class TestOperations {
 	equal("-2.>=1.",0);
     }
 
- @Test public void eval_equal_to() throws Exception
+    @Test public void eval_equal_to() throws Exception
     {
 	equal("2==2.", 1);
 	equal("2==3", 0);
@@ -321,7 +330,7 @@ public class TestOperations {
 	equal("-2.==1.",0);
     }
 
- @Test public void eval_un_equal_to() throws Exception
+    @Test public void eval_un_equal_to() throws Exception
     {
 	equal("2!=2.", 0);
 	equal("2!=3", 1);
@@ -349,77 +358,330 @@ public class TestOperations {
 	equal("-2.!=1.",1);
     }
 
-@Test public void eval_or() throws Exception
+    @Test public void eval_or_1() throws Exception
     {
 	equal("0 or 0", 0);
+    }
+
+    @Test public void eval_or_2() throws Exception
+    {
 	equal("0. or 0", 0);
+    }
+
+    @Test public void eval_or_3() throws Exception
+    {
 	equal("0 or 0.", 0.);
+    }
+
+    @Test public void eval_or_4() throws Exception
+    {
 	equal("0. or 0.", 0.);
+    }
+
+    @Test public void eval_or_5() throws Exception
+    {
 	equal("1 or 0", 1);
+    }
+
+    @Test public void eval_or_6() throws Exception
+    {
 	equal("0 or 1", 1);
+    }
+
+    @Test public void eval_or_7() throws Exception
+    {
 	equal("1 or 1", 1);
+    }
+
+    @Test public void eval_or_8() throws Exception
+    {
 	equal("1. or 1", 1.);
+    }
+
+    @Test public void eval_or_9() throws Exception
+    {
 	equal("1 or 1.", 1);
+    }
+
+    @Test public void eval_or_10() throws Exception
+    {
 	equal("1. or 1.", 1.);
+    }
+
+    @Test public void eval_or_11() throws Exception
+    {
 	equal("10 or 1.", 10);
+    }
+
+    @Test public void eval_or_12() throws Exception
+    {
 	equal("10. or 1.", 10.);
+    }
+
+    @Test public void eval_or_13() throws Exception
+    {
 	equal("10. or 1", 10.);
+    }
+
+    @Test public void eval_or_14() throws Exception
+    {
 	equal("10. or 10", 10.);
+    }
+
+    @Test public void eval_or_15() throws Exception
+    {
 	equal("-1 or 0", -1);
+    }
+
+    @Test public void eval_or_16() throws Exception
+    {
 	equal("0 or -1", -1);
+    }
+
+    @Test public void eval_or_17() throws Exception
+    {
 	equal("-1 or 1", -1);
+    }
+
+    @Test public void eval_or_18() throws Exception
+    {
 	equal("1 or -1", 1);
+    }
+
+    @Test public void eval_or_19() throws Exception
+    {
 	equal("-1. or 1", -1.);
+    }
+
+    @Test public void eval_or_20() throws Exception
+    {
 	equal("1 or -1.", 1);
+    }
+
+    @Test public void eval_or_21() throws Exception
+    {
 	equal("-1. or 1.", -1.);
+    }
+
+    @Test public void eval_or_22() throws Exception
+    {
+
 	equal("10 or -1.", 10);
+    }
+
+    @Test public void eval_or_23() throws Exception
+    {
 	equal("10. or -1.", 10.);
+    }
+
+    @Test public void eval_or_24() throws Exception
+    {
 	equal("-10. or 1", -10.);
+    }
+
+    @Test public void eval_or_25() throws Exception
+    {
 	equal("-10. or 10", -10.);
     }
 
-@Test public void eval_and() throws Exception
+    @Test public void eval_and_1() throws Exception
     {
 	equal("0 and 0", 0);
+    }
+
+    @Test public void eval_and_2() throws Exception
+    {
 	equal("0. and 0", 0.);
+    }
+
+    @Test public void eval_and_3() throws Exception
+    {
 	equal("0 and 0.", 0);
+    }
+
+    @Test public void eval_and_4() throws Exception
+    {
 	equal("0. and 0.", 0.);
+    }
+
+    @Test public void eval_and_5() throws Exception
+    {
 	equal("1 and 0", 0);
+    }
+
+    @Test public void eval_and_6() throws Exception
+    {
 	equal("0 and 1", 0);
+    }
+
+    @Test public void eval_and_7() throws Exception
+    {
 	equal("1 and 1", 1);
+    }
+
+    @Test public void eval_and_8() throws Exception
+    {
 	equal("1. and 1", 1);
+    }
+
+    @Test public void eval_and_9() throws Exception
+    {
 	equal("1 and 1.", 1.);
+    }
+
+    @Test public void eval_and_10() throws Exception
+    {
 	equal("1. and 1.", 1.);
+    }
+
+    @Test public void eval_and_11() throws Exception
+    {
 	equal("10 and 1.", 1.);
+    }
+
+    @Test public void eval_and_12() throws Exception
+    {
 	equal("10. and 1.", 1.);
+    }
+
+    @Test public void eval_and_13() throws Exception
+    {
 	equal("10. and 1", 1);
+    }
+
+    @Test public void eval_and_14() throws Exception
+    {
 	equal("10. and 10", 10);
+    }
+
+    @Test public void eval_and_15() throws Exception
+    {
 	equal("-1 and 0", 0);
+    }
+
+    @Test public void eval_and_16() throws Exception
+    {
 	equal("0 and -1", 0);
+    }
+
+    @Test public void eval_and_17() throws Exception
+    {
 	equal("-1 and 1", 1);
+    }
+
+    @Test public void eval_and_18() throws Exception
+    {
 	equal("1 and -1", -1);
+    }
+
+    @Test public void eval_and_19() throws Exception
+    {
 	equal("-1. and 1", 1);
+    }
+
+    @Test public void eval_and_20() throws Exception
+    {
 	equal("1 and -1.", -1.);
+    }
+
+    @Test public void eval_and_21() throws Exception
+    {
 	equal("-1. and 1.", 1.);
+    }
+
+    @Test public void eval_and_22() throws Exception
+    {
 	equal("10 and -1.", -1.);
+    }
+
+    @Test public void eval_and_23() throws Exception
+    {
 	equal("10. and -1.", -1.);
+    }
+
+    @Test public void eval_and_24() throws Exception
+    {
 	equal("-10. and 1", 1);
+    }
+
+    @Test public void eval_and_25() throws Exception
+    {
 	equal("-10. and 10", 10);
     }
 
-@Test public void eval_not() throws Exception
+    @Test public void eval_not_1() throws Exception
     {
 	equal("not 4",0);
+    }
+
+    @Test public void eval_not_2() throws Exception
+    {
 	equal("not -4.",0);
+    }
+
+    @Test public void eval_not_3() throws Exception
+    {
 	equal("not 0",1);
-	equal("not 4.",0);
+    }
+
+    @Test public void eval_not_4() throws Exception
+    {
+    	equal("not 4.",0);
+    }
+
+    @Test public void eval_not_5() throws Exception
+    {
 	equal("not -4",0);
+    }
+
+    @Test public void eval_not_6() throws Exception
+    {
 	equal("not (4-3)",0);
+    }
+
+    @Test public void eval_not_7() throws Exception
+    {
 	equal("not (4 - 2*2)",1);
+    }
+
+    @Test public void eval_not_8() throws Exception
+    {
 	equal("not (8 - 2**3)",1);
+    }
+
+    @Test public void eval_not_9() throws Exception
+    {
 	equal("not 4-3",0);
+    }
+
+    @Test public void eval_not_10() throws Exception
+    {
 	equal("not 4 - 2*2",1);
+    }
+
+    @Test public void eval_not_11() throws Exception
+    {
 	equal("not 8 - 2**3",1);
+    }
+
+    @Test public void eval_not_12() throws Exception
+    {
 	equal("not -1 +1",1);
+    }
+
+    @Test public void eval_ternary() throws Exception
+    {
+        equal(" 4 ? 2 : 1",2);
+	equal(" 0 ? 2 : 1", 1);
+    }
+
+    @Test public void eval_is_true_1() throws Exception
+    {
+        verifyIsTrue("1", true);
+    }
+
+    @Test public void eval_is_true_0() throws Exception
+    {
+        verifyIsTrue("0", false);
     }
 }
