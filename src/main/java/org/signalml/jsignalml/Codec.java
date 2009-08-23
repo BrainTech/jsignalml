@@ -8,7 +8,8 @@ public class Codec
 	throws java.io.IOException,
 	       org.xml.sax.SAXException,
 	       javax.xml.parsers.ParserConfigurationException,
-	       javax.xml.xpath.XPathExpressionException
+	       javax.xml.xpath.XPathExpressionException,
+	       XMLDocument.NoNodeError
     {
 	XMLDocument document = new XMLDocument(filename);
 
@@ -20,4 +21,3 @@ public class Codec
 	}
     }
 }
- 

@@ -144,8 +144,18 @@ public abstract class Type {
 	    return new Int(0);
     }
 
+    public <T extends Type> T castTo(Class<T> theClass)
+	throws ExpressionFault.TypeError
+    {
+	if(theClass.isInstance(this))
+	    return (T)this;
+	else
+	    // TODO
+	    throw new ExpressionFault.TypeError();
+    }
+
     public static class Int extends Type {
-	final int value;
+	public final int value;
 	public Int(int value){
 	    this.value = value;
 	}
@@ -269,7 +279,7 @@ public abstract class Type {
     }
 
     public static class Float extends Type {
-	final double value;
+	public final double value;
 	public Float(double value){
 	    this.value = value;
 	}
@@ -377,7 +387,7 @@ public abstract class Type {
     }
 
     public static class String extends Type {
-	final java.lang.String value;
+	public final java.lang.String value;
 	public String(java.lang.String value){
 	    this.value = value;
 	}

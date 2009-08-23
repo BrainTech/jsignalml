@@ -1,8 +1,8 @@
 package org.signalml.jsignalml.sexpression;
 
-public abstract class ExpressionFault extends Exception {
+public class ExpressionFault extends Exception {
 
-    static class TypeError extends ExpressionFault {
+    public static class TypeError extends ExpressionFault {
     }
 
     static class UnknownOperationError extends RuntimeException {
@@ -14,13 +14,13 @@ public abstract class ExpressionFault extends Exception {
 	}
     }
 
-    static class NameError extends ExpressionFault {
+    public static class NameError extends ExpressionFault {
 	public final String name;
 	public NameError(java.lang.String name){
 	    this.name = name;
 	}
     }
 
-    static class IndexError extends ExpressionFault {
+    public static class IndexError extends ExpressionFault {
     }
 }

@@ -10,6 +10,10 @@ import java.util.TreeMap;
 import org.apache.log4j.BasicConfigurator;
 import org.signalml.jsignalml.Logger;
 
+import org.signalml.jsignalml.FileType;
+import org.signalml.jsignalml.Machine.FileHandle;
+import org.signalml.jsignalml.CallHelper;
+
 import org.antlr.runtime.*;
 import org.antlr.runtime.tree.*;
 
@@ -17,7 +21,7 @@ import org.antlr.runtime.RecognitionException;
 
 public class Processor {
 
-    public static void processFile(CallHelper state, String path)
+    public static void processFile(State state, String path)
 	throws java.io.FileNotFoundException,
 	       java.io.IOException,
 	       SyntaxError
@@ -94,7 +98,7 @@ public class Processor {
 	return expr;
     }
 
-    public static void processInteractive(CallHelper state,
+    public static void processInteractive(State state,
 					  InputStream in)
     {
 	Scanner scanner = new Scanner(in);
@@ -143,12 +147,15 @@ public class Processor {
     public static class State implements CallHelper {
 	Map<String, Expression> vars =
 	    new TreeMap<String, Expression>();
+
+	@Override
 	public void assign(String id, Expression expr)
 	{
 	    this.vars.put(id, expr);
 	}
 
-	public Type call(String id, List<Type> args)
+	@Override
+	public Type call(String id, Type...args)
 	    throws ExpressionFault
 	{
 	    Expression expr = vars.get(id);
@@ -156,6 +163,18 @@ public class Processor {
 		throw new ExpressionFault.NameError(id);
 	    else
 		return expr.eval(this);
+	}
+
+	public Type call(String id, List<Type> args)
+	    throws ExpressionFault
+	{
+	    return this.call(id, args.toArray(new Type[0]));
+	}
+
+	public FileType getFile(FileHandle handle)
+	    throws ExpressionFault
+	{
+	    throw new ExpressionFault();
 	}
     }
 
@@ -174,7 +193,7 @@ public class Processor {
 	log.info("tree grammar %s",
 		 new STree(null).getGrammarFileName());
 
-	CallHelper state = new State();
+	State state = new State();
 	if(args.length == 0){
 	    processInteractive(state, System.in);
 	} else {

@@ -1,5 +1,7 @@
 package org.signalml.jsignalml.sexpression;
 
+import org.signalml.jsignalml.CallHelper;
+
 import java.util.List;
 import java.util.LinkedList;
 import java.util.Map;
@@ -98,21 +100,19 @@ public abstract class Expression {
 
     static class Call extends Expression {
 	final String name;
-	final List<Expression> args;
+	final Expression[] args;
 	
 	Call(String name, List<Expression> args){
 	    this.name = name;
-	    this.args = args;
+	    this.args = args.toArray(new Expression[0]);
 	}
 	
 	public Type eval(CallHelper state)
 	    throws ExpressionFault
 	{
-	    List<Type> vals = new LinkedList<Type>();
-	    for(Expression arg: this.args){
-		Type val = arg.eval(state);
-		vals.add(val);
-	    }
+	    Type vals[] = new Type[this.args.length];
+	    for(int i = 0; i < vals.length; i++)
+		vals[i] = this.args[i].eval(state);
 	    
 	    return state.call(this.name, vals);
 	}

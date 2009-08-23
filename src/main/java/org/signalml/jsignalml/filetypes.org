@@ -1,0 +1,75 @@
+=== File access API ===
+
+* Types of files
+** binary
+*** bytebuffer
+****    map(offset, length, bitform, mapping) -> floatbuffer/intbuffer...
+****    []
+
+*** floatbuffer
+****    []
+*** intbuffer
+****    []
+
+** text
+***   [] -> line
+***   regexps...
+** XML
+***   xpath
+
+
+* BitForm
+** byte
+** int32
+*** BE
+*** LE
+** int64
+*** BE
+*** LE
+
+** float32
+** float64
+** float96 ?
+** float128
+
+
+* Mapping
+** (channel, sample) -> position
+   position is used as index into the buffer, so the offset
+   in bytes is a multiple of the size of the type and
+   it is not possible to access unaligned data
+
+* Machine == evaluation model
+  a tree of parameters, contains metadata of parameters
+**** assign: id, args, +stuff -> param
+     creates and adds EvalParam
+**** add: param
+     adds param to the Machine
+** Params
+   .id
+   .return type
+   .positional args
+   eval: state, args -> value of return type
+*** ReadParams
+**** Binary
+     .format
+     .offset
+**** XML
+     .xpath
+**** Text
+     .regexp
+*** EvalParams
+    .expr
+
+** FileHandles
+   type
+   filename?
+   open: state, filename? -> file
+** Positional Args
+   id, type
+
+* CallHelper interface
+  used to call from inside expressions
+	       from outside
+** eval: id, args -> Type
+** getFile: FileHandle handle -> FileType file
