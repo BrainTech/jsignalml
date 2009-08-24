@@ -54,7 +54,14 @@ tokens {
 }
 
 @lexer::members {
-        static Logger log = new Logger(SExpressionLexer.class);
+        static final Logger log = new Logger(SExpressionLexer.class);
+
+        @Override
+        public void reportError(RecognitionException e)
+        {
+            displayRecognitionError(this.getTokenNames(), e);
+            throw new SyntaxError.RuntimeFlavour(e);
+        }
 
         @Override
         public void displayRecognitionError(String[] tokenNames,
