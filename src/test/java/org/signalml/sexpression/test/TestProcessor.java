@@ -4,9 +4,9 @@ import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
+import org.signalml.jsignalml.CallHelper;
 import org.signalml.jsignalml.sexpression.Processor;
 import org.signalml.jsignalml.sexpression.Expression;
-import org.signalml.jsignalml.sexpression.CallHelper;
 import org.signalml.jsignalml.sexpression.Type;
 
 public class TestProcessor {

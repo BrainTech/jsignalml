@@ -234,6 +234,7 @@ public abstract class Expression {
 	}
 
 	public Type eval(CallHelper state)
+	    throws ExpressionFault
 	{
 	    state.assign(this.id, this.value);
 	    return null;

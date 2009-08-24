@@ -39,7 +39,7 @@ public class Machine {
 	}
 
 	Map<String, Type> mapArgs(Type...args)
-	    throws MachineError, ExpressionFault
+	    throws MachineError.ArgMismatch, ExpressionFault
 	{
 	    if(args.length != this.args.length)
 		throw new MachineError.ArgMismatch();
@@ -73,7 +73,8 @@ public class Machine {
 	    throws MachineError, ExpressionFault
 	{
 	    Map<String,Type> locals = this.mapArgs(args);
-	    Type val = this.read(state);
+	    CallHelper frame = state.localize(locals);
+	    Type val = this.read(frame);
 	    return val.castTo(this.type);
 	}
 
@@ -116,14 +117,16 @@ public class Machine {
     }
 
 
-    public static class FileHandle {
+    public static class FileHandle<T extends FileType>
+	implements CallHelper.FileHandle<T>
+    {
 	public final String filename; // may be null
 	public FileHandle(String type, String filename){
 	    this.filename = filename;
 	    // TODO
 	}
 
-	public FileType open(CallHelper state, String filename){
+	public T open(CallHelper state, String filename){
 	    return null;
 	}
     }

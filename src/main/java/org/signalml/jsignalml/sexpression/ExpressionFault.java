@@ -1,5 +1,7 @@
 package org.signalml.jsignalml.sexpression;
 
+import org.signalml.jsignalml.Machine.MachineError;
+
 public class ExpressionFault extends Exception {
 
     public static class TypeError extends ExpressionFault {
@@ -22,5 +24,15 @@ public class ExpressionFault extends Exception {
     }
 
     public static class IndexError extends ExpressionFault {
+    }
+
+    public static class ArgMismatch extends ExpressionFault {
+    }
+
+    public static class CodecError extends ExpressionFault {
+	final MachineError me;
+	public CodecError(MachineError me){
+	    this.me = me;
+	}
     }
 }

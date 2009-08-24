@@ -11,8 +11,8 @@ import org.apache.log4j.BasicConfigurator;
 import org.signalml.jsignalml.Logger;
 
 import org.signalml.jsignalml.FileType;
-import org.signalml.jsignalml.Machine.FileHandle;
 import org.signalml.jsignalml.CallHelper;
+import org.signalml.jsignalml.Frame;
 
 import org.antlr.runtime.*;
 import org.antlr.runtime.tree.*;
@@ -144,9 +144,13 @@ public class Processor {
     }
 
     /////////////////////////////////////////////////////////
-    public static class State implements CallHelper {
-	Map<String, Expression> vars =
+    public static class State extends Frame implements CallHelper {
+	final Map<String, Expression> vars =
 	    new TreeMap<String, Expression>();
+
+	public State(){
+	    super(null);
+	}
 
 	@Override
 	public void assign(String id, Expression expr)
@@ -155,26 +159,20 @@ public class Processor {
 	}
 
 	@Override
-	public Type call(String id, Type...args)
-	    throws ExpressionFault
+	public Type frame_call(String id, Type...args)
+	    throws Frame.FrameNameError, ExpressionFault
 	{
 	    Expression expr = vars.get(id);
-	    if(expr==null)
-		throw new ExpressionFault.NameError(id);
-	    else
+	    if(expr != null)
 		return expr.eval(this);
+	    else
+		throw new Frame.FrameNameError();
 	}
 
 	public Type call(String id, List<Type> args)
 	    throws ExpressionFault
 	{
 	    return this.call(id, args.toArray(new Type[0]));
-	}
-
-	public FileType getFile(FileHandle handle)
-	    throws ExpressionFault
-	{
-	    throw new ExpressionFault();
 	}
     }
 
