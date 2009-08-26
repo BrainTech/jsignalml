@@ -51,45 +51,28 @@ public class TestTypes {
         assertIsType("-1", Type.Int.class);
     }
  
-    @Test public void eval_atom_is_int_float_1() throws Exception
+    @Test public void eval_atom_is_float_1() throws Exception
     {
-        assertIsType("0.", Type.Int.class);
+        assertIsType("0.", Type.Float.class);
     }
 
-    @Test public void eval_atom_is_int_float_2() throws Exception
+    @Test public void eval_atom_is_float_2() throws Exception
     {
-        assertIsType("1.", Type.Int.class);
+        assertIsType("1.", Type.Float.class);
     }    
 
-    @Test public void eval_atom_is_int_float_3() throws Exception
+    @Test public void eval_atom_is_float_3() throws Exception
     {
-	assertIsType("-1.", Type.Int.class);
+	assertIsType("-1.", Type.Float.class);
     }
 
-    @Test public void eval_atom_is_int_string_1() throws Exception
+    @Test public void eval_atom_is_string_1() throws Exception
     {   
-        assertIsType("'aaa'", Type.Int.class);
-    }
-
-    @Test public void eval_atom_is_int_string_2() throws Exception
-    {
-        assertIsType("\"aaa\"", Type.Int.class);
-    }
-
-    @Test public void eval_atom_is_str() throws Exception
-    {
         assertIsType("'aaa'", Type.String.class);
+    }
+
+    @Test public void eval_atom_is_string_2() throws Exception
+    {
         assertIsType("\"aaa\"", Type.String.class);
-    }
-
-
-    @Test public void eval_atom_is_str_int() throws Exception
-    {
-        assertIsType("1", Type.String.class);
-    }
-
-    @Test public void eval_atom_is_str_float() throws Exception
-    {
-        assertIsType("1.", Type.String.class);
     }
 }
