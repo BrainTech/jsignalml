@@ -20,20 +20,20 @@ public abstract class Type {
 
     public enum BinaryOp {
 	ADD("+", SExpressionParser.ADD),
-	SUB("-", SExpressionParser.SUBTRACT), 
-	MUL("*", SExpressionParser.MULTIPLY), 
-	DIV("/", SExpressionParser.TRUEDIV), 
+	SUB("-", SExpressionParser.SUBTRACT),
+	MUL("*", SExpressionParser.MULTIPLY),
+	DIV("/", SExpressionParser.TRUEDIV),
 	FLOORDIV("//", SExpressionParser.FLOORDIV),
 	MOD("%", SExpressionParser.MODULO),
 	BIN_AND("&", SExpressionParser.BINARY_AND),
 	BIN_OR("|", SExpressionParser.BINARY_OR),
 	BIN_XOR("^", SExpressionParser.BINARY_XOR),
 	POW("**", SExpressionParser.POWER),
-	EQ("==", SExpressionParser.EQUALS), 
+	EQ("==", SExpressionParser.EQUALS),
 	NE("!=", SExpressionParser.NOTEQUALS),
-	LT("<", SExpressionParser.LESSTHAN), 
-	GT(">", SExpressionParser.MORETHAN), 
-	LE("<=", SExpressionParser.LESSEQUALS), 
+	LT("<", SExpressionParser.LESSTHAN),
+	GT(">", SExpressionParser.MORETHAN),
+	LE("<=", SExpressionParser.LESSEQUALS),
 	GE(">=", SExpressionParser.MOREEQUALS),
 
 	LOG_AND("and", SExpressionParser.LOGICAL_AND),
@@ -84,6 +84,10 @@ public abstract class Type {
     }
 
     public abstract Object getValue();
+
+    public java.lang.String toString(){
+	return super.toString() + "=" + this.getValue();
+    }
 
     public Type binaryOp(BinaryOp op, Type other)
 	throws ExpressionFault.TypeError
@@ -170,7 +174,7 @@ public abstract class Type {
 	public Int(boolean value){
 	    this(value?1:0);
 	}
-	
+
 	public Integer getValue(){
 	    return this.value;
 	}
@@ -286,7 +290,7 @@ public abstract class Type {
 	public Float(java.lang.String text){
 	    this(new Double(text));
 	}
-	
+
 	public Double getValue(){
 	    return this.value;
 	}
@@ -357,7 +361,7 @@ public abstract class Type {
 		// XXX: fix for negative values in modulo
 	    case POW:
 		return new Float(Math.pow(this.value, other.value));
-		
+
 	    case EQ:
 		return new Int(this.value == other.value);
 	    case NE:
@@ -394,7 +398,7 @@ public abstract class Type {
 	public String(char value){
 	    this.value = "" + value;
 	}
-	
+
 	public java.lang.String getValue(){
 	    return this.value;
 	}
@@ -441,7 +445,7 @@ public abstract class Type {
 	    case GT:
 	    case LE:
 	    case GE:
-	       
+
 	    default:
 		throw new ExpressionFault.TypeError();
 	    }
@@ -481,10 +485,10 @@ public abstract class Type {
 
 	public static java.lang.String unquote(final java.lang.String quoted)
 	{
-            java.lang.String quoteless = quoted.substring(1, quoted.length()-1);
+	    java.lang.String quoteless = quoted.substring(1, quoted.length()-1);
 
 	    for(Map.Entry<Pattern,java.lang.String> entry: escapePatterns.entrySet())
-		quoteless = 
+		quoteless =
 		    entry.getKey().matcher(quoteless).replaceAll(entry.getValue());
 
 	    return quoteless;
