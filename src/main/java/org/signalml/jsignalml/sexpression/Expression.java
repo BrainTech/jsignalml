@@ -60,7 +60,7 @@ public abstract class Expression {
 		    return left;
 	    }
 	    default:
-		assert false;
+		throw new RuntimeException();
 	    }
 	
 	    Type right = this.right.eval(state);

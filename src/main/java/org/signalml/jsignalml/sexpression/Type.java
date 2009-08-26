@@ -104,8 +104,7 @@ public abstract class Type {
 	    return this.binaryOp(op, (String) other);
 	} catch(ClassCastException e){}
 
-	assert false;
-	return null;
+	throw new RuntimeException();
     }
 
     public abstract Type binaryOp(BinaryOp op, Int other)
