@@ -1,10 +1,24 @@
 package org.signalml.jsignalml.sexpression;
 
 import org.signalml.jsignalml.Machine.MachineError;
+import static java.lang.String.format;
 
 public class ExpressionFault extends Exception {
 
     public static class TypeError extends ExpressionFault {
+	public final Class<? extends Type> from, to;
+	public TypeError(Class<? extends Type> from, Class<? extends Type> to){
+	    this.from = from;
+	    this.to = to;
+	}
+
+	@Deprecated public TypeError(){
+	    this.from = this.to = Type.class;
+	}
+
+	public String toString(){
+	    return format("%s => %s", this.from, this.to);
+	}
     }
 
     static class UnknownOperationError extends RuntimeException {

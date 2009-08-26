@@ -151,7 +151,7 @@ public abstract class Type {
 	    return (T)this;
 	else
 	    // TODO
-	    throw new ExpressionFault.TypeError();
+	    throw new ExpressionFault.TypeError(this.getClass(), theClass);
     }
 
     public static class Int extends Type {
