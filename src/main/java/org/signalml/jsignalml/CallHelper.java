@@ -2,6 +2,8 @@ package org.signalml.jsignalml;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
 
 import org.signalml.jsignalml.sexpression.Type;
 import org.signalml.jsignalml.sexpression.Expression;

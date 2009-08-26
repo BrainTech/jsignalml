@@ -5,16 +5,8 @@ import java.util.Map;
 import org.signalml.jsignalml.sexpression.*;
 import org.signalml.jsignalml.CodecyThing.CodecError;
 
-public class Reader implements CallHelper {
+public class Reader extends Frame implements CallHelper {
     public static final Logger log = new Logger(Reader.class);
-
-    @Override
-    public void assign(String id, Expression expr)
-	throws ExpressionFault
-    {
-	// assign-ment is disallowed
-	throw new ExpressionFault();
-    }
 
     @Override
     public <T extends FileType> T getFile(FileHandle<T> handle)
@@ -25,19 +17,21 @@ public class Reader implements CallHelper {
 
     final CodecyThing codec;
     public Reader(CodecyThing codec){
+	super(null);
 	this.codec = codec;
     }
 
     @Override
-    public Type call(String id, Type...args)
-	throws ExpressionFault
+    public Type frame_call(String id, Type...args)
+	throws ExpressionFault, FrameNameError
     {
 	Machine.Param p;
 	try{
 	    p = codec.getParam(id);
-	}catch(CodecError.KeyError e){
-	    throw new ExpressionFault.NameError(id);
+	}catch(CodecyThing.CodecError.KeyError e){
+	    throw new FrameNameError();
 	}
+
 	try{
 	    Type v = p.eval(this, args);
 	    return v;
@@ -46,9 +40,5 @@ public class Reader implements CallHelper {
 	}catch(Machine.MachineError e){
 	    throw new ExpressionFault.CodecError(e);
 	}
-    }
-
-    public LocalState localize(Map<String,Type> locals){
-	return new LocalState(this, locals);
     }
 }

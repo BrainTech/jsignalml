@@ -7,14 +7,20 @@ import org.signalml.jsignalml.Logger;
 
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.Set;
+import java.util.TreeSet;
 
-public class Machine {
+/**
+ * Class to hold a group of parameters.
+ */
+public class Machine implements CodecyThing {
     public static final Logger log = new Logger(Machine.class);
 
     public static class MachineError extends Exception {
 	public static class ArgMismatch extends MachineError {}
 	public static class CastError extends MachineError {}
 	public static class BadBitForm extends MachineError {}
+	public static class ParamNotFound extends MachineError {}
     }
 
     public static class Positional {
@@ -54,7 +60,16 @@ public class Machine {
 	    return locals;
 	}
 
-	public abstract Type eval(CallHelper state, Type...args)
+	public Type eval(CallHelper state, Type...args)
+	    throws MachineError, ExpressionFault
+	{
+	    Map<String,Type> locals = this.mapArgs(args);
+	    CallHelper frame = state.localize(locals);
+	    Type val = this.read(frame);
+	    return val.castTo(this.type);
+	}
+
+	public abstract Type read(CallHelper state)
 	    throws ExpressionFault, MachineError;
     }
 
@@ -67,19 +82,6 @@ public class Machine {
 	    super(id, type, args);
 	    this.handle = handle;
 	}
-
-	@Override
-	public Type eval(CallHelper state, Type...args)
-	    throws MachineError, ExpressionFault
-	{
-	    Map<String,Type> locals = this.mapArgs(args);
-	    CallHelper frame = state.localize(locals);
-	    Type val = this.read(frame);
-	    return val.castTo(this.type);
-	}
-
-	public abstract Type read(CallHelper state)
-	    throws ExpressionFault, MachineError;
     }
 
     public static class BinaryParam extends ReadParam {
@@ -116,6 +118,24 @@ public class Machine {
 	}
     }
 
+    public static class ExprParam extends Param {
+	final Expression expr;
+
+	public ExprParam(String id, Class<? extends Type> type,
+			 Positional args[],
+			 Expression expr)
+	{
+	    super(id, type, args);
+	    this.expr = expr;
+	}
+
+	@Override
+	public Type read(CallHelper state)
+	    throws ExpressionFault
+	{
+	    return this.expr.eval(state);
+	}
+    }
 
     public static class FileHandle<T extends FileType>
 	implements CallHelper.FileHandle<T>
@@ -130,4 +150,33 @@ public class Machine {
 	    return null;
 	}
     }
+
+    /********************************************************************
+     ************************ non-static stuff **************************
+     ********************************************************************/
+
+    final Map<String,Param> params = new TreeMap<String,Param>();
+    final Set<FileHandle<FileType>> files = new TreeSet<FileHandle<FileType>>();
+
+    public void addParam(Param p)
+    {
+	assert p != null;
+
+	if(this.params.get(p.id) != null)
+	    throw new IllegalArgumentException();
+
+	this.params.put(p.id, p);
+    }
+
+    public Param getParam(String id)
+	throws MachineError.ParamNotFound
+    {
+	Param p = this.params.get(id);
+	if(p!=null)
+	    return p;
+	else
+	    throw new MachineError.ParamNotFound();
+    }
+
+
 }
