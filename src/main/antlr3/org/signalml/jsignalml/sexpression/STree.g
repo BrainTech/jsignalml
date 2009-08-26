@@ -10,6 +10,29 @@ options {
 
     import java.util.List;
     import java.util.LinkedList;
+
+    import org.signalml.jsignalml.Logger;
+}
+
+@members {
+        static final Logger log = new Logger(STree.class);
+
+        @Override public void recover(IntStream input, RecognitionException re){
+            throw new SyntaxError.RuntimeFlavour(re);
+        }
+
+        @Override
+        public void displayRecognitionError(String[] tokenNames,
+                                            RecognitionException e)
+        {
+            log.exception("displayRecognitionError()", e);
+            super.displayRecognitionError(tokenNames, e);
+        }
+
+        @Override
+        public void emitErrorMessage(String msg){
+            log.error(msg);
+        }
 }
 
 script: line*

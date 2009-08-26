@@ -78,7 +78,7 @@ tokens {
     }
 
 @parser::members {
-        static Logger log = new Logger(SExpressionParser.class);
+        static final Logger log = new Logger(SExpressionParser.class);
 
         @Override public void recover(IntStream input, RecognitionException re){
             throw new SyntaxError.RuntimeFlavour(re);
