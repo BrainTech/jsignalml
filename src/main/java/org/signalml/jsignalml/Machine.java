@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.TreeMap;
 import java.util.Set;
 import java.util.TreeSet;
+import java.io.File;
 
 /**
  * Class to hold a group of parameters.
@@ -110,8 +111,9 @@ public class Machine implements CodecyThing {
 		throw new MachineError.BadBitForm();
 	    }
 	    int offs = offset.castTo(Type.Int.class).value;
+	    CallHelper.FileHandle<FileType.BinaryFile> handle = this.handle;
+	    FileType.BinaryFile file = state.getFile(handle);
 
-	    FileType file = state.getFile(this.handle);
 	    log.debug("reading %s as %s @ %s from %s",
 		      this.id, bitf, offs, file);
 	    return file.read(bitf, offs);
@@ -140,13 +142,13 @@ public class Machine implements CodecyThing {
     public static class FileHandle<T extends FileType>
 	implements CallHelper.FileHandle<T>
     {
-	public final String filename; // may be null
-	public FileHandle(String type, String filename){
+	public final File filename; // may be null
+	public FileHandle(String type, File filename){
 	    this.filename = filename;
 	    // TODO
 	}
 
-	public T open(CallHelper state, String filename){
+	public T open(CallHelper state, File hint){
 	    return null;
 	}
     }

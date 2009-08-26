@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
+import java.io.File;
 
 import org.signalml.jsignalml.sexpression.Type;
 import org.signalml.jsignalml.sexpression.Expression;
@@ -11,7 +12,7 @@ import org.signalml.jsignalml.sexpression.ExpressionFault;
 
 public interface CallHelper {
     public interface FileHandle<T extends FileType> {
-	public T open(CallHelper state, String filename);
+	public T open(CallHelper state, File filename);
     }
 
     public Type call(String id, Type...args)

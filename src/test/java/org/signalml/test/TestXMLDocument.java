@@ -13,8 +13,7 @@ public class TestXMLDocument {
     XMLDocument doc;
     @Before public void init()
 	throws java.io.IOException,
-	       org.xml.sax.SAXException,
-	       javax.xml.parsers.ParserConfigurationException
+	       org.xml.sax.SAXException
     {
 	InputStream stream =
 	    getClass().getResourceAsStream("/xml_doc_1.xml" );

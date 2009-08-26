@@ -1,24 +1,45 @@
 package org.signalml.jsignalml;
 
 import java.util.Map;
+import java.util.TreeMap;
+import java.util.List;
+import java.util.LinkedList;
+import java.io.File;
 
+
+import org.signalml.jsignalml.FileType;
 import org.signalml.jsignalml.sexpression.*;
-import org.signalml.jsignalml.CodecyThing.CodecError;
+import org.signalml.jsignalml.Machine.MachineError;
 
 public class Reader extends Frame implements CallHelper {
     public static final Logger log = new Logger(Reader.class);
+
+    final CodecyThing codec;
+    final Map<FileHandle<FileType>, FileType> files =
+	new TreeMap<FileHandle<FileType>, FileType>();
+    final LinkedList<File> filehints = new LinkedList<File>();
+
+    public Reader(CodecyThing codec, String...filenames){
+	super(null);
+	this.codec = codec;
+	for(String filename: filenames)
+	    this.filehints.add(new File(filename));
+    }
 
     @Override
     public <T extends FileType> T getFile(FileHandle<T> handle)
 	throws ExpressionFault
     {
-	return null;
-    }
+	log.info("request for %s", handle);
+	T file = (T) this.files.get(handle);
+	if(file != null)
+	    return file;
 
-    final CodecyThing codec;
-    public Reader(CodecyThing codec){
-	super(null);
-	this.codec = codec;
+	log.info("attempting to open %s", handle);
+	file = handle.open(this, this.filehints.poll());
+	this.files.put((FileHandle<FileType>) handle, (FileType) file);
+			//XXX WTF?
+	return file;
     }
 
     @Override
@@ -28,7 +49,7 @@ public class Reader extends Frame implements CallHelper {
 	Machine.Param p;
 	try{
 	    p = codec.getParam(id);
-	}catch(CodecyThing.CodecError.KeyError e){
+	}catch(MachineError.ParamNotFound e){
 	    throw new FrameNameError();
 	}
 
