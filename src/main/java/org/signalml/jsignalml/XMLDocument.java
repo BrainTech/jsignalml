@@ -2,6 +2,7 @@ package org.signalml.jsignalml;
 
 import java.io.File;
 import java.io.InputStream;
+import java.io.FileInputStream;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.Document;
@@ -23,37 +24,36 @@ public class XMLDocument
     }
 
     static final Logger log = new Logger(XMLDocument.class);
+    static final DocumentBuilder docbuilder;
     static final XPathFactory xfactory;
-    static final DocumentBuilderFactory builderFactory;
     static {
-	builderFactory = DocumentBuilderFactory.newInstance();
+	final DocumentBuilderFactory builderFactory
+	    = DocumentBuilderFactory.newInstance();
 	builderFactory.setNamespaceAware(true);
+	try{
+	    docbuilder = builderFactory.newDocumentBuilder();
+	}catch(javax.xml.parsers.ParserConfigurationException e){
+	    throw new RuntimeException(e);
+	}
+
 	xfactory = XPathFactory.newInstance();
 	log.info("builderFactory is %s", builderFactory.getClass());
     }
 
     final Document document;
 
-    public XMLDocument(String filename)
-	throws java.io.IOException,
-	       org.xml.sax.SAXException,
-	       javax.xml.parsers.ParserConfigurationException
-    {
-	final DocumentBuilder docbuilder
-	    = builderFactory.newDocumentBuilder();
-	// parse the XML as a W3C Document
-	File file = new File(filename);
-	this.document = docbuilder.parse(file);
-    }
     public XMLDocument(InputStream stream)
 	throws java.io.IOException,
-	       org.xml.sax.SAXException,
-	       javax.xml.parsers.ParserConfigurationException
+	       org.xml.sax.SAXException
     {
-	final DocumentBuilder docbuilder
-	    = builderFactory.newDocumentBuilder();
-	// parse the XML as a W3C Document
 	this.document = docbuilder.parse(stream);
+    }
+
+    public XMLDocument(String filename)
+	throws java.io.IOException,
+	       org.xml.sax.SAXException
+    {
+	this(new FileInputStream(filename));
     }
 
     public Node getNode(String xpath)

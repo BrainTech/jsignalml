@@ -7,7 +7,6 @@ public class Codec
     public Codec(String filename)
 	throws java.io.IOException,
 	       org.xml.sax.SAXException,
-	       javax.xml.parsers.ParserConfigurationException,
 	       javax.xml.xpath.XPathExpressionException,
 	       XMLDocument.NoNodeError
     {
