@@ -62,7 +62,9 @@ public abstract class Type {
 	= new TreeMap<Integer, UnaryOp>();
 
     public enum UnaryOp {
-	LOG_NOT("not", SExpressionParser.LOGICAL_NOT);
+	LOG_NOT("not", SExpressionParser.LOGICAL_NOT),
+	POS("+", SExpressionParser.UNARY_ADD),
+	NEG("-", SExpressionParser.UNARY_SUBTRACT);
 
 	public final java.lang.String rep;
 	public static /*final*/ Map<Integer, UnaryOp> opTable
@@ -111,6 +113,10 @@ public abstract class Type {
     public abstract Type binaryOp(BinaryOp op, Float other)
 	throws ExpressionFault.TypeError;
     public abstract Type binaryOp(BinaryOp op, String other)
+	throws ExpressionFault.TypeError;
+
+
+    public abstract Type unaryOp(UnaryOp op)
 	throws ExpressionFault.TypeError;
 
     public Type index(Type sub)
@@ -280,6 +286,19 @@ public abstract class Type {
 		throw new ExpressionFault.TypeError();
 	    }
 	}
+
+	public Type unaryOp(UnaryOp op)
+	    throws ExpressionFault.TypeError
+	{
+	    switch(op){
+	    case POS:
+		return this;
+	    case NEG:
+		return new Int(-this.value);
+	    default:
+		throw new ExpressionFault.TypeError();
+	    }
+	}
     }
 
     public static class Float extends Type {
@@ -388,6 +407,19 @@ public abstract class Type {
 	{
 	    throw new ExpressionFault.TypeError();
 	}
+
+	public Type unaryOp(UnaryOp op)
+	    throws ExpressionFault.TypeError
+	{
+	    switch(op){
+	    case POS:
+		return this;
+	    case NEG:
+		return new Float(-this.value);
+	    default:
+		throw new ExpressionFault.TypeError();
+	    }
+	}
     }
 
     public static class String extends Type {
@@ -450,6 +482,14 @@ public abstract class Type {
 		throw new ExpressionFault.TypeError();
 	    }
 	}
+
+
+	public Type unaryOp(UnaryOp op)
+	    throws ExpressionFault.TypeError
+	{
+	    throw new ExpressionFault.TypeError();
+	}
+
 
 	public Type index(Type sub)
 	    throws ExpressionFault.TypeError,

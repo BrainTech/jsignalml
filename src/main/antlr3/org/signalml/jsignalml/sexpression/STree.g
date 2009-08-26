@@ -46,7 +46,11 @@ line returns [Expression value]
     ;
 
 expr returns [Expression value]
-    : ^(    ( op=ADD
+    : ^( ( op=LOGICAL_NOT
+         | op=UNARY_ADD
+         | op=UNARY_SUBTRACT ) a=expr)
+        { $value = new Expression.UnaryOp($op.type, $a.value); }
+    | ^(    ( op=ADD
             | op=SUBTRACT | op=MULTIPLY
             | op=FLOORDIV | op=TRUEDIV | op=MODULO
             | op=BINARY_AND | op=BINARY_OR | op=BINARY_XOR
@@ -57,8 +61,6 @@ expr returns [Expression value]
             | op=POWER
             )     a=expr b=expr)
         { $value = new Expression.BinaryOp($op.type, $a.value, $b.value); }
-    | ^(op=LOGICAL_NOT a=expr)
-        { $value = new Expression.UnaryOp($op.type, $a.value); }
     | ^(CALL ID argslist)
         { $value = new Expression.Call($ID.text, $argslist.value); }
     | ^(INDEX a=expr s=expr)

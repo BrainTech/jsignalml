@@ -83,13 +83,10 @@ public abstract class Expression {
 	    throws ExpressionFault
 	{
 	    Type sub = this.sub.eval(state);
-	    switch(this.op){
-	    case LOG_NOT: return sub.logical_not();
-	    default:
-		assert false;
-	    }
-	    
-	    return null;
+	    if(this.op == Type.UnaryOp.LOG_NOT)
+		return sub.logical_not();
+	    else
+		return sub.unaryOp(this.op);
 	}
 
 	public String toString()
