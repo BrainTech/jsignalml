@@ -1,4 +1,4 @@
-package org.signalml.jsignalml.sexpression.test;
+package org.signalml.jsignalml.test;
 
 import org.junit.Before;
 import org.junit.Test;
