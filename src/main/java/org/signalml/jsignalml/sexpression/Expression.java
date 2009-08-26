@@ -54,10 +54,12 @@ public abstract class Expression {
 	    case LOG_AND:{
 		if(!left.isTrue())
 		    return left;
+		break;
 	    }
 	    case LOG_OR:{
 		if(left.isTrue())
 		    return left;
+		break;
 	    }
 	    default:
 		throw new RuntimeException();
