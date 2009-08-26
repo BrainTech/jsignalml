@@ -11,7 +11,7 @@ public abstract class Expression {
     public abstract Type eval(CallHelper state)
 	throws ExpressionFault;
 
-    static class BinaryOp extends Expression {
+    public static class BinaryOp extends Expression {
 	final Expression left, right;
 	final Type.BinaryOp op;
 
@@ -39,7 +39,7 @@ public abstract class Expression {
 	}
     }
 
-    static class LogicalBinaryOp extends BinaryOp{
+    public static class LogicalBinaryOp extends BinaryOp{
 	public LogicalBinaryOp(int opcode, Expression left, Expression right)
 	    throws ExpressionFault.UnknownOperationError
 	{
@@ -68,7 +68,7 @@ public abstract class Expression {
 	}
     }
 
-    static class UnaryOp extends Expression {
+    public static class UnaryOp extends Expression {
 	final Type.UnaryOp op;
 	final Expression sub;
 	
@@ -98,7 +98,7 @@ public abstract class Expression {
 	}
     }
 
-    static class Call extends Expression {
+    public static class Call extends Expression {
 	final String name;
 	final Expression[] args;
 	
@@ -134,7 +134,7 @@ public abstract class Expression {
 	}
     }
 
-    static class Index extends Expression {
+    public static class Index extends Expression {
 	final Expression item;
 	final Expression index;
 
@@ -157,7 +157,7 @@ public abstract class Expression {
 	}
     }
 
-    static class Const extends Expression {
+    public static class Const extends Expression {
 	public final Type value;
 
 	public Const(Type value){
@@ -175,7 +175,7 @@ public abstract class Expression {
 	}
     }
 
-    static class Ternary extends Expression {
+    public static class Ternary extends Expression {
 	public final Expression q, a, b;
 
 	public Ternary(Expression q, Expression a, Expression b)
@@ -205,7 +205,7 @@ public abstract class Expression {
      * This is a helper expression node to be used in interactive 
      * expression script parsing and execution.
      */
-    static class Assign extends Expression {
+    public static class Assign extends Expression {
 	public final String id;
 	public final List<Argument> args;
 	public final Expression value;
