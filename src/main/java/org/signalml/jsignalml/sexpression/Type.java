@@ -149,9 +149,9 @@ public abstract class Type {
 
     public Type logical_not(){
 	if(this.isTrue())
-	    return new Int(1);
-	else
 	    return new Int(0);
+	else
+	    return new Int(1);
     }
 
     public <T extends Type> T castTo(Class<T> theClass)
