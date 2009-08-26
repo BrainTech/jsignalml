@@ -28,6 +28,10 @@ public class ExpressionFault extends Exception {
 	    this.where = where;
 	    this.opcode = opcode;
 	}
+
+	public String toString(){
+	    return format("%s opcode=%d", where, opcode);
+	}
     }
 
     public static class NameError extends ExpressionFault {
