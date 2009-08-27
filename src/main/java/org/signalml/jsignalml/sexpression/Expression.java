@@ -4,8 +4,10 @@ import org.signalml.jsignalml.CallHelper;
 
 import java.util.List;
 import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.Map;
 import java.util.TreeMap;
+import static java.util.Collections.unmodifiableList;
 
 public abstract class Expression {
     public abstract Type eval(CallHelper state)
@@ -97,37 +99,29 @@ public abstract class Expression {
 
     public static class Call extends Expression {
 	final String name;
-	final Expression[] args;
+	final /*immutable*/ List<Expression> args;
 	
-	Call(String name, List<Expression> args){
+	Call(String name, List<? extends Expression> args){
 	    this.name = name;
-	    this.args = args.toArray(new Expression[0]);
+	    this.args = unmodifiableList(new ArrayList(args));
 	}
 	
 	public Type eval(CallHelper state)
 	    throws ExpressionFault
 	{
-	    Type vals[] = new Type[this.args.length];
+	    Type vals[] = new Type[this.args.size()];
 	    for(int i = 0; i < vals.length; i++)
-		vals[i] = this.args[i].eval(state);
+		vals[i] = this.args.get(i).eval(state);
 	    
 	    return state.call(this.name, vals);
 	}
 
-	public String toString()
+	public String toString(){
+	    return this.name + "(" + Type.String.join(", ", this.args) + ")";
+	}
+    }
 	{
-	    String r = this.name + "(";
 
-	    boolean first = true;
-	    for(Expression arg: this.args){
-		if(!first)
-		    r += ", ";
-		else
-		    first = false;
-		r += arg;
-	    }
-	    r += ")";
-	    return r;
 	}
     }
 

@@ -548,5 +548,23 @@ public abstract class Type {
 
 	    return quoteless;
 	}
+
+	public static java.lang.String join(java.lang.String sep,
+   				     java.util.List<?> list)
+	{
+	    StringBuilder s = new StringBuilder();
+
+	    // our list is array-based, so access is cheap
+	    for(int i = 0; i < list.size(); i++){
+		if(i > 0)
+		    s.append(sep);
+		s.append(list.get(i).toString());
+	    }
+
+	    // TODO: add interface shared by Expression and Type
+	    // with repr(), and call repr() on items() ?
+
+	    return s.toString();
+	}
     }
 }
