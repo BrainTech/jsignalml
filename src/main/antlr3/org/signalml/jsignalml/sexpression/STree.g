@@ -62,8 +62,10 @@ expr returns [Expression value]
         { $value = new Expression.BinaryOp($op.type, $a.value, $b.value); }
     | ^(    ( op=LOGICAL_AND | op=LOGICAL_OR )     a=expr b=expr)
         { $value = new Expression.LogicalBinaryOp($op.type, $a.value, $b.value); }
-    | ^(CALL ID argslist)
-        { $value = new Expression.Call($ID.text, $argslist.value); }
+    | ^(LIST alist)
+        { $value = new Expression.List_($alist.value); }
+    | ^(CALL ID alist)
+        { $value = new Expression.Call($ID.text, $alist.value); }
     | ^(INDEX a=expr s=expr)
         { $value = new Expression.Index($a.value, $s.value); }
     | INT
@@ -77,7 +79,7 @@ expr returns [Expression value]
         { $value = new Expression.Ternary($q.value, $a.value, $b.value); }
     ;
 
-argslist returns [List<Expression> value]
+alist returns [List<Expression> value]
 @init { $value = new LinkedList<Expression>(); }
     : (expr { $value.add($expr.value); })*
     ;

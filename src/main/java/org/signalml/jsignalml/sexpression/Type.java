@@ -5,6 +5,8 @@ import java.util.regex.Pattern;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.HashMap;
+import java.util.ArrayList;
+import static java.util.Collections.unmodifiableList;
 
 public abstract class Type {
     static final Logger log = new Logger(Type.class);
@@ -115,8 +117,12 @@ public abstract class Type {
 	throws ExpressionFault.TypeError;
 
 
-    public abstract Type unaryOp(UnaryOp op)
-	throws ExpressionFault.TypeError;
+    public Type unaryOp(UnaryOp op)
+	throws ExpressionFault.TypeError
+    {
+	throw new ExpressionFault.TypeError();
+    }
+
 
     public Type index(Type sub)
 	throws ExpressionFault.TypeError,
@@ -293,6 +299,8 @@ public abstract class Type {
 	    }
 	}
 
+
+	@Override
 	public Type unaryOp(UnaryOp op)
 	    throws ExpressionFault.TypeError
 	{
@@ -423,6 +431,7 @@ public abstract class Type {
 	    throw new ExpressionFault.TypeError();
 	}
 
+	@Override
 	public Type unaryOp(UnaryOp op)
 	    throws ExpressionFault.TypeError
 	{
@@ -499,13 +508,7 @@ public abstract class Type {
 	}
 
 
-	public Type unaryOp(UnaryOp op)
-	    throws ExpressionFault.TypeError
-	{
-	    throw new ExpressionFault.TypeError();
-	}
-
-
+	@Override
 	public Type index(Type sub)
 	    throws ExpressionFault.TypeError,
 		   ExpressionFault.IndexError
@@ -565,6 +568,79 @@ public abstract class Type {
 	    // with repr(), and call repr() on items() ?
 
 	    return s.toString();
+	}
+    }
+
+    public static class List extends Type {
+	public final java.util.List<Type> value;
+
+	public List(java.util.List<? extends Type> value){
+	    this.value = unmodifiableList(new ArrayList(value));
+	}
+
+	public /*immutable*/ java.util.List<Type> getValue(){
+	    return this.value;
+	}
+
+	public java.lang.String repr(){
+	    return "[" + String.join(", ", this.value) + "]";
+	}
+
+	public boolean isTrue(){
+	    return this.value.size() > 0;
+	}
+
+	public Type binaryOp(BinaryOp op, Int other)
+	    throws ExpressionFault.TypeError
+	{
+	    switch(op){
+	    case MUL:
+		// TODO
+	    default:
+		throw new ExpressionFault.TypeError();
+	    }
+	}
+
+	public Type binaryOp(BinaryOp op, Float other)
+	    throws ExpressionFault.TypeError
+	{
+	    throw new ExpressionFault.TypeError();
+	}
+
+	public Type binaryOp(BinaryOp op, String other)
+	    throws ExpressionFault.TypeError
+	{
+	    switch(op){
+	    case ADD:
+	    case EQ:
+		return new Int(this.value.equals(other.value));
+	    case NE:
+		return new Int(!this.value.equals(other.value));
+
+	    case LT: /* should those be implemented ? */
+	    case GT:
+	    case LE:
+	    case GE:
+
+	    default:
+		throw new ExpressionFault.TypeError();
+	    }
+	}
+
+	@Override
+	public Type index(Type sub)
+	    throws ExpressionFault.TypeError,
+		   ExpressionFault.IndexError
+	{
+	    try{
+		Int ind = (Int) sub;
+		return this.value.get(ind.value);
+	    } catch(ClassCastException e){
+	    } catch(IndexOutOfBoundsException e){
+		throw new ExpressionFault.IndexError();
+	    }
+
+	    throw new ExpressionFault.TypeError();
 	}
     }
 }

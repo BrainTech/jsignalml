@@ -64,7 +64,7 @@ public abstract class Expression {
 	    default:
 		throw new RuntimeException();
 	    }
-	
+
 	    Type right = this.right.eval(state);
 	    return right;
 	}
@@ -73,14 +73,14 @@ public abstract class Expression {
     public static class UnaryOp extends Expression {
 	final Type.UnaryOp op;
 	final Expression sub;
-	
+
 	public UnaryOp(int opcode, Expression sub)
 	    throws  ExpressionFault.UnknownOperationError
 	{
 	    this.op = Type.UnaryOp.get(opcode);
 	    this.sub = sub;
 	}
-	
+
 	public Type eval(CallHelper state)
 	    throws ExpressionFault
 	{
@@ -100,19 +100,19 @@ public abstract class Expression {
     public static class Call extends Expression {
 	final String name;
 	final /*immutable*/ List<Expression> args;
-	
+
 	Call(String name, List<? extends Expression> args){
 	    this.name = name;
 	    this.args = unmodifiableList(new ArrayList(args));
 	}
-	
+
 	public Type eval(CallHelper state)
 	    throws ExpressionFault
 	{
 	    Type vals[] = new Type[this.args.size()];
 	    for(int i = 0; i < vals.length; i++)
 		vals[i] = this.args.get(i).eval(state);
-	    
+
 	    return state.call(this.name, vals);
 	}
 
@@ -120,10 +120,30 @@ public abstract class Expression {
 	    return this.name + "(" + Type.String.join(", ", this.args) + ")";
 	}
     }
-	{
 
+
+    public static class List_ extends Expression {
+	final /*immutable*/ List<Expression> args;
+
+	List_(List<? extends Expression> args){
+	    this.args = unmodifiableList(new ArrayList(args));
+	}
+
+	public Type eval(CallHelper state)
+	    throws ExpressionFault
+	{
+	    ArrayList<Type> vals = new ArrayList<Type>(this.args.size());
+	    for(int i = 0; i < this.args.size(); i++)
+		vals.add( this.args.get(i).eval(state) );
+
+	    return new Type.List(vals);
+	}
+
+	public String toString(){
+	    return "[" + Type.String.join(", ", this.args) + "]";
 	}
     }
+
 
     public static class Index extends Expression {
 	final Expression item;
@@ -133,7 +153,7 @@ public abstract class Expression {
 	    this.item = item;
 	    this.index = index;
 	}
-	
+
 	public Type eval(CallHelper state)
 	    throws ExpressionFault
 	{
@@ -180,7 +200,7 @@ public abstract class Expression {
 	    throws ExpressionFault
 	{
 	    Type qvalue = this.q.eval(state);
-	    
+
 	    Expression which = qvalue.isTrue() ? this.a : this.b;
 	    Type value = which.eval(state);
 	    return value;
@@ -193,7 +213,7 @@ public abstract class Expression {
     }
 
     /*
-     * This is a helper expression node to be used in interactive 
+     * This is a helper expression node to be used in interactive
      * expression script parsing and execution.
      */
     public static class Assign extends Expression {
