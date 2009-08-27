@@ -51,16 +51,14 @@ public abstract class Expression {
 	{
 	    Type left = this.left.eval(state);
 	    switch(this.op){
-	    case LOG_AND:{
+	    case LOG_AND:
 		if(!left.isTrue())
 		    return left;
 		break;
-	    }
-	    case LOG_OR:{
+	    case LOG_OR:
 		if(left.isTrue())
 		    return left;
 		break;
-	    }
 	    default:
 		throw new RuntimeException();
 	    }

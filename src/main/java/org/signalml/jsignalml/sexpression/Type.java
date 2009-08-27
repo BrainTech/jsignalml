@@ -229,8 +229,11 @@ public abstract class Type {
 		return new Int(this.value <= other.value);
 	    case GE:
 		return new Int(this.value >= other.value);
+	    case LOG_AND:
+	    case LOG_OR:
+		throw new RuntimeException();
 	    default:
-		throw new ExpressionFault.TypeError();
+		throw new ExpressionFault.TypeError(this.getClass(), other.getClass());
 	    }
 	}
 
@@ -266,6 +269,10 @@ public abstract class Type {
 		return new Int(this.value <= other.value);
 	    case GE:
 		return new Int(this.value >= other.value);
+
+	    case LOG_AND:
+	    case LOG_OR:
+		throw new RuntimeException();
 
 	    case BIN_AND:
 	    case BIN_OR:
@@ -352,6 +359,11 @@ public abstract class Type {
 		return new Int(this.value <= other.value);
 	    case GE:
 		return new Int(this.value >= other.value);
+
+	    case LOG_AND:
+	    case LOG_OR:
+		throw new RuntimeException();
+
 	    case BIN_AND:
 	    case BIN_OR:
 	    case BIN_XOR:
@@ -392,6 +404,10 @@ public abstract class Type {
 		return new Int(this.value <= other.value);
 	    case GE:
 		return new Int(this.value >= other.value);
+
+	    case LOG_AND:
+	    case LOG_OR:
+		throw new RuntimeException();
 
 	    case BIN_AND:
 	    case BIN_OR:

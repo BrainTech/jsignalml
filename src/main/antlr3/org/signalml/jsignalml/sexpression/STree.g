@@ -54,13 +54,14 @@ expr returns [Expression value]
             | op=SUBTRACT | op=MULTIPLY
             | op=FLOORDIV | op=TRUEDIV | op=MODULO
             | op=BINARY_AND | op=BINARY_OR | op=BINARY_XOR
-            | op=LOGICAL_AND | op=LOGICAL_OR
             | op=EQUALS | op=NOTEQUALS
             | op=LESSTHAN | op=MORETHAN
             | op=LESSEQUALS| op=MOREEQUALS
             | op=POWER
             )     a=expr b=expr)
         { $value = new Expression.BinaryOp($op.type, $a.value, $b.value); }
+    | ^(    ( op=LOGICAL_AND | op=LOGICAL_OR )     a=expr b=expr)
+        { $value = new Expression.LogicalBinaryOp($op.type, $a.value, $b.value); }
     | ^(CALL ID argslist)
         { $value = new Expression.Call($ID.text, $argslist.value); }
     | ^(INDEX a=expr s=expr)

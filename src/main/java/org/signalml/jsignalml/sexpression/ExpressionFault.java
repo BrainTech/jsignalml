@@ -17,7 +17,7 @@ public class ExpressionFault extends Exception {
 	}
 
 	public String toString(){
-	    return format("%s => %s", this.from, this.to);
+	    return format("%s(%s => %s)", getClass(), from, to);
 	}
     }
 
