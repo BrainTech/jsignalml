@@ -22,8 +22,8 @@ public class TestLocalState {
 	map1.put("c", new Type.String("ccc"));
     }
 
-    LocalState state = new LocalState(null, map);
-    LocalState state1 = new LocalState(state, map1);
+    final LocalState state = new LocalState(null, map);
+    final LocalState state1 = new LocalState(state, map1);
 
     @Test public void test_call() throws Exception {
 	assertTrue(state.call("a").equals(map.get("a")));
@@ -49,5 +49,11 @@ public class TestLocalState {
     @Test(expected=ExpressionFault.ArgMismatch.class)
     public void test_parent_call_with_args() throws Exception {
 	state.call("a", new Type.Int(666));
+    }
+
+    @Test(expected=UnsupportedOperationException.class)
+    public void test_add_new_local() {
+	Map<String,Type> mapcopy = new TreeMap<String,Type>(map);
+	new LocalState(null, mapcopy).locals.put("xxx", new Type.Int(666));
     }
 }
