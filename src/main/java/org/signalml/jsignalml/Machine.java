@@ -75,24 +75,25 @@ public class Machine implements CodecyThing {
     }
 
     public abstract static class ReadParam extends Param {
-	final FileHandle handle;
-
 	public ReadParam(String id, Class<? extends Type> type,
-			 Positional args[], FileHandle handle)
+			 Positional args[])
 	{
 	    super(id, type, args);
-	    this.handle = handle;
 	}
     }
 
-    public static class BinaryParam extends ReadParam {
+    public static
+    class BinaryParam<T extends FileType.BinaryFile> extends ReadParam {
+	final FileHandle<T> handle;
 	final Expression format, offset;
 
 	public BinaryParam(String id, Class<? extends Type> type,
-			   Positional args[], FileHandle handle,
+			   Positional args[],
+			   FileHandle<T> handle,
 			   Expression format, Expression offset)
 	{
-	    super(id, type, args, handle);
+	    super(id, type, args);
+	    this.handle = handle;
 	    this.format = format;
 	    this.offset = offset;
 	}
@@ -111,8 +112,8 @@ public class Machine implements CodecyThing {
 		throw new MachineError.BadBitForm();
 	    }
 	    int offs = offset.castTo(Type.Int.class).value;
-	    CallHelper.FileHandle<FileType.BinaryFile> handle = this.handle;
-	    FileType.BinaryFile file = state.getFile(handle);
+
+	    FileType.BinaryFile file = state.getFile(this.handle);
 
 	    log.debug("reading %s as %s @ %s from %s",
 		      this.id, bitf, offs, file);
@@ -143,7 +144,7 @@ public class Machine implements CodecyThing {
 	implements CallHelper.FileHandle<T>
     {
 	public final File filename; // may be null
-	public FileHandle(String type, File filename){
+	public FileHandle(File filename){
 	    this.filename = filename;
 	    // TODO
 	}
