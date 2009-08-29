@@ -20,8 +20,16 @@ public class Machine implements CodecyThing {
     public static class MachineError extends Exception {
 	public static class ArgMismatch extends MachineError {}
 	public static class CastError extends MachineError {}
-	public static class BadBitForm extends MachineError {}
+	public static class BadBitForm extends MachineError {
+	    public BadBitForm(BitForm.BadBitForm e){
+		super(e);
+	    }
+	}
 	public static class ParamNotFound extends MachineError {}
+	public static class NullFilenames extends MachineError {}
+
+	public MachineError() {}
+	public MachineError(Exception sub) {super(sub);}
     }
 
     public static class Positional {
@@ -109,7 +117,7 @@ public class Machine implements CodecyThing {
 	    try{
 		bitf = BitForm.get(format.castTo(Type.String.class).value);
 	    }catch(BitForm.BadBitForm e){
-		throw new MachineError.BadBitForm();
+		throw new MachineError.BadBitForm(e);
 	    }
 	    int offs = offset.castTo(Type.Int.class).value;
 

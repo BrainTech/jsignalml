@@ -5,9 +5,8 @@ import java.nio.ByteBuffer;
 
 public abstract class BitForm {
     public static class BadBitForm extends Exception {
-	public final String description;
 	public BadBitForm(String description){
-	    this.description = description;
+	    super("bad BitFormat description '" + description + "'");
 	}
     }
 
