@@ -93,13 +93,13 @@ public class Machine implements CodecyThing {
     }
 
     public static
-    class BinaryParam<T extends FileType.BinaryFile> extends ReadParam {
-	final FileHandle<T> handle;
+    class BinaryParam extends ReadParam {
+	final FileHandle<? extends FileType.BinaryFile> handle;
 	final Expression format, offset;
 
 	public BinaryParam(String id, Class<? extends Type> type,
 			   Positional args[],
-			   FileHandle<T> handle,
+			   FileHandle<? extends FileType.BinaryFile> handle,
 			   Expression format, Expression offset)
 	{
 	    super(id, type, args);
