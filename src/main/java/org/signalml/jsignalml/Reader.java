@@ -1,11 +1,12 @@
 package org.signalml.jsignalml;
 
 import java.util.Map;
-import java.util.TreeMap;
+import java.util.HashMap;
 import java.util.List;
 import java.util.LinkedList;
 import java.io.File;
-
+import java.io.FileNotFoundException;
+import java.io.IOException;
 
 import org.signalml.jsignalml.FileType;
 import org.signalml.jsignalml.sexpression.*;
@@ -15,8 +16,11 @@ public class Reader extends Frame implements CallHelper {
     public static final Logger log = new Logger(Reader.class);
 
     final CodecyThing codec;
+
+    /* HashMap because TreeMap would require comparable. */
     final Map<FileHandle<FileType>, FileType> files =
-	new TreeMap<FileHandle<FileType>, FileType>();
+	new HashMap<FileHandle<FileType>, FileType>();
+
     final LinkedList<File> filehints = new LinkedList<File>();
 
     public Reader(CodecyThing codec, String...filenames){
@@ -28,7 +32,8 @@ public class Reader extends Frame implements CallHelper {
 
     @Override
     public <T extends FileType> T getFile(FileHandle<T> handle)
-	throws ExpressionFault
+	throws ExpressionFault, MachineError,
+	       IOException, FileNotFoundException
     {
 	log.info("request for %s", handle);
 	T file = (T) this.files.get(handle);
