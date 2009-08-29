@@ -10,6 +10,8 @@ import java.util.TreeMap;
 import java.util.Set;
 import java.util.TreeSet;
 import java.io.File;
+import java.io.IOException;
+import java.io.FileNotFoundException;
 
 /**
  * Class to hold a group of parameters.
@@ -148,17 +150,45 @@ public class Machine implements CodecyThing {
 	}
     }
 
+    /**
+     * A holder for information about a file yet to be opened.
+     * Two filenames can be provided: at construction time, and
+     * as an argument to open(). At least one is needed, and
+     * the second one has priority. If both are null, a
+     * MachineError.NullFilenames exception is thrown.
+     */
     public static class FileHandle<T extends FileType>
 	implements CallHelper.FileHandle<T>
     {
-	public final File filename; // may be null
-	public FileHandle(File filename){
+	public final Class<T> klass;
+	public final Expression filename; // may be null
+	public FileHandle(Class<T> klass, Expression filename){
+	    this.klass = klass;
 	    this.filename = filename;
-	    // TODO
 	}
 
-	public T open(CallHelper state, File hint){
-	    return null;
+	public static <V extends FileType>
+	FileHandle<V> make(Class<V> klass, Expression filename){
+	    return new FileHandle<V>(klass, filename);
+	}
+
+	public T open(CallHelper state, File hint)
+	    throws ExpressionFault, MachineError.NullFilenames,
+		   IOException, FileNotFoundException
+	{
+	    File thename;
+	    if(hint != null){
+		thename = hint;
+	    } else if(this.filename != null){
+		Type tmp = this.filename.eval(state);
+		String str = tmp.castTo(Type.String.class).getValue();
+		thename = new File(str);
+	    } else {
+		throw new MachineError.NullFilenames();
+	    }
+
+	    log.info("opening file '%s'", thename);
+	    return FileType.open(klass, thename);
 	}
     }
 

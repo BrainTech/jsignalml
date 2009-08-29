@@ -15,6 +15,7 @@ public abstract class FileType {
 	public BinaryFile(File filename)
 	    throws IOException, FileNotFoundException
 	{
+	    log.info("opening buffer for %s", filename);
 	    buffer = new MyBuffer(filename);
 	}
 
@@ -22,5 +23,13 @@ public abstract class FileType {
 	{
 	    return this.buffer.read(format, offset);
 	}
+    }
+
+    public static <T extends FileType>
+    T open(Class<T> klass, File filename)
+	throws IOException, FileNotFoundException
+    {
+	// if(klass TODO
+	return (T) new BinaryFile(filename);
     }
 }

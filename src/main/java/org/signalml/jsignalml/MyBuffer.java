@@ -16,6 +16,7 @@ public class MyBuffer {
     public MyBuffer(File name)
 	throws java.io.FileNotFoundException, java.io.IOException
     {
+	log.info("opening binary file %s", name);
 	RandomAccessFile file = new RandomAccessFile(name, "r");
 	FileChannel channel = file.getChannel();
 	source = channel.map(MapMode.READ_ONLY, 0, channel.size());
