@@ -72,7 +72,8 @@ public class Machine implements CodecyThing {
 	}
 
 	public Type eval(CallHelper state, Type...args)
-	    throws MachineError, ExpressionFault
+	    throws MachineError, ExpressionFault,
+		   IOException, FileNotFoundException
 	{
 	    Map<String,Type> locals = this.mapArgs(args);
 	    CallHelper frame = state.localize(locals);
@@ -81,7 +82,8 @@ public class Machine implements CodecyThing {
 	}
 
 	public abstract Type read(CallHelper state)
-	    throws ExpressionFault, MachineError;
+	    throws ExpressionFault, MachineError,
+		   IOException, FileNotFoundException;
     }
 
     public abstract static class ReadParam extends Param {
@@ -110,7 +112,8 @@ public class Machine implements CodecyThing {
 
 	@Override
 	public Type read(CallHelper state)
-	    throws ExpressionFault, MachineError
+	    throws ExpressionFault, MachineError,
+		   IOException, FileNotFoundException
 	{
 	    Type format = this.format.eval(state);
 	    Type offset = this.offset.eval(state);

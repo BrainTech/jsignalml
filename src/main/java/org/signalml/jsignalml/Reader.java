@@ -49,7 +49,8 @@ public class Reader extends Frame implements CallHelper {
 
     @Override
     public Type frame_call(String id, Type...args)
-	throws ExpressionFault, FrameNameError
+	throws ExpressionFault, FrameNameError,
+	       IOException, FileNotFoundException
     {
 	Machine.Param p;
 	try{
