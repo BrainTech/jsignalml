@@ -16,7 +16,7 @@ import org.signalml.jsignalml.Logger;
 
 public class XMLDocument
 {
-    public class NoNodeError extends Exception {
+    public static class NoNodeError extends Exception {
 	public final String xpath;
 	public NoNodeError(String xpath){
 	    this.xpath = xpath;
@@ -60,8 +60,15 @@ public class XMLDocument
 	throws javax.xml.xpath.XPathExpressionException,
 	       NoNodeError
     {
+	return subNode(this.document, xpath);
+    }
+
+    public static Node subNode(Node where, String xpath)
+	throws javax.xml.xpath.XPathExpressionException,
+	       NoNodeError
+    {
 	XPath getter = xfactory.newXPath();
-	Object node = getter.evaluate(xpath, this.document,
+	Object node = getter.evaluate(xpath, where,
 				      XPathConstants.NODE);
 	if(node == null)
 	    throw new NoNodeError(xpath);

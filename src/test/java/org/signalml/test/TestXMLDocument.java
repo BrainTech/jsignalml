@@ -42,4 +42,11 @@ public class TestXMLDocument {
 	    i++;
 	assertEquals(i, 4);
     }
+
+    @Test
+	public void xpath_from_non_root() throws Exception
+    {
+	assertEquals(doc.subNode(doc.getNode("/root/node2"), ".").getNodeName(),
+		     "node2");
+    }
 }
