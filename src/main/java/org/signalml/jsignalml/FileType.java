@@ -26,7 +26,7 @@ public abstract class FileType {
     }
 
     public static <T extends FileType>
-    T open(Class<T> klass, File filename)
+    T open(File filename)
 	throws IOException, FileNotFoundException
     {
 	// if(klass TODO

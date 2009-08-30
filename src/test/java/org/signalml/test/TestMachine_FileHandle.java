@@ -23,7 +23,7 @@ public class TestMachine_FileHandle {
 
     @Test public void open_filetype() throws Exception {
 	FileHandle<? extends FileType> h =
-	    FileHandle.make(FileType.BinaryFile.class, file1expr);
+	    FileHandle.<FileType.BinaryFile>make(file1expr);
 	FileType F = h.open(empty_state, null);
 	assertThat(F, instanceOf(FileType.BinaryFile.class));
     }

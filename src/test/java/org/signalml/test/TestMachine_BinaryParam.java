@@ -38,8 +38,7 @@ public class TestMachine_BinaryParam {
 
     @Before
     public void init() throws Exception {
-	handle = Machine.FileHandle.make(FileType.BinaryFile.class,
-					 file1expr);
+	handle = Machine.FileHandle.make(file1expr);
     }
 
     @Test public void read_binary_file_param() throws Exception {

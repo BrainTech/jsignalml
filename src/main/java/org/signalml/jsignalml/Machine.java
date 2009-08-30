@@ -163,16 +163,14 @@ public class Machine implements CodecyThing {
     public static class FileHandle<T extends FileType>
 	implements CallHelper.FileHandle<T>
     {
-	public final Class<T> klass;
 	public final Expression filename; // may be null
-	public FileHandle(Class<T> klass, Expression filename){
-	    this.klass = klass;
+	public FileHandle(Expression filename){
 	    this.filename = filename;
 	}
 
 	public static <V extends FileType>
-	FileHandle<V> make(Class<V> klass, Expression filename){
-	    return new FileHandle<V>(klass, filename);
+	FileHandle<V> make(Expression filename){
+	    return new FileHandle<V>(filename);
 	}
 
 	public T open(CallHelper state, File hint)
@@ -191,7 +189,7 @@ public class Machine implements CodecyThing {
 	    }
 
 	    log.info("opening file '%s'", thename);
-	    return FileType.open(klass, thename);
+	    return FileType.open(thename);
 	}
     }
 
