@@ -4,16 +4,10 @@ import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-import org.signalml.jsignalml.sexpression.Processor;
-import org.signalml.jsignalml.sexpression.Expression;
+import static org.signalml.jsignalml.sexpression.Processor.parse;
 import org.signalml.jsignalml.sexpression.SyntaxError;
 
 public class TestParsing {
-    void parse(String line) throws Exception
-    {
-	Processor.processLine(Processor.parseLine(line));
-    }
-
     @Test public void parse_atoms() throws Exception
     {
 	parse("1");

@@ -199,4 +199,10 @@ public class Processor {
 		processFile(state, path);
 	}
     }
+
+    public static Expression parse(String line)
+	throws SyntaxError
+    {
+	return Processor.processLine(Processor.parseLine(line));
+    }
 }

@@ -45,7 +45,7 @@ public class TestMachine {
     static Machine.ExprParam makeExprParam(Class<? extends Type> type, String line)
 	throws Exception
     {
-	Expression expr = Processor.processLine(Processor.parseLine(line));
+	Expression expr = Processor.parse(line);
 	return new Machine.ExprParam("generated", type,
 				     new Machine.Positional[0], expr);
     }
