@@ -74,4 +74,18 @@ public class TestTypes {
     {
         assertIsType("\"aaa\"", Type.String.class);
     }
+
+    @Test public void get_types_from_string()
+    {
+	assertEquals(Type.getType("int"), Type.Int.class);
+	assertEquals(Type.getType("float"), Type.Float.class);
+	assertEquals(Type.getType("str"), Type.String.class);
+	assertEquals(Type.getType("list"), Type.List.class);
+    }
+
+    @Test(expected=IllegalArgumentException.class)
+    public void get_types_from_string_invalid()
+    {
+	assertEquals(Type.getType("xxx"), Type.List.class);
+    }
 }

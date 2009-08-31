@@ -1,4 +1,5 @@
 package org.signalml.jsignalml.sexpression;
+import org.signalml.jsignalml.util;
 
 import org.signalml.jsignalml.Logger;
 import java.util.regex.Pattern;
@@ -6,10 +7,28 @@ import java.util.Map;
 import java.util.TreeMap;
 import java.util.HashMap;
 import java.util.ArrayList;
+
 import static java.util.Collections.unmodifiableList;
+import static java.lang.String.format;
 
 public abstract class Type {
     static final Logger log = new Logger(Type.class);
+
+    static final Map<java.lang.String, Class<? extends Type>> typeNames =
+						       util.newHashMap();
+
+    private static void registerType(java.lang.String type,
+				     Class<? extends Type> theClass){
+	Class<? extends Type> oldClass = typeNames.put(type, theClass);
+	assert oldClass == null;
+    }
+    public static Class<? extends Type> getType(java.lang.String type){
+	Class<? extends Type> theClass = typeNames.get(type);
+	if(theClass != null)
+	    return theClass;
+
+	throw new IllegalArgumentException(format("unkown type '%s'", type));
+    }
 
     /* This goes here, and not within BinaryOp because of initialization
        order: enum instances are initialized before static variables of
@@ -170,6 +189,10 @@ public abstract class Type {
     }
 
     public static class Int extends Type {
+	static {
+	    registerType("int", Int.class);
+	}
+
 	public final int value;
 	public Int(int value){
 	    this.value = value;
@@ -316,6 +339,10 @@ public abstract class Type {
     }
 
     public static class Float extends Type {
+	static {
+	    registerType("float", Float.class);
+	}
+
 	public final double value;
 	public Float(double value){
 	    this.value = value;
@@ -447,6 +474,10 @@ public abstract class Type {
     }
 
     public static class String extends Type {
+	static {
+	    registerType("str", String.class);
+	}
+
 	public final java.lang.String value;
 	public String(java.lang.String value){
 	    this.value = value;
@@ -572,6 +603,10 @@ public abstract class Type {
     }
 
     public static class List extends Type {
+	static {
+	    registerType("list", List.class);
+	}
+
 	public final java.util.List<Type> value;
 
 	public List(java.util.List<? extends Type> value){
