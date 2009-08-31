@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.InputStream;
 import java.io.FileInputStream;
 import org.w3c.dom.Node;
+import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.Document;
 import javax.xml.xpath.XPath;
@@ -63,6 +64,13 @@ public class XMLDocument
 	return subNode(this.document, xpath);
     }
 
+    public Node getElement(String xpath)
+	throws javax.xml.xpath.XPathExpressionException,
+	       NoNodeError
+    {
+	return subElement(this.document, xpath);
+    }
+
     public static Node subNode(Node where, String xpath)
 	throws javax.xml.xpath.XPathExpressionException,
 	       NoNodeError
@@ -75,12 +83,20 @@ public class XMLDocument
 	return (Node) node;
     }
 
-    public Iterable<Node> getNodes(String xpath)
+    public static Element subElement(Node where, String xpath)
+	throws javax.xml.xpath.XPathExpressionException,
+	       NoNodeError
+    {
+	return (Element) subNode(where, xpath);
+    }
+
+
+    public <T extends Node> Iterable<T> getNodes(String xpath)
 	throws javax.xml.xpath.XPathExpressionException
     {
 	XPath getter = xfactory.newXPath();
 	Object nodes = getter.evaluate(xpath, this.document,
 				       XPathConstants.NODESET);
-	return new NodeIterable((NodeList) nodes);
+	return new DOMIterable<T>((NodeList) nodes);
     }
 }
