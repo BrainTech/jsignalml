@@ -90,13 +90,17 @@ public class XMLDocument
 	return (Element) subNode(where, xpath);
     }
 
-
     public <T extends Node> Iterable<T> getNodes(String xpath)
 	throws javax.xml.xpath.XPathExpressionException
     {
+	return subNodes(this.document, xpath);
+    }
+
+    public static <T extends Node> Iterable<T> subNodes(Node where, String xpath)
+	throws javax.xml.xpath.XPathExpressionException
+    {
 	XPath getter = xfactory.newXPath();
-	Object nodes = getter.evaluate(xpath, this.document,
-				       XPathConstants.NODESET);
+	Object nodes = getter.evaluate(xpath, where, XPathConstants.NODESET);
 	return new DOMIterable<T>((NodeList) nodes);
     }
 }
