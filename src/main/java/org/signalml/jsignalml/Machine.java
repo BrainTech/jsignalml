@@ -35,11 +35,11 @@ public class Machine implements CodecyThing {
     }
 
     public static class Positional {
-	public final String id;
+	public final String name;
 	public final Class<? extends Type> type;
 
-	public Positional(String id, Class<? extends Type> type){
-	    this.id = id;
+	public Positional(String name, Class<? extends Type> type){
+	    this.name = name;
 	    this.type = type;
 	}
     }
@@ -65,7 +65,7 @@ public class Machine implements CodecyThing {
 	    final Map<String,Type> locals = new TreeMap<String,Type>();
 	    for(int i=0; i<this.args.length; i++){
 		Type cast = args[i].castTo(this.args[i].type);
-		locals.put(this.args[i].id, cast);
+		locals.put(this.args[i].name, cast);
 	    }
 
 	    return locals;
