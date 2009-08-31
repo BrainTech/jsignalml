@@ -25,8 +25,7 @@ public abstract class Frame implements CallHelper {
     static public class FrameNameError extends Exception {}
 
     public Type call(String id, Type...args)
-	throws ExpressionFault,
-	       IOException, FileNotFoundException
+	throws ExpressionFault
     {
 	try{
 	    return this.frame_call(id, args);
@@ -39,8 +38,7 @@ public abstract class Frame implements CallHelper {
     }
 
     public abstract Type frame_call(String id, Type...args)
-	throws FrameNameError, ExpressionFault,
-	       IOException, FileNotFoundException;
+	throws FrameNameError, ExpressionFault;
 
     @Override
     public <T extends FileType> T getFile(FileHandle<T> handle)

@@ -22,8 +22,7 @@ public interface CallHelper {
     }
 
     public Type call(String id, Type...args)
-	throws ExpressionFault,
-	       IOException, FileNotFoundException;
+	throws ExpressionFault;
 
     public <T extends FileType> T getFile(FileHandle<T> handle)
 	throws ExpressionFault, MachineError,

@@ -53,4 +53,11 @@ public class ExpressionFault extends Exception {
 	    this.me = me;
 	}
     }
+
+    public static class IOError extends ExpressionFault {
+	final Exception e;
+	public IOError(Exception e){
+	    this.e = e;
+	}
+    }
 }

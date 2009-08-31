@@ -49,8 +49,7 @@ public class Reader extends Frame implements CallHelper {
 
     @Override
     public Type frame_call(String id, Type...args)
-	throws ExpressionFault, FrameNameError,
-	       IOException, FileNotFoundException
+	throws ExpressionFault, FrameNameError
     {
 	Machine.Param p;
 	try{
@@ -66,6 +65,8 @@ public class Reader extends Frame implements CallHelper {
 	    throw new ExpressionFault.ArgMismatch();
 	}catch(Machine.MachineError e){
 	    throw new ExpressionFault.CodecError(e);
+	}catch(IOException e){
+	    throw new ExpressionFault.IOError(e);
 	}
     }
 }
