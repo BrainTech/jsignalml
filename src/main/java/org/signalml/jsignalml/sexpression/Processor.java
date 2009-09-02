@@ -13,6 +13,7 @@ import org.signalml.jsignalml.Logger;
 import org.signalml.jsignalml.FileType;
 import org.signalml.jsignalml.CallHelper;
 import org.signalml.jsignalml.Frame;
+import org.signalml.jsignalml.util;
 
 import org.antlr.runtime.*;
 import org.antlr.runtime.tree.*;
@@ -145,8 +146,7 @@ public class Processor {
 
     /////////////////////////////////////////////////////////
     public static class State extends Frame implements CallHelper {
-	final Map<String, Expression> vars =
-	    new TreeMap<String, Expression>();
+	final Map<String, Expression> vars = util.newTreeMap();
 
 	public State(){
 	    super(null);

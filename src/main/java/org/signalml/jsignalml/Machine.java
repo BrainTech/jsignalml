@@ -62,7 +62,7 @@ public class Machine implements CodecyThing {
 		throw new MachineError.ArgMismatch();
 
 	    // XXX: is this the right map class?
-	    final Map<String,Type> locals = new TreeMap<String,Type>();
+	    final Map<String,Type> locals = util.newTreeMap();
 	    for(int i=0; i<this.args.length; i++){
 		Type cast = args[i].castTo(this.args[i].type);
 		locals.put(this.args[i].name, cast);
@@ -197,8 +197,8 @@ public class Machine implements CodecyThing {
      ************************ non-static stuff **************************
      ********************************************************************/
 
-    final Map<String,Param> params = new TreeMap<String,Param>();
-    final Set<FileHandle<FileType>> files = new TreeSet<FileHandle<FileType>>();
+    final Map<String,Param> params = util.newTreeMap();
+    final Set<FileHandle<FileType>> files = util.newTreeSet();
 
     public void addParam(Param p)
     {

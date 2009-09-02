@@ -12,6 +12,7 @@ import org.signalml.jsignalml.Machine;
 import org.signalml.jsignalml.Machine.Param;
 import org.signalml.jsignalml.LocalState;
 import org.signalml.jsignalml.CallHelper;
+import org.signalml.jsignalml.util;
 import org.signalml.jsignalml.sexpression.Type;
 import org.signalml.jsignalml.sexpression.Expression;
 import org.signalml.jsignalml.sexpression.ExpressionFault;
@@ -20,11 +21,11 @@ import org.signalml.jsignalml.sexpression.Processor;
 public class TestMachine {
     static final Map<String,Type> map, map1;
     static {
-	map = new TreeMap<String,Type>();
+	map = util.newTreeMap();
 	map.put("a", new Type.Int(1));
 	map.put("b", new Type.Float(2.));
 
-	map1 = new TreeMap<String,Type>();
+	map1 = util.newTreeMap();
 	map1.put("c", new Type.String("ccc"));
     }
 

@@ -7,6 +7,7 @@ import java.util.LinkedList;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.TreeMap;
+import static java.lang.String.format;
 import static java.util.Collections.unmodifiableList;
 
 public abstract class Expression {
@@ -36,8 +37,7 @@ public abstract class Expression {
 
 	public String toString()
 	{
-	    return String.format("%s %s %s",
-				 left, op.rep, right);
+	    return format("%s %s %s", left, op.rep, right);
 	}
     }
 
@@ -93,7 +93,7 @@ public abstract class Expression {
 
 	public String toString()
 	{
-	    return String.format("%s %s", op.rep, sub);
+	    return format("%s %s", op.rep, sub);
 	}
     }
 
@@ -164,7 +164,7 @@ public abstract class Expression {
 
 	public String toString()
 	{
-	    return String.format("%s[ %s ]", item, index);
+	    return format("%s[ %s ]", item, index);
 	}
     }
 
@@ -208,7 +208,7 @@ public abstract class Expression {
 
 	public String toString()
 	{
-	    return String.format("if %s then %s else %s", q, a, b);
+	    return format("if %s then %s else %s", q, a, b);
 	}
     }
 

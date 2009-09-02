@@ -1,7 +1,6 @@
 package org.signalml.jsignalml.sexpression;
 import org.signalml.jsignalml.util;
 
-import org.signalml.jsignalml.Logger;
 import java.util.regex.Pattern;
 import java.util.Map;
 import java.util.TreeMap;
@@ -12,11 +11,14 @@ import java.util.LinkedList;
 import static java.util.Collections.unmodifiableList;
 import static java.lang.String.format;
 
+import org.signalml.jsignalml.Logger;
+import org.signalml.jsignalml.util;
+
 public abstract class Type {
     static final Logger log = new Logger(Type.class);
 
-    static final Map<java.lang.String, Class<? extends Type>> typeNames =
-						       util.newHashMap();
+    static final Map<java.lang.String, Class<? extends Type>>
+	                         typeNames = util.newHashMap();
 
     private static void registerType(java.lang.String type,
 				     Class<? extends Type> theClass){
@@ -38,8 +40,7 @@ public abstract class Type {
        in code, which cannot be reversed, because enum ids must be located
        directly at the begging of enum class definition.
     */
-    static final Map<Integer, BinaryOp> binOpTable
-	= new TreeMap<Integer, BinaryOp>();
+    static final Map<Integer, BinaryOp> binOpTable = util.newTreeMap();
 
     public enum BinaryOp {
 	ADD("+", SExpressionParser.ADD),
@@ -81,8 +82,7 @@ public abstract class Type {
 	}
     }
 
-    static final Map<Integer, UnaryOp> unOpTable
-	= new TreeMap<Integer, UnaryOp>();
+    static final Map<Integer, UnaryOp> unOpTable = util.newTreeMap();
 
     public enum UnaryOp {
 	LOG_NOT("not", SExpressionParser.LOGICAL_NOT),
@@ -90,8 +90,7 @@ public abstract class Type {
 	NEG("-", SExpressionParser.UNARY_SUBTRACT);
 
 	public final java.lang.String rep;
-	public static /*final*/ Map<Integer, UnaryOp> opTable
-	    = new TreeMap<Integer, Type.UnaryOp>();
+	public static /*final*/ Map<Integer, UnaryOp> opTable = util.newTreeMap();
 
 	UnaryOp(java.lang.String rep, int opcode){
 	    this.rep = rep;
@@ -559,7 +558,7 @@ public abstract class Type {
 	/** Synchronize with SExpression.g:ESC_SEQ ! */
 	public static final Map<Pattern, java.lang.String> escapePatterns;
 	static {
-	    escapePatterns = new HashMap<Pattern, java.lang.String>();
+	    escapePatterns = util.newHashMap();
 	    escapePatterns.put(Pattern.compile(Pattern.quote("\\t")),  "\t");
 	    escapePatterns.put(Pattern.compile(Pattern.quote("\\n")),  "\n");
 	    escapePatterns.put(Pattern.compile(Pattern.quote("\\r")),  "\r");
