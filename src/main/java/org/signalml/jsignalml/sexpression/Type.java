@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.TreeMap;
 import java.util.HashMap;
 import java.util.ArrayList;
+import java.util.LinkedList;
 
 import static java.util.Collections.unmodifiableList;
 import static java.lang.String.format;
@@ -20,6 +21,7 @@ public abstract class Type {
     private static void registerType(java.lang.String type,
 				     Class<? extends Type> theClass){
 	Class<? extends Type> oldClass = typeNames.put(type, theClass);
+	log.info("type registered: %s->%s", type, theClass.getName());
 	assert oldClass == null;
     }
     public static Class<? extends Type> getType(java.lang.String type){
@@ -188,11 +190,10 @@ public abstract class Type {
 	    throw new ExpressionFault.TypeError(this.getClass(), theClass);
     }
 
+    static {
+	registerType("int", Int.class);
+    }
     public static class Int extends Type {
-	static {
-	    registerType("int", Int.class);
-	}
-
 	public final int value;
 	public Int(int value){
 	    this.value = value;
@@ -338,10 +339,10 @@ public abstract class Type {
 	}
     }
 
+    static {
+	registerType("float", Float.class);
+    }
     public static class Float extends Type {
-	static {
-	    registerType("float", Float.class);
-	}
 
 	public final double value;
 	public Float(double value){
@@ -473,11 +474,10 @@ public abstract class Type {
 	}
     }
 
+    static {
+	registerType("str", String.class);
+    }
     public static class String extends Type {
-	static {
-	    registerType("str", String.class);
-	}
-
 	public final java.lang.String value;
 	public String(java.lang.String value){
 	    this.value = value;
@@ -602,11 +602,10 @@ public abstract class Type {
 	}
     }
 
+    static {
+	registerType("list", List.class);
+    }
     public static class List extends Type {
-	static {
-	    registerType("list", List.class);
-	}
-
 	public final java.util.List<Type> value;
 
 	public List(java.util.List<? extends Type> value){
