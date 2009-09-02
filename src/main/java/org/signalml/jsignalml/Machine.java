@@ -12,6 +12,7 @@ import java.util.TreeSet;
 import java.io.File;
 import java.io.IOException;
 import java.io.FileNotFoundException;
+import static java.lang.String.format;
 
 /**
  * Class to hold a group of parameters.
@@ -41,6 +42,10 @@ public class Machine implements CodecyThing {
 	public Positional(String name, Class<? extends Type> type){
 	    this.name = name;
 	    this.type = type;
+	}
+
+	public static Positional make(String name, String type){
+	    return new Positional(name, Type.getType(type));
 	}
     }
 
@@ -171,6 +176,14 @@ public class Machine implements CodecyThing {
 	public static <V extends FileType>
 	FileHandle<V> make(Expression filename){
 	    return new FileHandle<V>(filename);
+	}
+
+	public static FileHandle make(Expression filename, String type)
+	{
+	    if(type.equals("binary"))
+		return new FileHandle<FileType.BinaryFile>(filename);
+
+	    throw new IllegalArgumentException(format("unkown file type '%s'", type));
 	}
 
 	public T open(CallHelper state, File hint)
