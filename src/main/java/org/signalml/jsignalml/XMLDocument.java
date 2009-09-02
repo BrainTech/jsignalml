@@ -12,7 +12,7 @@ import javax.xml.xpath.XPathFactory;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
-
+import javax.xml.xpath.XPathExpressionException;
 import org.signalml.jsignalml.Logger;
 
 public class XMLDocument
@@ -96,11 +96,29 @@ public class XMLDocument
 	return subNodes(this.document, xpath);
     }
 
+    public <T extends Node> Iterable<T> getNodes_re(String xpath)
+    {
+	try{
+	    return getNodes(xpath);
+	} catch(XPathExpressionException e){
+	    throw new RuntimeException(e);
+	}
+    }
+
     public static <T extends Node> Iterable<T> subNodes(Node where, String xpath)
 	throws javax.xml.xpath.XPathExpressionException
     {
 	XPath getter = xfactory.newXPath();
 	Object nodes = getter.evaluate(xpath, where, XPathConstants.NODESET);
 	return new DOMIterable<T>((NodeList) nodes);
+    }
+
+    public static <T extends Node> Iterable<T> subNodes_re(Node where, String xpath)
+    {
+	try{
+	    return subNodes(where, xpath);
+	}catch(XPathExpressionException e){
+	    throw new RuntimeException(e);
+	}
     }
 }
