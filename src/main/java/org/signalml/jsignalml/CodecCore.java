@@ -81,12 +81,12 @@ public class CodecCore {
 	}
     }
 
-    void do_arg(Element element, List<? super Machine.Positional> list)
+    static public void do_arg(Element element, List<? super Machine.Positional> list)
     {
 	assert element.getNodeName().equals("arg");
 
 	final String type = element.getAttribute("type");
-	final String name = element.getAttribute("type");
+	final String name = element.getAttribute("name");
 
 	final Machine.Positional arg = Machine.Positional.make(name, type);
 	list.add(arg);

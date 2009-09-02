@@ -64,7 +64,7 @@ public class XMLDocument
 	return subNode(this.document, xpath);
     }
 
-    public Node getElement(String xpath)
+    public Element getElement(String xpath)
 	throws javax.xml.xpath.XPathExpressionException,
 	       NoNodeError
     {
