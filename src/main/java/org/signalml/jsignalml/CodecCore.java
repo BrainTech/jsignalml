@@ -21,7 +21,7 @@ public class CodecCore {
 
     public final Map<String,Param> params = new HashMap<String, Param>();
 
-    void do_signalml(XMLDocument doc)
+    public void do_signalml(XMLDocument doc)
 	throws SyntaxError
     {
 	final Iterable<Element> iter = doc.getNodes_re("/signalml");
@@ -36,7 +36,7 @@ public class CodecCore {
 	}
     }
 
-    void do_file(Element element)
+    public void do_file(Element element)
 	throws SyntaxError
     {
 	assert element.getNodeName().equals("file");
@@ -59,14 +59,14 @@ public class CodecCore {
 	}
     }
 
-    void do_assert(Element element)
+    public void do_assert(Element element)
     {
 	assert element.getNodeName().equals("file");
 
 	log.warn("assert not implemented");
     }
 
-    void do_param(Element element, Machine.FileHandle<?> handle)
+    public void do_param(Element element, Machine.FileHandle<?> handle)
     {
 	assert element.getNodeName().equals("param");
 
@@ -92,7 +92,17 @@ public class CodecCore {
 	list.add(arg);
     }
 
-    void do_data(Element element, Machine.FileHandle<?> handle)
+    public static Expression do_expr(Element element)
+	throws SyntaxError
+    {
+	assert element.getNodeName().equals("expr");
+
+	String code = element.getTextContent();
+	Expression expr = Processor.parse(code);
+	return expr;
+    }
+
+    public void do_data(Element element, Machine.FileHandle<?> handle)
     {
 	assert element.getNodeName().equals("data");
 
