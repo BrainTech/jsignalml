@@ -53,4 +53,10 @@ public class TestXMLDocument {
 	assertEquals(doc.subNode(doc.getNode("/root/node2"), ".").getNodeName(),
 		     "node2");
     }
+
+    @Test public void xpath_extract_text_nonnull() throws Exception
+    {
+	assertEquals(doc.getNode("/root/node2").getTextContent(),
+		     "example text");
+    }
 }

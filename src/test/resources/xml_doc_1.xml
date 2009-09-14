@@ -4,5 +4,5 @@
     <node1>
 	<subnode />	<subnode />	<subnode />	<subnode />
     </node1>
-    <node2 arg='arg_of_node2' />
+    <node2 arg='arg_of_node2'>example text</node2>
 </root>
