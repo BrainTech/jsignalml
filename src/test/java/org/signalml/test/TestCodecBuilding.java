@@ -98,7 +98,7 @@ public class TestCodecBuilding {
 	assertEquals( p.id, "only");
 	assertEquals( p.type, Type.Int.class);
 	assertEquals( p.args.length, 4);
-	//assertThat( p, instanceOf(Machine.ExprParam) );
+	assertThat( p, instanceOf(Machine.ExprParam.class) );
     }
 
     @Test public void test_do_expr() throws Exception {

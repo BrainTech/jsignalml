@@ -21,4 +21,8 @@ public class util {
     public static <T> TreeSet<T> newTreeSet(){
 	return new TreeSet<T>();
     }
+
+    public static <T> T cast(Object object){
+	return (T) object;
+    }
 }

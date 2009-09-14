@@ -71,13 +71,37 @@ public class XMLDocument
 	return subElement(this.document, xpath);
     }
 
-    public static Node subNode(Node where, String xpath)
-	throws javax.xml.xpath.XPathExpressionException,
-	       NoNodeError
+    /**
+     * Retrieve subelement of where described by xpath.
+     * Do not throw an an exception if not found, return null instead.
+     */
+    public static Node _subNode(Node where, String xpath)
+	throws javax.xml.xpath.XPathExpressionException
     {
 	XPath getter = xfactory.newXPath();
 	Object node = getter.evaluate(xpath, where,
 				      XPathConstants.NODE);
+	return (Node) node;
+    }
+
+    public static Node _subNode_re(Node where, String xpath)
+    {
+	try{
+	    return _subNode(where, xpath);
+	}catch(XPathExpressionException e){
+	    throw new RuntimeException(e);
+	}
+    }
+
+    /**
+     * Retrieve subelement of where described by xpath.
+     * Throw NoNodeError is not found.
+     */
+    public static Node subNode(Node where, String xpath)
+	throws javax.xml.xpath.XPathExpressionException,
+	       NoNodeError
+    {
+	Node node = _subNode(where, xpath);
 	if(node == null)
 	    throw new NoNodeError(xpath);
 	return (Node) node;
@@ -88,6 +112,16 @@ public class XMLDocument
 	       NoNodeError
     {
 	return (Element) subNode(where, xpath);
+    }
+
+    /**
+     * Retrieve subelement of where described by xpath.
+     * Do not throw an an exception if not found, return null instead.
+     */
+    public static Element _subElement(Node where, String xpath)
+	throws javax.xml.xpath.XPathExpressionException
+    {
+	return (Element) _subNode(where, xpath);
     }
 
     public <T extends Node> Iterable<T> getNodes(String xpath)
