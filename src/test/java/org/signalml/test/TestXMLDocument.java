@@ -56,6 +56,17 @@ public class TestXMLDocument {
 	     doc.subNode(doc.getNode("/root/node2"), ".").getNodeName());
     }
 
+    @Test public void xpath_from_non_root2() throws Exception
+    {
+	Node supernode = doc.getNode("/root/node1");
+	int i = 0;
+	for(Node node: doc.subNodes(supernode, "*")){
+	    i++;
+	    assertEquals("subnode", node.getNodeName());
+	}
+	assertEquals(4, i);
+    }
+
     @Test public void xpath_extract_text_nonnull() throws Exception
     {
 	assertEquals("example text",
