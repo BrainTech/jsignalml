@@ -22,16 +22,18 @@ public class TestXMLDocument {
 
     @Test public void xpath_node_access() throws Exception
     {
-	assertEquals(doc.getNode("/root").getNodeName(), "root");
-	assertEquals(doc.getNode("/root/node1/subnode").getNodeName(), "subnode");
-	assertEquals(doc.getNode("//node2").getNodeName(), "node2");
+	assertEquals("root", doc.getNode("/root").getNodeName());
+	assertEquals("subnode",
+		     doc.getNode("/root/node1/subnode").getNodeName());
+	assertEquals("node2", doc.getNode("//node2").getNodeName());
     }
 
     @Test public void xpath_element_access() throws Exception
     {
-	assertEquals(doc.getElement("/root").getNodeName(), "root");
-	assertEquals(doc.getElement("/root/node1/subnode").getNodeName(), "subnode");
-	assertEquals(doc.getElement("//node2").getNodeName(), "node2");
+	assertEquals("root", doc.getElement("/root").getNodeName());
+	assertEquals("subnode",
+		     doc.getElement("/root/node1/subnode").getNodeName());
+	assertEquals("node2", doc.getElement("//node2").getNodeName());
     }
 
     @Test(expected=XMLDocument.NoNodeError.class)
@@ -45,18 +47,18 @@ public class TestXMLDocument {
 	int i = 0;
 	for(Node node: doc.getNodes("//subnode"))
 	    i++;
-	assertEquals(i, 4);
+	assertEquals(4, i);
     }
 
     @Test public void xpath_from_non_root() throws Exception
     {
-	assertEquals(doc.subNode(doc.getNode("/root/node2"), ".").getNodeName(),
-		     "node2");
+	assertEquals("node2",
+	     doc.subNode(doc.getNode("/root/node2"), ".").getNodeName());
     }
 
     @Test public void xpath_extract_text_nonnull() throws Exception
     {
-	assertEquals(doc.getNode("/root/node2").getTextContent(),
-		     "example text");
+	assertEquals("example text",
+		     doc.getNode("/root/node2").getTextContent());
     }
 }
