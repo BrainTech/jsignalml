@@ -71,6 +71,16 @@ public class XMLDocument
 	return subElement(this.document, xpath);
     }
 
+    public Element getElement_re(String xpath)
+	throws NoNodeError
+    {
+	try{
+	    return subElement(this.document, xpath);
+	}catch(XPathExpressionException e){
+	    throw new RuntimeException(e);
+	}
+    }
+
     /**
      * Retrieve subelement of where described by xpath.
      * Do not throw an an exception if not found, return null instead.

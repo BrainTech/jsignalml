@@ -43,10 +43,24 @@ public class CodecCore implements CodecyThing {
 	    throw new MachineError.ParamNotFound();
     }
 
-    public void do_signalml(XMLDocument doc)
+    public void parse_signalml(XMLDocument doc)
 	throws SyntaxError
     {
-	final Iterable<Element> iter = doc.getNodes_re("/signalml");
+	Element element;
+	try{
+	    element = doc.getElement_re("/signalml");
+	}catch(XMLDocument.NoNodeError e){
+	    throw new IllegalArgumentException("no /signalml node");
+	}
+	this.do_signalml(element);
+    }
+
+    public void do_signalml(Element element)
+	throws SyntaxError
+    {
+	assert element.getNodeName().equals("signalml");
+
+	final Iterable<Element> iter = XMLDocument.subNodes_re(element, "*");
 	for(Element node: iter){
 	    final String name = node.getNodeName();
 	    if(name.equals("file"))
