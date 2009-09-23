@@ -4,6 +4,8 @@ import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import static org.hamcrest.core.IsInstanceOf.instanceOf;
+import static org.hamcrest.core.IsNull.nullValue;
+import static org.hamcrest.core.IsNull.notNullValue;
 
 import java.util.List;
 import java.io.InputStream;
@@ -106,5 +108,48 @@ public class TestCodecBuilding {
 
 	Expression expr = CodecCore.do_expr(element);
 	assertThat( expr, instanceOf(Expression.BinaryOp.class) );
+    }
+
+    class FileHandleExtractor extends CodecCore {
+	Machine.FileHandle<?> handle = null;
+	int params = 0, datas = 0, asserts = 0;
+
+	void set_handle(Machine.FileHandle<?> handle){
+	    assert(this.handle == null || this.handle == handle);
+	    this.handle = handle;
+	    assert(handle != null);
+	}
+
+	@Override
+	public void do_param(Element element, Machine.FileHandle<?> handle){
+	    this.set_handle(handle);
+	    this.params++;
+	}
+
+	@Override
+	public void do_data(Element element, Machine.FileHandle<?> handle){
+	    this.set_handle(handle);
+	    this.datas++;
+	}
+
+	@Override
+	public void do_assert(Element element){
+	    this.asserts++;
+	}
+    }
+
+    @Test public void test_do_file() throws Exception {
+	Element element = doc.getElement("//file");
+
+	FileHandleExtractor core = new FileHandleExtractor();
+	core.do_file(element);
+
+	assertEquals(1, core.asserts);
+	assertEquals(1, core.params);
+	assertEquals(0, core.datas);
+
+	Machine.FileHandle<?> handle = core.handle;
+	assertThat(handle, notNullValue());
+	assertThat(handle.filename, nullValue());
     }
 }

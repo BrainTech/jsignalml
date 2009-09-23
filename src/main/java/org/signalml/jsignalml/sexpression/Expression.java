@@ -186,6 +186,7 @@ public abstract class Expression {
 	}
 
 	public static Expression make(String str){
+	    assert str != null;
 	    return new Const(new Type.String(str));
 	}
 	public static Expression make(int integer){

@@ -19,7 +19,7 @@ import org.signalml.jsignalml.sexpression.Type;
  * Translate an XML DOM into a Codec.
  */
 public class CodecCore implements CodecyThing {
-    public static final Logger log = new Logger(Reader.class);
+    public static final Logger log = new Logger(CodecCore.class);
 
     final Map<String,Param> params = util.newHashMap();
 
@@ -63,21 +63,23 @@ public class CodecCore implements CodecyThing {
     {
 	assert element.getNodeName().equals("file");
 
-	final String type = element.getAttribute("type");
-	final String name_ = element.getAttribute("name");
-	final Expression name = Expression.Const.make(name_);
+	final String type = _attribute(element, "type");
+	final String name_ = _attribute(element, "name");
+	final Expression name =
+	    name_ == null ? null : Expression.Const.make(name_);
+
 	final Machine.FileHandle handle = Machine.FileHandle.make(name, type);
 
-	final Iterable<Element> iter = XMLDocument.subNodes_re(element, ".");
+	final Iterable<Element> iter = XMLDocument.subNodes_re(element, "*");
 	for(Element node: iter) {
-	    if(name.equals("assert"))
+	    if(node.getNodeName().equals("assert"))
 		this.do_assert(node);
-	    else if(name.equals("param"))
+	    else if(node.getNodeName().equals("param"))
 		this.do_param(node, handle);
-	    else if(name.equals("data"))
+	    else if(node.getNodeName().equals("data"))
 		this.do_data(node, handle);
 	    else
-		log.warn("unknown element: %s", name);
+		log.warn("unknown element: %s", node);
 	}
     }
 
@@ -192,5 +194,14 @@ public class CodecCore implements CodecyThing {
 	if(expr==null)
 	    return null;
 	return Processor.parse(expr);
+    }
+
+    static String _attribute(Element element, String attr)
+    {
+	String value = element.getAttribute(attr);
+	if("".equals(value))
+	    return null;
+	else
+	    return value;
     }
 }
