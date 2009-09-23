@@ -9,6 +9,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.Element;
 
 import org.signalml.jsignalml.Machine.Param;
+import org.signalml.jsignalml.Machine.MachineError;
 import org.signalml.jsignalml.sexpression.Processor;
 import org.signalml.jsignalml.sexpression.Expression;
 import org.signalml.jsignalml.sexpression.SyntaxError;
@@ -17,10 +18,30 @@ import org.signalml.jsignalml.sexpression.Type;
 /**
  * Translate an XML DOM into a Codec.
  */
-public class CodecCore {
+public class CodecCore implements CodecyThing {
     public static final Logger log = new Logger(Reader.class);
 
-    public final Map<String,Param> params = new HashMap<String, Param>();
+    final Map<String,Param> params = util.newHashMap();
+
+    public void addParam(Param p)
+    {
+	assert p != null;
+
+	if(this.params.get(p.id) != null)
+	    throw new IllegalArgumentException("duplicate id");
+
+	this.params.put(p.id, p);
+    }
+
+    public Param getParam(String id)
+	throws MachineError.ParamNotFound
+    {
+	Param p = this.params.get(id);
+	if(p!=null)
+	    return p;
+	else
+	    throw new MachineError.ParamNotFound();
+    }
 
     public void do_signalml(XMLDocument doc)
 	throws SyntaxError

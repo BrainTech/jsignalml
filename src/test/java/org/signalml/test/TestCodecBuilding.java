@@ -94,7 +94,7 @@ public class TestCodecBuilding {
 
 	core.do_param(element, handle);
 
-	Param p = core.params.get("only");
+	Param p = core.getParam("only");
 	assertEquals( p.id, "only");
 	assertEquals( p.type, Type.Int.class);
 	assertEquals( p.args.length, 4);

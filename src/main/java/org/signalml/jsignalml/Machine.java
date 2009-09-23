@@ -17,7 +17,7 @@ import static java.lang.String.format;
 /**
  * Class to hold a group of parameters.
  */
-public class Machine implements CodecyThing {
+public class Machine {
     public static final Logger log = new Logger(Machine.class);
 
     public static class MachineError extends Exception {
@@ -205,33 +205,4 @@ public class Machine implements CodecyThing {
 	    return FileType.open(thename);
 	}
     }
-
-    /********************************************************************
-     ************************ non-static stuff **************************
-     ********************************************************************/
-
-    final Map<String,Param> params = util.newTreeMap();
-    final Set<FileHandle<FileType>> files = util.newTreeSet();
-
-    public void addParam(Param p)
-    {
-	assert p != null;
-
-	if(this.params.get(p.id) != null)
-	    throw new IllegalArgumentException();
-
-	this.params.put(p.id, p);
-    }
-
-    public Param getParam(String id)
-	throws MachineError.ParamNotFound
-    {
-	Param p = this.params.get(id);
-	if(p!=null)
-	    return p;
-	else
-	    throw new MachineError.ParamNotFound();
-    }
-
-
 }
