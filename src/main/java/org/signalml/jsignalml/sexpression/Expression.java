@@ -184,6 +184,16 @@ public abstract class Expression {
 	{
 	    return this.value;
 	}
+
+	public static Expression make(String str){
+	    return new Const(new Type.String(str));
+	}
+	public static Expression make(int integer){
+	    return new Const(new Type.Int(integer));
+	}
+	public static Expression make(double real){
+	    return new Const(new Type.Float(real));
+	}
     }
 
     public static class Ternary extends Expression {

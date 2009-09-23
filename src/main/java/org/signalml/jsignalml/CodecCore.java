@@ -64,8 +64,8 @@ public class CodecCore implements CodecyThing {
 	assert element.getNodeName().equals("file");
 
 	final String type = element.getAttribute("type");
-	final String name_str = element.getAttribute("name");
-	final Expression name = Processor.parse(name_str);
+	final String name_ = element.getAttribute("name");
+	final Expression name = Expression.Const.make(name_);
 	final Machine.FileHandle handle = Machine.FileHandle.make(name, type);
 
 	final Iterable<Element> iter = XMLDocument.subNodes_re(element, ".");
