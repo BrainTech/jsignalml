@@ -89,9 +89,4 @@ public class TestTypes {
     {
 	assertEquals(Type.getType("xxx"), Type.List.class);
     }
-
-    @Test public void eval_atom_is_str_float() throws Exception
-    {
-	assertIsType("1.", Type.String.class);
-    }
 }
