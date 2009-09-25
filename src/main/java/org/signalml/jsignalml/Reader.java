@@ -1,43 +1,63 @@
 package org.signalml.jsignalml;
 
 import java.util.Map;
+import java.util.HashMap;
+import java.util.List;
+import java.util.LinkedList;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 
+import org.signalml.jsignalml.FileType;
 import org.signalml.jsignalml.sexpression.*;
-import org.signalml.jsignalml.CodecyThing.CodecError;
+import org.signalml.jsignalml.Machine.MachineError;
 
-public class Reader implements CallHelper {
+public class Reader extends Frame implements CallHelper {
     public static final Logger log = new Logger(Reader.class);
 
-    @Override
-    public void assign(String id, Expression expr)
-	throws ExpressionFault
-    {
-	// assign-ment is disallowed
-	throw new ExpressionFault();
+    final CodecyThing codec;
+
+    /* HashMap because TreeMap would require comparable. */
+    final Map<FileHandle<FileType>, FileType> files =
+	new HashMap<FileHandle<FileType>, FileType>();
+
+    final LinkedList<File> filehints = new LinkedList<File>();
+
+    public Reader(CodecyThing codec, String...filenames){
+	super(null);
+	this.codec = codec;
+	for(String filename: filenames)
+	    this.filehints.add(new File(filename));
     }
 
     @Override
     public <T extends FileType> T getFile(FileHandle<T> handle)
-	throws ExpressionFault
+	throws ExpressionFault, MachineError,
+	       IOException, FileNotFoundException
     {
-	return null;
-    }
+	log.info("request for %s", handle);
+	T file = (T) this.files.get(handle);
+	if(file != null)
+	    return file;
 
-    final CodecyThing codec;
-    public Reader(CodecyThing codec){
-	this.codec = codec;
+	log.info("attempting to open %s", handle);
+	file = handle.open(this, this.filehints.poll());
+	this.files.put((FileHandle<FileType>) handle, (FileType) file);
+			//XXX WTF?
+	return file;
     }
 
     @Override
-    public Type call(String id, Type...args)
-	throws ExpressionFault
+    public Type frame_call(String id, Type...args)
+	throws ExpressionFault, FrameNameError
     {
 	Machine.Param p;
 	try{
 	    p = codec.getParam(id);
-	}catch(CodecError.KeyError e){
-	    throw new ExpressionFault.NameError(id);
+	}catch(MachineError.ParamNotFound e){
+	    throw new FrameNameError();
 	}
+
 	try{
 	    Type v = p.eval(this, args);
 	    return v;
@@ -45,10 +65,8 @@ public class Reader implements CallHelper {
 	    throw new ExpressionFault.ArgMismatch();
 	}catch(Machine.MachineError e){
 	    throw new ExpressionFault.CodecError(e);
+	}catch(IOException e){
+	    throw new ExpressionFault.IOError(e);
 	}
-    }
-
-    public LocalState localize(Map<String,Type> locals){
-	return new LocalState(this, locals);
     }
 }

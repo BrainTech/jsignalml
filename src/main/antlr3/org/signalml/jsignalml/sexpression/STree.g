@@ -10,6 +10,29 @@ options {
 
     import java.util.List;
     import java.util.LinkedList;
+
+    import org.signalml.jsignalml.Logger;
+}
+
+@members {
+        static final Logger log = new Logger(STree.class);
+
+        @Override public void recover(IntStream input, RecognitionException re){
+            throw new SyntaxError.RuntimeFlavour(re);
+        }
+
+        @Override
+        public void displayRecognitionError(String[] tokenNames,
+                                            RecognitionException e)
+        {
+            log.exception("displayRecognitionError()", e);
+            super.displayRecognitionError(tokenNames, e);
+        }
+
+        @Override
+        public void emitErrorMessage(String msg){
+            log.error(msg);
+        }
 }
 
 script: line*
@@ -23,21 +46,26 @@ line returns [Expression value]
     ;
 
 expr returns [Expression value]
-    : ^(    ( op=ADD
+    : ^( ( op=LOGICAL_NOT
+         | op=UNARY_ADD
+         | op=UNARY_SUBTRACT ) a=expr)
+        { $value = new Expression.UnaryOp($op.type, $a.value); }
+    | ^(    ( op=ADD
             | op=SUBTRACT | op=MULTIPLY
             | op=FLOORDIV | op=TRUEDIV | op=MODULO
             | op=BINARY_AND | op=BINARY_OR | op=BINARY_XOR
-            | op=LOGICAL_AND | op=LOGICAL_OR
             | op=EQUALS | op=NOTEQUALS
             | op=LESSTHAN | op=MORETHAN
             | op=LESSEQUALS| op=MOREEQUALS
             | op=POWER
             )     a=expr b=expr)
         { $value = new Expression.BinaryOp($op.type, $a.value, $b.value); }
-    | ^(op=LOGICAL_NOT a=expr)
-        { $value = new Expression.UnaryOp($op.type, $a.value); }
-    | ^(CALL ID argslist)
-        { $value = new Expression.Call($ID.text, $argslist.value); }
+    | ^(    ( op=LOGICAL_AND | op=LOGICAL_OR )     a=expr b=expr)
+        { $value = new Expression.LogicalBinaryOp($op.type, $a.value, $b.value); }
+    | ^(LIST alist)
+        { $value = new Expression.List_($alist.value); }
+    | ^(CALL ID alist)
+        { $value = new Expression.Call($ID.text, $alist.value); }
     | ^(INDEX a=expr s=expr)
         { $value = new Expression.Index($a.value, $s.value); }
     | INT
@@ -51,7 +79,7 @@ expr returns [Expression value]
         { $value = new Expression.Ternary($q.value, $a.value, $b.value); }
     ;
 
-argslist returns [List<Expression> value]
+alist returns [List<Expression> value]
 @init { $value = new LinkedList<Expression>(); }
     : (expr { $value.add($expr.value); })*
     ;

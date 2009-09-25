@@ -14,8 +14,7 @@ public class TestTypes {
     Type eval(String line) throws Exception
     {
 	CallHelper state = new Processor.State();
-	Expression expr =
-	    Processor.processLine(Processor.parseLine(line));
+	Expression expr = Processor.parse(line);
 	Type val = expr.eval(state);
 	return val;
     }
@@ -51,46 +50,43 @@ public class TestTypes {
         assertIsType("-1", Type.Int.class);
     }
  
-    @Test public void eval_atom_is_int_float_1() throws Exception
+    @Test public void eval_atom_is_float_1() throws Exception
     {
-        assertIsType("0.", Type.Int.class);
+        assertIsType("0.", Type.Float.class);
     }
 
-    @Test public void eval_atom_is_int_float_2() throws Exception
+    @Test public void eval_atom_is_float_2() throws Exception
     {
-        assertIsType("1.", Type.Int.class);
+        assertIsType("1.", Type.Float.class);
     }    
 
-    @Test public void eval_atom_is_int_float_3() throws Exception
+    @Test public void eval_atom_is_float_3() throws Exception
     {
-	assertIsType("-1.", Type.Int.class);
+	assertIsType("-1.", Type.Float.class);
     }
 
-    @Test public void eval_atom_is_int_string_1() throws Exception
+    @Test public void eval_atom_is_string_1() throws Exception
     {   
-        assertIsType("'aaa'", Type.Int.class);
-    }
-
-    @Test public void eval_atom_is_int_string_2() throws Exception
-    {
-        assertIsType("\"aaa\"", Type.Int.class);
-    }
-
-    @Test public void eval_atom_is_str() throws Exception
-    {
         assertIsType("'aaa'", Type.String.class);
+    }
+
+    @Test public void eval_atom_is_string_2() throws Exception
+    {
         assertIsType("\"aaa\"", Type.String.class);
     }
 
-
-    @Test public void eval_atom_is_str_int() throws Exception
+    @Test public void get_types_from_string()
     {
-        assertIsType("1", Type.String.class);
+	assertEquals(Type.getType("int"), Type.Int.class);
+	assertEquals(Type.getType("float"), Type.Float.class);
+	assertEquals(Type.getType("str"), Type.String.class);
+	assertEquals(Type.getType("list"), Type.List.class);
     }
 
-    @Test public void eval_atom_is_str_float() throws Exception
+    @Test(expected=IllegalArgumentException.class)
+    public void get_types_from_string_invalid()
     {
-        assertIsType("1.", Type.String.class);
+	assertEquals(Type.getType("xxx"), Type.List.class);
     }
 
     @Test public void eval_atom_is_str_float() throws Exception

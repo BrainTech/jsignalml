@@ -1,13 +1,38 @@
 package org.signalml.jsignalml.sexpression;
+import org.signalml.jsignalml.util;
 
-import org.signalml.jsignalml.Logger;
 import java.util.regex.Pattern;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.HashMap;
+import java.util.ArrayList;
+import java.util.LinkedList;
+
+import static java.util.Collections.unmodifiableList;
+import static java.lang.String.format;
+
+import org.signalml.jsignalml.Logger;
+import org.signalml.jsignalml.util;
 
 public abstract class Type {
     static final Logger log = new Logger(Type.class);
+
+    static final Map<java.lang.String, Class<? extends Type>>
+	                         typeNames = util.newHashMap();
+
+    private static void registerType(java.lang.String type,
+				     Class<? extends Type> theClass){
+	Class<? extends Type> oldClass = typeNames.put(type, theClass);
+	log.info("type registered: %s->%s", type, theClass.getName());
+	assert oldClass == null;
+    }
+    public static Class<? extends Type> getType(java.lang.String type){
+	Class<? extends Type> theClass = typeNames.get(type);
+	if(theClass != null)
+	    return theClass;
+
+	throw new IllegalArgumentException(format("unkown type '%s'", type));
+    }
 
     /* This goes here, and not within BinaryOp because of initialization
        order: enum instances are initialized before static variables of
@@ -15,25 +40,24 @@ public abstract class Type {
        in code, which cannot be reversed, because enum ids must be located
        directly at the begging of enum class definition.
     */
-    static final Map<Integer, BinaryOp> binOpTable
-	= new TreeMap<Integer, BinaryOp>();
+    static final Map<Integer, BinaryOp> binOpTable = util.newTreeMap();
 
     public enum BinaryOp {
 	ADD("+", SExpressionParser.ADD),
-	SUB("-", SExpressionParser.SUBTRACT), 
-	MUL("*", SExpressionParser.MULTIPLY), 
-	DIV("/", SExpressionParser.TRUEDIV), 
+	SUB("-", SExpressionParser.SUBTRACT),
+	MUL("*", SExpressionParser.MULTIPLY),
+	DIV("/", SExpressionParser.TRUEDIV),
 	FLOORDIV("//", SExpressionParser.FLOORDIV),
 	MOD("%", SExpressionParser.MODULO),
 	BIN_AND("&", SExpressionParser.BINARY_AND),
 	BIN_OR("|", SExpressionParser.BINARY_OR),
 	BIN_XOR("^", SExpressionParser.BINARY_XOR),
 	POW("**", SExpressionParser.POWER),
-	EQ("==", SExpressionParser.EQUALS), 
+	EQ("==", SExpressionParser.EQUALS),
 	NE("!=", SExpressionParser.NOTEQUALS),
-	LT("<", SExpressionParser.LESSTHAN), 
-	GT(">", SExpressionParser.MORETHAN), 
-	LE("<=", SExpressionParser.LESSEQUALS), 
+	LT("<", SExpressionParser.LESSTHAN),
+	GT(">", SExpressionParser.MORETHAN),
+	LE("<=", SExpressionParser.LESSEQUALS),
 	GE(">=", SExpressionParser.MOREEQUALS),
 
 	LOG_AND("and", SExpressionParser.LOGICAL_AND),
@@ -58,15 +82,15 @@ public abstract class Type {
 	}
     }
 
-    static final Map<Integer, UnaryOp> unOpTable
-	= new TreeMap<Integer, UnaryOp>();
+    static final Map<Integer, UnaryOp> unOpTable = util.newTreeMap();
 
     public enum UnaryOp {
-	LOG_NOT("not", SExpressionParser.LOGICAL_NOT);
+	LOG_NOT("not", SExpressionParser.LOGICAL_NOT),
+	POS("+", SExpressionParser.UNARY_ADD),
+	NEG("-", SExpressionParser.UNARY_SUBTRACT);
 
 	public final java.lang.String rep;
-	public static /*final*/ Map<Integer, UnaryOp> opTable
-	    = new TreeMap<Integer, Type.UnaryOp>();
+	public static /*final*/ Map<Integer, UnaryOp> opTable = util.newTreeMap();
 
 	UnaryOp(java.lang.String rep, int opcode){
 	    this.rep = rep;
@@ -85,6 +109,10 @@ public abstract class Type {
 
     public abstract Object getValue();
 
+    public java.lang.String toString(){
+	return super.toString() + "=" + this.getValue();
+    }
+
     public Type binaryOp(BinaryOp op, Type other)
 	throws ExpressionFault.TypeError
     {
@@ -98,8 +126,7 @@ public abstract class Type {
 	    return this.binaryOp(op, (String) other);
 	} catch(ClassCastException e){}
 
-	assert false;
-	return null;
+	throw new RuntimeException();
     }
 
     public abstract Type binaryOp(BinaryOp op, Int other)
@@ -108,6 +135,14 @@ public abstract class Type {
 	throws ExpressionFault.TypeError;
     public abstract Type binaryOp(BinaryOp op, String other)
 	throws ExpressionFault.TypeError;
+
+
+    public Type unaryOp(UnaryOp op)
+	throws ExpressionFault.TypeError
+    {
+	throw new ExpressionFault.TypeError();
+    }
+
 
     public Type index(Type sub)
 	throws ExpressionFault.TypeError,
@@ -139,9 +174,9 @@ public abstract class Type {
 
     public Type logical_not(){
 	if(this.isTrue())
-	    return new Int(1);
-	else
 	    return new Int(0);
+	else
+	    return new Int(1);
     }
 
     public <T extends Type> T castTo(Class<T> theClass)
@@ -151,9 +186,12 @@ public abstract class Type {
 	    return (T)this;
 	else
 	    // TODO
-	    throw new ExpressionFault.TypeError();
+	    throw new ExpressionFault.TypeError(this.getClass(), theClass);
     }
 
+    static {
+	registerType("int", Int.class);
+    }
     public static class Int extends Type {
 	public final int value;
 	public Int(int value){
@@ -170,7 +208,7 @@ public abstract class Type {
 	public Int(boolean value){
 	    this(value?1:0);
 	}
-	
+
 	public Integer getValue(){
 	    return this.value;
 	}
@@ -220,8 +258,11 @@ public abstract class Type {
 		return new Int(this.value <= other.value);
 	    case GE:
 		return new Int(this.value >= other.value);
+	    case LOG_AND:
+	    case LOG_OR:
+		throw new RuntimeException();
 	    default:
-		throw new ExpressionFault.TypeError();
+		throw new ExpressionFault.TypeError(this.getClass(), other.getClass());
 	    }
 	}
 
@@ -258,6 +299,10 @@ public abstract class Type {
 	    case GE:
 		return new Int(this.value >= other.value);
 
+	    case LOG_AND:
+	    case LOG_OR:
+		throw new RuntimeException();
+
 	    case BIN_AND:
 	    case BIN_OR:
 	    case BIN_XOR:
@@ -276,9 +321,28 @@ public abstract class Type {
 		throw new ExpressionFault.TypeError();
 	    }
 	}
+
+
+	@Override
+	public Type unaryOp(UnaryOp op)
+	    throws ExpressionFault.TypeError
+	{
+	    switch(op){
+	    case POS:
+		return this;
+	    case NEG:
+		return new Int(-this.value);
+	    default:
+		throw new ExpressionFault.TypeError();
+	    }
+	}
     }
 
+    static {
+	registerType("float", Float.class);
+    }
     public static class Float extends Type {
+
 	public final double value;
 	public Float(double value){
 	    this.value = value;
@@ -286,7 +350,7 @@ public abstract class Type {
 	public Float(java.lang.String text){
 	    this(new Double(text));
 	}
-	
+
 	public Double getValue(){
 	    return this.value;
 	}
@@ -330,6 +394,11 @@ public abstract class Type {
 		return new Int(this.value <= other.value);
 	    case GE:
 		return new Int(this.value >= other.value);
+
+	    case LOG_AND:
+	    case LOG_OR:
+		throw new RuntimeException();
+
 	    case BIN_AND:
 	    case BIN_OR:
 	    case BIN_XOR:
@@ -357,7 +426,7 @@ public abstract class Type {
 		// XXX: fix for negative values in modulo
 	    case POW:
 		return new Float(Math.pow(this.value, other.value));
-		
+
 	    case EQ:
 		return new Int(this.value == other.value);
 	    case NE:
@@ -370,6 +439,10 @@ public abstract class Type {
 		return new Int(this.value <= other.value);
 	    case GE:
 		return new Int(this.value >= other.value);
+
+	    case LOG_AND:
+	    case LOG_OR:
+		throw new RuntimeException();
 
 	    case BIN_AND:
 	    case BIN_OR:
@@ -384,8 +457,25 @@ public abstract class Type {
 	{
 	    throw new ExpressionFault.TypeError();
 	}
+
+	@Override
+	public Type unaryOp(UnaryOp op)
+	    throws ExpressionFault.TypeError
+	{
+	    switch(op){
+	    case POS:
+		return this;
+	    case NEG:
+		return new Float(-this.value);
+	    default:
+		throw new ExpressionFault.TypeError();
+	    }
+	}
     }
 
+    static {
+	registerType("str", String.class);
+    }
     public static class String extends Type {
 	public final java.lang.String value;
 	public String(java.lang.String value){
@@ -394,7 +484,7 @@ public abstract class Type {
 	public String(char value){
 	    this.value = "" + value;
 	}
-	
+
 	public java.lang.String getValue(){
 	    return this.value;
 	}
@@ -441,12 +531,14 @@ public abstract class Type {
 	    case GT:
 	    case LE:
 	    case GE:
-	       
+
 	    default:
 		throw new ExpressionFault.TypeError();
 	    }
 	}
 
+
+	@Override
 	public Type index(Type sub)
 	    throws ExpressionFault.TypeError,
 		   ExpressionFault.IndexError
@@ -466,7 +558,7 @@ public abstract class Type {
 	/** Synchronize with SExpression.g:ESC_SEQ ! */
 	public static final Map<Pattern, java.lang.String> escapePatterns;
 	static {
-	    escapePatterns = new HashMap<Pattern, java.lang.String>();
+	    escapePatterns = util.newHashMap();
 	    escapePatterns.put(Pattern.compile(Pattern.quote("\\t")),  "\t");
 	    escapePatterns.put(Pattern.compile(Pattern.quote("\\n")),  "\n");
 	    escapePatterns.put(Pattern.compile(Pattern.quote("\\r")),  "\r");
@@ -481,13 +573,111 @@ public abstract class Type {
 
 	public static java.lang.String unquote(final java.lang.String quoted)
 	{
-            java.lang.String quoteless = quoted.substring(1, quoted.length()-1);
+	    java.lang.String quoteless = quoted.substring(1, quoted.length()-1);
 
 	    for(Map.Entry<Pattern,java.lang.String> entry: escapePatterns.entrySet())
-		quoteless = 
+		quoteless =
 		    entry.getKey().matcher(quoteless).replaceAll(entry.getValue());
 
 	    return quoteless;
 	}
+
+	public static java.lang.String join(java.lang.String sep,
+				     java.util.List<?> list)
+	{
+	    StringBuilder s = new StringBuilder();
+
+	    // our list is array-based, so access is cheap
+	    for(int i = 0; i < list.size(); i++){
+		if(i > 0)
+		    s.append(sep);
+		s.append(list.get(i).toString());
+	    }
+
+	    // TODO: add interface shared by Expression and Type
+	    // with repr(), and call repr() on items() ?
+
+	    return s.toString();
+	}
+    }
+
+    static {
+	registerType("list", List.class);
+    }
+    public static class List extends Type {
+	public final java.util.List<Type> value;
+
+	public List(java.util.List<? extends Type> value){
+	    this.value = unmodifiableList(new ArrayList(value));
+	}
+
+	public /*immutable*/ java.util.List<Type> getValue(){
+	    return this.value;
+	}
+
+	public java.lang.String repr(){
+	    return "[" + String.join(", ", this.value) + "]";
+	}
+
+	public boolean isTrue(){
+	    return this.value.size() > 0;
+	}
+
+	public Type binaryOp(BinaryOp op, Int other)
+	    throws ExpressionFault.TypeError
+	{
+	    switch(op){
+	    case MUL:
+		// TODO
+	    default:
+		throw new ExpressionFault.TypeError();
+	    }
+	}
+
+	public Type binaryOp(BinaryOp op, Float other)
+	    throws ExpressionFault.TypeError
+	{
+	    throw new ExpressionFault.TypeError();
+	}
+
+	public Type binaryOp(BinaryOp op, String other)
+	    throws ExpressionFault.TypeError
+	{
+	    switch(op){
+	    case ADD:
+	    case EQ:
+		return new Int(this.value.equals(other.value));
+	    case NE:
+		return new Int(!this.value.equals(other.value));
+
+	    case LT: /* should those be implemented ? */
+	    case GT:
+	    case LE:
+	    case GE:
+
+	    default:
+		throw new ExpressionFault.TypeError();
+	    }
+	}
+
+	@Override
+	public Type index(Type sub)
+	    throws ExpressionFault.TypeError,
+		   ExpressionFault.IndexError
+	{
+	    try{
+		Int ind = (Int) sub;
+		return this.value.get(ind.value);
+	    } catch(ClassCastException e){
+	    } catch(IndexOutOfBoundsException e){
+		throw new ExpressionFault.IndexError();
+	    }
+
+	    throw new ExpressionFault.TypeError();
+	}
+    }
+
+    static {
+	registerType("auto", Type.class);
     }
 }

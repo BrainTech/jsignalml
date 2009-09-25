@@ -13,8 +13,7 @@ public class TestProcessor {
     Type eval(CallHelper state, String line)
 	throws Exception
     {
-	Expression expr =
-	    Processor.processLine(Processor.parseLine(line));
+	Expression expr = Processor.parse(line);
 	Type value = expr.eval(state);
 	return value;
     }

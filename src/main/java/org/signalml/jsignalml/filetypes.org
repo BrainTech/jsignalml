@@ -1,17 +1,20 @@
 === File access API ===
 
 * Types of files
-** binary
-*** bytebuffer
+** Binary
+*** ByteBuffer
 ****    map(offset, length, bitform, mapping) -> floatbuffer/intbuffer...
 ****    []
 
-*** floatbuffer
+*** FloatBuffer
 ****    []
-*** intbuffer
+*** IntBuffer
 ****    []
+*** read(BitForm b, int byteoffset)
+	calls b.read(this.buffer, byteoffset),
+	so the whole logic is on bitform side.
 
-** text
+** Text
 ***   [] -> line
 ***   regexps...
 ** XML
@@ -63,8 +66,8 @@
 
 ** FileHandles
    type
-   filename?
-   open: state, filename? -> file
+   [filename]
+   open: state, [hint] -> FileType
 ** Positional Args
    id, type
 
@@ -73,3 +76,23 @@
 	       from outside
 ** eval: id, args -> Type
 ** getFile: FileHandle handle -> FileType file
+
+* Exceptions
+** BadBitForm
+** ExpressionFault
+*** NameError
+    Expression contains a call to a name not present.
+*** TypeError
+    Operatation performed on incompatible types
+    or
+    call with type which cannot be automatically cast. ?
+*** IndexError
+    Index of of bounds.
+*** ArgMismatch
+    Call with bad number of arguments.
+
+*** CodecError							    :wrapper:
+
+** IOException
+
+** org.xml.sax.SAXException

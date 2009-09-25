@@ -11,6 +11,9 @@ tokens {
     CALL;
     INDEX;
 
+    UNARY_ADD;
+    UNARY_SUBTRACT;
+
     ADD         = '+';
     SUBTRACT    = '-';
 
@@ -78,7 +81,7 @@ tokens {
     }
 
 @parser::members {
-        static Logger log = new Logger(SExpressionParser.class);
+        static final Logger log = new Logger(SExpressionParser.class);
 
         @Override public void recover(IntStream input, RecognitionException re){
             throw new SyntaxError.RuntimeFlavour(re);
@@ -142,10 +145,15 @@ compexpr
 addexpr	:	multexpr ((ADD^ |SUBTRACT^) multexpr)*
 	;
 	
-multexpr:	powexpr ((MULTIPLY^ | FLOORDIV^ | TRUEDIV^ | MODULO^ |
-                      BINARY_AND^ | BINARY_OR^ | BINARY_XOR^) powexpr)*
+multexpr:	unaryexpr ((MULTIPLY^ | FLOORDIV^ | TRUEDIV^ | MODULO^ |
+                       BINARY_AND^ | BINARY_OR^ | BINARY_XOR^) unaryexpr)*
 	;
 	
+unaryexpr
+    : ADD unaryexpr      -> ^(UNARY_ADD unaryexpr)
+    | SUBTRACT unaryexpr -> ^(UNARY_SUBTRACT unaryexpr)
+    | powexpr
+    ;
 
 powexpr
     : accessor
@@ -185,7 +193,7 @@ atom
 ID  :	(LETTER|'_') (LETTER|DIGIT|'_')*
     ;
 
-INT :	('-'|'+')? DIGIT+
+INT :	DIGIT+
     ;
 
 FLOAT

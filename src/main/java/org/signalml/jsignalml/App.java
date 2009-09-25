@@ -11,7 +11,6 @@ public class App
     public static void main( String[] args )
 	throws org.xml.sax.SAXException,
 	       java.io.IOException,
-	       javax.xml.parsers.ParserConfigurationException,
 	       javax.xml.xpath.XPathExpressionException,
 	       XMLDocument.NoNodeError
     {

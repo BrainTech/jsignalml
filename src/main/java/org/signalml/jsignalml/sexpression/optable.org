@@ -1,0 +1,27 @@
+* BINARY:
+** Int
+*** with int
+****       +-*/%//
+****         **
+****        & | ^
+**** comparisons
+	    return bool
+*** with float
+    conv to Float
+
+
+
+** Float:   **               +-*/%//
+			   **
+** String:  + *
+
+
+* UNARY:
+
+** Int:	 	+-
+	~
+       not
+
+
+** Float:  +-
+   not

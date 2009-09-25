@@ -1,6 +1,10 @@
 package org.signalml.jsignalml;
 
 import java.util.Map;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+
+import org.signalml.jsignalml.Machine.MachineError;
 import org.signalml.jsignalml.sexpression.*;
 
 public abstract class Frame implements CallHelper {
@@ -38,7 +42,8 @@ public abstract class Frame implements CallHelper {
 
     @Override
     public <T extends FileType> T getFile(FileHandle<T> handle)
-	throws ExpressionFault
+	throws ExpressionFault, MachineError,
+	       IOException, FileNotFoundException
     {
 	if(parent != null)
 	    return parent.getFile(handle);

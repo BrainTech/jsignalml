@@ -5,11 +5,11 @@ import java.util.NoSuchElementException;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.Node;
 
-class NodeIterator implements Iterator<Node> {
+class DOMIterator <T extends Node> implements Iterator<T> {
     final NodeList source;
     int index;
 
-    NodeIterator(NodeList source){
+    DOMIterator(NodeList source){
 	this.source = source;
 	this.index = 0;
     }
@@ -22,23 +22,28 @@ class NodeIterator implements Iterator<Node> {
 	return this.index < this.source.getLength();
     }
 
-    public Node next(){
+    public T next(){
 	Node item = this.source.item(this.index);
 	if(item == null)
 	    throw new NoSuchElementException();
 	this.index ++;
-	return item;
+	return (T) item;
+    }
+
+    public static <V extends Node>
+    Iterator<V> newIterator(NodeList source){
+	return new DOMIterator<V>(source);
     }
 }
 
-public class NodeIterable implements Iterable<Node> {
+public class DOMIterable<T extends Node> implements Iterable<T> {
     final NodeList source;
 
-    public NodeIterable(NodeList source){
+    public DOMIterable(NodeList source){
 	this.source = source;
     }
 
-    public Iterator<Node> iterator(){
-	return new NodeIterator(this.source);
+    public Iterator<T> iterator(){
+	return DOMIterator.newIterator(this.source);
     }
 }

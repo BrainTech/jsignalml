@@ -1,4 +1,4 @@
-package org.signalml.jsignalml.sexpression.test;
+package org.signalml.jsignalml.test;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -10,20 +10,21 @@ import java.util.TreeMap;
 import org.signalml.jsignalml.sexpression.Type;
 import org.signalml.jsignalml.sexpression.ExpressionFault;
 import org.signalml.jsignalml.LocalState;
+import org.signalml.jsignalml.util;
 
 public class TestLocalState {
     static final Map<String,Type> map, map1;
     static {
-	map = new TreeMap<String,Type>();
+	map = util.newTreeMap();
 	map.put("a", new Type.Int(1));
 	map.put("b", new Type.Float(2.));
 
-	map1 = new TreeMap<String,Type>();
+	map1 = util.newTreeMap();
 	map1.put("c", new Type.String("ccc"));
     }
 
-    LocalState state = new LocalState(null, map);
-    LocalState state1 = new LocalState(state, map1);
+    final LocalState state = new LocalState(null, map);
+    final LocalState state1 = new LocalState(state, map1);
 
     @Test public void test_call() throws Exception {
 	assertTrue(state.call("a").equals(map.get("a")));
@@ -49,5 +50,11 @@ public class TestLocalState {
     @Test(expected=ExpressionFault.ArgMismatch.class)
     public void test_parent_call_with_args() throws Exception {
 	state.call("a", new Type.Int(666));
+    }
+
+    @Test(expected=UnsupportedOperationException.class)
+    public void test_add_new_local() {
+	Map<String,Type> mapcopy = new TreeMap<String,Type>(map);
+	new LocalState(null, mapcopy).locals.put("xxx", new Type.Int(666));
     }
 }

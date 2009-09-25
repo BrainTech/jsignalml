@@ -4,14 +4,17 @@ import org.signalml.jsignalml.CallHelper;
 
 import java.util.List;
 import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.Map;
 import java.util.TreeMap;
+import static java.lang.String.format;
+import static java.util.Collections.unmodifiableList;
 
 public abstract class Expression {
     public abstract Type eval(CallHelper state)
 	throws ExpressionFault;
 
-    static class BinaryOp extends Expression {
+    public static class BinaryOp extends Expression {
 	final Expression left, right;
 	final Type.BinaryOp op;
 
@@ -34,12 +37,11 @@ public abstract class Expression {
 
 	public String toString()
 	{
-	    return String.format("%s %s %s",
-				 left, op.rep, right);
+	    return format("%s %s %s", left, op.rep, right);
 	}
     }
 
-    static class LogicalBinaryOp extends BinaryOp{
+    public static class LogicalBinaryOp extends BinaryOp{
 	public LogicalBinaryOp(int opcode, Expression left, Expression right)
 	    throws ExpressionFault.UnknownOperationError
 	{
@@ -51,90 +53,99 @@ public abstract class Expression {
 	{
 	    Type left = this.left.eval(state);
 	    switch(this.op){
-	    case LOG_AND:{
+	    case LOG_AND:
 		if(!left.isTrue())
 		    return left;
-	    }
-	    case LOG_OR:{
+		break;
+	    case LOG_OR:
 		if(left.isTrue())
 		    return left;
-	    }
+		break;
 	    default:
-		assert false;
+		throw new RuntimeException();
 	    }
-	
+
 	    Type right = this.right.eval(state);
 	    return right;
 	}
     }
 
-    static class UnaryOp extends Expression {
+    public static class UnaryOp extends Expression {
 	final Type.UnaryOp op;
 	final Expression sub;
-	
+
 	public UnaryOp(int opcode, Expression sub)
 	    throws  ExpressionFault.UnknownOperationError
 	{
 	    this.op = Type.UnaryOp.get(opcode);
 	    this.sub = sub;
 	}
-	
+
 	public Type eval(CallHelper state)
 	    throws ExpressionFault
 	{
 	    Type sub = this.sub.eval(state);
-	    switch(this.op){
-	    case LOG_NOT: return sub.logical_not();
-	    default:
-		assert false;
-	    }
-	    
-	    return null;
+	    if(this.op == Type.UnaryOp.LOG_NOT)
+		return sub.logical_not();
+	    else
+		return sub.unaryOp(this.op);
 	}
 
 	public String toString()
 	{
-	    return String.format("%s %s", op.rep, sub);
+	    return format("%s %s", op.rep, sub);
 	}
     }
 
-    static class Call extends Expression {
+    public static class Call extends Expression {
 	final String name;
-	final Expression[] args;
-	
-	Call(String name, List<Expression> args){
+	final /*immutable*/ List<Expression> args;
+
+	Call(String name, List<? extends Expression> args){
 	    this.name = name;
-	    this.args = args.toArray(new Expression[0]);
+	    this.args = unmodifiableList(new ArrayList(args));
 	}
-	
+
 	public Type eval(CallHelper state)
 	    throws ExpressionFault
 	{
-	    Type vals[] = new Type[this.args.length];
+	    Type vals[] = new Type[this.args.size()];
 	    for(int i = 0; i < vals.length; i++)
-		vals[i] = this.args[i].eval(state);
-	    
+		vals[i] = this.args.get(i).eval(state);
+
 	    return state.call(this.name, vals);
 	}
 
-	public String toString()
-	{
-	    String r = this.name + "(";
-
-	    boolean first = true;
-	    for(Expression arg: this.args){
-		if(!first)
-		    r += ", ";
-		else
-		    first = false;
-		r += arg;
-	    }
-	    r += ")";
-	    return r;
+	public String toString(){
+	    return this.name + "(" + Type.String.join(", ", this.args) + ")";
 	}
     }
 
-    static class Index extends Expression {
+
+    public static class List_ extends Expression {
+	final /*immutable*/ List<Expression> args;
+
+	List_(List<? extends Expression> args){
+	    this.args = unmodifiableList(new ArrayList(args));
+	}
+
+	public Type eval(CallHelper state)
+	    throws ExpressionFault
+	{
+	    ArrayList<Type> vals = new ArrayList<Type>(this.args.size());
+	    for(int i = 0; i < this.args.size(); i++)
+		vals.add( this.args.get(i).eval(state) );
+
+	    return new Type.List(vals);
+	}
+
+	public String toString(){
+	    return "[" + Type.String.join(", ", this.args) + "]";
+	}
+    }
+
+
+    public static class Index extends Expression {
 	final Expression item;
 	final Expression index;
 
@@ -142,7 +153,7 @@ public abstract class Expression {
 	    this.item = item;
 	    this.index = index;
 	}
-	
+
 	public Type eval(CallHelper state)
 	    throws ExpressionFault
 	{
@@ -153,11 +164,11 @@ public abstract class Expression {
 
 	public String toString()
 	{
-	    return String.format("%s[ %s ]", item, index);
+	    return format("%s[ %s ]", item, index);
 	}
     }
 
-    static class Const extends Expression {
+    public static class Const extends Expression {
 	public final Type value;
 
 	public Const(Type value){
@@ -173,9 +184,20 @@ public abstract class Expression {
 	{
 	    return this.value;
 	}
+
+	public static Expression make(String str){
+	    assert str != null;
+	    return new Const(new Type.String(str));
+	}
+	public static Expression make(int integer){
+	    return new Const(new Type.Int(integer));
+	}
+	public static Expression make(double real){
+	    return new Const(new Type.Float(real));
+	}
     }
 
-    static class Ternary extends Expression {
+    public static class Ternary extends Expression {
 	public final Expression q, a, b;
 
 	public Ternary(Expression q, Expression a, Expression b)
@@ -189,7 +211,7 @@ public abstract class Expression {
 	    throws ExpressionFault
 	{
 	    Type qvalue = this.q.eval(state);
-	    
+
 	    Expression which = qvalue.isTrue() ? this.a : this.b;
 	    Type value = which.eval(state);
 	    return value;
@@ -197,15 +219,15 @@ public abstract class Expression {
 
 	public String toString()
 	{
-	    return String.format("if %s then %s else %s", q, a, b);
+	    return format("if %s then %s else %s", q, a, b);
 	}
     }
 
     /*
-     * This is a helper expression node to be used in interactive 
+     * This is a helper expression node to be used in interactive
      * expression script parsing and execution.
      */
-    static class Assign extends Expression {
+    public static class Assign extends Expression {
 	public final String id;
 	public final List<Argument> args;
 	public final Expression value;
