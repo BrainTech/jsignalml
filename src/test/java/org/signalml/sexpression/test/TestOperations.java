@@ -684,4 +684,34 @@ public class TestOperations {
     {
         verifyIsTrue("0", false);
     }
+
+   @Test public void eval_is_true__int_4() throws Exception
+    {
+	verifyIsTrue("4", true);
+    }
+
+    @Test public void eval_is_true_int_0() throws Exception
+    {
+	verifyIsTrue("0", false);
+    }
+
+    @Test public void eval_is_true_float_1() throws Exception
+    {
+	verifyIsTrue("1.", true);
+    }
+
+   @Test public void eval_is_true_float_4() throws Exception
+    {
+	verifyIsTrue("4.", true);
+    }
+
+   @Test public void eval_is_true_float_0() throws Exception
+    {
+	verifyIsTrue("0.", false);
+    }
+
+   @Test public void eval_is_true_float_minus_1() throws Exception
+    {
+	verifyIsTrue("-1.", true);
+    }
 }
