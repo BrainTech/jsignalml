@@ -583,7 +583,7 @@ public abstract class Type {
 	}
 
 	public static java.lang.String join(java.lang.String sep,
-   				     java.util.List<?> list)
+				     java.util.List<?> list)
 	{
 	    StringBuilder s = new StringBuilder();
 
@@ -675,5 +675,9 @@ public abstract class Type {
 
 	    throw new ExpressionFault.TypeError();
 	}
+    }
+
+    static {
+	registerType("auto", Type.class);
     }
 }

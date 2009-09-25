@@ -110,8 +110,9 @@ public class CodecCore implements CodecyThing {
 	assert element.getNodeName().equals("param");
 
 	final String id = element.getAttribute("id");
-	final String type_ = element.getAttribute("type");
-	final Class<? extends Type> type = Type.getType(type_);
+	final String type_ = _attribute(element, "type");
+	final Class<? extends Type> type =
+	    Type.getType(type_==null? "auto" : type_);
 
 	final List<Machine.Positional> args_ = util.newLinkedList();
 
