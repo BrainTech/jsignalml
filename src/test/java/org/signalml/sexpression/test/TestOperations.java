@@ -51,6 +51,7 @@ public class TestOperations {
 	equal("0e3", 0.0);
 	equal("00000.", 0.0);
 	equal("-11.", -11.);
+	equal("-1.", -1.);
     }
 
     @Test public void check_string_atom_values() throws Exception
@@ -675,14 +676,14 @@ public class TestOperations {
 	equal(" 0 ? 2 : 1", 1);
     }
 
-    @Test public void eval_is_true_1() throws Exception
+    @Test public void eval_is_true__int_1() throws Exception
     {
         verifyIsTrue("1", true);
     }
 
-    @Test public void eval_is_true_0() throws Exception
+   @Test public void eval_is_true__int_minus_1() throws Exception
     {
-        verifyIsTrue("0", false);
+	verifyIsTrue("-1", true);
     }
 
    @Test public void eval_is_true__int_4() throws Exception
