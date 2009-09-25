@@ -45,20 +45,21 @@ public class TestTypes {
 
     @Test public void eval_atom_is_int() throws Exception
     {
-        assertIsType("1", Type.Int.class);
-        assertIsType("0", Type.Int.class);
-        assertIsType("-1", Type.Int.class);
+	assertIsType("1", Type.Int.class);
+	assertIsType("0", Type.Int.class);
+	assertIsType("-1", Type.Int.class);
+	assertIsType("0000000", Type.Int.class);
     }
- 
+
     @Test public void eval_atom_is_float_1() throws Exception
     {
-        assertIsType("0.", Type.Float.class);
+	assertIsType("0.", Type.Float.class);
     }
 
     @Test public void eval_atom_is_float_2() throws Exception
     {
-        assertIsType("1.", Type.Float.class);
-    }    
+	assertIsType("1.", Type.Float.class);
+    }
 
     @Test public void eval_atom_is_float_3() throws Exception
     {
@@ -66,13 +67,13 @@ public class TestTypes {
     }
 
     @Test public void eval_atom_is_string_1() throws Exception
-    {   
-        assertIsType("'aaa'", Type.String.class);
+    {
+	assertIsType("'aaa'", Type.String.class);
     }
 
     @Test public void eval_atom_is_string_2() throws Exception
     {
-        assertIsType("\"aaa\"", Type.String.class);
+	assertIsType("\"aaa\"", Type.String.class);
     }
 
     @Test public void get_types_from_string()

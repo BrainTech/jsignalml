@@ -671,13 +671,13 @@ public class TestOperations {
 
     @Test public void eval_ternary() throws Exception
     {
-        equal(" 4 ? 2 : 1",2);
+	equal(" 4 ? 2 : 1",2);
 	equal(" 0 ? 2 : 1", 1);
     }
 
     @Test public void eval_is_true__int_1() throws Exception
     {
-        verifyIsTrue("1", true);
+	verifyIsTrue("1", true);
     }
 
    @Test public void eval_is_true__int_minus_1() throws Exception
