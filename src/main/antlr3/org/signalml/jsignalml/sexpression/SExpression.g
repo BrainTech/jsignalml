@@ -125,12 +125,12 @@ expr
 
 andorexpr: notexpr ((LOGICAL_AND^|LOGICAL_OR^) notexpr)*
 	;
-	
+
 notexpr
     : (LOGICAL_NOT^ notexpr)
     | compexpr
 	;
-	
+
 compexpr
     : addexpr
         (   (EQUALS^
@@ -144,11 +144,11 @@ compexpr
 
 addexpr	:	multexpr ((ADD^ |SUBTRACT^) multexpr)*
 	;
-	
+
 multexpr:	unaryexpr ((MULTIPLY^ | FLOORDIV^ | TRUEDIV^ | MODULO^ |
                        BINARY_AND^ | BINARY_OR^ | BINARY_XOR^) unaryexpr)*
 	;
-	
+
 unaryexpr
     : ADD unaryexpr      -> ^(UNARY_ADD unaryexpr)
     | SUBTRACT unaryexpr -> ^(UNARY_SUBTRACT unaryexpr)
