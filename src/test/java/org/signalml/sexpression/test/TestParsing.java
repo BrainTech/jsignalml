@@ -16,6 +16,22 @@ public class TestParsing {
 	parse("1.11");
     }
 
+    @Test public void parse_atoms_with_newlines_at_end() throws Exception
+    {
+	parse("1\n");
+	parse("\"a string\"\n");
+	parse("'b string'\n");
+	parse("1.11\n");
+    }
+
+    @Test public void parse_atoms_with_newlines_in_front() throws Exception
+    {
+	parse("\n1");
+	parse("\n\"a string\"");
+	parse("\n'b string'");
+	parse("\n1.11");
+    }
+
     @Test public void parse_hexadecimal() throws Exception
     {
 	parse("0xFF");
@@ -75,11 +91,20 @@ public class TestParsing {
 
     @Test public void parse_additions_with_spaces() throws Exception
     {
-	parse("1+-1");
-	parse("1++1");
-	parse("+1++1");
-	parse("-1++1");
-	parse("--1++1");
+	parse("1 + -1");
+	parse("1 + + 1");
+	parse("+1 + +1");
+	parse("- 1 + + 1");
+	parse(" - - 1 + + 1 ");
+    }
+
+    @Test public void parse_additions_with_newlines() throws Exception
+    {
+	parse("1 +\n-1");
+	parse("1 +\n+ 1");
+	parse("+1 +\n+1");
+	parse("- 1 +\n+ 1");
+	parse(" -\n- 1\n+\n+\n1 ");
     }
 
     @Test public void parse_additions_without_spaces() throws Exception
