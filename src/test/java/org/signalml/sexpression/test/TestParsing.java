@@ -115,4 +115,28 @@ public class TestParsing {
 	parse("-1++1");
 	parse("--1++1");
     }
+
+    @Test(expected=SyntaxError.class)
+    public void parse_multiple_expressions_invalid_1() throws Exception
+    {
+	parse("1;2");
+    }
+
+    @Test(expected=SyntaxError.class)
+    public void parse_multiple_expressions_invalid_2() throws Exception
+    {
+	parse("a+b;");
+    }
+
+    @Test(expected=SyntaxError.class)
+    public void parse_multiple_expressions_invalid_3() throws Exception
+    {
+	parse("a+b;\n");
+    }
+
+    @Test(expected=SyntaxError.class)
+    public void parse_multiple_expressions_invalid_4() throws Exception
+    {
+	parse("a+b;\nc");
+    }
 }
