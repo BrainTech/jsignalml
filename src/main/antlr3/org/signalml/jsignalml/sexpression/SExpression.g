@@ -41,7 +41,7 @@ tokens {
 
     ASSIGN      = '=';
 
-    NEWLINE     = '\n';
+    SEMICOLON   = ';';
 }
 
 @lexer::header{
@@ -105,7 +105,7 @@ tokens {
 script: line* EOF!
     ;
 
-terminator: NEWLINE | EOF
+terminator: SEMICOLON | EOF
     ;
 
 line
@@ -209,6 +209,7 @@ COMMENT
 WS  :   ( ' '
         | '\t'
         | '\r'
+        | '\n'
         ) {$channel=HIDDEN;}
     ;
 

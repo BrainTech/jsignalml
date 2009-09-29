@@ -83,6 +83,25 @@ public class Processor {
 	return ast;
     }
 
+    public static CommonTree parseSingleexpr(String line)
+	throws SyntaxError
+    {
+	SExpressionParser parser =
+	    new SExpressionParser(getTokenStream(line));
+	SExpressionParser.singleexpr_return result;
+
+	try{
+	    result = parser.singleexpr();
+	}catch(RecognitionException e){
+	    throw new SyntaxError(e);
+	}catch(SyntaxError.RuntimeFlavour e){
+	    throw e.unrunify();
+	}
+
+	CommonTree ast = (CommonTree) result.getTree();
+	return ast;
+    }
+
     public static Expression processLine(CommonTree ast)
 	throws SyntaxError
     {
@@ -203,6 +222,6 @@ public class Processor {
     public static Expression parse(String line)
 	throws SyntaxError
     {
-	return Processor.processLine(Processor.parseLine(line));
+	return Processor.processLine(Processor.parseSingleexpr(line));
     }
 }
