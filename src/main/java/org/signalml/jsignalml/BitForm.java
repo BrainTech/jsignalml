@@ -1,6 +1,7 @@
 package org.signalml.jsignalml;
 
 import org.signalml.jsignalml.sexpression.Type;
+import org.signalml.jsignalml.sexpression.ExpressionFault;
 import java.nio.ByteBuffer;
 
 public abstract class BitForm {
@@ -27,7 +28,12 @@ public abstract class BitForm {
     public static class Int8 extends BitForm {
 	@Override
 	public Type.Int read(ByteBuffer buffer, int offset){
-	    byte data = buffer.get(offset);
+	    byte data;
+	    try{
+		data = buffer.get(offset);
+	    }catch(IndexOutOfBoundsException e){
+		throw new ExpressionFault.IndexError();
+	    }
 	    return new Type.Int(data);
 	}
     }
@@ -36,7 +42,12 @@ public abstract class BitForm {
 	public static class LE extends Int32 {
 	    @Override
 	    public Type.Int read(ByteBuffer buffer, int byteoffset){
-		int data = buffer.getInt(byteoffset);
+		int data;
+		try{
+		    data = buffer.getInt(byteoffset);
+		}catch(IndexOutOfBoundsException e){
+		    throw new ExpressionFault.IndexError();
+		}
 		return new Type.Int(data);
 	    }
 	}
