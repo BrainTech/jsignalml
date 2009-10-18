@@ -36,7 +36,7 @@ public class TestXMLDocument {
 	assertEquals("node2", doc.getElement("//node2").getNodeName());
     }
 
-    @Test(expected=XMLDocument.NoNodeError.class)
+    @Test(expected=XMLDocument.NodeError.class)
     public void xpath_invalid_node() throws Exception
     {
 	doc.getNode("/no_such_node");

@@ -12,7 +12,7 @@ public class App
 	throws org.xml.sax.SAXException,
 	       java.io.IOException,
 	       javax.xml.xpath.XPathExpressionException,
-	       XMLDocument.NoNodeError
+	       XMLDocument.NodeError
     {
 	BasicConfigurator.configure();
         System.out.println( "Hello World!" );

@@ -8,7 +8,7 @@ public class Codec
 	throws java.io.IOException,
 	       org.xml.sax.SAXException,
 	       javax.xml.xpath.XPathExpressionException,
-	       XMLDocument.NoNodeError
+	       XMLDocument.NodeError
     {
 	XMLDocument document = new XMLDocument(filename);
 

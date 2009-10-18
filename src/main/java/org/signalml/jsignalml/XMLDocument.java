@@ -17,11 +17,11 @@ import org.signalml.jsignalml.Logger;
 
 public class XMLDocument
 {
-    public static class NoNodeError extends Exception {
+    public static class NodeError extends Exception {
 	public final String xpath;
-	public NoNodeError(String xpath){
+	public NodeError(String xpath){
 	    this.xpath = xpath;
-	}	    
+	}
     }
 
     static final Logger log = new Logger(XMLDocument.class);
@@ -59,20 +59,20 @@ public class XMLDocument
 
     public Node getNode(String xpath)
 	throws javax.xml.xpath.XPathExpressionException,
-	       NoNodeError
+	       NodeError
     {
 	return subNode(this.document, xpath);
     }
 
     public Element getElement(String xpath)
 	throws javax.xml.xpath.XPathExpressionException,
-	       NoNodeError
+	       NodeError
     {
 	return subElement(this.document, xpath);
     }
 
     public Element getElement_re(String xpath)
-	throws NoNodeError
+	throws NodeError
     {
 	try{
 	    return subElement(this.document, xpath);
@@ -105,21 +105,21 @@ public class XMLDocument
 
     /**
      * Retrieve subelement of where described by xpath.
-     * Throw NoNodeError is not found.
+     * Throw NodeError if not found.
      */
     public static Node subNode(Node where, String xpath)
 	throws javax.xml.xpath.XPathExpressionException,
-	       NoNodeError
+	       NodeError
     {
 	Node node = _subNode(where, xpath);
 	if(node == null)
-	    throw new NoNodeError(xpath);
+	    throw new NodeError(xpath);
 	return (Node) node;
     }
 
     public static Element subElement(Node where, String xpath)
 	throws javax.xml.xpath.XPathExpressionException,
-	       NoNodeError
+	       NodeError
     {
 	return (Element) subNode(where, xpath);
     }

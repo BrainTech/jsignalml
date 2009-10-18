@@ -49,7 +49,7 @@ public class CodecCore implements CodecyThing {
 	Element element;
 	try{
 	    element = doc.getElement_re("/signalml");
-	}catch(XMLDocument.NoNodeError e){
+	}catch(XMLDocument.NodeError e){
 	    throw new IllegalArgumentException("no /signalml node");
 	}
 	this.do_signalml(element);
