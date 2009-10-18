@@ -139,4 +139,22 @@ public class TestParsing {
     {
 	parse("a+b;\nc");
     }
+
+    @Test public void parse_index_basic() throws Exception
+    {
+	parse("a[0]");
+	parse("a[b]");
+    }
+
+    @Test public void parse_index_list_and_subexpr() throws Exception
+    {
+	parse("[0,1,2][0]");
+	parse("(a)[0]");
+	parse("(a)[-1]");
+    }
+
+    @Test public void parse_example_from_EDF() throws Exception
+    {
+	parse("data_format(0,0)[-1]");
+    }
 }

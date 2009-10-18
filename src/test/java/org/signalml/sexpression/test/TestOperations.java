@@ -626,7 +626,7 @@ public class TestOperations {
 
     @Test public void eval_not_4() throws Exception
     {
-    	equal("not 4.",0);
+	equal("not 4.",0);
     }
 
     @Test public void eval_not_5() throws Exception
@@ -700,18 +700,31 @@ public class TestOperations {
 	verifyIsTrue("1.", true);
     }
 
-   @Test public void eval_is_true_float_4() throws Exception
+    @Test public void eval_is_true_float_4() throws Exception
     {
 	verifyIsTrue("4.", true);
     }
 
-   @Test public void eval_is_true_float_0() throws Exception
+    @Test public void eval_is_true_float_0() throws Exception
     {
 	verifyIsTrue("0.", false);
     }
 
-   @Test public void eval_is_true_float_minus_1() throws Exception
+    @Test public void eval_is_true_float_minus_1() throws Exception
     {
 	verifyIsTrue("-1.", true);
+    }
+
+    @Test public void eval_index_string() throws Exception
+    {
+	equal("'string'[0]", "s");
+	equal("'string'[4]", "n");
+    }
+
+    @Test public void eval_index_list() throws Exception
+    {
+	equal("[0,1,2][0]", 0);
+	equal("[0,1,2][1]", 1);
+	equal("[0,1,2][2]", 2);
     }
 }
