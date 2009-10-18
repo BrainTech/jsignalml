@@ -8,11 +8,12 @@ options {
 tokens {
     LIST;
     TERN;
-    CALL;
-    INDEX;
 
     UNARY_ADD;
     UNARY_SUBTRACT;
+
+    INDEX       = '[';
+    CALL        = '(';
 
     ADD         = '+';
     SUBTRACT    = '-';
@@ -156,30 +157,25 @@ unaryexpr
     ;
 
 powexpr
-    : accessor
-        ( POWER powexpr -> ^(POWER accessor powexpr)
-        |               -> accessor
+    : baseitem
+        ( POWER powexpr -> ^(POWER baseitem powexpr)
+        |               -> baseitem
         )
     ;
 
-accessor
-    : atom
-        ( index -> ^(INDEX atom index)
-        |       -> atom
-        )
-    | ID
-        ( index -> ^(INDEX ^(CALL ID) index)
-        | call  -> ^(CALL ID call)
-        |       -> ^(CALL ID)
-        )
+baseitem
+    : (atom | ID)
+        ( INDEX^ indextail
+        | CALL^ calltail
+        )*
     ;
 
-index // TODO
-    : '['! expr ']'!
+indextail // TODO
+    : expr ']'!
     ;
 
-call
-    : '(' (expr (',' expr)*)? ')' -> expr*
+calltail
+    : (expr (',' expr)*)? ')' -> expr*
     ;
 
 atom

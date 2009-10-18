@@ -99,6 +99,10 @@ public abstract class Expression {
 	    this.args = unmodifiableList(new ArrayList(args));
 	}
 
+	Call(String name){
+	    this(name, new ArrayList());
+	}
+
 	public Type eval(CallHelper state)
 	{
 	    Type vals[] = new Type[this.args.size()];

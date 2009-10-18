@@ -64,6 +64,8 @@ expr returns [Expression value]
         { $value = new Expression.LogicalBinaryOp($op.type, $a.value, $b.value); }
     | ^(LIST alist)
         { $value = new Expression.List_($alist.value); }
+    | ID
+        { $value = new Expression.Call($ID.text); }
     | ^(CALL ID alist)
         { $value = new Expression.Call($ID.text, $alist.value); }
     | ^(INDEX a=expr s=expr)
