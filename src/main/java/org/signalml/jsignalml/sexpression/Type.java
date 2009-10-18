@@ -72,13 +72,10 @@ public abstract class Type {
 	}
 
 	public static BinaryOp get(int opcode)
-	    throws ExpressionFault.UnknownOperationError
 	{
 	    BinaryOp op = binOpTable.get(opcode);
-	    if(op != null)
-		return op;
-
-	    throw new ExpressionFault.UnknownOperationError(BinaryOp.class, opcode);
+	    assert op != null: "opcode=" + opcode;
+	    return op;
 	}
     }
 
@@ -98,12 +95,10 @@ public abstract class Type {
 	}
 
 	public static UnaryOp get(int opcode)
-	    throws ExpressionFault.UnknownOperationError
 	{
 	    Type.UnaryOp op = unOpTable.get(opcode);
-	    if(op != null)
-		return op;
-	    throw new ExpressionFault.UnknownOperationError(UnaryOp.class, opcode);
+	    assert op != null: "opcode=" + opcode;
+	    return op;
 	}
     }
 

@@ -21,18 +21,6 @@ public class ExpressionFault extends Exception {
 	}
     }
 
-    static class UnknownOperationError extends RuntimeException {
-	public final Class<?> where;
-	public final int opcode;
-	public UnknownOperationError(Class<?> where, int opcode){
-	    this.where = where;
-	    this.opcode = opcode;
-	}
-
-	public String toString(){
-	    return format("%s opcode=%d", where, opcode);
-	}
-    }
 
     public static class NameError extends ExpressionFault {
 	public final String name;

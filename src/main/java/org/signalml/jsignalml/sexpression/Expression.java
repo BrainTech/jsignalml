@@ -19,7 +19,6 @@ public abstract class Expression {
 	final Type.BinaryOp op;
 
 	public BinaryOp(int opcode, Expression left, Expression right)
-	    throws  ExpressionFault.UnknownOperationError
 	{
 	    this.op = Type.BinaryOp.get(opcode);
 	    this.left = left;
@@ -43,7 +42,6 @@ public abstract class Expression {
 
     public static class LogicalBinaryOp extends BinaryOp{
 	public LogicalBinaryOp(int opcode, Expression left, Expression right)
-	    throws ExpressionFault.UnknownOperationError
 	{
 	    super(opcode, left, right);
 	}
@@ -75,7 +73,6 @@ public abstract class Expression {
 	final Expression sub;
 
 	public UnaryOp(int opcode, Expression sub)
-	    throws  ExpressionFault.UnknownOperationError
 	{
 	    this.op = Type.UnaryOp.get(opcode);
 	    this.sub = sub;
