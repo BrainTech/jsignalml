@@ -10,7 +10,6 @@ import java.io.IOException;
 
 import org.signalml.jsignalml.FileType;
 import org.signalml.jsignalml.sexpression.*;
-import org.signalml.jsignalml.Machine.MachineError;
 
 public class Reader extends Frame implements CallHelper {
     public static final Logger log = new Logger(Reader.class);
@@ -32,8 +31,6 @@ public class Reader extends Frame implements CallHelper {
 
     @Override
     public <T extends FileType> T getFile(FileHandle<T> handle)
-	throws ExpressionFault, MachineError,
-	       IOException, FileNotFoundException
     {
 	log.info("request for %s", handle);
 	T file = (T) this.files.get(handle);
@@ -49,24 +46,9 @@ public class Reader extends Frame implements CallHelper {
 
     @Override
     public Type frame_call(String id, Type...args)
-	throws ExpressionFault, FrameNameError
     {
-	Machine.Param p;
-	try{
-	    p = codec.getParam(id);
-	}catch(MachineError.ParamNotFound e){
-	    throw new FrameNameError();
-	}
-
-	try{
-	    Type v = p.eval(this, args);
-	    return v;
-	}catch(Machine.MachineError.ArgMismatch e){
-	    throw new ExpressionFault.ArgMismatch();
-	}catch(Machine.MachineError e){
-	    throw new ExpressionFault.CodecError(e);
-	}catch(IOException e){
-	    throw new ExpressionFault.IOError(e);
-	}
+	Machine.Param p = codec.getParam(id);
+	Type v = p.eval(this, args);
+	return v;
     }
 }

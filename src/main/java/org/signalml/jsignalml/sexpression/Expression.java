@@ -11,8 +11,7 @@ import static java.lang.String.format;
 import static java.util.Collections.unmodifiableList;
 
 public abstract class Expression {
-    public abstract Type eval(CallHelper state)
-	throws ExpressionFault;
+    public abstract Type eval(CallHelper state);
 
     public static class BinaryOp extends Expression {
 	final Expression left, right;
@@ -26,7 +25,6 @@ public abstract class Expression {
 	}
 
 	public Type eval(CallHelper state)
-	    throws ExpressionFault
 	{
 	    Type left = this.left.eval(state);
 	    Type right = this.right.eval(state);
@@ -47,7 +45,6 @@ public abstract class Expression {
 	}
 
 	public Type eval(CallHelper state)
-	    throws ExpressionFault
 	{
 	    Type left = this.left.eval(state);
 	    switch(this.op){
@@ -79,7 +76,6 @@ public abstract class Expression {
 	}
 
 	public Type eval(CallHelper state)
-	    throws ExpressionFault
 	{
 	    Type sub = this.sub.eval(state);
 	    if(this.op == Type.UnaryOp.LOG_NOT)
@@ -104,7 +100,6 @@ public abstract class Expression {
 	}
 
 	public Type eval(CallHelper state)
-	    throws ExpressionFault
 	{
 	    Type vals[] = new Type[this.args.size()];
 	    for(int i = 0; i < vals.length; i++)
@@ -127,7 +122,6 @@ public abstract class Expression {
 	}
 
 	public Type eval(CallHelper state)
-	    throws ExpressionFault
 	{
 	    ArrayList<Type> vals = new ArrayList<Type>(this.args.size());
 	    for(int i = 0; i < this.args.size(); i++)
@@ -152,7 +146,6 @@ public abstract class Expression {
 	}
 
 	public Type eval(CallHelper state)
-	    throws ExpressionFault
 	{
 	    Type vitem = this.item.eval(state);
 	    Type vindex = this.index.eval(state);
@@ -205,7 +198,6 @@ public abstract class Expression {
 	}
 
 	public Type eval(CallHelper state)
-	    throws ExpressionFault
 	{
 	    Type qvalue = this.q.eval(state);
 
@@ -253,7 +245,6 @@ public abstract class Expression {
 	}
 
 	public Type eval(CallHelper state)
-	    throws ExpressionFault
 	{
 	    state.assign(this.id, this.value);
 	    return null;

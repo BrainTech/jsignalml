@@ -9,7 +9,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.Element;
 
 import org.signalml.jsignalml.Machine.Param;
-import org.signalml.jsignalml.Machine.MachineError;
+import org.signalml.jsignalml.sexpression.ExpressionFault;
 import org.signalml.jsignalml.sexpression.Processor;
 import org.signalml.jsignalml.sexpression.Expression;
 import org.signalml.jsignalml.sexpression.SyntaxError;
@@ -34,13 +34,11 @@ public class CodecCore implements CodecyThing {
     }
 
     public Param getParam(String id)
-	throws MachineError.ParamNotFound
     {
 	Param p = this.params.get(id);
 	if(p!=null)
 	    return p;
-	else
-	    throw new MachineError.ParamNotFound();
+	throw new ExpressionFault.NameError(id);
     }
 
     public void parse_signalml(XMLDocument doc)

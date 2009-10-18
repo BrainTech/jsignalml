@@ -4,7 +4,6 @@ import java.util.Map;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
-import org.signalml.jsignalml.Machine.MachineError;
 import org.signalml.jsignalml.sexpression.*;
 
 public abstract class Frame implements CallHelper {
@@ -16,16 +15,14 @@ public abstract class Frame implements CallHelper {
 
     @Override
     public void assign(String id, Expression expr)
-	throws ExpressionFault
     {
 	// assign-ment is disallowed
-	throw new ExpressionFault();
+	throw new ExpressionFault.AssignmentError();
     }
 
     static public class FrameNameError extends Exception {}
 
     public Type call(String id, Type...args)
-	throws ExpressionFault
     {
 	try{
 	    return this.frame_call(id, args);
@@ -38,17 +35,13 @@ public abstract class Frame implements CallHelper {
     }
 
     public abstract Type frame_call(String id, Type...args)
-	throws FrameNameError, ExpressionFault;
+	throws FrameNameError;
 
     @Override
     public <T extends FileType> T getFile(FileHandle<T> handle)
-	throws ExpressionFault, MachineError,
-	       IOException, FileNotFoundException
     {
-	if(parent != null)
-	    return parent.getFile(handle);
-	else
-	    throw new ExpressionFault();
+	assert false: "no one want to getFile";
+	return parent.getFile(handle);
     }
 
     public LocalState localize(Map<String,Type> locals){

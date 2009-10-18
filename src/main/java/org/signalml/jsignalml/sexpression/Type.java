@@ -109,7 +109,6 @@ public abstract class Type {
     }
 
     public Type binaryOp(BinaryOp op, Type other)
-	throws ExpressionFault.TypeError
     {
 	try {
 	    return this.binaryOp(op, (Int) other);
@@ -124,24 +123,17 @@ public abstract class Type {
 	throw new RuntimeException();
     }
 
-    public abstract Type binaryOp(BinaryOp op, Int other)
-	throws ExpressionFault.TypeError;
-    public abstract Type binaryOp(BinaryOp op, Float other)
-	throws ExpressionFault.TypeError;
-    public abstract Type binaryOp(BinaryOp op, String other)
-	throws ExpressionFault.TypeError;
-
+    public abstract Type binaryOp(BinaryOp op, Int other);
+    public abstract Type binaryOp(BinaryOp op, Float other);
+    public abstract Type binaryOp(BinaryOp op, String other);
 
     public Type unaryOp(UnaryOp op)
-	throws ExpressionFault.TypeError
     {
 	throw new ExpressionFault.TypeError();
     }
 
 
     public Type index(Type sub)
-	throws ExpressionFault.TypeError,
-	       ExpressionFault.IndexError
     {
 	throw new ExpressionFault.TypeError();
     }
@@ -175,7 +167,6 @@ public abstract class Type {
     }
 
     public <T extends Type> T castTo(Class<T> theClass)
-	throws ExpressionFault.TypeError
     {
 	if(theClass.isInstance(this))
 	    return (T)this;
@@ -217,7 +208,6 @@ public abstract class Type {
 	}
 
 	public Type binaryOp(BinaryOp op, Int other)
-	    throws ExpressionFault.TypeError
 	{
 	    switch(op){
 	    case ADD:
@@ -262,7 +252,6 @@ public abstract class Type {
 	}
 
 	public Type binaryOp(BinaryOp op, Float other)
-	    throws ExpressionFault.TypeError
 	{
 	    switch(op){
 	    case ADD:
@@ -307,7 +296,6 @@ public abstract class Type {
 	}
 
 	public Type binaryOp(BinaryOp op, String other)
-	    throws ExpressionFault.TypeError
 	{
 	    switch(op){
 	    case MUL:

@@ -20,21 +20,6 @@ import static java.lang.String.format;
 public class Machine {
     public static final Logger log = new Logger(Machine.class);
 
-    public static class MachineError extends Exception {
-	public static class ArgMismatch extends MachineError {}
-	public static class CastError extends MachineError {}
-	public static class BadBitForm extends MachineError {
-	    public BadBitForm(BitForm.BadBitForm e){
-		super(e);
-	    }
-	}
-	public static class ParamNotFound extends MachineError {}
-	public static class NullFilenames extends MachineError {}
-
-	public MachineError() {}
-	public MachineError(Exception sub) {super(sub);}
-    }
-
     public static class Positional {
 	public final String name;
 	public final Class<? extends Type> type;
@@ -61,10 +46,9 @@ public class Machine {
 	}
 
 	Map<String, Type> mapArgs(Type...args)
-	    throws MachineError.ArgMismatch, ExpressionFault
 	{
 	    if(args.length != this.args.length)
-		throw new MachineError.ArgMismatch();
+		throw new ExpressionFault.ArgMismatch();
 
 	    // XXX: is this the right map class?
 	    final Map<String,Type> locals = util.newTreeMap();
@@ -77,8 +61,6 @@ public class Machine {
 	}
 
 	public Type eval(CallHelper state, Type...args)
-	    throws MachineError, ExpressionFault,
-		   IOException, FileNotFoundException
 	{
 	    Map<String,Type> locals = this.mapArgs(args);
 	    CallHelper frame = state.localize(locals);
@@ -86,9 +68,7 @@ public class Machine {
 	    return val.castTo(this.type);
 	}
 
-	public abstract Type read(CallHelper state)
-	    throws ExpressionFault, MachineError,
-		   IOException, FileNotFoundException;
+	public abstract Type read(CallHelper state);
     }
 
     public abstract static class ReadParam extends Param {
@@ -116,9 +96,7 @@ public class Machine {
 	}
 
 	@Override
-	public Type read(CallHelper state)
-	    throws ExpressionFault, MachineError,
-		   IOException, FileNotFoundException
+        public Type read(CallHelper state)
 	{
 	    Type format = this.format.eval(state);
 	    Type offset = this.offset.eval(state);
@@ -127,10 +105,9 @@ public class Machine {
 	    try{
 		bitf = BitForm.get(format.castTo(Type.String.class).value);
 	    }catch(BitForm.BadBitForm e){
-		throw new MachineError.BadBitForm(e);
+		throw new ExpressionFault.ExternalError(e);
 	    }
 	    int offs = offset.castTo(Type.Int.class).value;
-
 	    FileType.BinaryFile file = state.getFile(this.handle);
 
 	    log.debug("reading %s as %s @ %s from %s",
@@ -152,7 +129,6 @@ public class Machine {
 
 	@Override
 	public Type read(CallHelper state)
-	    throws ExpressionFault
 	{
 	    return this.expr.eval(state);
 	}
@@ -163,7 +139,7 @@ public class Machine {
      * Two filenames can be provided: at construction time, and
      * as an argument to open(). At least one is needed, and
      * the second one has priority. If both are null, a
-     * MachineError.NullFilenames exception is thrown.
+     * ExpressionFault.ValueError is thrown.
      */
     public static class FileHandle<T extends FileType>
 	implements CallHelper.FileHandle<T>
@@ -187,8 +163,6 @@ public class Machine {
 	}
 
 	public T open(CallHelper state, File hint)
-	    throws ExpressionFault, MachineError.NullFilenames,
-		   IOException, FileNotFoundException
 	{
 	    File thename;
 	    if(hint != null){
@@ -198,11 +172,15 @@ public class Machine {
 		String str = tmp.castTo(Type.String.class).getValue();
 		thename = new File(str);
 	    } else {
-		throw new MachineError.NullFilenames();
+		throw new ExpressionFault.ValueError("both filenames are null");
 	    }
 
 	    log.info("opening file '%s'", thename);
-	    return FileType.open(thename);
+	    try{
+		return FileType.open(thename);
+	    }catch(IOException e){
+		throw new ExpressionFault.ExternalError(e);
+	    }
 	}
     }
 }
