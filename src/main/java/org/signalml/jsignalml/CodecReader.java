@@ -1,7 +1,10 @@
 package org.signalml.jsignalml;
 
 import java.io.*;
+import java.util.Map;
 import org.apache.log4j.BasicConfigurator;
+
+import org.signalml.jsignalml.Machine.Param;
 
 public class CodecReader
 {
@@ -14,5 +17,11 @@ public class CodecReader
 	XMLDocument doc = new XMLDocument(stream);
 	CodecCore core = new CodecCore();
 	core.parse_signalml(doc);
+
+	for(Map.Entry<String,Param> entry: core.params.entrySet()){
+	    String id = entry.getKey();
+	    Param p = entry.getValue();
+	    System.out.format("param %s => %s\n", id, p);
+	}
     }
 }

@@ -95,6 +95,12 @@ public class Machine {
 	    this.offset = offset;
 	}
 
+	public String toString()
+	{
+	    return format("BinaryParam on %s format: %s offset: %s",
+			  this.handle, this.format, this.offset);
+	}
+
 	@Override
         public Type read(CallHelper state)
 	{
@@ -125,6 +131,11 @@ public class Machine {
 	{
 	    super(id, type, args);
 	    this.expr = expr;
+	}
+
+	public String toString()
+	{
+	    return format("ExprParam expression: %s", this.expr);
 	}
 
 	@Override

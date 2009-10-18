@@ -206,7 +206,12 @@ public class CodecCore implements CodecyThing {
 	String expr = _extract_string(where, xpath);
 	if(expr==null)
 	    return null;
-	return Processor.parse(expr);
+	try{
+	    return Processor.parse(expr);
+	}catch(SyntaxError e){
+	    log.error("failed to parse: '%s'", expr);
+	    throw e;
+	}
     }
 
     static String _attribute(Element element, String attr)
