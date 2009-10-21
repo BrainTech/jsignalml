@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.TreeMap;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.List;
 import java.io.File;
 import java.io.IOException;
 import java.io.FileNotFoundException;
@@ -156,6 +157,8 @@ public class Machine {
 	implements CallHelper.FileHandle<T>
     {
 	public final Expression filename; // may be null
+	public final List<DataHandle> datas = util.newLinkedList();
+
 	public FileHandle(Expression filename){
 	    this.filename = filename;
 	}
@@ -192,6 +195,23 @@ public class Machine {
 	    }catch(IOException e){
 		throw new ExpressionFault.ExternalError(e);
 	    }
+	}
+
+	void addData(DataHandle data)
+	{
+	    this.datas.add(data);
+	}
+    }
+
+    public static class DataHandle {
+	public final String mapping, format;
+
+	public DataHandle(FileHandle<?> handle, String mapping, String format)
+	{
+	    this.mapping = mapping;
+	    this.format = format;
+
+	    handle.addData(this);
 	}
     }
 }

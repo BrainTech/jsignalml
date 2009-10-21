@@ -183,9 +183,11 @@ public class CodecCore implements CodecyThing {
 	assert element.getNodeName().equals("data");
 
 	log.warn("data not implemented");
+	String mapping = element.getAttribute("mapping");
+	String format = element.getAttribute("format");
+
+	new Machine.DataHandle(handle, mapping, format);
     }
-
-
 
     static String _extract_string(Node where, String xpath)
     {
