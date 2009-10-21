@@ -4,8 +4,6 @@ import java.io.*;
 import java.util.Map;
 import org.apache.log4j.BasicConfigurator;
 
-import org.signalml.jsignalml.Machine.Param;
-
 public class CodecReader
 {
     public static void main(String...args)
@@ -18,10 +16,16 @@ public class CodecReader
 	CodecCore core = new CodecCore();
 	core.parse_signalml(doc);
 
-	for(Map.Entry<String,Param> entry: core.params.entrySet()){
+	for(Map.Entry<String,Machine.Param> entry: core.params.entrySet()){
 	    String id = entry.getKey();
-	    Param p = entry.getValue();
+	    Machine.Param p = entry.getValue();
 	    System.out.format("param %s => %s\n", id, p);
+	}
+
+	for(Machine.FileHandle<?> handle: core.file_handles){
+	    System.out.format("file %s\n", handle);
+	    for(Machine.DataHandle data: handle.datas)
+		System.out.format("    data %s\n", data);
 	}
     }
 }

@@ -22,6 +22,7 @@ public class CodecCore implements CodecyThing {
     public static final Logger log = new Logger(CodecCore.class);
 
     final Map<String,Param> params = util.newHashMap();
+    final List<Machine.FileHandle<?>> file_handles = util.newLinkedList();
 
     public void addParam(Param p)
     {
@@ -93,6 +94,8 @@ public class CodecCore implements CodecyThing {
 	    else
 		log.warn("unknown element: %s", node);
 	}
+
+	this.file_handles.add(handle);
     }
 
     public void do_assert(Element element)

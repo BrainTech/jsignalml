@@ -201,6 +201,11 @@ public class Machine {
 	{
 	    this.datas.add(data);
 	}
+
+	public String toString()
+	{
+	    return format("FileHandle: filename=%s", filename);
+	}
     }
 
     public static class DataHandle {
@@ -212,6 +217,11 @@ public class Machine {
 	    this.format = format;
 
 	    handle.addData(this);
+	}
+
+	public String toString()
+	{
+	    return format("DataHandle: mapping=%s format=%s", mapping, format);
 	}
     }
 }
