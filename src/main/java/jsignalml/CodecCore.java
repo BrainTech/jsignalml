@@ -2,9 +2,13 @@ package jsignalml;
 
 import java.util.List;
 import java.util.Map;
+import java.io.InputStream;
+import java.io.FileInputStream;
 
 import org.w3c.dom.Node;
 import org.w3c.dom.Element;
+
+import org.apache.log4j.BasicConfigurator;
 
 /**
  * Translate an XML DOM into a Codec.
@@ -31,6 +35,16 @@ public class CodecCore implements CodecyThing {
 	if(p!=null)
 	    return p;
 	throw new ExpressionFault.NameError(id);
+    }
+
+    public static CodecCore makeCodec(String filename)
+	throws java.io.IOException, org.xml.sax.SAXException, SyntaxError
+    {
+	InputStream stream = new FileInputStream(filename);
+	XMLDocument doc = new XMLDocument(stream);
+	CodecCore core = new CodecCore();
+	core.parse_signalml(doc);
+	return core;
     }
 
     public void parse_signalml(XMLDocument doc)
@@ -217,5 +231,28 @@ public class CodecCore implements CodecyThing {
 	    return null;
 	else
 	    return value;
+    }
+
+    public void dumpCodec(){
+	for(Map.Entry<String,Machine.Param> entry: this.params.entrySet()){
+	    String id = entry.getKey();
+	    Machine.Param p = entry.getValue();
+	    System.out.format("param %s => %s\n", id, p);
+	}
+
+	for(Machine.FileHandle<?> handle: this.file_handles){
+	    System.out.format("file %s\n", handle);
+	    for(Machine.DataHandle data: handle.datas)
+		System.out.format("    data %s\n", data);
+	}
+    }
+
+    public static void main(String...args)
+	throws Exception
+    {
+	BasicConfigurator.configure();
+
+	CodecCore core = makeCodec(args[0]);
+	core.dumpCodec();
     }
 }
