@@ -1,9 +1,7 @@
 package jsignalml;
 
 import java.util.List;
-import java.util.LinkedList;
 import java.util.Map;
-import java.util.HashMap;
 
 import org.w3c.dom.Node;
 import org.w3c.dom.Element;

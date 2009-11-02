@@ -1,7 +1,6 @@
 package jsignalml;
 
 import java.util.Map;
-import java.util.HashMap;
 import java.util.List;
 import java.util.LinkedList;
 import java.io.File;
@@ -14,10 +13,8 @@ public class Reader extends Frame implements CallHelper {
     final CodecyThing codec;
 
     /* HashMap because TreeMap would require comparable. */
-    final Map<FileHandle<FileType>, FileType> files =
-	new HashMap<FileHandle<FileType>, FileType>();
-
-    final LinkedList<File> filehints = new LinkedList<File>();
+    final Map<FileHandle<FileType>, FileType> files = util.newHashMap();
+    final LinkedList<File> filehints = util.newLinkedList();
 
     public Reader(CodecyThing codec, String...filenames){
 	super(null);
