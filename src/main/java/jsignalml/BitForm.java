@@ -1,8 +1,11 @@
 package jsignalml;
 
 import java.nio.ByteBuffer;
+import java.nio.CharBuffer;
 
 public abstract class BitForm {
+    protected static final Logger log = new Logger(BitForm.class);
+
     public static class BadBitForm extends Exception {
 	public BadBitForm(String description){
 	    super("bad BitFormat description '" + description + "'");
@@ -18,6 +21,8 @@ public abstract class BitForm {
 	    return new Int8();
 	if(description.equals("<i2"))
 	    return new Int32.LE();
+	if(description.startsWith("|S"))
+	    return new STR(Integer.parseInt(description.substring(2)));
 	throw new BadBitForm(description);
     }
 
@@ -48,6 +53,24 @@ public abstract class BitForm {
 		}
 		return new Type.Int(data);
 	    }
+	}
+    }
+
+    public static class STR extends BitForm {
+	final int size;
+	public STR(int size){
+	    this.size = size;
+	}
+
+	@Override
+        public Type.String read(ByteBuffer buffer, int byteoffset){
+	    log.info("STR.BitForm.read: buffer=%s byteoffset=%d",
+		     buffer, byteoffset);
+	    buffer.limit(byteoffset + this.size).position(byteoffset);
+
+	    byte[] data = new byte[size];
+	    buffer.get(data);
+	    return new Type.String(new String(data));
 	}
     }
 }
