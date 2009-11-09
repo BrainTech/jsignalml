@@ -570,17 +570,20 @@ public abstract class Type {
 	    throws ExpressionFault.TypeError,
 		   ExpressionFault.IndexError
 	{
+	    if(!(sub instanceof Int))
+		throw new ExpressionFault.TypeError();
+
+	    Int ind = (Int) sub;
+	    int offset = ind.value;
+	    if(offset < 0)
+		offset += this.value.length();
 	    try{
-		Int ind = (Int) sub;
-		char c = this.value.charAt(ind.value);
+		char c = this.value.charAt(offset);
 		return new String(c);
-	    } catch(ClassCastException e){
 	    } catch(IndexOutOfBoundsException e){
 		throw new ExpressionFault.IndexError(
 				     ind.value, this.value.length());
 	    }
-
-	    throw new ExpressionFault.TypeError();
 	}
 
 	/** Synchronize with SExpression.g:ESC_SEQ ! */
@@ -701,16 +704,19 @@ public abstract class Type {
 	    throws ExpressionFault.TypeError,
 		   ExpressionFault.IndexError
 	{
+	    if(!(sub instanceof Int))
+		throw new ExpressionFault.TypeError();
+
+	    Int ind = (Int) sub;
+	    int offset = ind.value;
+	    if(offset < 0)
+		offset += this.value.size();
 	    try{
-		Int ind = (Int) sub;
-		return this.value.get(ind.value);
-	    } catch(ClassCastException e){
+		return this.value.get(offset);
 	    } catch(IndexOutOfBoundsException e){
 		throw new ExpressionFault.IndexError(
 				     ind.value, this.value.size());
 	    }
-
-	    throw new ExpressionFault.TypeError();
 	}
     }
 
