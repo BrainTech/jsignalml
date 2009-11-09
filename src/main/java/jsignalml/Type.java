@@ -180,10 +180,16 @@ public abstract class Type {
 	    this.value = value;
 	}
 	public Int(java.lang.String text){
-	    this(new Integer(text.startsWith("+") ?
-			     text.substring(1) :
-			     text));
+	    this(_convert(text));
 	}
+
+	static int _convert(java.lang.String text){
+	    text = text.trim();
+	    if(text.startsWith("+"))
+		text = text.substring(1).trim();
+	    return Integer.parseInt(text);
+	}
+
 	public Int(long value){
 	    this((int)value);
 	}

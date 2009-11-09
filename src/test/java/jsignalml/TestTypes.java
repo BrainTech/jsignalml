@@ -84,4 +84,14 @@ public class TestTypes {
     {
 	assertEquals(Type.getType("xxx"), Type.List.class);
     }
+
+    @Test public void test_int_make_with_spaces()
+    {
+	assertEquals(new Type.Int("1"), new Type.Int(1));
+	assertEquals(new Type.Int("  1"), new Type.Int(1));
+	assertEquals(new Type.Int("1  "), new Type.Int(1));
+	assertEquals(new Type.Int("0       "), new Type.Int(0));
+	assertEquals(new Type.Int("+2"), new Type.Int(2));
+	assertEquals(new Type.Int("+ 3 "), new Type.Int(3));
+    }
 }
