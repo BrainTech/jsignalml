@@ -106,11 +106,11 @@ public class Machine {
 
 	    BitForm bitf;
 	    try{
-		bitf = BitForm.get(format.castTo(Type.String.class).value);
+		bitf = BitForm.get(new Type.String().make(format).value);
 	    }catch(BitForm.BadBitForm e){
 		throw new ExpressionFault.ExternalError(e);
 	    }
-	    int offs = offset.castTo(Type.Int.class).value;
+	    int offs = new Type.Int().make(offset).value;
 	    FileType.BinaryFile file = state.getFile(this.handle);
 
 	    log.debug("reading %s as %s @ %s from %s",
@@ -179,7 +179,7 @@ public class Machine {
 		thename = hint;
 	    } else if(this.filename != null){
 		Type tmp = this.filename.eval(state);
-		String str = tmp.castTo(Type.String.class).getValue();
+		String str = new Type.String().make(tmp).value;
 		thename = new File(str);
 	    } else {
 		throw new ExpressionFault.ValueError("both filenames are null");

@@ -98,6 +98,8 @@ public abstract class Type {
 	}
     }
 
+    public abstract Type make(Type value);
+
     public abstract Object getValue();
 
     public java.lang.String toString(){
@@ -165,13 +167,18 @@ public abstract class Type {
 	    return new Int(1);
     }
 
-    public <T extends Type> T castTo(Class<T> theClass)
+    @Deprecated
+    public Type castTo(Class<? extends Type> theClass)
     {
 	if(theClass.isInstance(this))
-	    return (T)this;
-	else
-	    // TODO
-	    throw new ExpressionFault.TypeError(this.getClass(), theClass);
+	    return this;
+	else try{
+		return theClass.newInstance().make(this);
+	    }catch(InstantiationException e){
+		throw new RuntimeException(e);
+	    }catch(IllegalAccessException e){
+		throw new RuntimeException(e);
+	    }
     }
 
     static {
@@ -198,6 +205,16 @@ public abstract class Type {
 	}
 	public Int(boolean value){
 	    this(value?1:0);
+	}
+	public Int(){
+	    this(0);
+	}
+	public Int make(Type value){
+	    if(value instanceof Int)
+		return (Int)value;
+	    if(value instanceof String)
+		return new Int(((String)value).getValue());
+	    throw new UnsupportedOperationException();
 	}
 
 	public Integer getValue(){
@@ -339,6 +356,20 @@ public abstract class Type {
 	    this(new Double(text));
 	}
 
+	public Float(){
+	    this(0.0);
+	}
+
+	public Float make(Type value){
+	    if(value instanceof Float)
+		return (Float)value;
+	    if(value instanceof Int)
+		return new Float(((Int)value).getValue());
+	    if(value instanceof String)
+		return new Float(((String)value).getValue());
+	    throw new UnsupportedOperationException();
+	}
+
 	public Double getValue(){
 	    return this.value;
 	}
@@ -473,6 +504,14 @@ public abstract class Type {
 	    this.value = "" + value;
 	}
 
+	public String(){
+	    this("");
+	}
+
+	public String make(Type value){
+	    return value.str();
+	}
+
 	public java.lang.String getValue(){
 	    return this.value;
 	}
@@ -598,6 +637,14 @@ public abstract class Type {
 
 	public List(java.util.List<? extends Type> value){
 	    this.value = unmodifiableList(new ArrayList(value));
+	}
+
+	public List(){
+	    this(new ArrayList());
+	}
+
+	public List make(Type value){
+	    throw new UnsupportedOperationException();
 	}
 
 	public /*immutable*/ java.util.List<Type> getValue(){
