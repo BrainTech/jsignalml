@@ -254,5 +254,33 @@ public class CodecCore implements CodecyThing {
 
 	CodecCore core = makeCodec(args[0]);
 	core.dumpCodec();
+
+	if(args.length <= 1)
+	    return;
+
+	String[] files = new String[args.length-1];
+	System.arraycopy(args, 1, files, 0, files.length);
+	Reader reader = new Reader(core, files);
+
+	for(Map.Entry<String,Machine.Param> entry: ((CodecCore)reader.codec).params.entrySet()){
+	    String name = entry.getKey();
+	    Machine.Param p = entry.getValue();
+	    System.out.println(name + ":");
+
+	    Type val;
+	    try{
+		switch(p.args.length){
+		case 0:
+		    val = reader.frame_call(name);
+		    break;
+		default:
+		    continue;
+		}
+	    }catch(ExpressionFault.NameError e){
+		System.out.println("failed");
+		continue;
+	    }
+	    System.out.println(""+name + "->" + val);
+	}
     }
 }
