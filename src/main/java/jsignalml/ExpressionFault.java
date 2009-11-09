@@ -61,17 +61,25 @@ public class ExpressionFault extends RuntimeException {
 	public NameError(java.lang.String name){
 	    this.name = name;
 	}
+
+	public String getMessage(){
+	    return format("name '%s' not found", name);
+	}
     }
 
     /**
      * An out of bounds index.
      */
     public static class IndexError extends ExpressionFault {
-	/* public final int index;
-	   public IndexError(int index){
-	       this.index = index;
-	   }
-	*/
+	public final int index, limit;
+	public IndexError(int index, int limit){
+	    this.index = index;
+	    this.limit = limit;
+	}
+
+	public String getMessage(){
+	    return format("index %d bad, limit=%d", index, limit);
+	}
     }
 
     /**

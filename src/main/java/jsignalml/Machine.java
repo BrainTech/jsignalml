@@ -61,6 +61,7 @@ public class Machine {
 	    Map<String,Type> locals = this.mapArgs(args);
 	    CallHelper frame = state.localize(locals);
 	    Type val = this.read(frame);
+	    log.info("eval: got %s", val);
 	    return val.castTo(this.type);
 	}
 

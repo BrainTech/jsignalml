@@ -136,6 +136,9 @@ public abstract class Type {
 
     public abstract boolean isTrue();
     public abstract java.lang.String repr();
+    public String str(){
+	return new String(this.repr());
+    }
 
     @Override
     public boolean equals(Object other)
@@ -534,7 +537,8 @@ public abstract class Type {
 		return new String(c);
 	    } catch(ClassCastException e){
 	    } catch(IndexOutOfBoundsException e){
-		throw new ExpressionFault.IndexError();
+		throw new ExpressionFault.IndexError(
+				     ind.value, this.value.length());
 	    }
 
 	    throw new ExpressionFault.TypeError();
@@ -655,7 +659,8 @@ public abstract class Type {
 		return this.value.get(ind.value);
 	    } catch(ClassCastException e){
 	    } catch(IndexOutOfBoundsException e){
-		throw new ExpressionFault.IndexError();
+		throw new ExpressionFault.IndexError(
+				     ind.value, this.value.size());
 	    }
 
 	    throw new ExpressionFault.TypeError();
