@@ -17,7 +17,7 @@ public class Reader extends Frame implements CallHelper {
     final LinkedList<File> filehints = util.newLinkedList();
 
     public Reader(CodecyThing codec, String...filenames){
-	super(null);
+	super(new Frame.Builtins(null));
 	this.codec = codec;
 	for(String filename: filenames)
 	    this.filehints.add(new File(filename));
