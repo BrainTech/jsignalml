@@ -51,19 +51,18 @@
       <plugin>
 	<groupId>org.antlr</groupId>
 	<artifactId>antlr3-maven-plugin</artifactId>
-	<version>3.1.4-SNAPSHOT</version>
+	<version>3.1.3-1</version>
 	<!--
 	     http://www.cisl.ucar.edu/nets/intro/staff/siemsen/tools/maven/
 	     http://www.antlr.org/antlr3-maven-plugin/
 	     http://mojo.codehaus.org/antlr3-maven-plugin/
 	     http://www.antlr.org/pipermail/antlr-interest/2009-June/034668.html
-   	     http://blog.tfd.co.uk/2009/07/29/howto-add-more-than-one-source-directory-into-a-maven-build/
+	     http://blog.tfd.co.uk/2009/07/29/howto-add-more-than-one-source-directory-into-a-maven-build/
 	  -->
 
- 	<executions>
+	<executions>
           <execution>
 	      <id>antlr</id>
-	      <phase>generate-sources</phase>
               <goals>
                 <goal>antlr</goal>
               </goals>
@@ -110,22 +109,4 @@
 
     </plugins>
   </build>
-
-  <!--
-       http://www.antlr.org/pipermail/antlr-interest/2009-May/034285.html
-    -->
-  <pluginRepositories>
-      <!--
-           This is the ANTLR snapshot repository.
-        -->
-      <pluginRepository>
-	  <id>antlr-snapshot</id>
-	  <name>ANTLR Testing Snapshot Repository</name>
-	  <url>http://antlr.org/antlr-snapshot</url>
-	  <snapshots>
-	      <enabled>true</enabled>
-	  </snapshots>
-      </pluginRepository>
-  </pluginRepositories>
-
 </project>
