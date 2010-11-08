@@ -35,7 +35,7 @@ public abstract class BitForm {
 			try {
 				data = buffer.get(offset);
 			} catch (IndexOutOfBoundsException e) {
-				throw new ExpressionFault.IndexError();
+				throw new ExpressionFault.IndexError(offset, buffer.limit());
 			}
 			return new Type.Int(data);
 		}
@@ -49,7 +49,7 @@ public abstract class BitForm {
 				try {
 					data = buffer.getInt(byteoffset);
 				} catch (IndexOutOfBoundsException e) {
-					throw new ExpressionFault.IndexError();
+					throw new ExpressionFault.IndexError(byteoffset, buffer.limit());
 				}
 				return new Type.Int(data);
 			}
