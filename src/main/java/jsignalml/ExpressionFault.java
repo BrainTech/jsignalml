@@ -11,90 +11,90 @@ import static java.lang.String.format;
  * instead of expressions.
  */
 public class ExpressionFault extends RuntimeException {
-    ExpressionFault(){}
-    ExpressionFault(Throwable cause){
-	super(cause);
-    }
-    ExpressionFault(String message){
-	super(message);
-    }
-
-    /**
-     * Assignement is forbidden.
-     */
-    public static class AssignmentError extends ExpressionFault{}
-
-    /**
-     * Arguments passed to a function are wrong.
-     */
-    public static class ValueError extends ExpressionFault{
-	public ValueError(String message){
-	    super(message);
+	ExpressionFault() {}
+	ExpressionFault(Throwable cause) {
+		super(cause);
 	}
-    }
-
-    /**
-     * An object of wrong type was passed.
-     */
-    public static class TypeError extends ExpressionFault {
-	public final Class<? extends Type> from, to;
-	public TypeError(Class<? extends Type> from, Class<? extends Type> to){
-	    this.from = from;
-	    this.to = to;
+	ExpressionFault(String message) {
+		super(message);
 	}
 
-	@Deprecated public TypeError(){
-	    this.from = this.to = Type.class;
+	/**
+	 * Assignement is forbidden.
+	 */
+	public static class AssignmentError extends ExpressionFault {}
+
+	/**
+	 * Arguments passed to a function are wrong.
+	 */
+	public static class ValueError extends ExpressionFault {
+		public ValueError(String message) {
+			super(message);
+		}
 	}
 
-	public String toString(){
-	    return format("%s(%s => %s)", getClass(), from, to);
-	}
-    }
+	/**
+	 * An object of wrong type was passed.
+	 */
+	public static class TypeError extends ExpressionFault {
+		public final Class<? extends Type> from, to;
+		public TypeError(Class<? extends Type> from, Class<? extends Type> to) {
+			this.from = from;
+			this.to = to;
+		}
 
+		@Deprecated public TypeError() {
+			this.from = this.to = Type.class;
+		}
 
-    /**
-     * Param with a given name was not found.
-     */
-    public static class NameError extends ExpressionFault {
-	public final String name;
-	public NameError(java.lang.String name){
-	    this.name = name;
-	}
-
-	public String getMessage(){
-	    return format("name '%s' not found", name);
-	}
-    }
-
-    /**
-     * An out of bounds index.
-     */
-    public static class IndexError extends ExpressionFault {
-	public final int index, limit;
-	public IndexError(int index, int limit){
-	    this.index = index;
-	    this.limit = limit;
+		public String toString() {
+			return format("%s(%s => %s)", getClass(), from, to);
+		}
 	}
 
-	public String getMessage(){
-	    return format("index %d bad, limit=%d", index, limit);
-	}
-    }
 
-    /**
-     * A wrong number of arguments was used.
-     */
-    public static class ArgMismatch extends ExpressionFault {
-    }
+	/**
+	 * Param with a given name was not found.
+	 */
+	public static class NameError extends ExpressionFault {
+		public final String name;
+		public NameError(java.lang.String name) {
+			this.name = name;
+		}
 
-    /**
-     * Signifies an error detected by the environment in the course of
-     * expression evalution.
-     */
-    public static class ExternalError extends ExpressionFault {
-	public ExternalError(Throwable cause){
-	    super(cause);
+		public String getMessage() {
+			return format("name '%s' not found", name);
+		}
 	}
-    }
+
+	/**
+	 * An out of bounds index.
+	 */
+	public static class IndexError extends ExpressionFault {
+		public final int index, limit;
+		public IndexError(int index, int limit) {
+			this.index = index;
+			this.limit = limit;
+		}
+
+		public String getMessage() {
+			return format("index %d bad, limit=%d", index, limit);
+		}
+	}
+
+	/**
+	 * A wrong number of arguments was used.
+	 */
+	public static class ArgMismatch extends ExpressionFault {
+	}
+
+	/**
+	 * Signifies an error detected by the environment in the course of
+	 * expression evalution.
+	 */
+	public static class ExternalError extends ExpressionFault {
+		public ExternalError(Throwable cause) {
+			super(cause);
+		}
+	}
 }

@@ -9,16 +9,16 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 
 public interface CallHelper {
-    public interface FileHandle<T extends FileType>
-    {
-	public T open(CallHelper state, File filename);
-    }
+	public interface FileHandle<T extends FileType>
+	{
+		public T open(CallHelper state, File filename);
+	}
 
-    public Type call(String id, Type...args);
+	public Type call(String id, Type...args);
 
-    public <T extends FileType> T getFile(FileHandle<T> handle);
+	public <T extends FileType> T getFile(FileHandle<T> handle);
 
-    public void assign(String id, Expression expr);
+	public void assign(String id, Expression expr);
 
-    public CallHelper localize(Map<String,Type> locals);
+	public CallHelper localize(Map<String,Type> locals);
 }

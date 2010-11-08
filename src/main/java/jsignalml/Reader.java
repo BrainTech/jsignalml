@@ -8,41 +8,41 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 
 public class Reader extends Frame implements CallHelper {
-    public static final Logger log = new Logger(Reader.class);
+	public static final Logger log = new Logger(Reader.class);
 
-    final CodecyThing codec;
+	final CodecyThing codec;
 
-    /* HashMap because TreeMap would require comparable. */
-    final Map<FileHandle<FileType>, FileType> files = util.newHashMap();
-    final LinkedList<File> filehints = util.newLinkedList();
+	/* HashMap because TreeMap would require comparable. */
+	final Map<FileHandle<FileType>, FileType> files = util.newHashMap();
+	final LinkedList<File> filehints = util.newLinkedList();
 
-    public Reader(CodecyThing codec, String...filenames){
-	super(new Frame.Builtins(null));
-	this.codec = codec;
-	for(String filename: filenames)
-	    this.filehints.add(new File(filename));
-    }
+	public Reader(CodecyThing codec, String...filenames) {
+		super(new Frame.Builtins(null));
+		this.codec = codec;
+		for (String filename: filenames)
+			this.filehints.add(new File(filename));
+	}
 
-    @Override
-    public <T extends FileType> T getFile(FileHandle<T> handle)
-    {
-	log.info("request for %s", handle);
-	T file = (T) this.files.get(handle);
-	if(file != null)
-	    return file;
+	@Override
+	public <T extends FileType> T getFile(FileHandle<T> handle)
+	{
+		log.info("request for %s", handle);
+		T file = (T) this.files.get(handle);
+		if (file != null)
+			return file;
 
-	log.info("attempting to open %s", handle);
-	file = handle.open(this, this.filehints.poll());
-	this.files.put((FileHandle<FileType>) handle, (FileType) file);
-			//XXX WTF?
-	return file;
-    }
+		log.info("attempting to open %s", handle);
+		file = handle.open(this, this.filehints.poll());
+		this.files.put((FileHandle<FileType>) handle, (FileType) file);
+		//XXX WTF?
+		return file;
+	}
 
-    @Override
-    public Type frame_call(String id, Type...args)
-    {
-	Machine.Param p = codec.getParam(id);
-	Type v = p.eval(this, args);
-	return v;
-    }
+	@Override
+	public Type frame_call(String id, Type...args)
+	{
+		Machine.Param p = codec.getParam(id);
+		Type v = p.eval(this, args);
+		return v;
+	}
 }
