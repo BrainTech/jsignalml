@@ -11,11 +11,11 @@ import static java.lang.String.format;
  * instead of expressions.
  */
 public class ExpressionFault extends RuntimeException {
-	ExpressionFault() {}
-	ExpressionFault(Throwable cause) {
+	public ExpressionFault() {}
+	public ExpressionFault(Throwable cause) {
 		super(cause);
 	}
-	ExpressionFault(String message) {
+	public ExpressionFault(String message) {
 		super(message);
 	}
 
@@ -71,8 +71,8 @@ public class ExpressionFault extends RuntimeException {
 	 * An out of bounds index.
 	 */
 	public static class IndexError extends ExpressionFault {
-		public final int index, limit;
-		public IndexError(int index, int limit) {
+		public final long index, limit;
+		public IndexError(long index, long limit) {
 			this.index = index;
 			this.limit = limit;
 		}

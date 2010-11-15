@@ -14,7 +14,7 @@ public abstract class Type {
 	static final Logger log = new Logger(Type.class);
 
 	static final Map<java.lang.String, Class<? extends Type>>
-	typeNames = util.newHashMap();
+		typeNames = util.newHashMap();
 
 	private static void registerType(java.lang.String type,
 	                                 Class<? extends Type> theClass) {
@@ -165,20 +165,6 @@ public abstract class Type {
 			return new Int(0);
 		else
 			return new Int(1);
-	}
-
-	@Deprecated
-	public Type castTo(Class<? extends Type> theClass)
-	{
-		if (theClass.isInstance(this))
-			return this;
-		else try {
-				return theClass.newInstance().make(this);
-			} catch (InstantiationException e) {
-				throw new RuntimeException(e);
-			} catch (IllegalAccessException e) {
-				throw new RuntimeException(e);
-			}
 	}
 
 	static {

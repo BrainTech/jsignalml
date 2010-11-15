@@ -49,7 +49,14 @@ public class Machine {
 			// XXX: is this the right map class?
 			final Map<String,Type> locals = util.newTreeMap();
 			for (int i=0; i<this.args.length; i++) {
-				Type cast = args[i].castTo(this.args[i].type);
+				Type cast;
+				try {
+					cast = this.args[i].type.newInstance().make(args[i]);
+				} catch (InstantiationException e) {
+					throw new RuntimeException(e);
+				} catch (IllegalAccessException e) {
+					throw new RuntimeException(e);
+				}
 				locals.put(this.args[i].name, cast);
 			}
 
@@ -62,7 +69,13 @@ public class Machine {
 			CallHelper frame = state.localize(locals);
 			Type val = this.read(frame);
 			log.info("eval: got %s", val);
-			return val.castTo(this.type);
+			try {
+				return this.type.newInstance().make(val);
+			} catch (InstantiationException e) {
+				throw new RuntimeException(e);
+			} catch (IllegalAccessException e) {
+				throw new RuntimeException(e);
+			}
 		}
 
 		public abstract Type read(CallHelper state);
