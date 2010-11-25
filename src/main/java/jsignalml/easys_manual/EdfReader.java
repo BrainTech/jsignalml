@@ -5,6 +5,9 @@ import java.nio.FloatBuffer;
 import java.nio.BufferUnderflowException;
 import java.util.Arrays;
 import java.util.Iterator;
+
+import org.apache.log4j.BasicConfigurator;
+
 import jsignalml.MyBuffer;
 import jsignalml.Type;
 import jsignalml.BitForm;
@@ -29,25 +32,25 @@ public class EdfReader implements jsignalml.Source, jsignalml.ChannelSet {
 		buffer.close();
 	}
 
-	int _get_version() {
+	long _get_version() {
 		Type.String str = (Type.String) buffer.read(new BitForm.STR(8), 0);
 		return new Type.Int().make(str).getValue();
 	}
 
-	Integer version = null;
-	public int get_version() {
+	long version = null;
+	public long get_version() {
 		if (version == null)
 			version = _get_version();
 		return version;
 	}
 
-	int _get_number_of_channels() {
+	long _get_number_of_channels() {
 		Type.String str = (Type.String) buffer.read(new BitForm.STR(4), 252);
 		return new Type.Int().make(str).getValue();
 	}
 
-	Integer number_of_channels = null;
-	public int get_number_of_channels() {
+	long number_of_channels = null;
+	public long get_number_of_channels() {
 		if (number_of_channels == null)
 			number_of_channels = _get_number_of_channels();
 		return number_of_channels;
@@ -58,7 +61,7 @@ public class EdfReader implements jsignalml.Source, jsignalml.ChannelSet {
 	}
 
 	EdfChannel[] channels = null;
-	public EdfChannel get_channel(int i) {
+	public EdfChannel get_channel(long i) {
 		return channels[i];
 	}
 
@@ -102,50 +105,50 @@ public class EdfReader implements jsignalml.Source, jsignalml.ChannelSet {
 		return Arrays.asList((Channel[])channels).iterator();
 	}
 
-	Double duration_of_data_record = null;
+	double duration_of_data_record = null;
 	public double get_duration_of_data_record() {
 		if (duration_of_data_record == null)
 			duration_of_data_record = _get_duration_of_data_record();
 		return duration_of_data_record;
 	}
 	double _get_duration_of_data_record() {
-		int number_of_channels = get_number_of_channels();
-		int offset = 244;
+		long offset = 244;
 		Type.String str = (Type.String) buffer.read(new BitForm.STR(8), offset);
 		return new Type.Float().make(str).getValue();
 	}
 
-	Integer frame_size = null;
-	public int get_frame_size() {
+	long frame_size = null;
+	public long get_frame_size() {
 		if (frame_size == null)
 			frame_size = _get_frame_size();
 		return frame_size;
 	}
-	int _get_frame_size() {
-		return get_channel_offset(get_number_of_channels());
+	long _get_frame_size() {
+		// different from the prototype in EDF.xml
+		return get_channel(get_number_of_channels()-1).get_channel_offset()
+			+ get_channel(get_number_of_channels()-1).get_samples_per_frame()
+			* get_datatype_width();
 	}
 
-	Integer channel_offset = null;
-	public int get_channel_offset(int channel) {
-		if (channel_offset == null)
-			channel_offset = _get_channel_offset(channel);
-		return channel_offset;
+	long number_of_data_records = null;
+	public long get_number_of_data_records() {
+		if (number_of_data_records == null)
+			number_of_data_records = _get_number_of_data_records();
+		return number_of_data_records;
 	}
-	int _get_channel_offset(int channel) {
-		if (channel == 0)
-			return 0;
-		return get_channel_offset(channel-1) +
-			get_channel(channel-1).get_samples_per_frame() *
-			get_datatype_width();
+	long _get_number_of_data_records() {
+		long offset = 236;
+		Type.String str = (Type.String) buffer.read(new BitForm.STR(8), offset);
+		return new Type.Int().make(str).getValue();
 	}
 
-	Integer datatype_width = null;
-	public int get_datatype_width() {
+	long datatype_width = null;
+	public long get_datatype_width() {
 		if (datatype_width == null)
 			datatype_width = _get_datatype_width();
 		return datatype_width;
 	}
-	public int _get_datatype_width() {
+	public long _get_datatype_width() {
 		return 2;
 	}
 
@@ -153,12 +156,12 @@ public class EdfReader implements jsignalml.Source, jsignalml.ChannelSet {
 	 * *********************** EdfChannel ****************************
 	 */
 	class EdfChannel implements Channel {
-		final int channel;
-		EdfChannel(int channel) {
+		final long channel;
+		EdfChannel(long channel) {
 			this.channel = channel;
 		}
 
-		Double sampling_frequency = null;
+		double sampling_frequency = null;
 		public double get_sampling_frequency() {
 			if (sampling_frequency == null)
 				sampling_frequency = _get_sampling_frequency();
@@ -169,22 +172,22 @@ public class EdfReader implements jsignalml.Source, jsignalml.ChannelSet {
 			return get_samples_per_frame() / get_duration_of_data_record();
 		}
 
-		Integer samples_per_frame = null;
-		public int get_samples_per_frame() {
+		long samples_per_frame = null;
+		public long get_samples_per_frame() {
 			if (samples_per_frame == null)
 				samples_per_frame = _get_samples_per_frame();
 			return samples_per_frame;
 		}
-		int _get_samples_per_frame() {
-			int number_of_channels = get_number_of_channels();
-			int offset = 256 + 216*number_of_channels + 8*channel;
+		long _get_samples_per_frame() {
+			long number_of_channels = get_number_of_channels();
+			long offset = 256 + 216*number_of_channels + 8*channel;
 			Type.String str = (Type.String) buffer.read(new BitForm.STR(8), offset);
 			return new Type.Int().make(str).getValue();
 		}
 
 		public float getSample(long sample) {
 		        return sample / get_samples_per_frame() * get_frame_size() 
-				+ get_channel_offset(channel) +
+				+ get_channel_offset() +
 				sample % get_samples_per_frame() * get_datatype_width();
 		}
 
@@ -201,15 +204,38 @@ public class EdfReader implements jsignalml.Source, jsignalml.ChannelSet {
 		}
 
 		public long get_number_of_samples() throws ExpressionFault {
-			return 0; // XXX
+			return get_samples_per_frame() * get_number_of_data_records();
 		}
 
+		String channel_name = null;
 		public String get_channel_name() throws ExpressionFault {
-			return ""; // XXX
+			if (channel_name == null)
+				channel_name = _get_channel_name();
+			return channel_name;
+		}
+		String _get_channel_name() {
+			long offset = 256 + 16*channel;
+			Type.String str = (Type.String) buffer.read(new BitForm.STR(8), offset);
+			return str.getValue();
+		}
+
+		long channel_offset = null;
+		public long get_channel_offset() {
+			if (channel_offset == null)
+				channel_offset = _get_channel_offset();
+			return channel_offset;
+		}
+		long _get_channel_offset() {
+			if (channel == 0)
+				return 0;
+			return get_channel(channel-1).get_channel_offset() +
+				get_channel(channel-1).get_samples_per_frame() *
+				get_datatype_width();
 		}
 	}
 
 	public static void main(String...args) throws FileNotFoundException, IOException {
+		BasicConfigurator.configure();
 		EdfReader reader = new EdfReader();
 		reader.open(new File(args[0]));
 		System.out.println("number_of_channels " + reader.get_number_of_channels());
