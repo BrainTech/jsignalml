@@ -14,19 +14,21 @@ interface JavaType {
 	JavaType floordiv(JavaType b);
 	JavaType mod(JavaType b);
 
-	/*
 	JavaType bin_and(JavaType b);
 	JavaType bin_or(JavaType b);
 	JavaType bin_xor(JavaType b);
 
 	JavaType pow(JavaType b);
-	*/
 
 	JavaType cmp(JavaType b);
 
+	JavaType index(JavaType i);
+
 	JavaType bool();
+
 	JavaType pos();
 	JavaType neg();
+	JavaType bin_neg():
 
 	class Int extends BigInteger implements JavaType {
 		static Int False = new Int(0);
@@ -147,6 +149,47 @@ interface JavaType {
 			return new Float(this).mod(other);
 		}
 
+		public JavaType bin_and(JavaType other){
+			if(other instanceof Int)
+				return this.bin_and((Int)other);
+			throw new ExpressionFault.TypeError();
+		}
+		public Int bin_and(Int other){
+			return new Int(this.and(other));
+		}
+
+		public JavaType bin_or(JavaType other){
+			if(other instanceof Int)
+				return this.bin_or((Int)other);
+			throw new ExpressionFault.TypeError();
+		}
+		public Int bin_or(Int other){
+			return new Int(this.or(other));
+		}
+
+		public JavaType bin_xor(JavaType other){
+			if(other instanceof Int)
+				return this.bin_xor((Int)other);
+			throw new ExpressionFault.TypeError();
+		}
+		public Int bin_xor(Int other){
+			return new Int(this.xor(other));
+		}
+
+		public JavaType pow(JavaType other){
+			if(other instanceof Int)
+				return this.pow((Int)other);
+			if(other instanceof Float)
+				return this.pow((Float)other);
+			throw new ExpressionFault.TypeError();
+		}
+		public Int pow(Int other){
+			return new Int(this.pow(other));
+		}
+		public Float pow(Float other){
+			return new Float(Math.pow(this.doubleValue(), other.value));
+		}
+
 		public Int cmp(JavaType other){
 			if(other instanceof Int)
 				return this.cmp((Int)other);
@@ -163,12 +206,21 @@ interface JavaType {
 			return new Int(value);
 		}
 
+		public JavaType index(JavaType i){
+			throw new ExpressionFault.TypeError();
+		}
+
 		public Int bool(){
 			return this.equals(BigInteger.ZERO) ? Int.False : Int.True;
 		}
 
 		public Int pos() { return this; }
-		public Int neg() { return new Int(this.negate()); }
+		public Int neg() {
+			return new Int(this.negate());
+		}
+		public Int bin_neg() {
+			return new Int(this.not());
+		}
 	}
 
 	class Float implements JavaType {
@@ -271,6 +323,30 @@ interface JavaType {
 			return this.mod(new Float(other));
 		}
 
+		public JavaType bin_and(JavaType other){
+			throw new ExpressionFault.TypeError();
+		}
+		public JavaType bin_or(JavaType other){
+			throw new ExpressionFault.TypeError();
+		}
+		public JavaType bin_xor(JavaType other){
+			throw new ExpressionFault.TypeError();
+		}
+
+		public JavaType pow(JavaType other){
+			if(other instanceof Int)
+				return this.pow((Int)other);
+			if(other instanceof Float)
+				return this.pow((Float)other);
+			throw new ExpressionFault.TypeError();
+		}
+		public Float pow(Int other){
+			return new Float(Math.pow(this.value, other.doubleValue()));
+		}
+		public Float pow(Float other){
+			return new Float(Math.pow(this.value, other.value));
+		}
+
 		public Int cmp(JavaType other){
 			if(other instanceof Int)
 				return this.cmp((Int)other);
@@ -289,12 +365,19 @@ interface JavaType {
 			return new Int(value);
 		}
 
+		public JavaType index(JavaType i){
+			throw new ExpressionFault.TypeError();
+		}
+
 		public Int bool(){
 			return this.value == 0.0 ? Int.False : Int.True;
 		}
 
 		public Float pos() { return this; }
 		public Float neg() { return new Float(-this.value); }
+		public Int bin_neg() {
+			throw new ExpressionFault.TypeError();
+		}
 	}
 
 	class Str implements JavaType {
@@ -340,6 +423,20 @@ interface JavaType {
 			throw new ExpressionFault.TypeError();
 		}
 
+		public JavaType bin_and(JavaType other){
+			throw new ExpressionFault.TypeError();
+		}
+		public JavaType bin_or(JavaType other){
+			throw new ExpressionFault.TypeError();
+		}
+		public JavaType bin_xor(JavaType other){
+			throw new ExpressionFault.TypeError();
+		}
+
+		public JavaType pow(JavaType other){
+			throw new ExpressionFault.TypeError();
+		}
+
 		public Int cmp(JavaType other){
 			if(other instanceof Str)
 				return this.cmp((Str)other);
@@ -347,6 +444,16 @@ interface JavaType {
 		}
 		public Int cmp(Str other){
 			return new Int(this.value.compareTo(other.value));
+		}
+
+		public JavaType index(JavaType i){
+			if(i instanceof Int)
+				return this.index((Int)i);
+			throw new ExpressionFault.TypeError();
+		}
+		public JavaType index(Int i){
+			int i_ = i.intValue();
+			return new Str(this.value.substring(i_, i_+1));
 		}
 
 		public Int bool(){
@@ -357,6 +464,9 @@ interface JavaType {
 			throw new ExpressionFault.TypeError();
 		}
 		public Int neg() {
+			throw new ExpressionFault.TypeError();
+		}
+		public Int bin_neg() {
 			throw new ExpressionFault.TypeError();
 		}
 	}
@@ -406,6 +516,20 @@ interface JavaType {
 			throw new ExpressionFault.TypeError();
 		}
 
+		public JavaType bin_and(JavaType other){
+			throw new ExpressionFault.TypeError();
+		}
+		public JavaType bin_or(JavaType other){
+			throw new ExpressionFault.TypeError();
+		}
+		public JavaType bin_xor(JavaType other){
+			throw new ExpressionFault.TypeError();
+		}
+
+		public JavaType pow(JavaType other){
+			throw new ExpressionFault.TypeError();
+		}
+
 		public Int cmp(JavaType other){
 			if(other instanceof List)
 				return this.cmp((List)other);
@@ -426,6 +550,15 @@ interface JavaType {
 			return new Int(0);
 		}
 
+		public JavaType index(JavaType i){
+			if(i instanceof Int)
+				return this.index((Int)i);
+			throw new ExpressionFault.TypeError();
+		}
+		public JavaType index(Int i){
+			return this.value.get(i.intValue());
+		}
+
 		public Int bool(){
 			return this.value.isEmpty() ? Int.False : Int.True;
 		}
@@ -434,6 +567,9 @@ interface JavaType {
 			throw new ExpressionFault.TypeError();
 		}
 		public Int neg() {
+			throw new ExpressionFault.TypeError();
+		}
+		public Int bin_neg() {
 			throw new ExpressionFault.TypeError();
 		}
 	}
