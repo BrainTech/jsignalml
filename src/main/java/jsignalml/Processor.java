@@ -148,6 +148,8 @@ public class Processor {
 			System.out.format("expr: %s\n", expr);
 
 			try {
+				String code = expr.toJava();
+				System.out.format("code: %s \n", code);
 				Type value = expr.eval(state);
 				System.out.format("----> %s\n",
 				                  value == null ? "null" : value.repr());

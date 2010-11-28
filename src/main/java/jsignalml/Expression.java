@@ -10,6 +10,7 @@ import static java.util.Collections.unmodifiableList;
 
 public abstract class Expression {
 	public abstract Type eval(CallHelper state);
+	public abstract String toJava();
 
 	public static class BinaryOp extends Expression {
 		final Expression left, right;
@@ -33,6 +34,18 @@ public abstract class Expression {
 		public String toString()
 		{
 			return format("%s %s %s", left, op.rep, right);
+		}
+		
+		public String toJava()
+		{
+			String left = this.left.toJava();
+			String right = this.right.toJava();
+			if (op.javaMethod == "cmp") 
+			{
+				return format("(%s.cmp(%s) %s 0 ? JavaType.Int.True : JavaType.Int.False)", left, right, op.rep);
+			} else {
+				return format("%s.%s(%s)", left, op.javaMethod, right);
+			}
 		}
 	}
 
@@ -61,6 +74,20 @@ public abstract class Expression {
 			Type right = this.right.eval(state);
 			return right;
 		}
+
+		public String toJava()
+		{
+			String left = this.left.toJava();
+			String right = this.right.toJava();
+			switch (this.op) {
+			case LOG_AND:
+				return format("( %s ? %s : %s )", left, right, left);
+			case LOG_OR:
+				return format("( %s ? %s : %s )", left, left, right);
+			default:
+				throw new RuntimeException();
+			}
+		}
 	}
 
 	public static class UnaryOp extends Expression {
@@ -85,6 +112,11 @@ public abstract class Expression {
 		public String toString()
 		{
 			return format("%s %s", op.rep, sub);
+		}
+
+		public String toJava()
+		{
+			return format("%s.%s()", sub.toJava(), op.javaMethod);
 		}
 	}
 
@@ -113,6 +145,20 @@ public abstract class Expression {
 		public String toString() {
 			return this.name + "(" + Type.String.join(", ", this.args) + ")";
 		}
+
+		public String toJava()
+		{
+			return ""; //XXX
+		/*	String code = format("Type vals[] = new Type[%s];\n", this.args.size());
+			for (int i = 0; i < this.args.size(); i++)
+			{
+				String value = this.args.get(i).toJava();
+				String code = code.concat(format("vals[%d] = %s;\n", i, value));
+			}
+
+			return state.call(this.name, vals);
+		*/
+		}
 	}
 
 
@@ -134,6 +180,16 @@ public abstract class Expression {
 
 		public String toString() {
 			return "[" + Type.String.join(", ", this.args) + "]";
+		}
+
+		public String toJava()
+		{
+			String code = "new JavaType.List(";
+			for (int i = 0; i < this.args.size() -1 ; i++)
+				code = code.concat(format("%s,", this.args.get(i).toJava()));
+			code = code.concat(format("%s)", this.args.get(this.args.size() - 1).toJava()));
+
+			return code;
 		}
 	}
 
@@ -158,6 +214,13 @@ public abstract class Expression {
 		{
 			return format("%s[ %s ]", item, index);
 		}
+
+		public String toJava()
+		{
+			String item = this.item.toJava();
+			String index = this.index.toJava();
+			return format("%s.index( %s )", item, index);
+		}
 	}
 
 	public static class Const extends Expression {
@@ -175,6 +238,17 @@ public abstract class Expression {
 		public Type eval(CallHelper dummy)
 		{
 			return this.value;
+		}
+
+		public String toJava()
+		{
+			if (this.value instanceof Type.Int) 
+				return format("new JavaType.Int(%s)", this.value.repr());
+			if (this.value instanceof Type.Float)
+				return format("new JavaType.Float(%s)", this.value.repr());
+			if (this.value instanceof Type.String)
+				return format("new JavaType.Str(%s)", this.value.repr());
+			throw new RuntimeException();
 		}
 
 		public static Expression make(String str) {
@@ -211,6 +285,11 @@ public abstract class Expression {
 		public String toString()
 		{
 			return format("if %s then %s else %s", q, a, b);
+		}
+
+		public String toJava()
+		{
+			return format("( %s ? %s : %s )", q.toJava(), a.toJava(), b.toJava());
 		}
 	}
 
@@ -250,6 +329,11 @@ public abstract class Expression {
 		{
 			state.assign(this.id, this.value);
 			return null;
+		}
+
+		public String toJava()
+		{
+			return ""; //XXX
 		}
 	}
 }
