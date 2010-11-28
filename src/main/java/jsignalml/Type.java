@@ -39,30 +39,32 @@ public abstract class Type {
 	static final Map<Integer, BinaryOp> binOpTable = util.newTreeMap();
 
 	public enum BinaryOp {
-		ADD("+", SExpressionParser.ADD),
-		SUB("-", SExpressionParser.SUBTRACT),
-		MUL("*", SExpressionParser.MULTIPLY),
-		DIV("/", SExpressionParser.TRUEDIV),
-		FLOORDIV("//", SExpressionParser.FLOORDIV),
-		MOD("%", SExpressionParser.MODULO),
-		BIN_AND("&", SExpressionParser.BINARY_AND),
-		BIN_OR("|", SExpressionParser.BINARY_OR),
-		BIN_XOR("^", SExpressionParser.BINARY_XOR),
-		POW("**", SExpressionParser.POWER),
-		EQ("==", SExpressionParser.EQUALS),
-		NE("!=", SExpressionParser.NOTEQUALS),
-		LT("<", SExpressionParser.LESSTHAN),
-		GT(">", SExpressionParser.MORETHAN),
-		LE("<=", SExpressionParser.LESSEQUALS),
-		GE(">=", SExpressionParser.MOREEQUALS),
+		ADD("+", "add", SExpressionParser.ADD),
+		SUB("-", "sub", SExpressionParser.SUBTRACT),
+		MUL("*", "mul", SExpressionParser.MULTIPLY),
+		DIV("/", "div", SExpressionParser.TRUEDIV),
+		FLOORDIV("//", "floordiv", SExpressionParser.FLOORDIV),
+		MOD("%", "mod", SExpressionParser.MODULO),
+		BIN_AND("&", "bin_and", SExpressionParser.BINARY_AND),
+		BIN_OR("|", "bin_or", SExpressionParser.BINARY_OR),
+		BIN_XOR("^", "bin_xor", SExpressionParser.BINARY_XOR),
+		POW("**", "pow", SExpressionParser.POWER),
+		EQ("==", "cmp", SExpressionParser.EQUALS),
+		NE("!=", "cmp", SExpressionParser.NOTEQUALS),
+		LT("<", "cmp", SExpressionParser.LESSTHAN),
+		GT(">", "cmp", SExpressionParser.MORETHAN),
+		LE("<=", "cmp", SExpressionParser.LESSEQUALS),
+		GE(">=", "cmp", SExpressionParser.MOREEQUALS),
 
-		LOG_AND("and", SExpressionParser.LOGICAL_AND),
-		LOG_OR("or", SExpressionParser.LOGICAL_OR);
+		LOG_AND("and", "and", SExpressionParser.LOGICAL_AND),
+		LOG_OR("or", "or", SExpressionParser.LOGICAL_OR);
 
 		public final java.lang.String rep;
+		public final java.lang.String javaMethod;
 
-		BinaryOp(java.lang.String rep, int opcode) {
+		BinaryOp(java.lang.String rep, java.lang.String javaMethod, int opcode) {
 			this.rep = rep;
+			this.javaMethod = javaMethod;
 			binOpTable.put(opcode, this);
 			log.info("BinaryOp registered: %s opcode=%d", rep, opcode);
 		}
@@ -78,15 +80,17 @@ public abstract class Type {
 	static final Map<Integer, UnaryOp> unOpTable = util.newTreeMap();
 
 	public enum UnaryOp {
-		LOG_NOT("not", SExpressionParser.LOGICAL_NOT),
-		POS("+", SExpressionParser.UNARY_ADD),
-		NEG("-", SExpressionParser.UNARY_SUBTRACT);
+		LOG_NOT("not", "not", SExpressionParser.LOGICAL_NOT),
+		POS("+", "pos", SExpressionParser.UNARY_ADD),
+		NEG("-", "neg", SExpressionParser.UNARY_SUBTRACT);
 
 		public final java.lang.String rep;
+		public final java.lang.String javaMethod;
 		public static /*final*/ Map<Integer, UnaryOp> opTable = util.newTreeMap();
 
-		UnaryOp(java.lang.String rep, int opcode) {
+		UnaryOp(java.lang.String rep, java.lang.String javaMethod, int opcode) {
 			this.rep = rep;
+			this.javaMethod = javaMethod;
 			unOpTable.put(opcode, this);
 		}
 
@@ -508,7 +512,7 @@ public abstract class Type {
 
 		public java.lang.String repr() {
 			// FIXME: add quotes
-			return this.value;
+			return "\"" + this.value + "\"";
 		}
 
 		public Type binaryOp(BinaryOp op, Int other)
