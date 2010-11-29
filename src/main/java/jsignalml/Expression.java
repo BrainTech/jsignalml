@@ -148,16 +148,15 @@ public abstract class Expression {
 
 		public String toJava()
 		{
-			return ""; //XXX
-		/*	String code = format("Type vals[] = new Type[%s];\n", this.args.size());
-			for (int i = 0; i < this.args.size(); i++)
+			String value;
+			String code = "(";
+			for (int i = 0; i < this.args.size() - 1; i++)
 			{
-				String value = this.args.get(i).toJava();
-				String code = code.concat(format("vals[%d] = %s;\n", i, value));
+				value = this.args.get(i).toJava();
+				code = code.concat(value + ",");
 			}
-
-			return state.call(this.name, vals);
-		*/
+            code = code.concat(this.args.get(this.args.size() - 1).toJava() + ")");
+			return this.name + code;
 		}
 	}
 
@@ -248,6 +247,17 @@ public abstract class Expression {
 				return format("new JavaType.Float(%s)", this.value.repr());
 			if (this.value instanceof Type.String)
 				return format("new JavaType.Str(%s)", this.value.repr());
+			if (this.value instanceof Type.List)
+			{
+				String code = "new JavaType.List(";
+				java.util.List<Type> items = ((Type.List)this.value).getValue();
+
+				for (int i = 0; i < items.size() -1 ; i++)
+					code = code.concat(format("%s,", items.get(i)));
+				code = code.concat(format("%s)", items.get(items.size() - 1)));
+
+				return code;
+			}
 			throw new RuntimeException();
 		}
 
