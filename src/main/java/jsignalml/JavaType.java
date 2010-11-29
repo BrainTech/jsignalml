@@ -4,6 +4,7 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.Arrays;
 import static java.util.Collections.unmodifiableList;
 
 interface JavaType {
@@ -28,7 +29,7 @@ interface JavaType {
 
 	JavaType pos();
 	JavaType neg();
-	JavaType bin_neg():
+	JavaType bin_neg();
 
 	class Int extends BigInteger implements JavaType {
 		static Int False = new Int(0);
@@ -475,6 +476,9 @@ interface JavaType {
 
 		public List(Collection<? extends JavaType> items){
 			this.value = unmodifiableList(new ArrayList<JavaType>(items));
+		}
+		public List(JavaType...items){
+			this.value = unmodifiableList(Arrays.asList(items));
 		}
 
 		public JavaType add(JavaType other){
