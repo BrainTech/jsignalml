@@ -1,17 +1,22 @@
+package jsignalml;
+
 import static java.lang.String.format;
 
-public class MyStringBuilder extends StringBuilder {
+public class MyStringBuilder {
 	int indent;
-	MyStringBuilder(){
+	StringBuilder value;
+	MyStringBuilder()
+	{
+		value = new StringBuilder();
 		indent = 0;
 	}
 
 	MyStringBuilder line(String fmt, Object...args)
 	{
 		for (int i=0; i<indent; i++)
-			this.append('\t');
-		this.append(format(fmt, args));
-		this.append('\n');
+			this.value.append('\t');
+		this.value.append(format(fmt, args));
+		this.value.append('\n');
 		return this;
 	}
 
@@ -36,5 +41,10 @@ public class MyStringBuilder extends StringBuilder {
 	{
 		this.indent--;
 		return this;
+	}
+
+	String print()
+	{
+		return this.value.toString();
 	}
 }
