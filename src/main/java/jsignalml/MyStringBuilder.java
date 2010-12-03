@@ -40,4 +40,9 @@ public class MyStringBuilder {
 		indent--;
 		return this;
 	}
+
+	public String toString()
+	{
+		return builder.toString();
+	}
 }
