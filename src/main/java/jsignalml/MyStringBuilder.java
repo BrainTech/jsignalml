@@ -1,40 +1,43 @@
+package jsignalml;
 import static java.lang.String.format;
 
-public class MyStringBuilder extends StringBuilder {
+public class MyStringBuilder {
+	StringBuilder builder;
 	int indent;
 	MyStringBuilder(){
+		builder =  new StringBuilder();
 		indent = 0;
 	}
 
 	MyStringBuilder line(String fmt, Object...args)
 	{
 		for (int i=0; i<indent; i++)
-			this.append('\t');
-		this.append(format(fmt, args));
-		this.append('\n');
+			builder.append('\t');
+		builder.append(format(fmt, args));
+		builder.append('\n');
 		return this;
 	}
 
 	MyStringBuilder block(String fmt, Object...args)
 	{
-		this.line(fmt + "{", args);
-		return this.indent();
+		line(fmt + "{", args);
+		return indent();
 	}
 
 	MyStringBuilder deblock()
 	{
-		return this.dedent().line("}");
+		return dedent().line("}");
 	}
 
 	MyStringBuilder indent()
 	{
-		this.indent++;
+		indent++;
 		return this;
 	}
 
 	MyStringBuilder dedent()
 	{
-		this.indent--;
+		indent--;
 		return this;
 	}
 }

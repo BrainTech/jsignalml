@@ -1,3 +1,6 @@
+package jsignalml;
+import org.apache.log4j.BasicConfigurator;
+
 /*
 	double duration_of_data_record = null;
 	public double get_duration_of_data_record() {
@@ -13,8 +16,9 @@
 */
 
 public class JavaGen {
-	public accessMethod(MyStringBuilder o, String ident,
-			    Class<? extends Type> type, Expression expr)
+	public static void accessMethod(MyStringBuilder o, String ident,
+					Class<? extends Type> type,
+					Expression expr)
 	{
 		String stortype;
 		if (type == null)
@@ -27,8 +31,10 @@ public class JavaGen {
 			stortype = "JavaType.Str";
 		else if (type.equals(Type.List.class))
 			stortype = "JavaType.List";
+		else
+			throw new RuntimeException("unkown type");
 
-		o.line("%s %s = null;", stortype, ident)
+		o.line("%s %s = null;", stortype, ident);
 		o.block("public %s get_%s()",  stortype, ident);
 		o.line("if (%s == null)", ident).indent();
 		o.line("%s = _get_%s();", ident, ident).dedent();
@@ -37,5 +43,15 @@ public class JavaGen {
 		o.block("%s _get_%s()", stortype, ident);
 		o.line("return %s;", expr.toJava());
 		o.deblock();
+	}
+
+	public static void main(String...args) throws jsignalml.SyntaxError
+	{
+		BasicConfigurator.configure();
+
+		MyStringBuilder o = new MyStringBuilder();
+		Expression expr = Processor.parse(args[0]);
+		accessMethod(o, "duration_of_data_record", Type.Int.class, expr);
+		System.out.println(o.toString());
 	}
 }

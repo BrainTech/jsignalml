@@ -142,21 +142,24 @@ public abstract class Expression {
 			return state.call(this.name, vals);
 		}
 
-		public String toString() {
+		public String toString()
+		{
 			return this.name + "(" + Type.String.join(", ", this.args) + ")";
 		}
 
 		public String toJava()
 		{
-			String value;
+			if (this.args.size() == 0)
+				return this.name;
+
 			String code = "(";
-			for (int i = 0; i < this.args.size() - 1; i++)
-			{
-				value = this.args.get(i).toJava();
-				code = code.concat(value + ",");
+			boolean first = true;
+			for (Expression arg: this.args) {
+				if (!first)
+					code += ",";
+				code += arg.toJava();
 			}
-            code = code.concat(this.args.get(this.args.size() - 1).toJava() + ")");
-			return this.name + code;
+			return code + ")";
 		}
 	}
 
