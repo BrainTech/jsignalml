@@ -42,7 +42,8 @@ public abstract class Expression {
 			String right = this.right.toJava();
 			if (op.javaMethod == "cmp") 
 			{
-				return format("(%s.cmp(%s) %s 0 ? JavaType.Int.True : JavaType.Int.False)", left, right, op.rep);
+				return format("(%s.cmp(%s) %s 0 ? JavaType.Int.True : JavaType.Int.False)",
+					      left, right, op.rep);
 			} else {
 				return format("%s.%s(%s)", left, op.javaMethod, right);
 			}
@@ -150,9 +151,9 @@ public abstract class Expression {
 		public String toJava()
 		{
 			if (this.args.size() == 0)
-				return this.name;
+				return JavaGen.makeIdentifier(this.name);
 
-			String code = "(";
+			String code = JavaGen.makeIdentifier(this.name) + "(";
 			boolean first = true;
 			for (Expression arg: this.args) {
 				if (!first)
@@ -244,7 +245,7 @@ public abstract class Expression {
 
 		public String toJava()
 		{
-			if (this.value instanceof Type.Int) 
+			if (this.value instanceof Type.Int)
 				return format("new JavaType.Int(%s)", this.value.repr());
 			if (this.value instanceof Type.Float)
 				return format("new JavaType.Float(%s)", this.value.repr());
@@ -346,7 +347,7 @@ public abstract class Expression {
 
 		public String toJava()
 		{
-			return ""; //XXX
+			throw new RuntimeException();
 		}
 	}
 }

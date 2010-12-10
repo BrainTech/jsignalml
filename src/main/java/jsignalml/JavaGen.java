@@ -16,6 +16,12 @@ import org.apache.log4j.BasicConfigurator;
 */
 
 public class JavaGen {
+	public static final String PREFIX = "_jsignalml_";
+	static String makeIdentifier(String name)
+	{
+		return PREFIX + name;
+	}
+
 	public static void accessMethod(MyStringBuilder o, String ident,
 					Class<? extends Type> type,
 					Expression expr)
@@ -34,14 +40,15 @@ public class JavaGen {
 		else
 			throw new RuntimeException("unkown type");
 
-		o.line("%s %s = null;", stortype, ident);
+		String prefixed = makeIdentifier(ident);
+		o.line("%s %s = null;", stortype, prefixed);
 		o.block("public %s get_%s()",  stortype, ident);
-		o.line("if (%s == null)", ident).indent();
-		o.line("%s = _get_%s();", ident, ident).dedent();
-		o.line("return %s;", ident);
+		o.line("if (%s == null)", prefixed).indent();
+		o.line("%s = _get_%s();", prefixed, ident).dedent();
+		o.line("return %s;", prefixed);
 		o.deblock();
 		o.block("%s _get_%s()", stortype, ident);
-		o.line("return %s;", expr.toJava());
+		o.line("return new %s(%s);", stortype, expr.toJava());
 		o.deblock();
 	}
 
