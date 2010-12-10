@@ -8,9 +8,17 @@ import java.util.TreeMap;
 import static java.lang.String.format;
 import static java.util.Collections.unmodifiableList;
 
+import com.sun.codemodel.JCodeModel;
+import com.sun.codemodel.JType;
+import com.sun.codemodel.JClass;
+import com.sun.codemodel.JExpression;
+import com.sun.codemodel.JExpr;
+import com.sun.codemodel.JInvocation;
+import com.sun.codemodel.JOp;
+
 public abstract class Expression {
 	public abstract Type eval(CallHelper state);
-	public abstract String toJava();
+	public abstract JExpression toJava(JCodeModel codeModel);
 
 	public static class BinaryOp extends Expression {
 		final Expression left, right;
@@ -35,17 +43,29 @@ public abstract class Expression {
 		{
 			return format("%s %s %s", left, op.rep, right);
 		}
-		
-		public String toJava()
+
+		public JExpression toJava(JCodeModel codeModel)
 		{
-			String left = this.left.toJava();
-			String right = this.right.toJava();
-			if (op.javaMethod == "cmp") 
+			JExpression left = this.left.toJava(codeModel);
+			JExpression right = this.right.toJava(codeModel);
+			if (op.javaMethod == "cmp")
 			{
-				return format("(%s.cmp(%s) %s 0 ? JavaType.Int.True : JavaType.Int.False)",
-					      left, right, op.rep);
+				JExpression cmp_res = left.invoke("cmp").arg(right);
+				JExpression cond;
+				switch(this.op){
+				case EQ: cond = cmp_res.eq(JExpr.lit(0)); break;
+				case NE: cond = cmp_res.ne(JExpr.lit(0)); break;
+				case LT: cond = cmp_res.lt(JExpr.lit(0)); break;
+				case GT: cond = cmp_res.gt(JExpr.lit(0)); break;
+				case LE: cond = cmp_res.lte(JExpr.lit(0)); break;
+				case GE: cond = cmp_res.gte(JExpr.lit(0)); break;
+				default: throw new RuntimeException();
+				}
+				JClass int_t = (JClass) codeModel._ref(JavaType.Int.class);
+				return JOp.cond(cond, int_t.staticRef("True"),
+						      int_t.staticRef("False"));
 			} else {
-				return format("%s.%s(%s)", left, op.javaMethod, right);
+				return left.invoke(op.javaMethod).arg(right);
 			}
 		}
 	}
@@ -76,15 +96,15 @@ public abstract class Expression {
 			return right;
 		}
 
-		public String toJava()
+		public JExpression toJava(JCodeModel codeModel)
 		{
-			String left = this.left.toJava();
-			String right = this.right.toJava();
+			JExpression left = this.left.toJava(codeModel);
+			JExpression right = this.right.toJava(codeModel);
 			switch (this.op) {
 			case LOG_AND:
-				return format("( %s ? %s : %s )", left, right, left);
+				return JOp.cond(left, right, left);
 			case LOG_OR:
-				return format("( %s ? %s : %s )", left, left, right);
+				return JOp.cond(left, left, right);
 			default:
 				throw new RuntimeException();
 			}
@@ -115,9 +135,10 @@ public abstract class Expression {
 			return format("%s %s", op.rep, sub);
 		}
 
-		public String toJava()
+		public JExpression toJava(JCodeModel codeModel)
 		{
-			return format("%s.%s()", sub.toJava(), op.javaMethod);
+			JExpression sub = this.sub.toJava(codeModel);
+			return JExpr.invoke(sub, op.javaMethod);
 		}
 	}
 
@@ -148,19 +169,13 @@ public abstract class Expression {
 			return this.name + "(" + Type.String.join(", ", this.args) + ")";
 		}
 
-		public String toJava()
+		public JExpression toJava(JCodeModel codeModel)
 		{
-			if (this.args.size() == 0)
-				return JavaGen.makeIdentifier(this.name);
-
-			String code = JavaGen.makeIdentifier(this.name) + "(";
-			boolean first = true;
-			for (Expression arg: this.args) {
-				if (!first)
-					code += ",";
-				code += arg.toJava();
-			}
-			return code + ")";
+			String name = JavaGen.makeIdentifier(this.name);
+			JInvocation inv = JExpr.invoke(name);
+			for (Expression arg: this.args)
+				inv.arg(arg.toJava(codeModel));
+			return inv;
 		}
 	}
 
@@ -185,14 +200,13 @@ public abstract class Expression {
 			return "[" + Type.String.join(", ", this.args) + "]";
 		}
 
-		public String toJava()
+		public JExpression toJava(JCodeModel codeModel)
 		{
-			String code = "new JavaType.List(";
-			for (int i = 0; i < this.args.size() -1 ; i++)
-				code = code.concat(format("%s,", this.args.get(i).toJava()));
-			code = code.concat(format("%s)", this.args.get(this.args.size() - 1).toJava()));
+			JInvocation list = JExpr._new(codeModel._ref(JavaType.List.class));
+			for (Expression expr: this.args)
+				list.arg(expr.toJava(codeModel));
+			return list;
 
-			return code;
 		}
 	}
 
@@ -218,11 +232,11 @@ public abstract class Expression {
 			return format("%s[ %s ]", item, index);
 		}
 
-		public String toJava()
+		public JExpression toJava(JCodeModel codeModel)
 		{
-			String item = this.item.toJava();
-			String index = this.index.toJava();
-			return format("%s.index( %s )", item, index);
+			JExpression item = this.item.toJava(codeModel);
+			JExpression index = this.index.toJava(codeModel);
+			return JExpr.invoke(item, "index").arg(index);
 		}
 	}
 
@@ -243,26 +257,20 @@ public abstract class Expression {
 			return this.value;
 		}
 
-		public String toJava()
+		public JExpression toJava(JCodeModel codeModel)
 		{
+			Class<? extends JavaType> type;
 			if (this.value instanceof Type.Int)
-				return format("new JavaType.Int(%s)", this.value.repr());
-			if (this.value instanceof Type.Float)
-				return format("new JavaType.Float(%s)", this.value.repr());
-			if (this.value instanceof Type.String)
-				return format("new JavaType.Str(%s)", this.value.repr());
-			if (this.value instanceof Type.List)
-			{
-				String code = "new JavaType.List(";
-				java.util.List<Type> items = ((Type.List)this.value).getValue();
+				type = JavaType.Int.class;
+			else if (this.value instanceof Type.Float)
+				type = JavaType.Float.class;
+			else if (this.value instanceof Type.String)
+				type = JavaType.Str.class;
+			else
+				throw new RuntimeException();
 
-				for (int i = 0; i < items.size() -1 ; i++)
-					code = code.concat(format("%s,", items.get(i)));
-				code = code.concat(format("%s)", items.get(items.size() - 1)));
-
-				return code;
-			}
-			throw new RuntimeException();
+			return JExpr._new(codeModel._ref(type))
+				.arg(JExpr.lit(this.value.repr()));
 		}
 
 		public static Expression make(String str) {
@@ -301,9 +309,11 @@ public abstract class Expression {
 			return format("if %s then %s else %s", q, a, b);
 		}
 
-		public String toJava()
+		public JExpression toJava(JCodeModel codeModel)
 		{
-			return format("( %s ? %s : %s )", q.toJava(), a.toJava(), b.toJava());
+			return JOp.cond(q.toJava(codeModel),
+					a.toJava(codeModel),
+					b.toJava(codeModel));
 		}
 	}
 
@@ -345,7 +355,7 @@ public abstract class Expression {
 			return null;
 		}
 
-		public String toJava()
+		public JExpression toJava(JCodeModel codeModel)
 		{
 			throw new RuntimeException();
 		}
