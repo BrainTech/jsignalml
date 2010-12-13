@@ -7,6 +7,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
+import com.sun.codemodel.JCodeModel;
+import com.sun.codemodel.JFormatter;
+
 import org.apache.log4j.BasicConfigurator;
 
 import org.antlr.runtime.*;
@@ -148,8 +151,10 @@ public class Processor {
 			System.out.format("expr: %s\n", expr);
 
 			try {
-				String code = expr.toJava();
-				System.out.format("code: %s \n", code);
+				PrintWriter pw = new PrintWriter(System.out);
+				JFormatter code = new JFormatter( pw );
+				code.p("code: ").g(expr.toJava(new JCodeModel())).nl();
+				pw.flush();
 				Type value = expr.eval(state);
 				System.out.format("----> %s\n",
 				                  value == null ? "null" : value.repr());
