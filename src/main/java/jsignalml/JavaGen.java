@@ -6,8 +6,12 @@ import com.sun.codemodel.JMethod;
 import com.sun.codemodel.JCodeModel;
 import com.sun.codemodel.JExpression;
 import com.sun.codemodel.JExpr;
+import com.sun.codemodel.JType;
+import com.sun.codemodel.JBlock;
 import com.sun.codemodel.JFieldVar;
 import com.sun.codemodel.JMod;
+
+import com.sun.codemodel.writer.SingleStreamCodeWriter;
 
 /*
 	double duration_of_data_record = null;
@@ -50,21 +54,23 @@ public class JavaGen {
 		else
 			throw new RuntimeException("unkown type");
 
+		//final JType stortype = klass.owner()._ref(javatype);
 		final JMethod impl = klass.method(JMod.NONE, javatype,
 						  "_get" + prefixed);
-		impl.body()._return( JExpr._new(javatype).arg(expr.toJava(klass.owner())));
+		impl.body()._return( expr.toJava(klass.owner()) );
 
 		final JFieldVar stor = klass.field(JMod.NONE, javatype, prefixed, JExpr._null());
 
 		final JMethod getter = klass.method(JMod.PUBLIC, javatype, "get_" + prefixed);
-		final JExpression assign = stor.assign(JExpr.invoke(impl));
-		getter.body()._if(stor.eq(JExpr._null()))._then(assign);
+		final JBlock then = getter.body()._if(stor.eq(JExpr._null()))._then();
+		then.assign(stor, JExpr.invoke(impl));
 		getter.body()._return(stor);
 
 		return getter;
 	}
 
-	public static void main(String...args) throws jsignalml.SyntaxError
+	public static void main(String...args) throws jsignalml.SyntaxError, 
+				com.sun.codemodel.JClassAlreadyExistsException, java.io.IOException
 	{
 		BasicConfigurator.configure();
 
@@ -74,6 +80,6 @@ public class JavaGen {
 		JCodeModel model = new JCodeModel();
 		accessMethod(model._class("Test"),
 			     "duration_of_data_record", Type.Int.class, expr);
-		codeModel.build(out);
+		model.build(out);
 	}
 }
