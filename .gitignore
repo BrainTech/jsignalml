@@ -1,5 +1,8 @@
 #emacs backup files
 *~
 
+#vi swap files
+.*.swp
+
 #maven output
 target/
