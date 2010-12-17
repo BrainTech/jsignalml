@@ -32,8 +32,8 @@ public interface JavaType {
 	JavaType bin_neg();
 
 	public class Int extends BigInteger implements JavaType {
-		static Int False = new Int(0);
-		static Int True = new Int(1);
+		public static final Int False = new Int(0);
+		public static final Int True = new Int(1);
 
 		public Int(String repr){
 			super(repr);
@@ -78,7 +78,10 @@ public interface JavaType {
 			throw new ExpressionFault.TypeError();
 		}
 		public Int sub(Int other){
-			return new Int(this.sub(other));
+			return new Int(this.subtract(other));
+		}
+		public Int sub(BigInteger other){
+			return new Int(this.subtract(other));
 		}
 		public Float sub(Float other){
 			return new Float(this.doubleValue() - other.value);
