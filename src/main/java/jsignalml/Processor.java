@@ -129,6 +129,8 @@ public class Processor {
 				// EOF
 				break;
 			}
+			if (line.isEmpty())
+				continue;
 			if ("q".equals(line))
 				break;
 
