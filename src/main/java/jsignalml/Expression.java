@@ -174,14 +174,19 @@ public abstract class Expression {
 		public JExpression toJava(Context context)
 		{
 			Class<? extends JavaType> types[] = new Class[this.args.size()];
-			for(int i=0; i<types.length; i++)
-				types[i] = JavaType.class;
+			List<JExpression> arglist = new List<JExpression>();
+			int i = 0;
+			for (Expression arg: this.args) {
+				JExpression argument = arg.toJava(context);
+				arglist.add(argument);
+				types[i] = argument.getClass();
+			}
 
 			JInvocation inv = context.find(name, types);
 			if (inv == null)
 				throw new ExpressionFault.NameError(name);
-			for (Expression arg: this.args)
-				inv.arg(arg.toJava(context));
+			for (Expression arg: arglist)
+				inv.arg(arg);
 			return inv;
 		}
 	}

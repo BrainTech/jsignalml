@@ -39,8 +39,13 @@ public class Context {
 		for(JMethod method: methods) {
 			if (!method.name().equals(prefixed))
 				continue;
-			if (method.listParams().length != argtypes.length)
+			JType expected_types[] = method.listParamTypes();
+			if (expected_types.length != argtypes.length)
 				throw new ExpressionFault.ArgMismatch();
+			for(int i = 0; i<argtypes.length; i++){
+				if (!expected_types[i].equals(this.model.ref(argtypes[i])))
+					throw new ExpressionFault.ArgMismatch();
+			}
 			return this.klass.staticInvoke(name);
 		}
 
