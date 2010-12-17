@@ -7,7 +7,7 @@ import java.util.Iterator;
 import java.util.Arrays;
 import static java.util.Collections.unmodifiableList;
 
-interface JavaType {
+public interface JavaType {
 	JavaType add(JavaType b);
 	JavaType sub(JavaType b);
 	JavaType mul(JavaType b);
@@ -31,14 +31,14 @@ interface JavaType {
 	JavaType neg();
 	JavaType bin_neg();
 
-	class Int extends BigInteger implements JavaType {
+	public class Int extends BigInteger implements JavaType {
 		static Int False = new Int(0);
 		static Int True = new Int(1);
 
 		public Int(String repr){
 			super(repr);
 		}
-		Int(BigInteger value){
+		public Int(BigInteger value){
 			super(value.toByteArray());
 		}
 
@@ -49,10 +49,10 @@ interface JavaType {
 			return arr;
 		}
 
-		Int(long value){
+		public Int(long value){
 			super(_long_to_arr8(value));
 		}
-		Int(double value){
+		public Int(double value){
 			super(_long_to_arr8((long)value));
 		}
 
@@ -224,15 +224,15 @@ interface JavaType {
 		}
 	}
 
-	class Float implements JavaType {
+	public class Float implements JavaType {
 		final double value;
-		Float(String repr){
+		public Float(String repr){
 			this.value = java.lang.Double.parseDouble(repr);
 		}
-		Float(double value){
+		public Float(double value){
 			this.value = value;
 		}
-		Float(Int value){
+		public Float(Int value){
 			this.value = value.doubleValue();
 		}
 
@@ -381,9 +381,9 @@ interface JavaType {
 		}
 	}
 
-	class Str implements JavaType {
+	public class Str implements JavaType {
 		java.lang.String value;
-		Str(java.lang.String value){
+		public Str(java.lang.String value){
 			this.value = value;
 		}
 
@@ -471,7 +471,8 @@ interface JavaType {
 			throw new ExpressionFault.TypeError();
 		}
 	}
-	class List implements JavaType {
+
+	public class List implements JavaType {
 		final java.util.List<JavaType> value;
 
 		public List(Collection<? extends JavaType> items){
