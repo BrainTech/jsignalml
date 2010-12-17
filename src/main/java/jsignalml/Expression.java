@@ -8,6 +8,8 @@ import java.util.TreeMap;
 import static java.lang.String.format;
 import static java.util.Collections.unmodifiableList;
 
+import org.apache.commons.lang.StringUtils;
+
 import com.sun.codemodel.JCodeModel;
 import com.sun.codemodel.JType;
 import com.sun.codemodel.JClass;
@@ -166,7 +168,7 @@ public abstract class Expression {
 
 		public String toString()
 		{
-			return this.name + "(" + Type.String.join(", ", this.args) + ")";
+			return this.name + "(" + StringUtils.join(this.args, ", ") + ")";
 		}
 
 		public JExpression toJava(JCodeModel codeModel)
@@ -197,7 +199,7 @@ public abstract class Expression {
 		}
 
 		public String toString() {
-			return "[" + Type.String.join(", ", this.args) + "]";
+			return "[" + StringUtils.join(this.args, ", ") + "]";
 		}
 
 		public JExpression toJava(JCodeModel codeModel)

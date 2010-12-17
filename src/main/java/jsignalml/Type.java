@@ -604,7 +604,7 @@ public abstract class Type {
 		}
 
 		public static java.lang.String join(java.lang.String sep,
-		                                    java.util.List<?> list)
+		                                    java.util.List<? extends Type> list)
 		{
 			StringBuilder s = new StringBuilder();
 
@@ -612,7 +612,7 @@ public abstract class Type {
 			for (int i = 0; i < list.size(); i++) {
 				if (i > 0)
 					s.append(sep);
-				s.append(list.get(i).toString());
+				s.append(list.get(i).repr());
 			}
 
 			// TODO: add interface shared by Expression and Type
