@@ -1,6 +1,7 @@
 package jsignalml;
 import org.apache.log4j.BasicConfigurator;
 
+import com.sun.codemodel.JClass;
 import com.sun.codemodel.JDefinedClass;
 import com.sun.codemodel.JMethod;
 import com.sun.codemodel.JCodeModel;
@@ -34,9 +35,17 @@ public class JavaGen {
 		return PREFIX + name;
 	}
 
-	public static JMethod accessMethod(JDefinedClass klass, String ident,
-					Class<? extends Type> type,
-					Expression expr)
+	JCodeModel model;
+	JClass builtins;
+
+	public JavaGen(JCodeModel model)
+	{
+		this.model = model;
+		this.builtins = model.ref(Builtins.class);
+	}
+
+	public JMethod accessMethod(JDefinedClass klass, String ident,
+				    Class<? extends Type> type, Expression expr)
 	{
 		final String prefixed = makeIdentifier(ident);
 
@@ -54,7 +63,6 @@ public class JavaGen {
 		else
 			throw new RuntimeException("unkown type");
 
-		//final JType stortype = klass.owner()._ref(javatype);
 		final JMethod impl = klass.method(JMod.NONE, javatype,
 						  "_get" + prefixed);
 		impl.body()._return( expr.toJava(klass.owner()) );
@@ -77,9 +85,9 @@ public class JavaGen {
 		Expression expr = Processor.parse(args[0]);
 
 		SingleStreamCodeWriter out = new SingleStreamCodeWriter(System.out);
-		JCodeModel model = new JCodeModel();
-		accessMethod(model._class("Test"),
-			     "duration_of_data_record", Type.Int.class, expr);
-		model.build(out);
+		JavaGen gen = new JavaGen(new JCodeModel());
+		gen.accessMethod(gen.model._class("Test"),
+				 "duration_of_data_record", Type.Int.class, expr);
+		gen.model.build(out);
 	}
 }
