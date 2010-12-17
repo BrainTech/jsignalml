@@ -11,6 +11,7 @@ import com.sun.codemodel.JType;
 import com.sun.codemodel.JBlock;
 import com.sun.codemodel.JFieldVar;
 import com.sun.codemodel.JMod;
+import com.sun.codemodel.JClassAlreadyExistsException;
 
 import com.sun.codemodel.writer.SingleStreamCodeWriter;
 
@@ -36,18 +37,24 @@ public class JavaGen {
 	}
 
 	JCodeModel model;
-	JClass builtins;
+	Context root;
 
-	public JavaGen(JCodeModel model)
+	public JavaGen(JCodeModel model, String name)
 	{
 		this.model = model;
-		this.builtins = model.ref(Builtins.class);
+		try {
+			this.root = new Context(model, null, name);
+		} catch(JClassAlreadyExistsException e) {
+			// TODO
+			throw new RuntimeException("???");
+		}
 	}
 
-	public JMethod accessMethod(JDefinedClass klass, String ident,
+	public JMethod accessMethod(Context context, String ident,
 				    Class<? extends Type> type, Expression expr)
 	{
 		final String prefixed = makeIdentifier(ident);
+		final JDefinedClass klass = context.klass;
 
 		Class<? extends JavaType> javatype;
 		if (type == null)
@@ -64,8 +71,8 @@ public class JavaGen {
 			throw new RuntimeException("unkown type");
 
 		final JMethod impl = klass.method(JMod.NONE, javatype,
-						  "_get" + prefixed);
-		impl.body()._return( expr.toJava(klass.owner()) );
+							  "_get" + prefixed);
+		impl.body()._return( expr.toJava(context) );
 
 		final JFieldVar stor = klass.field(JMod.NONE, javatype, prefixed, JExpr._null());
 
@@ -77,16 +84,16 @@ public class JavaGen {
 		return getter;
 	}
 
-	public static void main(String...args) throws jsignalml.SyntaxError, 
-				com.sun.codemodel.JClassAlreadyExistsException, java.io.IOException
+	public static void main(String...args) throws jsignalml.SyntaxError,
+				java.io.IOException
 	{
 		BasicConfigurator.configure();
 
 		Expression expr = Processor.parse(args[0]);
 
 		SingleStreamCodeWriter out = new SingleStreamCodeWriter(System.out);
-		JavaGen gen = new JavaGen(new JCodeModel());
-		gen.accessMethod(gen.model._class("Test"),
+		JavaGen gen = new JavaGen(new JCodeModel(), "Test");
+		gen.accessMethod(gen.root,
 				 "duration_of_data_record", Type.Int.class, expr);
 		gen.model.build(out);
 	}

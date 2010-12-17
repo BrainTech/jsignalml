@@ -1,5 +1,7 @@
 package jsignalml;
 
+import java.util.Collection;
+
 import com.sun.codemodel.JCodeModel;
 import com.sun.codemodel.JType;
 import com.sun.codemodel.JClass;
@@ -8,7 +10,11 @@ import com.sun.codemodel.JMethod;
 import com.sun.codemodel.JInvocation;
 import com.sun.codemodel.JClassAlreadyExistsException;
 
+import org.apache.commons.lang.StringUtils;
+
 public class Context {
+	static final Logger log = new Logger(Context.class);
+
 	JCodeModel model;
 	Context parent;
 	JDefinedClass klass;
@@ -16,6 +22,8 @@ public class Context {
 	public Context(JCodeModel model, Context parent, String name)
 		throws JClassAlreadyExistsException
 	{
+		log.info("created new Context '%s'", name);
+
 		this.model = model;
 		this.parent = parent;
 		this.klass = model._class(name);
@@ -23,13 +31,18 @@ public class Context {
 
 	public JInvocation find(String name, Class<? extends JavaType>...argtypes)
 	{
-		JType args[] = new JType[argtypes.length];
-		for(int i=0; i<args.length; i++)
-			args[i] = this.model.ref(argtypes[i]);
+		final String prefixed = JavaGen.makeIdentifier(name);
+		log.debug("looking for %s/%s(%s) in '%s'", name, prefixed,
+			  StringUtils.join(argtypes, ", "), this.klass.name());
 
-		JMethod method = klass.getMethod(name, args);
-		if(method != null)
+		Collection<JMethod> methods = this.klass.methods();
+		for(JMethod method: methods) {
+			if (!method.name().equals(prefixed))
+				continue;
+			if (method.listParams().length != argtypes.length)
+				throw new ExpressionFault.ArgMismatch();
 			return this.klass.staticInvoke(name);
+		}
 
 		if(parent != null)
 			return parent.find(name, argtypes);

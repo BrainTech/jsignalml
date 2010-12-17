@@ -14,8 +14,9 @@ import org.apache.log4j.BasicConfigurator;
 
 import org.antlr.runtime.*;
 import org.antlr.runtime.tree.*;
-
 import org.antlr.runtime.RecognitionException;
+
+import com.sun.codemodel.JClassAlreadyExistsException;
 
 public class Processor {
 
@@ -155,7 +156,13 @@ public class Processor {
 			try {
 				PrintWriter pw = new PrintWriter(System.out);
 				JFormatter code = new JFormatter( pw );
-				code.p("code: ").g(expr.toJava(new JCodeModel())).nl();
+				Context context;
+				try {
+					context = new Context(new JCodeModel(), null, "stdin");
+				} catch(JClassAlreadyExistsException e){
+					throw new RuntimeException("programming error");
+				}
+				code.p("code: ").g(expr.toJava(context)).nl();
 				pw.flush();
 				Type value = expr.eval(state);
 				System.out.format("----> %s\n",
@@ -201,9 +208,9 @@ public class Processor {
 	static Logger log = new Logger(Processor.class);
 
 	public static void main(String ... args)
-	throws java.io.IOException,
-		java.io.FileNotFoundException,
-		SyntaxError
+		throws java.io.IOException,
+		       java.io.FileNotFoundException,
+		       SyntaxError
 	{
 		BasicConfigurator.configure();
 		log.info("lexer grammar %s",
