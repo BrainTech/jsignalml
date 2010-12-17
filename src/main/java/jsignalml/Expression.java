@@ -262,17 +262,23 @@ public abstract class Expression {
 		public JExpression toJava(JCodeModel codeModel)
 		{
 			Class<? extends JavaType> type;
-			if (this.value instanceof Type.Int)
-				type = JavaType.Int.class;
-			else if (this.value instanceof Type.Float)
-				type = JavaType.Float.class;
-			else if (this.value instanceof Type.String)
-				type = JavaType.Str.class;
-			else
-				throw new RuntimeException();
+			JExpression repr;
 
-			return JExpr._new(codeModel._ref(type))
-				.arg(JExpr.lit(this.value.repr()));
+			if (this.value instanceof Type.Int) {
+				type = JavaType.Int.class;
+				// TODO: check if representation is not outside range
+				repr = JExpr.lit(((Type.Int)this.value).getValue());
+			} else if (this.value instanceof Type.Float) {
+				type = JavaType.Float.class;
+				repr = JExpr.lit(((Type.Float)this.value).getValue());
+			} else if (this.value instanceof Type.String) {
+				type = JavaType.Str.class;
+				repr = JExpr.lit(((Type.String)this.value).getValue());
+			} else {
+				throw new RuntimeException();
+			}
+
+			return JExpr._new(codeModel._ref(type)).arg(repr);
 		}
 
 		public static Expression make(String str) {
