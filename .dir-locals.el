@@ -1,6 +1,7 @@
 ((nil . ((indent-tabs-mode . t)
          (tab-width . 8)
-         (fill-column . 80)))
+         (fill-column . 80)
+         (whitespace-line-column . 100)))
  (java-mode . ((c-basic-offset . 8)))
  (sgml-mode . ((sgml-basic-offset . 8)))
  ; emacs complains about sgml-basic-offset being unsafe, so let's set it only for XML
