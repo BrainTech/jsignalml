@@ -112,28 +112,32 @@ public abstract class Type {
 
 	public Type binaryOp(BinaryOp op, Type other)
 	{
-		try {
-			return this.binaryOp(op, (Int) other);
-		} catch (ClassCastException e) {}
-		try {
-			return this.binaryOp(op, (Float) other);
-		} catch (ClassCastException e) {}
-		try {
-			return this.binaryOp(op, (String) other);
-		} catch (ClassCastException e) {}
-
-		throw new RuntimeException();
+		if (other instanceof Type.Int)
+			return this.binaryOp(op, (Type.Int) other);
+		if (other instanceof Type.Float)
+			return this.binaryOp(op, (Type.Float) other);
+		if (other instanceof Type.String)
+			return this.binaryOp(op, (Type.String) other);
+		if (other instanceof Type.List)
+			return this.binaryOp(op, (Type.List) other);
+		throw new RuntimeException("unknown type in expression");
 	}
 
 	public abstract Type binaryOp(BinaryOp op, Int other);
 	public abstract Type binaryOp(BinaryOp op, Float other);
-	public abstract Type binaryOp(BinaryOp op, String other);
+	public Type binaryOp(BinaryOp op, String other)
+	{
+		throw new ExpressionFault.TypeError();
+	}
+	public Type binaryOp(BinaryOp op, List other)
+	{
+		throw new ExpressionFault.TypeError();
+	}
 
 	public Type unaryOp(UnaryOp op)
 	{
 		throw new ExpressionFault.TypeError();
 	}
-
 
 	public Type index(Type sub)
 	{
@@ -317,6 +321,15 @@ public abstract class Type {
 			}
 		}
 
+		public Type binaryOp(BinaryOp op, List other)
+		{
+			switch (op) {
+			case MUL:
+				return other.binaryOp(op, this);
+			default:
+				throw new ExpressionFault.TypeError();
+			}
+		}
 
 		@Override
 		public Type unaryOp(UnaryOp op)
@@ -459,12 +472,6 @@ public abstract class Type {
 			default:
 				throw new ExpressionFault.TypeError();
 			}
-		}
-
-		public Type binaryOp(BinaryOp op, String other)
-		throws ExpressionFault.TypeError
-		{
-			throw new ExpressionFault.TypeError();
 		}
 
 		@Override
