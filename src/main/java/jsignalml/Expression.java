@@ -20,6 +20,7 @@ import com.sun.codemodel.JOp;
 
 public abstract class Expression {
 	public abstract Type eval(CallHelper state);
+	public abstract Type type(Context context);
 	public abstract JExpression toJava(Context context);
 
 	public static class BinaryOp extends Expression {
@@ -46,6 +47,14 @@ public abstract class Expression {
 		public String toString()
 		{
 			return format("%s %s %s", left, op.rep, right);
+		}
+
+		@Override
+		public Type type(Context context)
+		{
+			Type a = this.left.type(context);
+			Type b = this.right.type(context);
+			return a.binaryOpType(this.op, b);
 		}
 
 		@Override
@@ -101,6 +110,15 @@ public abstract class Expression {
 			return right;
 		}
 
+
+		@Override
+		public Type type(Context context)
+		{
+			Type a = this.left.type(context);
+			Type b = this.right.type(context);
+			return a.binaryOpType(this.op, b);
+		}
+
 		@Override
 		public JExpression toJava(Context context)
 		{
@@ -138,6 +156,13 @@ public abstract class Expression {
 		}
 
 		@Override
+		public Type type(Context context)
+		{
+			Type a = this.sub.type(context);
+			return a.unaryOpType(this.op);
+		}
+
+		@Override
 		public String toString()
 		{
 			return format("%s %s", op.rep, sub);
@@ -172,6 +197,13 @@ public abstract class Expression {
 				vals[i] = this.args.get(i).eval(state);
 
 			return state.call(this.name, vals);
+		}
+
+		@Override
+		public Type type(Context context)
+		{
+			// TODO
+			return null;
 		}
 
 		@Override
@@ -215,6 +247,12 @@ public abstract class Expression {
 		}
 
 		@Override
+		public Type type(Context context)
+		{
+			return new Type.List();
+		}
+
+		@Override
 		public String toString() {
 			return "[" + StringUtils.join(this.args, ", ") + "]";
 		}
@@ -249,6 +287,13 @@ public abstract class Expression {
 		}
 
 		@Override
+		public Type type(Context context)
+		{
+			// TODO ?
+			return null;
+		}
+
+		@Override
 		public String toString()
 		{
 			return format("%s[ %s ]", item, index);
@@ -278,6 +323,12 @@ public abstract class Expression {
 
 		@Override
 		public Type eval(CallHelper dummy)
+		{
+			return this.value;
+		}
+
+		@Override
+		public Type type(Context context)
 		{
 			return this.value;
 		}
@@ -344,6 +395,17 @@ public abstract class Expression {
 		}
 
 		@Override
+		public Type type(Context context)
+		{
+			Type a = this.a.type(context);
+			Type b = this.a.type(context);
+			if (a.getClass().equals(b.getClass()))
+				return a;
+			else
+				return null;
+		}
+
+		@Override
 		public JExpression toJava(Context context)
 		{
 			return JOp.cond(q.toJava(context),
@@ -389,6 +451,12 @@ public abstract class Expression {
 		{
 			state.assign(this.id, this.value);
 			return null;
+		}
+
+		@Override
+		public Type type(Context context)
+		{
+			throw new RuntimeException();
 		}
 
 		@Override

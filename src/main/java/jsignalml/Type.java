@@ -134,9 +134,82 @@ public abstract class Type {
 		throw new ExpressionFault.TypeError();
 	}
 
+	/**
+	 * Return the superset type of the possible results of expression. The
+	 * type is "encoded" as an object being an instance (of a subclass) of
+	 * Type.  An actual object, not Class<? extends Type> is returned,
+	 * because Java doesn't have class methods. In case the expression is
+	 * known to be invalid, an exception is thrown. null is used to specify
+	 * that more than one basic type can be returned.
+	 *
+	 * This evaluation is is not supposed to be strict. Sometimes null
+	 * might be returned, even if a strict analysis would be able to return
+	 * a more precise answer. Likewise, not all errors have to be detected.
+	 *
+	 * The helper functions _binaryOpType(op, other) are called only for
+	 * not-null arguments, and for non-logical operations.
+	 * Apart from _binaryOpType(..., Type.Int), the function are implemented
+	 * (unless overridden) to signal an invalid expression: this is the most
+	 * common case. Int operations are different: all types interact with
+	 * Ints.
+	 */
+	public Type binaryOpType(BinaryOp op, Type other)
+	{
+		if (other == null)
+			return null;
+		if (op == BinaryOp.LOG_AND || op == BinaryOp.LOG_OR){
+			if (this.getClass().equals(other.getClass()))
+				return this;
+			else
+				return null;
+		}
+
+		if (other instanceof Type.Int)
+			return this._binaryOpType(op, (Type.Int) other);
+		if (other instanceof Type.Float)
+			return this._binaryOpType(op, (Type.Float) other);
+		if (other instanceof Type.String)
+			return this._binaryOpType(op, (Type.String) other);
+		if (other instanceof Type.List)
+			return this._binaryOpType(op, (Type.List) other);
+		throw new RuntimeException("unknown type in expression");
+	}
+
+	public abstract Type _binaryOpType(BinaryOp op, Type.Int other);
+	public Type _binaryOpType(BinaryOp op, Type.Float other)
+	{
+		throw new ExpressionFault.TypeError();
+	}
+	public Type _binaryOpType(BinaryOp op, Type.String other)
+	{
+		throw new ExpressionFault.TypeError();
+	}
+	public Type _binaryOpType(BinaryOp op, Type.List other)
+	{
+		throw new ExpressionFault.TypeError();
+	}
+
+
 	public Type unaryOp(UnaryOp op)
 	{
 		throw new ExpressionFault.TypeError();
+	}
+
+	public Type unaryOpType(UnaryOp op)
+	{
+		switch(op){
+		case LOG_NOT:
+			return new Type.Int();
+		case POS:
+		case NEG:
+			if (this.getClass().equals(Type.Int.class) ||
+			    this.getClass().equals(Type.Float.class))
+				return this;
+			else
+				throw new ExpressionFault.TypeError();
+		default:
+			throw new RuntimeException();
+		}
 	}
 
 	public Type index(Type sub)
@@ -341,6 +414,32 @@ public abstract class Type {
 		}
 
 		@Override
+		public Type _binaryOpType(BinaryOp op, Type.Int other)
+		{
+			/* 1 should be safe for all ops */
+			return this.binaryOp(op, new Type.Int(1));
+		}
+
+		@Override
+		public Type _binaryOpType(BinaryOp op, Type.Float other)
+		{
+			/* 1 should be safe for all ops */
+			return this.binaryOp(op, new Type.Float(1.0));
+		}
+
+		@Override
+		public Type _binaryOpType(BinaryOp op, Type.String other)
+		{
+			return other.binaryOpType(op, this);
+		}
+
+		@Override
+		public Type _binaryOpType(BinaryOp op, Type.List other)
+		{
+			return other.binaryOpType(op, this);
+		}
+
+
 		@Override
 		public Type unaryOp(UnaryOp op)
 			throws ExpressionFault.TypeError
@@ -490,6 +589,22 @@ public abstract class Type {
 			}
 		}
 
+
+		@Override
+		public Type _binaryOpType(BinaryOp op, Type.Int other)
+		{
+			/* 1 should be safe for all ops */
+			return this.binaryOp(op, new Type.Int(1));
+		}
+
+		@Override
+		public Type _binaryOpType(BinaryOp op, Type.Float other)
+		{
+			/* 1 should be safe for all ops */
+			return this.binaryOp(op, new Type.Float(1.0));
+		}
+
+
 		@Override
 		public Type unaryOp(UnaryOp op)
 			throws ExpressionFault.TypeError
@@ -584,6 +699,19 @@ public abstract class Type {
 			}
 		}
 
+		@Override
+		public Type _binaryOpType(BinaryOp op, Type.Int other)
+		{
+			/* 0 should be safe and efficient for all ops */
+			return this.binaryOp(op, new Type.Int(0));
+		}
+
+		@Override
+		public Type _binaryOpType(BinaryOp op, Type.String other)
+		{
+			/* "" should be safe and efficient for all ops */
+			return this.binaryOp(op, new Type.String());
+		}
 
 		@Override
 		public Type index(Type sub)
@@ -725,6 +853,22 @@ public abstract class Type {
 				throw new ExpressionFault.TypeError();
 			}
 		}
+
+
+		@Override
+		public Type _binaryOpType(BinaryOp op, Type.Int other)
+		{
+			/* 0 should be safe and efficient for all ops */
+			return this.binaryOp(op, new Type.Int(0));
+		}
+
+		@Override
+		public Type _binaryOpType(BinaryOp op, Type.List other)
+		{
+			/* [] should be safe and efficient for all ops */
+			return this.binaryOp(op, new Type.List());
+		}
+
 
 		@Override
 		public Type index(Type sub)
