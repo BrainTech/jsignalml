@@ -203,6 +203,8 @@ public abstract class Type {
 		public Int() {
 			this(0);
 		}
+
+		@Override
 		public Int make(Type value) {
 			if (value instanceof Int)
 				return (Int)value;
@@ -211,18 +213,22 @@ public abstract class Type {
 			throw new UnsupportedOperationException();
 		}
 
+		@Override
 		public Integer getValue() {
 			return this.value;
 		}
 
+		@Override
 		public boolean isTrue() {
 			return this.value != 0;
 		}
 
+		@Override
 		public java.lang.String repr() {
 			return java.lang.String.valueOf(this.value);
 		}
 
+		@Override
 		public Type binaryOp(BinaryOp op, Int other)
 		{
 			switch (op) {
@@ -267,6 +273,7 @@ public abstract class Type {
 			}
 		}
 
+		@Override
 		public Type binaryOp(BinaryOp op, Float other)
 		{
 			switch (op) {
@@ -311,6 +318,7 @@ public abstract class Type {
 			}
 		}
 
+		@Override
 		public Type binaryOp(BinaryOp op, String other)
 		{
 			switch (op) {
@@ -321,6 +329,7 @@ public abstract class Type {
 			}
 		}
 
+		@Override
 		public Type binaryOp(BinaryOp op, List other)
 		{
 			switch (op) {
@@ -332,8 +341,9 @@ public abstract class Type {
 		}
 
 		@Override
+		@Override
 		public Type unaryOp(UnaryOp op)
-		throws ExpressionFault.TypeError
+			throws ExpressionFault.TypeError
 		{
 			switch (op) {
 			case POS:
@@ -363,6 +373,7 @@ public abstract class Type {
 			this(0.0);
 		}
 
+		@Override
 		public Float make(Type value) {
 			if (value instanceof Float)
 				return (Float)value;
@@ -373,20 +384,24 @@ public abstract class Type {
 			throw new UnsupportedOperationException();
 		}
 
+		@Override
 		public Double getValue() {
 			return this.value;
 		}
 
+		@Override
 		public boolean isTrue() {
 			return this.value != 0;
 		}
 
+		@Override
 		public java.lang.String repr() {
 			return java.lang.String.valueOf(this.value);
 		}
 
+		@Override
 		public Type binaryOp(BinaryOp op, Int other)
-		throws ExpressionFault.TypeError
+			throws ExpressionFault.TypeError
 		{
 			switch (op) {
 			case ADD:
@@ -429,8 +444,9 @@ public abstract class Type {
 			}
 		}
 
+		@Override
 		public Type binaryOp(BinaryOp op, Float other)
-		throws ExpressionFault.TypeError
+			throws ExpressionFault.TypeError
 		{
 			switch (op) {
 			case ADD:
@@ -476,7 +492,7 @@ public abstract class Type {
 
 		@Override
 		public Type unaryOp(UnaryOp op)
-		throws ExpressionFault.TypeError
+			throws ExpressionFault.TypeError
 		{
 			switch (op) {
 			case POS:
@@ -505,25 +521,30 @@ public abstract class Type {
 			this("");
 		}
 
+		@Override
 		public String make(Type value) {
 			return value.str();
 		}
 
+		@Override
 		public java.lang.String getValue() {
 			return this.value;
 		}
 
+		@Override
 		public boolean isTrue() {
 			return this.value.length() > 0;
 		}
 
+		@Override
 		public java.lang.String repr() {
 			// FIXME: add quotes
 			return "\"" + this.value + "\"";
 		}
 
+		@Override
 		public Type binaryOp(BinaryOp op, Int other)
-		throws ExpressionFault.TypeError
+			throws ExpressionFault.TypeError
 		{
 			switch (op) {
 			case MUL:
@@ -533,14 +554,16 @@ public abstract class Type {
 			}
 		}
 
+		@Override
 		public Type binaryOp(BinaryOp op, Float other)
-		throws ExpressionFault.TypeError
+			throws ExpressionFault.TypeError
 		{
 			throw new ExpressionFault.TypeError();
 		}
 
+		@Override
 		public Type binaryOp(BinaryOp op, String other)
-		throws ExpressionFault.TypeError
+			throws ExpressionFault.TypeError
 		{
 			switch (op) {
 			case ADD:
@@ -564,8 +587,8 @@ public abstract class Type {
 
 		@Override
 		public Type index(Type sub)
-		throws ExpressionFault.TypeError,
-			ExpressionFault.IndexError
+			throws ExpressionFault.TypeError,
+			       ExpressionFault.IndexError
 		{
 			if (!(sub instanceof Int))
 				throw new ExpressionFault.TypeError();
@@ -643,24 +666,29 @@ public abstract class Type {
 			this(new ArrayList());
 		}
 
+		@Override
 		public List make(Type value) {
 			throw new UnsupportedOperationException();
 		}
 
+		@Override
 		public /*immutable*/ java.util.List<Type> getValue() {
 			return this.value;
 		}
 
+		@Override
 		public java.lang.String repr() {
 			return "[" + String.join(", ", this.value) + "]";
 		}
 
+		@Override
 		public boolean isTrue() {
 			return this.value.size() > 0;
 		}
 
+		@Override
 		public Type binaryOp(BinaryOp op, Int other)
-		throws ExpressionFault.TypeError
+			throws ExpressionFault.TypeError
 		{
 			switch (op) {
 			case MUL:
@@ -670,14 +698,16 @@ public abstract class Type {
 			}
 		}
 
+		@Override
 		public Type binaryOp(BinaryOp op, Float other)
-		throws ExpressionFault.TypeError
+			throws ExpressionFault.TypeError
 		{
 			throw new ExpressionFault.TypeError();
 		}
 
+		@Override
 		public Type binaryOp(BinaryOp op, String other)
-		throws ExpressionFault.TypeError
+			throws ExpressionFault.TypeError
 		{
 			switch (op) {
 			case ADD:
@@ -698,8 +728,8 @@ public abstract class Type {
 
 		@Override
 		public Type index(Type sub)
-		throws ExpressionFault.TypeError,
-			ExpressionFault.IndexError
+			throws ExpressionFault.TypeError,
+			       ExpressionFault.IndexError
 		{
 			if (!(sub instanceof Int))
 				throw new ExpressionFault.TypeError();

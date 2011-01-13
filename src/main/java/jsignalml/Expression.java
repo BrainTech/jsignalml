@@ -33,6 +33,7 @@ public abstract class Expression {
 			this.right = right;
 		}
 
+		@Override
 		public Type eval(CallHelper state)
 		{
 			Type left = this.left.eval(state);
@@ -41,17 +42,18 @@ public abstract class Expression {
 			return left.binaryOp(this.op, right);
 		}
 
+		@Override
 		public String toString()
 		{
 			return format("%s %s %s", left, op.rep, right);
 		}
 
+		@Override
 		public JExpression toJava(Context context)
 		{
 			JExpression left = this.left.toJava(context);
 			JExpression right = this.right.toJava(context);
-			if (op.javaMethod == "cmp")
-			{
+			if (this.op.javaMethod == "cmp") {
 				JExpression cmp_res = left.invoke("cmp").arg(right);
 				JExpression cond;
 				switch(this.op){
@@ -78,6 +80,7 @@ public abstract class Expression {
 			super(opcode, left, right);
 		}
 
+		@Override
 		public Type eval(CallHelper state)
 		{
 			Type left = this.left.eval(state);
@@ -98,6 +101,7 @@ public abstract class Expression {
 			return right;
 		}
 
+		@Override
 		public JExpression toJava(Context context)
 		{
 			JExpression left = this.left.toJava(context);
@@ -123,6 +127,7 @@ public abstract class Expression {
 			this.sub = sub;
 		}
 
+		@Override
 		public Type eval(CallHelper state)
 		{
 			Type sub = this.sub.eval(state);
@@ -132,11 +137,13 @@ public abstract class Expression {
 				return sub.unaryOp(this.op);
 		}
 
+		@Override
 		public String toString()
 		{
 			return format("%s %s", op.rep, sub);
 		}
 
+		@Override
 		public JExpression toJava(Context context)
 		{
 			JExpression sub = this.sub.toJava(context);
@@ -157,6 +164,7 @@ public abstract class Expression {
 			this(name, new ArrayList());
 		}
 
+		@Override
 		public Type eval(CallHelper state)
 		{
 			Type vals[] = new Type[this.args.size()];
@@ -166,11 +174,13 @@ public abstract class Expression {
 			return state.call(this.name, vals);
 		}
 
+		@Override
 		public String toString()
 		{
 			return this.name + "(" + StringUtils.join(this.args, ", ") + ")";
 		}
 
+		@Override
 		public JExpression toJava(Context context)
 		{
 			Class<? extends JavaType> types[] = new Class[this.args.size()];
@@ -194,6 +204,7 @@ public abstract class Expression {
 			this.args = unmodifiableList(new ArrayList(args));
 		}
 
+		@Override
 		public Type eval(CallHelper state)
 		{
 			ArrayList<Type> vals = new ArrayList<Type>(this.args.size());
@@ -203,10 +214,12 @@ public abstract class Expression {
 			return new Type.List(vals);
 		}
 
+		@Override
 		public String toString() {
 			return "[" + StringUtils.join(this.args, ", ") + "]";
 		}
 
+		@Override
 		public JExpression toJava(Context context)
 		{
 			JInvocation list = JExpr._new(context.model.ref(JavaType.List.class));
@@ -227,6 +240,7 @@ public abstract class Expression {
 			this.index = index;
 		}
 
+		@Override
 		public Type eval(CallHelper state)
 		{
 			Type vitem = this.item.eval(state);
@@ -234,11 +248,13 @@ public abstract class Expression {
 			return vitem.index(vindex);
 		}
 
+		@Override
 		public String toString()
 		{
 			return format("%s[ %s ]", item, index);
 		}
 
+		@Override
 		public JExpression toJava(Context context)
 		{
 			JExpression item = this.item.toJava(context);
@@ -254,16 +270,19 @@ public abstract class Expression {
 			this.value = value;
 		}
 
+		@Override
 		public String toString()
 		{
 			return this.value.repr();
 		}
 
+		@Override
 		public Type eval(CallHelper dummy)
 		{
 			return this.value;
 		}
 
+		@Override
 		public JExpression toJava(Context context)
 		{
 			Class<? extends JavaType> type;
@@ -308,6 +327,7 @@ public abstract class Expression {
 			this.b = b;
 		}
 
+		@Override
 		public Type eval(CallHelper state)
 		{
 			Type qvalue = this.q.eval(state);
@@ -317,11 +337,13 @@ public abstract class Expression {
 			return value;
 		}
 
+		@Override
 		public String toString()
 		{
 			return format("if %s then %s else %s", q, a, b);
 		}
 
+		@Override
 		public JExpression toJava(Context context)
 		{
 			return JOp.cond(q.toJava(context),
@@ -362,12 +384,14 @@ public abstract class Expression {
 			this(id, new LinkedList<Argument>(), value);
 		}
 
+		@Override
 		public Type eval(CallHelper state)
 		{
 			state.assign(this.id, this.value);
 			return null;
 		}
 
+		@Override
 		public JExpression toJava(Context context)
 		{
 			throw new RuntimeException();
