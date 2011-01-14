@@ -102,7 +102,7 @@ tokens {
 script: line* EOF!
     ;
 
-terminator: SEMICOLON | EOF
+terminator: EOF
     ;
 
 line
