@@ -164,6 +164,9 @@ public class Processor {
 				}
 				code.p("code: ").g(expr.toJava(context)).nl();
 				pw.flush();
+				final Type type = expr.type(context);
+				System.out.format("type: Type.%s\n",
+						  type == null ? "any" : type.getClass().getSimpleName());
 				Type value = expr.eval(state);
 				System.out.format("----> %s\n",
 				                  value == null ? "null" : value.repr());
