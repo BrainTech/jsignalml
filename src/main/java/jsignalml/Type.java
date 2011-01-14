@@ -852,26 +852,47 @@ public abstract class Type {
 		}
 
 		@Override
-		public Type binaryOp(BinaryOp op, String other)
+		public Type binaryOp(BinaryOp op, List other)
 			throws ExpressionFault.TypeError
 		{
 			switch (op) {
 			case ADD:
+				// TODO
 			case EQ:
-				return new Int(this.value.equals(other.value));
+				return new Int(this.compareTo(other) == 0);
 			case NE:
-				return new Int(!this.value.equals(other.value));
+				return new Int(this.compareTo(other) != 0);
 
-			case LT: /* should those be implemented ? */
+			case LT:
+				return new Int(this.compareTo(other) < 0);
 			case GT:
+				return new Int(this.compareTo(other) > 0);
 			case LE:
+				return new Int(this.compareTo(other) <= 0);
 			case GE:
+				return new Int(this.compareTo(other) >= 0);
 
 			default:
 				throw new ExpressionFault.TypeError();
 			}
 		}
 
+		public int compareTo(List other)
+			throws ExpressionFault.TypeError
+		{
+			int size1 = this.value.size();
+			int size2 = other.value.size();
+
+			for(int i=0; i < size1 && i < size2; i++) {
+				Type a = this.value.get(i);
+				Type b = other.value.get(i);
+				if (a.binaryOp(Type.BinaryOp.LT, b).isTrue())
+					return -1;
+				if (b.binaryOp(Type.BinaryOp.LT, a).isTrue())
+					return 1;
+			}
+			return size1 - size2;
+		}
 
 		@Override
 		public Type _binaryOpType(BinaryOp op, Type.Int other)
