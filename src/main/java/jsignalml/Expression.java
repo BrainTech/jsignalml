@@ -233,7 +233,7 @@ public abstract class Expression {
 		final /*immutable*/ List<Expression> args;
 
 		List_(List<? extends Expression> args) {
-			this.args = unmodifiableList(new ArrayList(args));
+			this.args = unmodifiableList(args!=null ? new ArrayList(args) : new ArrayList());
 		}
 
 		@Override

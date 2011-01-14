@@ -176,9 +176,10 @@ calltail
 
 atom
     :	INT
-	|	FLOAT
-	|	STRING
-	|	'('! expr ')'!
+    |	FLOAT
+    |	STRING
+    |	'('! expr ')'!
+    |   '[' ']' -> ^(LIST)
     |   '[' expr (',' expr)* ','? ']' -> ^(LIST expr+)
 	;
 
