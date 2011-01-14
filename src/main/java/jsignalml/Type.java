@@ -799,6 +799,24 @@ public abstract class Type {
 			throw new UnsupportedOperationException();
 		}
 
+		public static List make(Object... items) {
+			java.util.List<Type> list = util.newLinkedList();
+			for (Object item: items) {
+				if (item instanceof java.lang.Integer) {
+					list.add(new Type.Int((java.lang.Integer)item));
+				} else if (item instanceof java.lang.Double) {
+					list.add(new Type.Float((java.lang.Double)item));
+				} else if (item instanceof java.lang.Float) {
+					list.add(new Type.Float((java.lang.Float)item));
+				} else if (item instanceof java.lang.String) {
+					list.add(new Type.String((java.lang.String)item));
+				} else {
+					throw new RuntimeException();
+				}
+			}
+			return new List(list);
+		}
+
 		@Override
 		public /*immutable*/ java.util.List<Type> getValue() {
 			return this.value;

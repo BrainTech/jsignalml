@@ -5,6 +5,7 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 import static jsignalml.TestNumberOps.equal;
+import static jsignalml.TestNumberOps.listEqual;
 
 public class TestSequenceOps {
 
@@ -19,5 +20,10 @@ public class TestSequenceOps {
 		equal("[0,1,2][0]", 0);
 		equal("[0,1,2][1]", 1);
 		equal("[0,1,2][2]", 2);
+	}
+
+	@Test public void eval_simple_list() throws Exception
+	{
+		listEqual("[1, 2]", 1, 2);
 	}
 }

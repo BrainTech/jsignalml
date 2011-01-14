@@ -26,6 +26,10 @@ public class TestNumberOps {
 	{
 		assertTrue(eval(line).equals(new Type.String(expected)));
 	}
+	static void listEqual(String line, Object...elements) throws Exception
+	{
+		assertTrue(eval(line).equals(Type.List.make(elements)));
+	}
 
 	static void verifyIsTrue(String line, boolean expected) throws Exception
 	{
