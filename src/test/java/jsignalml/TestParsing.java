@@ -48,14 +48,14 @@ public class TestParsing {
 	}
 
 	@Test(expected= SyntaxError.class)
-		public void parse_bad_octal() throws Exception
+	public void parse_bad_octal() throws Exception
 	{
 		parse("0o8");
 		parse("0oa");
 	}
 
 	@Test(expected= SyntaxError.class)
-		public void parse_bad_hexadecimal() throws Exception
+	public void parse_bad_hexadecimal() throws Exception
 	{
 		parse("0xfggg");
 		parse("0oH");

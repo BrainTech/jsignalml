@@ -186,7 +186,9 @@ atom
 ID  :	(LETTER|'_') (LETTER|DIGIT|'_')*
     ;
 
-INT :	DIGIT+
+INT
+    : ('0x'|'0o'|'0b') HEX_DIGIT+
+    | DIGIT+
     ;
 
 FLOAT

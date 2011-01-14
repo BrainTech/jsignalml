@@ -257,14 +257,26 @@ public abstract class Type {
 			this.value = value;
 		}
 		public Int(java.lang.String text) {
-			this(_convert(text));
-		}
-
-		static int _convert(java.lang.String text) {
+			int base = 10;
 			text = text.trim();
 			if (text.startsWith("+"))
 				text = text.substring(1).trim();
-			return Integer.parseInt(text);
+			if (text.startsWith("0x")){
+				text = text.substring(2);
+				base = 16;
+			} else if (text.startsWith("0o")){
+				text = text.substring(2);
+				base = 8;
+			} else if (text.startsWith("0b")){
+				text = text.substring(2);
+				base = 2;
+			}
+
+			try {
+				this.value = Integer.parseInt(text, base);
+			} catch (NumberFormatException e) {
+				throw new SyntaxError.RuntimeFlavour(e);
+			}
 		}
 
 		public Int(long value) {
