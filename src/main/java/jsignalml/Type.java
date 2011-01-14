@@ -328,8 +328,11 @@ public abstract class Type {
 			case FLOORDIV:
 				return new Int(this.value / other.value);
 			case MOD:
-				return new Int(this.value % other.value);
-				// XXX: fix for negative values in modulo
+				int value = this.value % other.value;
+				if ((other.value > 0 && value < 0) ||
+				    (other.value < 0 && value > 0))
+					value += other.value;
+				return new Int(value);
 			case BIN_AND:
 				return new Int(this.value & other.value);
 			case BIN_OR:
@@ -373,8 +376,11 @@ public abstract class Type {
 			case FLOORDIV:
 				return new Int(Math.round(Math.floor(this.value / other.value)));
 			case MOD:
-				return new Float(this.value % other.value);
-				// XXX: fix for negative values in modulo
+				double value = this.value % other.value;
+				if ((other.value > 0 && value < 0) ||
+				    (other.value < 0 && value > 0))
+					value += other.value;
+				return new Float(value);
 			case POW:
 				return new Float(Math.pow(this.value, other.value));
 
@@ -526,8 +532,11 @@ public abstract class Type {
 			case FLOORDIV:
 				return new Int(Math.round(Math.floor(this.value / other.value)));
 			case MOD:
-				return new Float(this.value % other.value);
-				// XXX: fix for negative values in modulo
+				double value = this.value % other.value;
+				if ((other.value > 0 && value < 0) ||
+				    (other.value < 0 && value > 0))
+					value += other.value;
+				return new Float(value);
 			case POW:
 				return new Float(Math.pow(this.value, other.value));
 			case EQ:
@@ -571,8 +580,11 @@ public abstract class Type {
 			case FLOORDIV:
 				return new Int(Math.round(Math.floor(this.value / other.value)));
 			case MOD:
-				return new Float(this.value % other.value);
-				// XXX: fix for negative values in modulo
+				double value = this.value % other.value;
+				if ((other.value > 0 && value < 0) ||
+				    (other.value < 0 && value > 0))
+					value += other.value;
+				return new Float(value);
 			case POW:
 				return new Float(Math.pow(this.value, other.value));
 

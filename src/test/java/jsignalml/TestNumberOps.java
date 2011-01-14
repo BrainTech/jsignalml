@@ -158,13 +158,39 @@ public class TestNumberOps {
 		equal("21. % 13", 8.);
 	}
 
-	@Test public void eval_modulo_negative() throws Exception
+	@Test public void eval_modulo_negative_dividend_int() throws Exception
 	{
 		equal("-1 % 2", 1);
 		equal("-21 % 13", 5);
-
+	}
+	@Test public void eval_modulo_negative_dividend_float() throws Exception
+	{
 		equal("-1. % 2.", 1.);
 		equal("-21. % 13", 5.);
+	}
+
+	@Test public void eval_modulo_negative_divisor_int() throws Exception
+	{
+		equal("1 % -2", -1);
+		equal("21 % -13", -5);
+	}
+
+	@Test public void eval_modulo_negative_divisor_float() throws Exception
+	{
+		equal("1. % -2.", -1.);
+		equal("21. % -13", -5.);
+	}
+
+	@Test public void eval_modulo_negative_both_int() throws Exception
+	{
+		equal("-1 % -2", -1);
+		equal("-21 % -13", -8);
+	}
+
+	@Test public void eval_modulo_negative_both_float() throws Exception
+	{
+		equal("-1. % -2.", -1.);
+		equal("-21. % -13", -8.);
 	}
 
 	@Test public void eval_0_pow_0() throws Exception
