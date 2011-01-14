@@ -139,6 +139,21 @@ public class TestParsing {
 		parse("a+b;\nc");
 	}
 
+	@Test public void parse_empty_list() throws Exception
+	{
+		parse("[]");
+		parse("[ ]");
+	}
+
+	@Test public void parse_int_list() throws Exception
+	{
+		parse("[1]");
+		parse("[1,2]");
+		parse("[1,-2]");
+		parse("[-1,-2]");
+		parse("[1, -2, 3, 4, 5, 6, 9, 10, 12092020]");
+	}
+
 	@Test public void parse_index_basic() throws Exception
 	{
 		parse("a[0]");
