@@ -166,7 +166,8 @@ public class Processor {
 				pw.flush();
 				final Type type = expr.type(context);
 				System.out.format("type: Type.%s\n",
-						  type == null ? "any" : type.getClass().getSimpleName());
+						  type == null ? "unknown"
+						  : type.getClass().getSimpleName());
 				Type value = expr.eval(state);
 				System.out.format("----> %s\n",
 				                  value == null ? "null" : value.repr());

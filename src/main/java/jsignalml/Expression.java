@@ -252,6 +252,24 @@ public abstract class Expression {
 			return new Type.List();
 		}
 
+		/**
+		 * If all elements are of the same type, return this type, otherwise null.
+		 */
+		public Type elementType(Context context)
+		{
+			Type type = null;
+			for (Expression el: this.args) {
+				Type t = el.type(context);
+				if (t == null)
+					return null;
+				if (type != null && !t.getClass().equals(type.getClass()))
+					return null;
+				type = t;
+			}
+			return type;
+		}
+
+
 		@Override
 		public String toString() {
 			return "[" + StringUtils.join(this.args, ", ") + "]";
@@ -289,14 +307,24 @@ public abstract class Expression {
 		@Override
 		public Type type(Context context)
 		{
-			// TODO ?
+			final Type indextype = this.index.type(context);
+			if (indextype != null && !(indextype instanceof Type.Int))
+				throw new ExpressionFault.TypeError();
+
+			final Type listtype = this.item.type(context);
+			if (listtype != null && !(listtype instanceof Type.List))
+				throw new ExpressionFault.TypeError();
+
+			if (this.item instanceof List_)
+				return ((List_)this.item).elementType(context);
+
 			return null;
 		}
 
 		@Override
 		public String toString()
 		{
-			return format("%s[ %s ]", item, index);
+			return format("%s[%s]", item, index);
 		}
 
 		@Override
