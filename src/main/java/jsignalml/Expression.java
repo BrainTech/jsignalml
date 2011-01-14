@@ -215,9 +215,9 @@ public abstract class Expression {
 		@Override
 		public JExpression toJava(Context context)
 		{
-			Class<? extends JavaType> types[] = new Class[this.args.size()];
+			Type types[] = new Type[this.args.size()];
 			for(int i=0; i<types.length; i++)
-				types[i] = JavaType.class;
+				types[i] = this.args.get(i).type(context);
 
 			JInvocation inv = context.find(name, types);
 			if (inv == null)

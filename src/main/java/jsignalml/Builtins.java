@@ -25,11 +25,10 @@ public class Builtins {
 		return ret;
 	}
 
-	public static JInvocation find(JCodeModel model, String name,
-				       Class<? extends JavaType>...argtypes)
+	public static Method find(String name)
 	{
 		final String prefixed = JavaGen.makeIdentifier(name);
-		log.debug("looking for %s/%s(%s)", name, prefixed, StringUtils.join(argtypes, ", "));
+		log.debug("find: looking for %s/%s", name, prefixed);
 
 		Method methods[];
 		try {
@@ -40,16 +39,10 @@ public class Builtins {
 		}
 
 		for(Method method: methods) {
-			if(!method.getName().equals(prefixed))
-				continue;
-
-			if(method.getParameterTypes().length != argtypes.length)
-				throw new ExpressionFault.ArgMismatch();
-			// TODO: check argument types if possible
-
-			JClass klass = model.ref(Builtins.class);
-			return klass.staticInvoke(prefixed);
+			if(method.getName().equals(prefixed))
+				return method;
 		}
-		return null;
+
+		throw new ExpressionFault.NameError(name);
 	}
 }

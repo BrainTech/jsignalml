@@ -97,4 +97,36 @@ public class JavaGen {
 				 "duration_of_data_record", Type.Int.class, expr);
 		gen.model.build(out);
 	}
+
+
+
+
+	static Class<? extends JavaType> convertType(Type type)
+	{
+		if(type == null)
+			return null;
+		if(type instanceof Type.Int)
+			return JavaType.Int.class;
+		if(type instanceof Type.Float)
+			return JavaType.Float.class;
+		if(type instanceof Type.String)
+			return JavaType.Str.class;
+		if(type instanceof Type.List)
+			return JavaType.List.class;
+		throw new RuntimeException();
+	}
+	static Type unconvertType(Class<? extends JavaType> type)
+	{
+		if(type == null)
+			return null;
+		if(type.equals(JavaType.Int.class))
+			return new Type.Int();
+		if(type.equals(JavaType.Float.class))
+			return new Type.Float();
+		if(type.equals(JavaType.Str.class))
+			return new Type.String();
+		if(type.equals(JavaType.List.class))
+			return new Type.List();
+		throw new RuntimeException();
+	}
 }
