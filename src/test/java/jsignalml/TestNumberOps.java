@@ -4,8 +4,9 @@ import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-public class TestOperations {
-	Type eval(String line) throws Exception
+public class TestNumberOps {
+
+	static Type eval(String line) throws Exception
 	{
 		CallHelper state = new Processor.State();
 		Expression expr = Processor.parse(line);
@@ -13,23 +14,24 @@ public class TestOperations {
 		return val;
 	}
 
-	void equal(String line, int expected) throws Exception
+	static void equal(String line, int expected) throws Exception
 	{
 		assertTrue(eval(line).equals(new Type.Int(expected)));
 	}
-	void equal(String line, double expected) throws Exception
+	static void equal(String line, double expected) throws Exception
 	{
 		assertTrue(eval(line).equals(new Type.Float(expected)));
 	}
-	void equal(String line, String expected) throws Exception
+	static void equal(String line, String expected) throws Exception
 	{
 		assertTrue(eval(line).equals(new Type.String(expected)));
 	}
 
-	void verifyIsTrue(String line, boolean expected) throws Exception
+	static void verifyIsTrue(String line, boolean expected) throws Exception
 	{
 		assertEquals(eval(line).isTrue(), expected);
 	}
+
 
 	@Test public void check_int_atom_values() throws Exception
 	{
@@ -708,18 +710,5 @@ public class TestOperations {
 	@Test public void eval_is_true_float_minus_1() throws Exception
 	{
 		verifyIsTrue("-1.", true);
-	}
-
-	@Test public void eval_index_string() throws Exception
-	{
-		equal("'string'[0]", "s");
-		equal("'string'[4]", "n");
-	}
-
-	@Test public void eval_index_list() throws Exception
-	{
-		equal("[0,1,2][0]", 0);
-		equal("[0,1,2][1]", 1);
-		equal("[0,1,2][2]", 2);
 	}
 }
