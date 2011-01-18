@@ -15,8 +15,8 @@ import com.sun.codemodel.JFieldVar;
 import com.sun.codemodel.JVar;
 import com.sun.codemodel.JMod;
 import com.sun.codemodel.JClassAlreadyExistsException;
-
 import com.sun.codemodel.writer.SingleStreamCodeWriter;
+import com.sun.codemodel.writer.FileCodeWriter;
 
 /*
 	double duration_of_data_record = null;
@@ -104,13 +104,15 @@ public class JavaGen {
 	{
 		BasicConfigurator.configure();
 
-		Expression expr = Processor.parse(args[0]);
+		File outputdir = new File(args[0]);
+		Expression expr = Processor.parse(args[1]);
 
-		SingleStreamCodeWriter out = new SingleStreamCodeWriter(System.out);
 		JavaGen gen = new JavaGen(new JCodeModel(), "Test");
 		gen.accessMethod(gen.root,
 				 "duration_of_data_record", new Type.Int(), expr);
-		gen.model.build(out);
+
+		gen.model.build(new SingleStreamCodeWriter(System.out));
+		gen.model.build(new FileCodeWriter(outputdir));
 	}
 
 
