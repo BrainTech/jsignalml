@@ -1,5 +1,7 @@
 package jsignalml;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import org.apache.log4j.BasicConfigurator;
 
 import com.sun.codemodel.JClass;
@@ -12,6 +14,8 @@ import com.sun.codemodel.JInvocation;
 import com.sun.codemodel.JType;
 import com.sun.codemodel.JBlock;
 import com.sun.codemodel.JFieldVar;
+import com.sun.codemodel.JTryBlock;
+import com.sun.codemodel.JCatchBlock;
 import com.sun.codemodel.JVar;
 import com.sun.codemodel.JMod;
 import com.sun.codemodel.JClassAlreadyExistsException;
@@ -102,8 +106,18 @@ public class JavaGen {
 		final JMethod open = klass.method(JMod.PUBLIC, klass.owner().VOID, "open");
 		final JVar arg = open.param(File.class, "filename");
 	        JFieldVar buffer = klass.field(JMod.NONE, mybuffer, "buffer");
-		open.body().assign(JExpr.ref(JExpr._this(), buffer),
-				   JExpr._new(mybuffer).arg(arg));
+		JTryBlock tryblock = open.body()._try();
+		tryblock.body().assign(JExpr.ref(JExpr._this(), buffer),
+				       JExpr._new(mybuffer).arg(arg));
+
+		final JClass fnfe = klass.owner().ref(FileNotFoundException.class);
+		final JClass ioe = klass.owner().ref(IOException.class);
+		final JClass efee = klass.owner().ref(ExpressionFault.ExternalError.class);
+		tryblock._catch(fnfe).body()
+			._throw(JExpr._new(efee).arg(JExpr.ref("_x")));
+		tryblock._catch(ioe).body()
+			._throw(JExpr._new(efee).arg(JExpr.ref("_x")));
+
 		return open;
 	}
 
