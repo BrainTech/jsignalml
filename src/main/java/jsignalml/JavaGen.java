@@ -65,6 +65,11 @@ public class JavaGen {
 		klass._implements(jsignalml.Source.class);
 		this.mainMethod(this.root);
 		this.openMethod(this.root);
+		this.getSetMethod(this.root);
+		this.getCurrentFilenameMethod(this.root);
+		this.getFormatDescriptionMethod(this.root);
+		this.getFormatIDMethod(this.root);
+		this.closeMethod(this.root);
 		return klass;
 	}
 
@@ -100,6 +105,55 @@ public class JavaGen {
 		open.body().assign(JExpr.ref(JExpr._this(), buffer),
 				   JExpr._new(mybuffer).arg(arg));
 		return open;
+	}
+
+	public JMethod getSetMethod(Context context)
+	{
+		final JDefinedClass klass = context.klass;
+		final JMethod method = klass.method(JMod.PUBLIC,
+						    klass.owner().ref(ChannelSet.class),
+						    "get_set");
+		method.body()._return(JExpr._null());
+		return method;
+	}
+
+	public JMethod getCurrentFilenameMethod(Context context)
+	{
+		final JDefinedClass klass = context.klass;
+		final JMethod method = klass.method(JMod.PUBLIC,
+						    klass.owner().ref(File.class),
+						    "getCurrentFilename");
+		method.body()._return(JExpr._null());
+		return method;
+	}
+
+	public JMethod getFormatDescriptionMethod(Context context)
+	{
+		final JDefinedClass klass = context.klass;
+		final JMethod method = klass.method(JMod.PUBLIC,
+						    klass.owner().ref(String.class),
+						    "getFormatDescription");
+		method.body()._return(JExpr._null());
+		return method;
+	}
+
+	public JMethod getFormatIDMethod(Context context)
+	{
+		final JDefinedClass klass = context.klass;
+		final JMethod method = klass.method(JMod.PUBLIC,
+						    klass.owner().ref(String.class),
+						    "getFormatID");
+		method.body()._return(JExpr._null());
+		return method;
+	}
+
+	public JMethod closeMethod(Context context)
+	{
+		final JDefinedClass klass = context.klass;
+		final JMethod method = klass.method(JMod.PUBLIC,
+						    klass.owner().VOID,
+						    "close");
+		return method;
 	}
 
 	public JMethod accessMethod(Context context, String ident,
