@@ -58,13 +58,26 @@ public class Context {
 		JMethod jmethod = this.find(name);
 
 		if (jmethod != null) {
-			if (jmethod.listParams().length != argtypes.length)
+			JType[] expectedtypes = jmethod.listParamTypes();
+			if (expectedtypes.length != argtypes.length)
 				throw new ExpressionFault.ArgMismatch();
+			for (int i=0; i<expectedtypes.length; i++) {
+				if (argtypes[i] == null)
+					continue;
+				Class<? extends Type> expected =
+					Type.getType(expectedtypes[i].name());
+				if (!argtypes[i].equals(expected))
+					throw new ExpressionFault.TypeError(expected,
+								    argtypes[i].getClass());
+			}
+
 			return this.klass.staticInvoke(name);
 		} else {
 			java.lang.reflect.Method method = Builtins.find(name);
 			Class[] expectedtypes = method.getParameterTypes();
-			for(int i=0; i<expectedtypes.length; i++){
+			if (expectedtypes.length != argtypes.length)
+				throw new ExpressionFault.ArgMismatch();
+			for (int i=0; i<expectedtypes.length; i++) {
 				Class<? extends JavaType> expected =
 					expectedtypes[i].asSubclass(JavaType.class);
 				Class<? extends JavaType> argtype =
