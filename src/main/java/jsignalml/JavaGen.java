@@ -38,6 +38,14 @@ public class JavaGen {
 	{
 		return PREFIX + name;
 	}
+	static String makeGetter(String name)
+	{
+		return PREFIX + "get_" + name;
+	}
+	static String makeGetterImpl(String name)
+	{
+		return PREFIX + "_get_" + name;
+	}
 
 	JCodeModel model;
 	Context root;
@@ -66,7 +74,7 @@ public class JavaGen {
 
 		JVar reader = mainbody.decl(klass, "reader", JExpr._new(klass));
 		JExpression file = JExpr._new(this.model.ref(File.class)).arg(args.component(JExpr.lit(0)));
-		mainbody.add(JExpr.invoke(reader, "open").arg(file));
+		mainbody.add(reader.invoke("open").arg(file));
 
 		return klass;
 	}
@@ -84,12 +92,13 @@ public class JavaGen {
 			javatype = JavaType.class;
 
 		final JMethod impl = klass.method(JMod.NONE, javatype,
-							  "_get" + prefixed);
+						  makeGetterImpl(ident));
 		impl.body()._return( expr.toJava(context) );
 
 		final JFieldVar stor = klass.field(JMod.NONE, javatype, prefixed, JExpr._null());
 
-		final JMethod getter = klass.method(JMod.PUBLIC, javatype, "get_" + prefixed);
+		final JMethod getter = klass.method(JMod.PUBLIC, javatype,
+						    makeGetter(ident));
 		final JBlock then = getter.body()._if(stor.eq(JExpr._null()))._then();
 		then.assign(stor, JExpr.invoke(impl));
 		getter.body()._return(stor);
@@ -102,14 +111,19 @@ public class JavaGen {
 		       java.io.IOException,
 		       JClassAlreadyExistsException
 	{
+		final String field_name = "duration_of_data_record";
+
 		BasicConfigurator.configure();
 
 		File outputdir = new File(args[0]);
-		Expression expr = Processor.parse(args[1]);
 
 		JavaGen gen = new JavaGen(new JCodeModel(), "Test");
-		gen.accessMethod(gen.root,
-				 "duration_of_data_record", new Type.Int(), expr);
+
+		Expression expr = Processor.parse(args[1]);
+		gen.accessMethod(gen.root, field_name, new Type.Int(), expr);
+
+		Expression expr2 = Processor.parse(field_name + "() + 1");
+		gen.accessMethod(gen.root, field_name+"2", new Type.Int(), expr2);
 
 		gen.model.build(new SingleStreamCodeWriter(System.out));
 		gen.model.build(new FileCodeWriter(outputdir));

@@ -2,13 +2,14 @@ package jsignalml;
 
 import java.util.Collection;
 
-import com.sun.codemodel.JCodeModel;
-import com.sun.codemodel.JType;
 import com.sun.codemodel.JClass;
-import com.sun.codemodel.JDefinedClass;
-import com.sun.codemodel.JMethod;
-import com.sun.codemodel.JInvocation;
 import com.sun.codemodel.JClassAlreadyExistsException;
+import com.sun.codemodel.JCodeModel;
+import com.sun.codemodel.JDefinedClass;
+import com.sun.codemodel.JExpr;
+import com.sun.codemodel.JInvocation;
+import com.sun.codemodel.JMethod;
+import com.sun.codemodel.JType;
 
 import org.apache.commons.lang.StringUtils;
 
@@ -29,13 +30,15 @@ public class Context {
 
 	public JMethod find(String name)
 	{
-		final String prefixed = JavaGen.makeIdentifier(name);
-		log.debug("find: looking for %s/%s", name, prefixed);
+		final String getter = JavaGen.makeGetter(name);
+		log.debug("find: looking for %s/%s", name, getter);
 
 		Collection<JMethod> methods = this.klass.methods();
-		for(JMethod method: methods)
-			if (method.name().equals(prefixed))
+		for(JMethod method: methods){
+			log.debug("looking at %s", method.name());
+			if (method.name().equals(getter))
 				return method;
+		}
 		if(parent != null)
 			return parent.find(name);
 		else
@@ -69,7 +72,7 @@ public class Context {
 								    argtypes[i].getClass());
 			}
 
-			return this.klass.staticInvoke(name);
+			return JExpr._this().invoke(jmethod);
 		} else {
 			java.lang.reflect.Method method = Builtins.find(name);
 			Class[] expectedtypes = method.getParameterTypes();
@@ -89,7 +92,7 @@ public class Context {
 			}
 
 			JClass klass = this.klass.owner().ref(Builtins.class);
-			return this.klass.staticInvoke(prefixed); // XXX: klass czy this.klass
+			return klass.staticInvoke(prefixed);
 		}
 	}
 }
