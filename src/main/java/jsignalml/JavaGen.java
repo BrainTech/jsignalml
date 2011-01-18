@@ -51,24 +51,14 @@ public class JavaGen {
 	}
 
 	public JMethod accessMethod(Context context, String ident,
-				    Class<? extends Type> type, Expression expr)
+				    Type type, Expression expr)
 	{
 		final String prefixed = makeIdentifier(ident);
 		final JDefinedClass klass = context.klass;
 
-		Class<? extends JavaType> javatype;
-		if (type == null)
+		Class<? extends JavaType> javatype = convertType(type);
+		if (javatype == null)
 			javatype = JavaType.class;
-		else if (type.equals(Type.Int.class))
-			javatype = JavaType.Int.class;
-		else if (type.equals(Type.Float.class))
-			javatype = JavaType.Float.class;
-		else if (type.equals(Type.String.class))
-			javatype = JavaType.Str.class;
-		else if (type.equals(Type.List.class))
-			javatype = JavaType.List.class;
-		else
-			throw new RuntimeException("unkown type");
 
 		final JMethod impl = klass.method(JMod.NONE, javatype,
 							  "_get" + prefixed);
@@ -94,13 +84,16 @@ public class JavaGen {
 		SingleStreamCodeWriter out = new SingleStreamCodeWriter(System.out);
 		JavaGen gen = new JavaGen(new JCodeModel(), "Test");
 		gen.accessMethod(gen.root,
-				 "duration_of_data_record", Type.Int.class, expr);
+				 "duration_of_data_record", new Type.Int(), expr);
 		gen.model.build(out);
 	}
 
 
-
-
+	/* Those two static classes go here and not in JavaType, because it's an
+	 * interface and cannot contain methods. They cannot go into Type
+	 * either, in order to keep Type clean from Java implementation
+	 * details.
+	 */
 	static Class<? extends JavaType> convertType(Type type)
 	{
 		if(type == null)
@@ -113,7 +106,7 @@ public class JavaGen {
 			return JavaType.Str.class;
 		if(type instanceof Type.List)
 			return JavaType.List.class;
-		throw new RuntimeException();
+		throw new RuntimeException("unknown Type");
 	}
 	static Type unconvertType(Class<? extends JavaType> type)
 	{
@@ -127,6 +120,6 @@ public class JavaGen {
 			return new Type.String();
 		if(type.equals(JavaType.List.class))
 			return new Type.List();
-		throw new RuntimeException();
+		throw new RuntimeException("unknown JavaType");
 	}
 }
