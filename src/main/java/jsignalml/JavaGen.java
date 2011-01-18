@@ -63,23 +63,44 @@ public class JavaGen {
 		final JDefinedClass klass = this.model._class(name);
 		this.root = new Context(klass, null, name);
 		klass._implements(jsignalml.Source.class);
-		final JMethod main = klass.method(JMod.STATIC | JMod.PUBLIC,
-						  this.model.VOID, "main");
-		JVar args = main.varParam(String.class, "args");
-
-		JInvocation bc_configure = this.model.ref(BasicConfigurator.class).staticInvoke("configure");
-
-		JBlock mainbody = main.body();
-		mainbody.add(bc_configure);
-
-		JVar reader = mainbody.decl(klass, "reader", JExpr._new(klass));
-		JExpression file = JExpr._new(this.model.ref(File.class)).arg(args.component(JExpr.lit(0)));
-		mainbody.add(reader.invoke("open").arg(file));
-
+		this.mainMethod(this.root);
+		this.openMethod(this.root);
 		return klass;
 	}
 
+	public JMethod mainMethod(Context context)
+	{
+		final JDefinedClass klass = context.klass;
+		final JMethod main = klass.method(JMod.STATIC | JMod.PUBLIC,
+						  klass.owner().VOID, "main");
+		final JVar args = main.varParam(String.class, "args");
 
+		final JInvocation bc_configure =
+			klass.owner().ref(BasicConfigurator.class)
+			.staticInvoke("configure");
+
+		JBlock body = main.body();
+		body.add(bc_configure);
+
+		JVar reader = body.decl(context.klass, "reader",
+					JExpr._new(klass));
+		JExpression file = JExpr._new(klass.owner().ref(File.class))
+			.arg(args.component(JExpr.lit(0)));
+		body.add(reader.invoke("open").arg(file));
+		return main;
+	}
+
+	public JMethod openMethod(Context context)
+	{
+		final JDefinedClass klass = context.klass;
+		final JType mybuffer = klass.owner().ref(MyBuffer.class);
+		final JMethod open = klass.method(JMod.PUBLIC, klass.owner().VOID, "open");
+		final JVar arg = open.param(File.class, "filename");
+	        JFieldVar buffer = klass.field(JMod.NONE, mybuffer, "buffer");
+		open.body().assign(JExpr.ref(JExpr._this(), buffer),
+				   JExpr._new(mybuffer).arg(arg));
+		return open;
+	}
 
 	public JMethod accessMethod(Context context, String ident,
 				    Type type, Expression expr)
