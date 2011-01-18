@@ -1,4 +1,5 @@
 package jsignalml;
+import java.io.File;
 import org.apache.log4j.BasicConfigurator;
 
 import com.sun.codemodel.JClass;
@@ -7,9 +8,11 @@ import com.sun.codemodel.JMethod;
 import com.sun.codemodel.JCodeModel;
 import com.sun.codemodel.JExpression;
 import com.sun.codemodel.JExpr;
+import com.sun.codemodel.JInvocation;
 import com.sun.codemodel.JType;
 import com.sun.codemodel.JBlock;
 import com.sun.codemodel.JFieldVar;
+import com.sun.codemodel.JVar;
 import com.sun.codemodel.JMod;
 import com.sun.codemodel.JClassAlreadyExistsException;
 
@@ -40,15 +43,35 @@ public class JavaGen {
 	Context root;
 
 	public JavaGen(JCodeModel model, String name)
+		throws JClassAlreadyExistsException
 	{
 		this.model = model;
-		try {
-			this.root = new Context(model, null, name);
-		} catch(JClassAlreadyExistsException e) {
-			// TODO
-			throw new RuntimeException("???");
-		}
+		this.signalmlCodec(name);
 	}
+
+	public JDefinedClass signalmlCodec(String name)
+		throws JClassAlreadyExistsException
+	{
+		final JDefinedClass klass = this.model._class(name);
+		this.root = new Context(klass, null, name);
+		klass._implements(jsignalml.Source.class);
+		final JMethod main = klass.method(JMod.STATIC | JMod.PUBLIC,
+						  this.model.VOID, "main");
+		JVar args = main.varParam(String.class, "args");
+
+		JInvocation bc_configure = this.model.ref(BasicConfigurator.class).staticInvoke("configure");
+
+		JBlock mainbody = main.body();
+		mainbody.add(bc_configure);
+
+		JVar reader = mainbody.decl(klass, "reader", JExpr._new(klass));
+		JExpression file = JExpr._new(this.model.ref(File.class)).arg(args.component(JExpr.lit(0)));
+		mainbody.add(JExpr.invoke(reader, "open").arg(file));
+
+		return klass;
+	}
+
+
 
 	public JMethod accessMethod(Context context, String ident,
 				    Type type, Expression expr)
@@ -74,8 +97,10 @@ public class JavaGen {
 		return getter;
 	}
 
-	public static void main(String...args) throws jsignalml.SyntaxError,
-				java.io.IOException
+	public static void main(String...args)
+		throws jsignalml.SyntaxError,
+		       java.io.IOException,
+		       JClassAlreadyExistsException
 	{
 		BasicConfigurator.configure();
 

@@ -74,7 +74,7 @@ public abstract class Expression {
 				case GE: cond = cmp_res.gte(JExpr.lit(0)); break;
 				default: throw new RuntimeException();
 				}
-				JClass int_t = context.model.ref(JavaType.Int.class);
+				JClass int_t = context.klass.owner().ref(JavaType.Int.class);
 				return JOp.cond(cond, int_t.staticRef("True"),
 						      int_t.staticRef("False"));
 			} else {
@@ -278,7 +278,7 @@ public abstract class Expression {
 		@Override
 		public JExpression toJava(Context context)
 		{
-			JInvocation list = JExpr._new(context.model.ref(JavaType.List.class));
+			JInvocation list = JExpr._new(context.klass.owner().ref(JavaType.List.class));
 			for (Expression expr: this.args)
 				list.arg(expr.toJava(context));
 			return list;
@@ -381,7 +381,7 @@ public abstract class Expression {
 				throw new RuntimeException();
 			}
 
-			return JExpr._new(context.model.ref(type)).arg(repr);
+			return JExpr._new(context.klass.owner().ref(type)).arg(repr);
 		}
 
 		public static Expression make(String str) {

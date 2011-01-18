@@ -158,7 +158,8 @@ public class Processor {
 				JFormatter code = new JFormatter( pw );
 				Context context;
 				try {
-					context = new Context(new JCodeModel(), null, "stdin");
+					JCodeModel model = new JCodeModel();
+					context = new Context(model._class("Test"), null, "stdin");
 				} catch(JClassAlreadyExistsException e){
 					throw new RuntimeException("programming error");
 				}

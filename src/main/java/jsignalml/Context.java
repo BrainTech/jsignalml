@@ -15,18 +15,16 @@ import org.apache.commons.lang.StringUtils;
 public class Context {
 	static final Logger log = new Logger(Context.class);
 
-	JCodeModel model;
 	Context parent;
 	JDefinedClass klass;
 
-	public Context(JCodeModel model, Context parent, String name)
+	public Context(JDefinedClass klass, Context parent, String name)
 		throws JClassAlreadyExistsException
 	{
 		log.info("created new Context '%s'", name);
 
-		this.model = model;
 		this.parent = parent;
-		this.klass = model._class(name);
+		this.klass = klass;
 	}
 
 	public JMethod find(String name)
@@ -90,8 +88,8 @@ public class Context {
 					    argtypes[i].getClass());
 			}
 
-			JClass klass = model.ref(Builtins.class);
-			return klass.staticInvoke(prefixed);
+			JClass klass = this.klass.owner().ref(Builtins.class);
+			return this.klass.staticInvoke(prefixed); // XXX: klass czy this.klass
 		}
 	}
 }
