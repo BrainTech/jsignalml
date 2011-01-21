@@ -9,7 +9,7 @@ import java.io.File;
 /* 'My' so it doesn't collide with java.nio.whatever . */
 public class MyBuffer {
 	protected static final Logger log = new Logger(MyBuffer.class);
-	final java.nio.ByteBuffer source;
+	final public java.nio.ByteBuffer source;
 	final java.io.File filename;
 
 	public MyBuffer(File name)

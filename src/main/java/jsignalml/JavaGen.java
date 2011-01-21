@@ -1,4 +1,5 @@
 package jsignalml;
+import static java.lang.String.format;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -31,7 +32,7 @@ import com.sun.codemodel.writer.FileCodeWriter;
 	}
 	double _get_duration_of_data_record() {
 		long offset = 244;
-		Type.String str = (Type.String) buffer.read(new BitForm.STR(8), offset);
+		Type.String str = (Type.String) buffer.read(new BitForm.Str(8), offset);
 		return new Type.Float().make(str).getValue();
 	}
 */
@@ -170,10 +171,9 @@ public class JavaGen {
 		return method;
 	}
 
-	public JMethod accessMethod(Context context, String ident,
-				    Type type, Expression expr)
+	public JMethod exprParam(Context context, String ident,
+				 Type type, Expression expr)
 	{
-		final String prefixed = makeIdentifier(ident);
 		final JDefinedClass klass = context.klass;
 
 		Class<? extends JavaType> javatype = convertType(type);
@@ -184,9 +184,45 @@ public class JavaGen {
 						  makeGetterImpl(ident));
 		impl.body()._return( expr.toJava(context) );
 
-		final JFieldVar stor = klass.field(JMod.NONE, javatype, prefixed, JExpr._null());
+		return this.cacheParam(context, ident, impl);
+	}
 
-		final JMethod getter = klass.method(JMod.PUBLIC, javatype,
+	public JMethod readParam(Context context, String ident,
+				 Type type, BitForm format, int offset)
+	{
+		final String prefixed = makeIdentifier(ident);
+		final JDefinedClass klass = context.klass;
+
+		Class<? extends JavaType> javatype = convertType(type);
+		if (javatype == null)
+			javatype = JavaType.class;
+
+		final JMethod impl = klass.method(JMod.NONE, javatype,
+						  makeGetterImpl(ident));
+		final JBlock body = impl.body();
+		body.directStatement(format("// type=%s", type));
+		body.directStatement(format("// format=%s", format));
+		JVar var = body.decl(klass.owner().ref(javatype), "var");
+		JType javatype2 = bitform2javatype(format, klass.owner());
+		JExpression expr = bitform2j(format).invoke("read2")
+			.arg(JExpr.ref(JExpr.ref(JExpr._this(), "buffer"),
+				       "source"))
+			.arg(JExpr.lit(offset));
+		JVar input = body.decl(javatype2, "input", expr);
+		body.assign(var, input);
+		body._return(var);
+
+		return this.cacheParam(context, ident, impl);
+	}
+
+	public JMethod cacheParam(Context context, String ident, JMethod impl)
+	{
+		final String prefixed = makeIdentifier(ident);
+		final JDefinedClass klass = context.klass;
+		final JFieldVar stor = klass.field(JMod.NONE, impl.type(),
+						   prefixed, JExpr._null());
+
+		final JMethod getter = klass.method(JMod.PUBLIC, impl.type(),
 						    makeGetter(ident));
 		final JBlock then = getter.body()._if(stor.eq(JExpr._null()))._then();
 		then.assign(stor, JExpr.invoke(impl));
@@ -209,10 +245,12 @@ public class JavaGen {
 		JavaGen gen = new JavaGen(new JCodeModel(), "Test");
 
 		Expression expr = Processor.parse(args[1]);
-		gen.accessMethod(gen.root, field_name, new Type.Int(), expr);
+		gen.exprParam(gen.root, field_name, new Type.Int(), expr);
 
 		Expression expr2 = Processor.parse(field_name + "() + 1");
-		gen.accessMethod(gen.root, field_name+"2", new Type.Int(), expr2);
+		gen.exprParam(gen.root, field_name+"2", new Type.Int(), expr2);
+		gen.readParam(gen.root, "readTest", new Type.Int(),
+			      new BitForm.Int.Int32.LE(), 25);
 
 		gen.model.build(new SingleStreamCodeWriter(System.out));
 		gen.model.build(new FileCodeWriter(outputdir));
@@ -251,5 +289,26 @@ public class JavaGen {
 		if(type.equals(JavaType.List.class))
 			return new Type.List();
 		throw new RuntimeException("unknown JavaType");
+	}
+
+	static JExpression bitform2j(BitForm format)
+	{
+		assert format != null;
+
+		return JExpr.direct("new " + format.toString());
+	}
+
+	static JType bitform2javatype(BitForm format, JCodeModel model)
+	{
+		assert format != null;
+
+		Class<? extends JavaType> klass;
+		if (format instanceof BitForm.Int)
+			klass = JavaType.Int.class;
+		else if (format instanceof BitForm.Str)
+			klass = JavaType.Str.class;
+		else
+			throw new RuntimeException("format not implemented");
+		return model.ref(klass);
 	}
 }
