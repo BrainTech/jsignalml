@@ -7,6 +7,8 @@ import java.util.Iterator;
 import java.util.Arrays;
 import static java.util.Collections.unmodifiableList;
 
+import org.apache.commons.lang.StringUtils;
+
 public interface JavaType {
 	JavaType add(JavaType b);
 	JavaType sub(JavaType b);
@@ -40,6 +42,16 @@ public interface JavaType {
 		}
 		public Int(BigInteger value){
 			super(value.toByteArray());
+		}
+
+		public static Int make(JavaType other) {
+			if (other instanceof Int)
+				return (Int)other;
+			if (other instanceof Float)
+				return new Int(((Float)other).value);
+			if (other instanceof Str)
+				return new Int(((Str)other).value);
+			throw new ExpressionFault.TypeError();
 		}
 
 		static byte[] _long_to_arr8(long value){
@@ -239,6 +251,19 @@ public interface JavaType {
 			this.value = value.doubleValue();
 		}
 
+		public static Float make(JavaType other) {
+			if (other instanceof Int)
+				return new Float((Int)other);
+			if (other instanceof Str)
+				return new Float(((Str)other).value);
+			if (other instanceof Float)
+				return (Float)other;
+			throw new ExpressionFault.TypeError();
+		}
+
+		public String toString() {
+			return "" + this.value;
+		}
 
 		public JavaType add(JavaType other){
 			if(other instanceof Int)
@@ -390,6 +415,14 @@ public interface JavaType {
 			this.value = value;
 		}
 
+		public static Str make(JavaType other) {
+			return new Str(other.toString());
+		}
+
+		public String toString() {
+			return this.value;
+		}
+
 		public JavaType add(JavaType other){
 			if(other instanceof Str)
 				return this.add((Str)other);
@@ -483,6 +516,18 @@ public interface JavaType {
 		}
 		public List(JavaType...items){
 			this.value = unmodifiableList(Arrays.asList(items));
+		}
+
+		public static List make(JavaType other) {
+			if (other instanceof Str)
+				return null; // TODO
+			if (other instanceof List)
+				return (List)other;
+			throw new ExpressionFault.TypeError();
+		}
+
+		public String toString() {
+			return "[" + StringUtils.join(this.value, ", ") + "]";
 		}
 
 		public JavaType add(JavaType other){

@@ -97,6 +97,9 @@ public class JavaGen {
 		JExpression file = JExpr._new(klass.owner().ref(File.class))
 			.arg(args.component(JExpr.lit(0)));
 		body.add(reader.invoke("open").arg(file));
+		JExpression input = reader.invoke(makeGetter("readTestConv"));
+		body.add(klass.owner().ref(System.class).staticRef("out")
+			 .invoke("println").arg(input) );
 		return main;
 	}
 
@@ -193,23 +196,24 @@ public class JavaGen {
 		final String prefixed = makeIdentifier(ident);
 		final JDefinedClass klass = context.klass;
 
-		Class<? extends JavaType> javatype = convertType(type);
-		if (javatype == null)
-			javatype = JavaType.class;
+		Class<? extends JavaType> javatype_ = convertType(type);
+		if (javatype_ == null)
+			javatype_ = JavaType.class;
+		JClass javatype = klass.owner().ref(javatype_);
 
 		final JMethod impl = klass.method(JMod.NONE, javatype,
 						  makeGetterImpl(ident));
 		final JBlock body = impl.body();
 		body.directStatement(format("// type=%s", type));
 		body.directStatement(format("// format=%s", format));
-		JVar var = body.decl(klass.owner().ref(javatype), "var");
-		JType javatype2 = bitform2javatype(format, klass.owner());
+		JClass javatype2 = bitform2javatype(format, klass.owner());
 		JExpression expr = bitform2j(format).invoke("read2")
 			.arg(JExpr.ref(JExpr.ref(JExpr._this(), "buffer"),
 				       "source"))
 			.arg(JExpr.lit(offset));
 		JVar input = body.decl(javatype2, "input", expr);
-		body.assign(var, input);
+		JVar var = body.decl(javatype, "var",
+				     javatype.staticInvoke("make").arg(input));
 		body._return(var);
 
 		return this.cacheParam(context, ident, impl);
@@ -251,6 +255,8 @@ public class JavaGen {
 		gen.exprParam(gen.root, field_name+"2", new Type.Int(), expr2);
 		gen.readParam(gen.root, "readTest", new Type.Int(),
 			      new BitForm.Int.Int32.LE(), 25);
+		gen.readParam(gen.root, "readTestConv", new Type.Int(),
+			      new BitForm.Str(8), 0);
 
 		gen.model.build(new SingleStreamCodeWriter(System.out));
 		gen.model.build(new FileCodeWriter(outputdir));
@@ -298,7 +304,7 @@ public class JavaGen {
 		return JExpr.direct("new " + format.toString());
 	}
 
-	static JType bitform2javatype(BitForm format, JCodeModel model)
+	static JClass bitform2javatype(BitForm format, JCodeModel model)
 	{
 		assert format != null;
 
