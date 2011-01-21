@@ -1,8 +1,6 @@
 package jsignalml;
 import static java.lang.String.format;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import org.apache.log4j.BasicConfigurator;
 
 import com.sun.codemodel.JClass;
@@ -55,10 +53,10 @@ public class JavaGen {
 	JCodeModel model;
 	Context root;
 
-	public JavaGen(JCodeModel model, String name)
+	public JavaGen(String name)
 		throws JClassAlreadyExistsException
 	{
-		this.model = model;
+		this.model = new JCodeModel();
 		this.signalmlCodec(name);
 	}
 
@@ -103,25 +101,24 @@ public class JavaGen {
 		return main;
 	}
 
+	public JMethod fileConstructor(Context context)
+	{
+		final JDefinedClass klass = context.klass;
+		JMethod method = klass.constructor();
+		JVar filename = method.param(File.class, "filename");
+		method.body().add(JExpr._this().invoke("open").arg(filename));
+		return method;
+	}
+
 	public JMethod openMethod(Context context)
 	{
 		final JDefinedClass klass = context.klass;
-		final JType mybuffer = klass.owner().ref(MyBuffer.class);
+		final JClass mybuffer = klass.owner().ref(MyBuffer.class);
 		final JMethod open = klass.method(JMod.PUBLIC, klass.owner().VOID, "open");
 		final JVar arg = open.param(File.class, "filename");
-	        JFieldVar buffer = klass.field(JMod.NONE, mybuffer, "buffer");
-		JTryBlock tryblock = open.body()._try();
-		tryblock.body().assign(JExpr.ref(JExpr._this(), buffer),
-				       JExpr._new(mybuffer).arg(arg));
-
-		final JClass fnfe = klass.owner().ref(FileNotFoundException.class);
-		final JClass ioe = klass.owner().ref(IOException.class);
-		final JClass efee = klass.owner().ref(ExpressionFault.ExternalError.class);
-		tryblock._catch(fnfe).body()
-			._throw(JExpr._new(efee).arg(JExpr.ref("_x")));
-		tryblock._catch(ioe).body()
-			._throw(JExpr._new(efee).arg(JExpr.ref("_x")));
-
+	        final JFieldVar buffer = klass.field(JMod.NONE, mybuffer, "buffer");
+		open.body().assign(JExpr.ref(JExpr._this(), buffer),
+				   mybuffer.staticInvoke("open").arg(arg));
 		return open;
 	}
 
@@ -246,7 +243,7 @@ public class JavaGen {
 
 		File outputdir = new File(args[0]);
 
-		JavaGen gen = new JavaGen(new JCodeModel(), "Test");
+		JavaGen gen = new JavaGen("Test");
 
 		Expression expr = Processor.parse(args[1]);
 		gen.exprParam(gen.root, field_name, new Type.Int(), expr);

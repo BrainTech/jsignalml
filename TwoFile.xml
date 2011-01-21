@@ -1,0 +1,39 @@
+<signalml>
+  <file name="g">
+    <param name="description">
+      <expr>"gooooooo"</expr>
+    </param>
+  </file>
+  <file name="b">
+    <param name="description">
+      <expr>"booooooo"</expr>
+    </param>
+  </file>
+  <param name="a">
+    <expr>g.description()</expr>
+  </param>
+</signalml>
+
+<!--
+
+class TwoFilecCodec {
+   void open(){
+   	this.g = new JFile("g");
+	this.b = new JFile("b");
+   }
+
+   class JFile {
+      
+
+
+   }
+
+   JFile g, b;
+
+   String get_a(){
+      return g.description();
+   }
+}
+
+
+-->

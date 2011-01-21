@@ -5,6 +5,8 @@ import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 import java.nio.channels.FileChannel.MapMode;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 
 /* 'My' so it doesn't collide with java.nio.whatever . */
 public class MyBuffer {
@@ -32,5 +34,16 @@ public class MyBuffer {
 
 	public void close() {
 		// TODO
+	}
+
+	public static MyBuffer open(File filename)
+	{
+		try {
+			return new MyBuffer(filename);
+		} catch (FileNotFoundException e) {
+			throw new jsignalml.ExpressionFault.ExternalError(e);
+		} catch (IOException e) {
+			throw new jsignalml.ExpressionFault.ExternalError(e);
+		}
 	}
 }
