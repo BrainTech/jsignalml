@@ -13,86 +13,61 @@ import com.sun.codemodel.JType;
 
 import org.apache.commons.lang.StringUtils;
 
-public class Context {
-	static final Logger log = new Logger(Context.class);
+public abstract class Context {
+	/** Look for a name amongst immediate children. */
+	public abstract ASTNode lookup(String id);
 
-	Context parent;
-	JDefinedClass klass;
-
-	public Context(JDefinedClass klass, Context parent, String name)
-		throws JClassAlreadyExistsException
+	/** Look for a name in this context or delegate to parent.
+	 *
+	 *  Throws ExpressionFault.NameError if the name cannot be resolved.
+	 */
+	public ASTNode find(String id)
 	{
-		log.info("created new Context '%s'", name);
+		ASTNode ans = this.lookup(id);
+		if (ans == null)
+			ans = this.parent.find(id);
+		if (ans == null)
+			throw new ExpressionFault.NameError(id);
+		return ans;
+	}
 
+	final Context parent;
+	final String name;
+	Context(Context parent, String name)
+	{
 		this.parent = parent;
-		this.klass = klass;
+		this.name = name;
 	}
 
-	public JMethod find(String name)
+	/** Find the closest enclosing file.
+	 * Throws ExpressionFault.TypeError if not inside a file.
+	 */
+	public ASTNode.FileHandle<? extends FileType> findEnclosingFile()
 	{
-		final String getter = JavaGen.makeGetter(name);
-		log.debug("find: looking for %s/%s", name, getter);
-
-		Collection<JMethod> methods = this.klass.methods();
-		for(JMethod method: methods){
-			log.debug("looking at %s", method.name());
-			if (method.name().equals(getter))
-				return method;
-		}
-		if(parent != null)
-			return parent.find(name);
-		else
-			return null;
+		assert this.parent != null;
+		return this.parent.findEnclosingFile();
 	}
 
-	public JInvocation find(String name, Type...argtypes)
-	{
-		String[] argnames = new String[argtypes.length];
-		for(int i=0; i<argtypes.length; i++) {
-			Type t = argtypes[i];
-			argnames[i] = t == null ? "*" : t.getClass().getSimpleName();
+	public static class ClassContext extends Context {
+		static final Logger log = new Logger(Context.class);
+
+		final ASTNode.FileHandle<? extends FileType> filehandle;
+
+		public ClassContext(Context parent, String name,
+				    ASTNode.FileHandle<? extends FileType> filehandle)
+		{
+			log.info("created new Context '%s'", name);
+
+			super(parent, name, filehandle);
+			this.filehandle = filehandle;
 		}
 
-		final String prefixed = JavaGen.makeIdentifier(name);
-		log.debug("looking for %s/%s(%s) in '%s'", name, prefixed,
-			  StringUtils.join(argnames, ", "), this.klass.name());
-		JMethod jmethod = this.find(name);
-
-		if (jmethod != null) {
-			JType[] expectedtypes = jmethod.listParamTypes();
-			if (expectedtypes.length != argtypes.length)
-				throw new ExpressionFault.ArgMismatch();
-			for (int i=0; i<expectedtypes.length; i++) {
-				if (argtypes[i] == null)
-					continue;
-				Class<? extends Type> expected =
-					Type.getType(expectedtypes[i].name());
-				if (!argtypes[i].equals(expected))
-					throw new ExpressionFault.TypeError(expected,
-								    argtypes[i].getClass());
-			}
-
-			return JExpr._this().invoke(jmethod);
-		} else {
-			java.lang.reflect.Method method = Builtins.find(name);
-			Class[] expectedtypes = method.getParameterTypes();
-			if (expectedtypes.length != argtypes.length)
-				throw new ExpressionFault.ArgMismatch();
-			for (int i=0; i<expectedtypes.length; i++) {
-				Class<? extends JavaType> expected =
-					expectedtypes[i].asSubclass(JavaType.class);
-				Class<? extends JavaType> argtype =
-					JavaGen.convertType(argtypes[i]);
-				if (argtype == null)
-					continue;
-				if (!argtype.equals(expected))
-					throw new ExpressionFault.TypeError(
-					    JavaGen.unconvertType(expected).getClass(),
-					    argtypes[i].getClass());
-			}
-
-			JClass klass = this.klass.owner().ref(Builtins.class);
-			return klass.staticInvoke(prefixed);
+		public ASTNode.FileHandle<? extends FileType> findEnclosingFile()
+		{
+			if (this.filehandle != null)
+				return this.filehandle;
+			throw new ExpressionFault.TypeError();
 		}
+
 	}
 }

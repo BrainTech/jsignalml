@@ -104,7 +104,7 @@ public class JavaGen {
 	public JMethod fileConstructor(Context context)
 	{
 		final JDefinedClass klass = context.klass;
-		JMethod method = klass.constructor();
+		JMethod method = klass.constructor(JMod.NONE);
 		JVar filename = method.param(File.class, "filename");
 		method.body().add(JExpr._this().invoke("open").arg(filename));
 		return method;

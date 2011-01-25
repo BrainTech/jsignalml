@@ -2,6 +2,7 @@ package jsignalml;
 
 import java.util.List;
 import java.util.Map;
+import java.io.File;
 import java.io.InputStream;
 import java.io.FileInputStream;
 
@@ -10,11 +11,19 @@ import org.w3c.dom.Element;
 
 import org.apache.log4j.BasicConfigurator;
 
+import com.sun.codemodel.JDefinedClass;
+
+// XXX, it's easier to import for now
+import static jsignalml.CodecCore._extract_string;
+import static jsignalml.CodecCore._extract;
+import static jsignalml.CodecCore._attribute;
+
 /**
  * Translate an XML DOM into a Codec in Java.
  */
 public class CodecMaker {
 	public static final Logger log = new Logger(CodecCore.class);
+	final JavaGen generator;
 
 	public static CodecMaker makeCodec(File filename)
 		throws java.io.IOException, org.xml.sax.SAXException, SyntaxError
@@ -26,9 +35,10 @@ public class CodecMaker {
 		return maker;
 	}
 
-	public CodecMaker(String name)
+	public CodecMaker(File filename)
 	{
-		this.generator = new JavaGen(name);
+		this.generator = new JavaGen(filename.toString());
+		// TODO: use inormation from header for name
 	}
 
 	public void parse_signalml(XMLDocument doc)
@@ -72,7 +82,7 @@ public class CodecMaker {
 		final Expression name =
 		        name_ == null ? null : Expression.Const.make(name_);
 
-		JDefinedClass file_class = this.generator.klass._class("file1");
+		JDefinedClass file_class = this.generator.root.klass._class("file1");
 		Context context = new Context(file_class, parent, "file1");
 		this.generator.openMethod(context);
 		this.generator.fileConstructor(context);
@@ -89,6 +99,7 @@ public class CodecMaker {
 				log.warn("unknown element: %s", node);
 		}
 	}
+
 	public void do_param(Context parent, Element element)
 		throws SyntaxError
 	{
@@ -99,7 +110,7 @@ public class CodecMaker {
 		final Class<? extends Type> type =
 		        Type.getType(type_==null? "auto" : type_);
 
-		
+
 
 		final Iterable<Element> iter = XMLDocument.subNodes_re(element, "./arg");
 		for (Element node: iter)
@@ -151,11 +162,10 @@ public class CodecMaker {
 		log.warn("assert not implemented");
 	}
 
-	static String _attribute(Element element, String attr)
+	public void do_data(Context context, Element element)
 	{
-		String value = element.getAttribute(attr);
-		if ("".equals(value))
-			return null;
-		else
-			return value;
+		assert element.getNodeName().equals("data");
+
+		log.warn("data not implemented");
 	}
+}

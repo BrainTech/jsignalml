@@ -8,8 +8,12 @@ import com.sun.codemodel.JInvocation;
 
 import org.apache.commons.lang.StringUtils;
 
-public class Builtins {
+public class Builtins extends Context {
 	static final Logger log = new Logger(Builtins.class);
+
+	public Builtins() {
+		super(null, "builtins");
+	}
 
 	public static JavaType.Int _jsignalml_factorial(JavaType.Int x)
 	{
@@ -25,24 +29,19 @@ public class Builtins {
 		return ret;
 	}
 
-	public static Method find(String name)
+	public ASTNode.BuiltinFunction lookup(String name)
 	{
 		final String prefixed = JavaGen.makeIdentifier(name);
 		log.debug("find: looking for %s/%s", name, prefixed);
 
-		Method methods[];
-		try {
-			methods = Builtins.class.getMethods();
-		} catch(SecurityException e) {
-			log.exception("Builtins.getMethods()", e);
-			return null;
-		}
+		if (name.equals("factorial"))
+			return new ASTNode.BuiltinFunction(name, Type.Int, Type.Int);
 
-		for(Method method: methods) {
-			if(method.getName().equals(prefixed))
-				return method;
-		}
+		return null;
+	}
 
-		throw new ExpressionFault.NameError(name);
+	public ASTNode.BuiltinFunction find(String name)
+	{
+		return lookup(name);
 	}
 }

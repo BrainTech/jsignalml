@@ -19,9 +19,7 @@ import com.sun.codemodel.JInvocation;
 import com.sun.codemodel.JOp;
 
 public abstract class Expression {
-	public abstract Type eval(CallHelper state);
-	public abstract Type type(Context context);
-	public abstract JExpression toJava(Context context);
+	public abstract T accept(ExpressionVisitor<T> v);
 
 	public static class BinaryOp extends Expression {
 		final Expression left, right;
@@ -35,51 +33,16 @@ public abstract class Expression {
 		}
 
 		@Override
-		public Type eval(CallHelper state)
-		{
-			Type left = this.left.eval(state);
-			Type right = this.right.eval(state);
-
-			return left.binaryOp(this.op, right);
+		public T accept(ExpressionVisitor<T> v){
+			T left = this.left.accept(v);
+			T right = this.right.accept(v);
+			return v.visitBinaryOp(this, left, right);
 		}
 
 		@Override
 		public String toString()
 		{
 			return format("%s %s %s", left, op.rep, right);
-		}
-
-		@Override
-		public Type type(Context context)
-		{
-			Type a = this.left.type(context);
-			Type b = this.right.type(context);
-			return a.binaryOpType(this.op, b);
-		}
-
-		@Override
-		public JExpression toJava(Context context)
-		{
-			JExpression left = this.left.toJava(context);
-			JExpression right = this.right.toJava(context);
-			if (this.op.javaMethod == "cmp") {
-				JExpression cmp_res = left.invoke("cmp").arg(right);
-				JExpression cond;
-				switch(this.op){
-				case EQ: cond = cmp_res.eq(JExpr.lit(0)); break;
-				case NE: cond = cmp_res.ne(JExpr.lit(0)); break;
-				case LT: cond = cmp_res.lt(JExpr.lit(0)); break;
-				case GT: cond = cmp_res.gt(JExpr.lit(0)); break;
-				case LE: cond = cmp_res.lte(JExpr.lit(0)); break;
-				case GE: cond = cmp_res.gte(JExpr.lit(0)); break;
-				default: throw new RuntimeException();
-				}
-				JClass int_t = context.klass.owner().ref(JavaType.Int.class);
-				return JOp.cond(cond, int_t.staticRef("True"),
-						      int_t.staticRef("False"));
-			} else {
-				return left.invoke(op.javaMethod).arg(right);
-			}
 		}
 	}
 
