@@ -107,7 +107,9 @@
 	    <configuration>
 	      <tasks>
 		<property name="runtime_classpath" refid="maven.runtime.classpath"/>
-		<echo message="runtime classpath: ${runtime_classpath}"/>
+		<echo message="runtime: CLASSPATH=${runtime_classpath}"/>
+		<property name="test_classpath" refid="maven.test.classpath"/>
+		<echo message="testing: CLASSPATH=${test_classpath}"/>
 	      </tasks>
 	    </configuration>
 	    <goals>
