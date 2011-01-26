@@ -2,18 +2,11 @@ package jsignalml;
 
 import java.util.Collection;
 
-import com.sun.codemodel.JClass;
-import com.sun.codemodel.JClassAlreadyExistsException;
-import com.sun.codemodel.JCodeModel;
-import com.sun.codemodel.JDefinedClass;
-import com.sun.codemodel.JExpr;
-import com.sun.codemodel.JInvocation;
-import com.sun.codemodel.JMethod;
-import com.sun.codemodel.JType;
-
 import org.apache.commons.lang.StringUtils;
 
 public abstract class Context {
+	static final Logger log = new Logger(Context.class);
+
 	/** Look for a name amongst immediate children. */
 	public abstract ASTNode lookup(String id);
 
@@ -31,43 +24,28 @@ public abstract class Context {
 		return ans;
 	}
 
-	final Context parent;
-	final String name;
-	Context(Context parent, String name)
-	{
-		this.parent = parent;
-		this.name = name;
-	}
-
 	/** Find the closest enclosing file.
 	 * Throws ExpressionFault.TypeError if not inside a file.
 	 */
 	public ASTNode.FileHandle<? extends FileType> findEnclosingFile()
 	{
-		assert this.parent != null;
-		return this.parent.findEnclosingFile();
+		if (this.filehandle != null)
+			return this.filehandle;
+		if (this.parent != null)
+			return this.parent.findEnclosingFile();
+		throw new ExpressionFault.TypeError();
 	}
 
-	public static class ClassContext extends Context {
-		static final Logger log = new Logger(Context.class);
+	final Context parent;
+	final String name;
+	final ASTNode.FileHandle<? extends FileType> filehandle;
 
-		final ASTNode.FileHandle<? extends FileType> filehandle;
+	Context(Context parent, String name, ASTNode.FileHandle<? extends FileType> filehandle)
+	{
+		this.parent = parent;
+		this.name = name;
+		this.filehandle = filehandle;
 
-		public ClassContext(Context parent, String name,
-				    ASTNode.FileHandle<? extends FileType> filehandle)
-		{
-			log.info("created new Context '%s'", name);
-
-			super(parent, name, filehandle);
-			this.filehandle = filehandle;
-		}
-
-		public ASTNode.FileHandle<? extends FileType> findEnclosingFile()
-		{
-			if (this.filehandle != null)
-				return this.filehandle;
-			throw new ExpressionFault.TypeError();
-		}
-
+		log.info("created new Context '%s'", name);
 	}
 }

@@ -1,5 +1,7 @@
-public class NameCheck extends Visitor {
-	public void visitCall(Expression.Call op){
+package jsignalml;
+
+public class NameCheck extends ASTVisitor {
+	public void visit(Expression.Call op){
 		
 
 	}

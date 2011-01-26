@@ -34,8 +34,10 @@ public class Builtins extends Context {
 		final String prefixed = JavaGen.makeIdentifier(name);
 		log.debug("find: looking for %s/%s", name, prefixed);
 
+		ASTNode.Positional arg = new ASTNode.Positional(this, "n", new Type.Int());
+
 		if (name.equals("factorial"))
-			return new ASTNode.BuiltinFunction(name, Type.Int, Type.Int);
+			return new ASTNode.BuiltinFunction(name, new Type.Int(), arg);
 
 		return null;
 	}

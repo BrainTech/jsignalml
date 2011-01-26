@@ -1,4 +1,5 @@
 package jsignalml;
+
 import static java.lang.String.format;
 import java.io.File;
 import org.apache.log4j.BasicConfigurator;
@@ -35,7 +36,7 @@ import com.sun.codemodel.writer.FileCodeWriter;
 	}
 */
 
-public class JavaGen {
+public class JavaGen extends ASTVisitor {
 	public static final String PREFIX = "_jsignalml_";
 	static String makeIdentifier(String name)
 	{
@@ -60,9 +61,11 @@ public class JavaGen {
 		this.signalmlCodec(name);
 	}
 
-	public JDefinedClass signalmlCodec(String name)
+	public JDefinedClass visit(ASTNode.Signalml node)
 		throws JClassAlreadyExistsException
 	{
+		final String name = "signalml"; // XXX
+
 		final JDefinedClass klass = this.model._class(name);
 		this.root = new Context(klass, null, name);
 		klass._implements(jsignalml.Source.class);
