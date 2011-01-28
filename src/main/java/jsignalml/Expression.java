@@ -59,7 +59,7 @@ public abstract class Expression {
 		@Override
 		public <T> T accept(ExpressionVisitor<T> v){
 			T left = this.left.accept(v);
-			v.visit(this, left);
+			return v.visit(this, left);
 		}
 
 
@@ -84,7 +84,7 @@ public abstract class Expression {
 		@Override
 		public <T> T accept(ExpressionVisitor<T> v){
 			T sub = this.sub.accept(v);
-			v.visit(this, sub);
+			return v.visit(this, sub);
 		}
 	}
 
@@ -109,10 +109,10 @@ public abstract class Expression {
 
 		public <T> T accept(ExpressionVisitor<T> v)
 		{
-			T vals[] = new T[this.args.size()];
+			List<T> vals = util.newLinkedList();
 
-			for (int i = 0; i < vals.length; i++)
-				vals[i] = this.args.get(i).accept(v);
+			for (int i = 0; i < this.args.size(); i++)
+				vals.add( this.args.get(i).accept(v) );
 
 			return v.visit(this, vals);
 		}
@@ -133,10 +133,10 @@ public abstract class Expression {
 
 		public <T> T accept(ExpressionVisitor<T> v)
 		{
-			T vals[] = new T[this.args.size()];
+			List<T> vals = util.newLinkedList();
 
-			for (int i = 0; i < vals.length; i++)
-				vals[i] = this.args.get(i).accept(v);
+			for (int i = 0; i < this.args.size(); i++)
+				vals.add( this.args.get(i).accept(v) );
 
 			return v.visit(this, vals);
 		}
@@ -227,35 +227,22 @@ public abstract class Expression {
 	 */
 	public static class Assign extends Expression {
 		public final String id;
-		public final List<Argument> args;
 		public final Expression value;
 
-		// TODO: find a better home for this class
-		public static class Argument {
-			public final Type type;
-			public final String name;
-			public Argument(Type type, String name) {
-				this.type = type;
-				this.name = name;
-			}
-		}
-
-		// TODO: non-empty argument list
-		public Assign(String id, List<Argument> args, Expression value) {
-			this.id = id;
-			this.args = args;
-			this.value = value;
-
-			assert args.size() == 0;
-		}
-
 		public Assign(String id, Expression value) {
-			this(id, new LinkedList<Argument>(), value);
+			this.id = id;
+			this.value = value;
 		}
 
 		public <T> T accept(ExpressionVisitor<T> v)
 		{
 			return v.visit(this);
+		}
+
+		@Override
+		public String toString()
+		{
+			return format("%s = %s", id, value);
 		}
 	}
 }

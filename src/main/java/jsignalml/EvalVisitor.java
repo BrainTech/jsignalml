@@ -1,13 +1,18 @@
 package jsignalml;
 
 import java.util.Arrays;
+import java.util.List;
+import java.util.LinkedList;
+import java.util.Map;
 
 public class EvalVisitor extends ExpressionVisitor<Type> {
-	final CallHelper state;
+	final Frame state;
+	final ASTNode context;
 
-	public EvalVisitor(CallHelper state)
+	public EvalVisitor(Frame state, ASTNode context)
 	{
 		this.state = state;
+		this.context = context;
 	}
 
 	@Override
@@ -46,15 +51,33 @@ public class EvalVisitor extends ExpressionVisitor<Type> {
 	}
 
 	@Override
-	public Type visit(Expression.Call fun, Type...args)
+	public Type visit(Expression.Call fun, List<? extends Type> args)
 	{
-		return state.call(fun.name, args);
+		Type value = state.lookup(fun.name, args);
+		if (value != null)
+			return value;
+
+		return null;
+		/*
+		ASTNode function = this.context.find(fun.name);
+
+		if(fun.args.size() != args.size())
+			throw new ExpressionFault.ArgMismatch();
+
+		Map<String,Type> map = util.newTreeMap();
+		for (int i=0; i<fun.args.size(); i++) {
+			ASTNode.Positional arg =  fun.args.get(i);
+			map.put(arg.id, args.get(i));
+		}
+
+		Frame newstate = state.localize(map);
+		*/
 	}
 
 	@Override
-	public Type visit(Expression.List_ list, Type...args)
+	public Type visit(Expression.List_ list, List<? extends Type> args)
 	{
-		return new Type.List(Arrays.asList(args));
+		return new Type.List(args);
 	}
 
 	@Override
@@ -74,7 +97,8 @@ public class EvalVisitor extends ExpressionVisitor<Type> {
 	@Override
 	public Type visit(Expression.Assign op)
 	{
-		this.state.assign(op.id, op.value);
+		Type value = op.value.accept(this);
+		this.state.assign(op.id, new LinkedList<Type>(), value);
 		return null;
 	}
 }

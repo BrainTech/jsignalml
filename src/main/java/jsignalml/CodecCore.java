@@ -111,7 +111,7 @@ public class CodecCore implements CodecyThing {
 	}
 
 	public void do_param(Element element, Machine.FileHandle<?> handle)
-	    throws SyntaxError
+	throws SyntaxError
 	{
 		assert element.getNodeName().equals("param");
 

@@ -14,9 +14,9 @@ import static java.lang.String.format;
  * Class to hold an AST correspoding to the XML file
  */
 public abstract class ASTNode {
-	public static final Logger log = new Logger(Machine.class);
+	public static final Logger log = new Logger(ASTNode.class);
 
-	final Context context;
+	final ASTNode parent;
 	final String id;
 	final List<ASTNode> children;
 
@@ -28,21 +28,47 @@ public abstract class ASTNode {
 
 	public abstract void _accept(ASTVisitor v);
 
-	private ASTNode(Context context, String id) {
-		this.context = context;
+	protected ASTNode(ASTNode parent, String id) {
+		this.parent = parent;
 		this.id = id;
 		this.children = util.newLinkedList();
+		if (parent != null)
+			parent.children.add(this);
 	}
 
+	public ASTNode find(String id) {
+		ASTNode ans = this.lookup(id);
+		if (ans == null && this.parent != null)
+			ans = this.parent.find(id);
+		if (ans == null)
+			throw new ExpressionFault.NameError(id);
+		return ans;
+	}
+
+	/** Look for child with id=id.
+	 */
+	public ASTNode lookup(String id) {
+		for(ASTNode child: this.children)
+			if (child.id.equals(id))
+				return child;
+		return null;
+	}
 
 	public static class Signalml extends ASTNode {
 		public Signalml(String name) {
-			super(new Context.ClassContext(new Builtins(), name), name);
+			super(null, name);
 		}
 		
 		public void _accept(ASTVisitor v)
 		{
 			v.visit(this);
+		}
+
+		public ASTNode lookup(String id) {
+			ASTNode node = super.lookup(id);
+			if (node == null)
+				node = Builtins.instance().lookup(id);
+			return node;
 		}
 	}
 
@@ -50,18 +76,18 @@ public abstract class ASTNode {
 		public final Type type;
 		public final Positional[] args;
 
-		public Param(Context parent, String id, Type type, Positional args[]) {
-			super(new Context.ClassContext(parent, id), id);
+		public Param(ASTNode parent, String id, Type type, Positional args[]) {
+			super(parent, id);
 			this.type = type;
 			this.args = args;
 		}
 	}
 
 	public abstract static class ReadParam extends Param {
-		public ReadParam(Context context, String id, Type type,
+		public ReadParam(ASTNode parent, String id, Type type,
 		                 Positional args[])
 		{
-			super(context, id, type, args);
+			super(parent, id, type, args);
 		}
 	}
 
@@ -69,12 +95,12 @@ public abstract class ASTNode {
 		final FileHandle<? extends FileType.BinaryFile> handle;
 		final Expression format, offset;
 
-		public BinaryParam(Context context, String id, Type type,
+		public BinaryParam(ASTNode parent, String id, Type type,
 		                   Positional args[],
 		                   FileHandle<? extends FileType.BinaryFile> handle,
 		                   Expression format, Expression offset)
 		{
-			super(context, id, type, args);
+			super(parent, id, type, args);
 			this.handle = handle;
 			this.format = format;
 			this.offset = offset;
@@ -95,17 +121,29 @@ public abstract class ASTNode {
 	public static class ExprParam extends Param {
 		final Expression expr;
 
-		public ExprParam(Context context, String id, Type type,
+		public ExprParam(ASTNode parent, String id, Type type,
 		                 Positional args[],
 		                 Expression expr)
 		{
-			super(context, id, type, args);
+			super(parent, id, type, args);
 			this.expr = expr;
 		}
 
 		public String toString()
 		{
 			return format("ExprParam expression: %s", this.expr);
+		}
+
+		public void _accept(ASTVisitor v)
+		{
+			v.visit(this);
+		}
+	}
+
+	public static class BuiltinFunction extends Param {
+		public BuiltinFunction(String id, Type type,
+				       Positional...args) {
+			super(null, id, type, args);
 		}
 
 		public void _accept(ASTVisitor v)
@@ -126,17 +164,17 @@ public abstract class ASTNode {
 		public final Expression filename; // may be null
 		public final List<DataHandle> datas = util.newLinkedList();
 
-		public FileHandle(Context parent, String id, Expression filename) {
-			super(new Context.ClassContext(parent, id), id);
+		public FileHandle(ASTNode parent, String id, Expression filename) {
+			super(parent, id);
 			this.filename = filename;
 		}
 
 		public static <V extends FileType>
-		FileHandle<V> make(Context parent, Expression filename) {
+		FileHandle<V> make(ASTNode parent, Expression filename) {
 			return new FileHandle<V>(parent, null, filename);
 		}
 
-		public static FileHandle make(Context parent, Expression filename, String type)
+		public static FileHandle make(ASTNode parent, Expression filename, String type)
 		{
 			if (type.equals("binary"))
 				return new FileHandle<FileType.BinaryFile>(parent, null, filename);
@@ -163,10 +201,10 @@ public abstract class ASTNode {
 	public static class DataHandle extends ASTNode {
 		public final String mapping, format;
 
-		public DataHandle(Context context, String id, 
+		public DataHandle(ASTNode parent, String id,
 				  FileHandle<?> handle, String mapping, String format)
 		{
-			super(context, id);
+			super(parent, id);
 			this.mapping = mapping;
 			this.format = format;
 
@@ -184,28 +222,16 @@ public abstract class ASTNode {
 		}
 	}
 
-	public static class BuiltinFunction extends Param {
-		public BuiltinFunction(String id, Type type,
-				       Positional...args) {
-			super(null, id, type, args);
-		}
-
-		public void _accept(ASTVisitor v)
-		{
-			v.visit(this);
-		}
-	}
-
 	public static class Positional extends ASTNode {
 		public final Type type;
 
-		public Positional(Context context, String id, Type type) {
-			super(context, id);
+		public Positional(ASTNode parent, String id, Type type) {
+			super(parent, id);
 			this.type = type;
 		}
 
-		public static Positional make(Context context, String name, String type) {
-			return new Positional(context, name, Type.getType(type));
+		public static Positional make(ASTNode parent, String name, String type) {
+			return new Positional(parent, name, Type.getType(type));
 		}
 
 		public void _accept(ASTVisitor v)

@@ -951,8 +951,4 @@ public abstract class Type {
 			}
 		}
 	}
-
-	static {
-		registerType("auto", null);
-	}
 }

@@ -1,5 +1,6 @@
 package jsignalml;
 
+import java.util.List;
 import com.sun.codemodel.JCodeModel;
 import com.sun.codemodel.JType;
 import com.sun.codemodel.JClass;
@@ -13,10 +14,8 @@ import com.sun.codemodel.JOp;
  */
 public class JavaGenVisitor extends ExpressionVisitor<JExpression> {
 
-	final Context context;
 	final JCodeModel codemodel;
-	JavaGenVisitor(Context context, JCodeModel codemodel){
-		this.context = context;
+	JavaGenVisitor(JCodeModel codemodel){
 		this.codemodel = codemodel;
 	}
 
@@ -66,7 +65,7 @@ public class JavaGenVisitor extends ExpressionVisitor<JExpression> {
 	}
 
 	@Override
-	public JExpression visit(Expression.Call fun, JExpression...args)
+	public JExpression visit(Expression.Call fun, List<? extends JExpression> args)
 	{
 		JInvocation inv = null; // this.context.find(fun.name); // args ?
 		if (inv == null)
@@ -77,7 +76,7 @@ public class JavaGenVisitor extends ExpressionVisitor<JExpression> {
 	}
 
 	@Override
-	public JExpression visit(Expression.List_ list, JExpression...args)
+	public JExpression visit(Expression.List_ list, List<? extends JExpression> args)
 	{
 		JInvocation cons = JExpr._new(this.codemodel.ref(JavaType.List.class));
 
@@ -127,6 +126,7 @@ public class JavaGenVisitor extends ExpressionVisitor<JExpression> {
 	@Override
 	public JExpression visit(Expression.Assign op)
 	{
-		throw new RuntimeException();
+		// XXX
+		return op.value.accept(this);
 	}
 }

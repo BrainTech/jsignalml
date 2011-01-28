@@ -8,4 +8,5 @@ public abstract class ASTVisitor {
 	public void visit(ASTNode.DataHandle node){}
 	public void visit(ASTNode.BuiltinFunction node){}
 	public void visit(ASTNode.Positional node){}
+	public void visit(Builtins node){}
 }

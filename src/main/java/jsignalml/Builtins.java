@@ -8,8 +8,11 @@ import com.sun.codemodel.JInvocation;
 
 import org.apache.commons.lang.StringUtils;
 
-public class Builtins extends Context {
+public class Builtins extends ASTNode {
 	static final Logger log = new Logger(Builtins.class);
+
+	private static Builtins _builtins = new Builtins();
+	public static Builtins instance(){ return _builtins; };
 
 	public Builtins() {
 		super(null, "builtins");
@@ -31,19 +34,18 @@ public class Builtins extends Context {
 
 	public ASTNode.BuiltinFunction lookup(String name)
 	{
-		final String prefixed = JavaGen.makeIdentifier(name);
-		log.debug("find: looking for %s/%s", name, prefixed);
+		log.debug("find: looking for %s", name);
 
-		ASTNode.Positional arg = new ASTNode.Positional(this, "n", new Type.Int());
-
-		if (name.equals("factorial"))
+		if (name.equals("factorial")) {
+			ASTNode.Positional arg = new ASTNode.Positional(this, "n", new Type.Int());
 			return new ASTNode.BuiltinFunction(name, new Type.Int(), arg);
+		}
 
 		return null;
 	}
 
-	public ASTNode.BuiltinFunction find(String name)
+	public void _accept(ASTVisitor v)
 	{
-		return lookup(name);
+		v.visit(this);
 	}
 }

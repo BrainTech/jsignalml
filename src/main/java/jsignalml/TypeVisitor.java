@@ -1,5 +1,7 @@
 package jsignalml;
 
+import java.util.List;
+
 public class TypeVisitor extends ExpressionVisitor<Type> {
 	@Override
 	public Type visit(Expression.BinaryOp op, Type left, Type right)
@@ -21,14 +23,14 @@ public class TypeVisitor extends ExpressionVisitor<Type> {
 	}
 
 	@Override
-	public Type visit(Expression.Call call, Type...args)
+	public Type visit(Expression.Call call, List<? extends Type> args)
 	{
 		// TODO
 		return null;
 	}
 
 	@Override
-	public Type visit(Expression.List_ list, Type...args)
+	public Type visit(Expression.List_ list, List<? extends Type> args)
 	{
 		return new Type.List();
 	}
@@ -85,6 +87,7 @@ public class TypeVisitor extends ExpressionVisitor<Type> {
 	@Override
 	public Type visit(Expression.Assign op)
 	{
-		throw new RuntimeException();
+		// XXX: add a marker for "no type"
+		return null;
 	}
 }
