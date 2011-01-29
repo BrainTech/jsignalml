@@ -44,8 +44,9 @@ public class Builtins extends ASTNode {
 		return null;
 	}
 
-	public void _accept(ASTVisitor v)
+	@Override
+		public <T> T _accept(ASTVisitor<T> v, T data)
 	{
-		v.visit(this);
+		return v.visit(this, data);
 	}
 }

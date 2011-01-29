@@ -20,13 +20,20 @@ public abstract class ASTNode {
 	final String id;
 	final List<ASTNode> children;
 
-	public void accept(ASTVisitor v) {
-		this._accept(v);
+	public <T> T accept(ASTVisitor<T> v, T data) {
+		log.info("%s.accept(%s, %s)", this, v, data);
+		T newdata = this._accept(v, data);
 		for(ASTNode child: this.children)
-			child.accept(v);
+			child.accept(v, newdata);
+		return newdata;
 	}
 
-	public abstract void _accept(ASTVisitor v);
+	/**
+	 * This function must exist in all non-abstract children (even if
+	 * identical), to allow overloaded v.visit method resolution based on
+	 * this.
+	 */
+	public abstract <T> T _accept(ASTVisitor<T> v, T data);
 
 	protected ASTNode(ASTNode parent, String id) {
 		this.parent = parent;
@@ -59,11 +66,13 @@ public abstract class ASTNode {
 			super(null, name);
 		}
 		
-		public void _accept(ASTVisitor v)
+		@Override
+		public <T> T _accept(ASTVisitor<T> v, T data)
 		{
-			v.visit(this);
+			return v.visit(this, data);
 		}
 
+		@Override
 		public ASTNode lookup(String id) {
 			ASTNode node = super.lookup(id);
 			if (node == null)
@@ -96,12 +105,11 @@ public abstract class ASTNode {
 		final Expression format, offset;
 
 		public BinaryParam(ASTNode parent, String id, Type type,
-		                   Positional args[],
-		                   FileHandle<? extends FileType.BinaryFile> handle,
 		                   Expression format, Expression offset)
 		{
-			super(parent, id, type, args);
-			this.handle = handle;
+			super(parent, id, type, new Positional[0]);
+			// XXX: this.handle = parent.currentFile() ?
+			this.handle = null;
 			this.format = format;
 			this.offset = offset;
 		}
@@ -112,9 +120,10 @@ public abstract class ASTNode {
 			              this.handle, this.format, this.offset);
 		}
 
-		public void _accept(ASTVisitor v)
+		@Override
+		public <T> T _accept(ASTVisitor<T> v, T data)
 		{
-			v.visit(this);
+			return v.visit(this, data);
 		}
 	}
 
@@ -122,8 +131,7 @@ public abstract class ASTNode {
 		final Expression expr;
 
 		public ExprParam(ASTNode parent, String id, Type type,
-		                 Positional args[],
-		                 Expression expr)
+		                 Positional args[], Expression expr)
 		{
 			super(parent, id, type, args);
 			this.expr = expr;
@@ -134,9 +142,10 @@ public abstract class ASTNode {
 			return format("ExprParam expression: %s", this.expr);
 		}
 
-		public void _accept(ASTVisitor v)
+		@Override
+		public <T> T _accept(ASTVisitor<T> v, T data)
 		{
-			v.visit(this);
+			return v.visit(this, data);
 		}
 	}
 
@@ -146,9 +155,10 @@ public abstract class ASTNode {
 			super(null, id, type, args);
 		}
 
-		public void _accept(ASTVisitor v)
+		@Override
+		public <T> T _accept(ASTVisitor<T> v, T data)
 		{
-			v.visit(this);
+			return v.visit(this, data);
 		}
 	}
 
@@ -192,9 +202,10 @@ public abstract class ASTNode {
 			return format("FileHandle: filename=%s", filename);
 		}
 
-		public void _accept(ASTVisitor v)
+		@Override
+		public <T> T _accept(ASTVisitor<T> v, T data)
 		{
-			v.visit(this);
+			return v.visit(this, data);
 		}
 	}
 
@@ -216,9 +227,10 @@ public abstract class ASTNode {
 			return format("DataHandle: mapping=%s format=%s", mapping, format);
 		}
 
-		public void _accept(ASTVisitor v)
+		@Override
+		public <T> T _accept(ASTVisitor<T> v, T data)
 		{
-			v.visit(this);
+			return v.visit(this, data);
 		}
 	}
 
@@ -234,9 +246,10 @@ public abstract class ASTNode {
 			return new Positional(parent, name, Type.getType(type));
 		}
 
-		public void _accept(ASTVisitor v)
+		@Override
+		public <T> T _accept(ASTVisitor<T> v, T data)
 		{
-			v.visit(this);
+			return v.visit(this, data);
 		}
 	}
 }
