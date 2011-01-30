@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
-import com.sun.codemodel.JCodeModel;
 import com.sun.codemodel.JFormatter;
 
 import org.apache.log4j.BasicConfigurator;
@@ -19,8 +18,9 @@ import org.antlr.runtime.RecognitionException;
 import com.sun.codemodel.JClassAlreadyExistsException;
 
 public class Processor {
+	static Logger log = new Logger(Processor.class);
 
-	public static void processFile(State state, String path)
+	public static void processFile(Frame frame, String path)
 	throws java.io.FileNotFoundException,
 		java.io.IOException,
 		SyntaxError
@@ -116,7 +116,7 @@ public class Processor {
 		return expr;
 	}
 
-	public static void processInteractive(State state,
+	public static void processInteractive(Frame frame,
 	                                      InputStream in)
 	{
 		Scanner scanner = new Scanner(in);
@@ -153,64 +153,38 @@ public class Processor {
 			}
 			System.out.format("expr: %s\n", expr);
 
+			ASTNode.Signalml parent = new ASTNode.Signalml("root");
+			ASTNode.ExprParam param = new ASTNode.ExprParam(parent, "expr", null,
+									new ASTNode.Positional[0], expr);
+
 			try {
-				PrintWriter pw = new PrintWriter(System.out);
-				JFormatter code = new JFormatter( pw );
-				Context context;
-				try {
-					JCodeModel model = new JCodeModel();
-					context = new Context(model._class("Test"), null, "stdin");
-				} catch(JClassAlreadyExistsException e){
-					throw new RuntimeException("programming error");
-				}
-				code.p("code: ").g(expr.toJava(context)).nl();
-				pw.flush();
-				final Type type = expr.type(context);
+				final Type type = expr.accept(new TypeVisitor());
 				System.out.format("type: Type.%s\n",
 						  type == null ? "unknown"
 						  : type.getClass().getSimpleName());
-				Type value = expr.eval(state);
+			} catch (ExpressionFault e) {
+				log.exception("type checking", e);
+			}
+
+			try {
+				final Type value = expr.accept(new EvalVisitor(frame, param));
 				System.out.format("----> %s\n",
 				                  value == null ? "null" : value.repr());
 			} catch (ExpressionFault e) {
-				log.exception("Expression tree evaluation", e);
+				log.exception("evaluation", e);
+			}
+
+			final PrintWriter pw = new PrintWriter(System.out);
+			final JFormatter code = new JFormatter( pw );
+			final JavaGenVisitor javagen = new JavaGenVisitor();
+			try {
+				code.p("code: ").g(expr.accept(javagen)).nl();
+				pw.flush();
+			} catch (ExpressionFault e) {
+				log.exception("code generation:", e);
 			}
 		}
 	}
-
-	/////////////////////////////////////////////////////////
-	public static class State extends Frame implements CallHelper {
-		final Map<String, Expression> vars = util.newTreeMap();
-
-		public State() {
-			super(null);
-		}
-
-		@Override
-		public void assign(String id, Expression expr)
-		{
-			this.vars.put(id, expr);
-		}
-
-		@Override
-		public Type frame_call(String id, Type...args)
-		throws Frame.FrameNameError, ExpressionFault
-		{
-			Expression expr = vars.get(id);
-			if (expr != null)
-				return expr.eval(this);
-			else
-				throw new Frame.FrameNameError();
-		}
-
-		public Type call(String id, List<Type> args)
-		throws ExpressionFault
-		{
-			return this.call(id, args.toArray(new Type[0]));
-		}
-	}
-
-	static Logger log = new Logger(Processor.class);
 
 	public static void main(String ... args)
 		throws java.io.IOException,
@@ -225,12 +199,12 @@ public class Processor {
 		log.info("tree grammar %s",
 		         new STree(null).getGrammarFileName());
 
-		State state = new State();
+		Frame frame = new Frame(null);
 		if (args.length == 0) {
-			processInteractive(state, System.in);
+			processInteractive(frame, System.in);
 		} else {
 			for (String path: args)
-				processFile(state, path);
+				processFile(frame, path);
 		}
 	}
 

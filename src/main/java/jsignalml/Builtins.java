@@ -8,8 +8,15 @@ import com.sun.codemodel.JInvocation;
 
 import org.apache.commons.lang.StringUtils;
 
-public class Builtins {
+public class Builtins extends ASTNode {
 	static final Logger log = new Logger(Builtins.class);
+
+	private static Builtins _builtins = new Builtins();
+	public static Builtins instance(){ return _builtins; };
+
+	public Builtins() {
+		super(null, "builtins");
+	}
 
 	public static JavaType.Int _jsignalml_factorial(JavaType.Int x)
 	{
@@ -25,24 +32,21 @@ public class Builtins {
 		return ret;
 	}
 
-	public static Method find(String name)
+	public ASTNode.BuiltinFunction lookup(String name)
 	{
-		final String prefixed = JavaGen.makeIdentifier(name);
-		log.debug("find: looking for %s/%s", name, prefixed);
+		log.debug("find: looking for %s", name);
 
-		Method methods[];
-		try {
-			methods = Builtins.class.getMethods();
-		} catch(SecurityException e) {
-			log.exception("Builtins.getMethods()", e);
-			return null;
+		if (name.equals("factorial")) {
+			ASTNode.Positional arg = new ASTNode.Positional(this, "n", new Type.Int());
+			return new ASTNode.BuiltinFunction(name, new Type.Int(), arg);
 		}
 
-		for(Method method: methods) {
-			if(method.getName().equals(prefixed))
-				return method;
-		}
+		return null;
+	}
 
-		throw new ExpressionFault.NameError(name);
+	@Override
+		public <T> T _accept(ASTVisitor<T> v, T data)
+	{
+		return v.visit(this, data);
 	}
 }

@@ -1,8 +1,8 @@
 package jsignalml;
+
 import static java.lang.String.format;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
+import java.io.OutputStream;
 import org.apache.log4j.BasicConfigurator;
 
 import com.sun.codemodel.JClass;
@@ -37,7 +37,8 @@ import com.sun.codemodel.writer.FileCodeWriter;
 	}
 */
 
-public class JavaGen {
+public class JavaGen extends ASTVisitor<JDefinedClass> {
+
 	public static final String PREFIX = "_jsignalml_";
 	static String makeIdentifier(String name)
 	{
@@ -53,176 +54,188 @@ public class JavaGen {
 	}
 
 	JCodeModel model;
-	Context root;
 
-	public JavaGen(JCodeModel model, String name)
+	public JavaGen()
 		throws JClassAlreadyExistsException
 	{
-		this.model = model;
-		this.signalmlCodec(name);
+		this.model = new JCodeModel();
 	}
 
-	public JDefinedClass signalmlCodec(String name)
-		throws JClassAlreadyExistsException
+	@Override
+	public JDefinedClass visit(ASTNode.Signalml node, JDefinedClass dummy)
 	{
-		final JDefinedClass klass = this.model._class(name);
-		this.root = new Context(klass, null, name);
+		assert dummy == null;
+		final String name = "signalml"; // XXX
+
+		final JDefinedClass klass;
+		try {
+			klass = this.model._class(name);
+		} catch(JClassAlreadyExistsException e) {
+			throw new RuntimeException("WTF?");
+		}
 		klass._implements(jsignalml.Source.class);
-		this.mainMethod(this.root);
-		this.openMethod(this.root);
-		this.getSetMethod(this.root);
-		this.getCurrentFilenameMethod(this.root);
-		this.getFormatDescriptionMethod(this.root);
-		this.getFormatIDMethod(this.root);
-		this.closeMethod(this.root);
+		this.mainMethod(klass);
+		this.openMethod(klass);
+		this.getSetMethod(klass);
+		this.getCurrentFilenameMethod(klass);
+		this.getFormatDescriptionMethod(klass);
+		this.getFormatIDMethod(klass);
+		this.closeMethod(klass);
 		return klass;
 	}
 
-	public JMethod mainMethod(Context context)
+	public JMethod mainMethod(JDefinedClass klass)
 	{
-		final JDefinedClass klass = context.klass;
 		final JMethod main = klass.method(JMod.STATIC | JMod.PUBLIC,
 						  klass.owner().VOID, "main");
 		final JVar args = main.varParam(String.class, "args");
 
 		final JInvocation bc_configure =
-			klass.owner().ref(BasicConfigurator.class)
-			.staticInvoke("configure");
+			this.model.ref(BasicConfigurator.class).staticInvoke("configure");
 
 		JBlock body = main.body();
 		body.add(bc_configure);
 
-		JVar reader = body.decl(context.klass, "reader",
-					JExpr._new(klass));
-		JExpression file = JExpr._new(klass.owner().ref(File.class))
+		JVar reader = body.decl(klass, "reader", JExpr._new(klass));
+		JExpression file = JExpr._new(this.model.ref(File.class))
 			.arg(args.component(JExpr.lit(0)));
 		body.add(reader.invoke("open").arg(file));
 		JExpression input = reader.invoke(makeGetter("readTestConv"));
-		body.add(klass.owner().ref(System.class).staticRef("out")
+		body.add(this.model.ref(System.class).staticRef("out")
 			 .invoke("println").arg(input) );
 		return main;
 	}
 
-	public JMethod openMethod(Context context)
+	public JMethod fileConstructor(JDefinedClass klass)
 	{
-		final JDefinedClass klass = context.klass;
-		final JType mybuffer = klass.owner().ref(MyBuffer.class);
-		final JMethod open = klass.method(JMod.PUBLIC, klass.owner().VOID, "open");
+		JMethod method = klass.constructor(JMod.NONE);
+		JVar filename = method.param(File.class, "filename");
+		method.body().add(JExpr._this().invoke("open").arg(filename));
+		return method;
+	}
+
+	public JMethod openMethod(JDefinedClass klass)
+	{
+		final JClass mybuffer = this.model.ref(MyBuffer.class);
+		final JMethod open = klass.method(JMod.PUBLIC, this.model.VOID, "open");
 		final JVar arg = open.param(File.class, "filename");
-	        JFieldVar buffer = klass.field(JMod.NONE, mybuffer, "buffer");
-		JTryBlock tryblock = open.body()._try();
-		tryblock.body().assign(JExpr.ref(JExpr._this(), buffer),
-				       JExpr._new(mybuffer).arg(arg));
-
-		final JClass fnfe = klass.owner().ref(FileNotFoundException.class);
-		final JClass ioe = klass.owner().ref(IOException.class);
-		final JClass efee = klass.owner().ref(ExpressionFault.ExternalError.class);
-		tryblock._catch(fnfe).body()
-			._throw(JExpr._new(efee).arg(JExpr.ref("_x")));
-		tryblock._catch(ioe).body()
-			._throw(JExpr._new(efee).arg(JExpr.ref("_x")));
-
+	        final JFieldVar buffer = klass.field(JMod.NONE, mybuffer, "buffer");
+		open.body().assign(JExpr.ref(JExpr._this(), buffer),
+				   mybuffer.staticInvoke("open").arg(arg));
 		return open;
 	}
 
-	public JMethod getSetMethod(Context context)
+	public JMethod getSetMethod(JDefinedClass klass)
 	{
-		final JDefinedClass klass = context.klass;
 		final JMethod method = klass.method(JMod.PUBLIC,
-						    klass.owner().ref(ChannelSet.class),
+						    this.model.ref(ChannelSet.class),
 						    "get_set");
 		method.body()._return(JExpr._null());
 		return method;
 	}
 
-	public JMethod getCurrentFilenameMethod(Context context)
+	public JMethod getCurrentFilenameMethod(JDefinedClass klass)
 	{
-		final JDefinedClass klass = context.klass;
 		final JMethod method = klass.method(JMod.PUBLIC,
-						    klass.owner().ref(File.class),
+						    this.model.ref(File.class),
 						    "getCurrentFilename");
 		method.body()._return(JExpr._null());
 		return method;
 	}
 
-	public JMethod getFormatDescriptionMethod(Context context)
+	public JMethod getFormatDescriptionMethod(JDefinedClass klass)
 	{
-		final JDefinedClass klass = context.klass;
 		final JMethod method = klass.method(JMod.PUBLIC,
-						    klass.owner().ref(String.class),
+						    this.model.ref(String.class),
 						    "getFormatDescription");
 		method.body()._return(JExpr._null());
 		return method;
 	}
 
-	public JMethod getFormatIDMethod(Context context)
+	public JMethod getFormatIDMethod(JDefinedClass klass)
 	{
-		final JDefinedClass klass = context.klass;
 		final JMethod method = klass.method(JMod.PUBLIC,
-						    klass.owner().ref(String.class),
+						    this.model.ref(String.class),
 						    "getFormatID");
 		method.body()._return(JExpr._null());
 		return method;
 	}
 
-	public JMethod closeMethod(Context context)
+	public JMethod closeMethod(JDefinedClass klass)
 	{
-		final JDefinedClass klass = context.klass;
 		final JMethod method = klass.method(JMod.PUBLIC,
-						    klass.owner().VOID,
+						    this.model.VOID,
 						    "close");
 		return method;
 	}
 
-	public JMethod exprParam(Context context, String ident,
-				 Type type, Expression expr)
+	@Override
+	public JDefinedClass visit(ASTNode.ExprParam node, JDefinedClass klass)
 	{
-		final JDefinedClass klass = context.klass;
+		assert klass != null;
+		final JMethod impl = exprFunction(klass, node, node.id, node.type, node.expr);
+		final JMethod cache = cacheFunction(klass, node, node.id, impl);
+		return klass;
+	}
 
+	JavaGenVisitor.JavaNameResolver createResolver(final ASTNode start)
+	{
+		return new JavaGenVisitor.JavaNameResolver() {
+			public JInvocation call(String id)
+			{
+				final ASTNode target = start.find(id);
+				return JExpr.invoke(makeGetter(id));
+			}
+		};
+	}
+
+	public JMethod exprFunction(JDefinedClass klass, ASTNode node, String ident,
+				    Type type, Expression expr)
+	{
 		Class<? extends JavaType> javatype = convertType(type);
 		if (javatype == null)
 			javatype = JavaType.class;
 
 		final JMethod impl = klass.method(JMod.NONE, javatype,
 						  makeGetterImpl(ident));
-		impl.body()._return( expr.toJava(context) );
-
-		return this.cacheParam(context, ident, impl);
+		final JavaGenVisitor javagen =
+			new JavaGenVisitor(this.model,
+					   this.createResolver(node));
+		impl.body()._return( expr.accept(javagen) );
+		return impl;
 	}
 
-	public JMethod readParam(Context context, String ident,
-				 Type type, BitForm format, int offset)
+	public JMethod readFunction(JDefinedClass klass, ASTNode node, String ident,
+				    Type type, BitForm format, int offset)
 	{
 		final String prefixed = makeIdentifier(ident);
-		final JDefinedClass klass = context.klass;
 
 		Class<? extends JavaType> javatype_ = convertType(type);
 		if (javatype_ == null)
 			javatype_ = JavaType.class;
-		JClass javatype = klass.owner().ref(javatype_);
+		final JClass javatype = this.model.ref(javatype_);
 
 		final JMethod impl = klass.method(JMod.NONE, javatype,
 						  makeGetterImpl(ident));
 		final JBlock body = impl.body();
 		body.directStatement(format("// type=%s", type));
 		body.directStatement(format("// format=%s", format));
-		JClass javatype2 = bitform2javatype(format, klass.owner());
-		JExpression expr = bitform2j(format).invoke("read2")
+		final JClass javatype2 = bitform2javatype(format, this.model);
+		final JExpression expr = bitform2j(format).invoke("read2")
 			.arg(JExpr.ref(JExpr.ref(JExpr._this(), "buffer"),
 				       "source"))
 			.arg(JExpr.lit(offset));
-		JVar input = body.decl(javatype2, "input", expr);
-		JVar var = body.decl(javatype, "var",
-				     javatype.staticInvoke("make").arg(input));
+		final JVar input = body.decl(javatype2, "input", expr);
+		final JVar var = body.decl(javatype, "var",
+					   javatype.staticInvoke("make").arg(input));
 		body._return(var);
-
-		return this.cacheParam(context, ident, impl);
+		return impl;
 	}
 
-	public JMethod cacheParam(Context context, String ident, JMethod impl)
+	public JMethod cacheFunction(JDefinedClass klass, ASTNode node, String ident,
+				     JMethod impl)
 	{
 		final String prefixed = makeIdentifier(ident);
-		final JDefinedClass klass = context.klass;
 		final JFieldVar stor = klass.field(JMod.NONE, impl.type(),
 						   prefixed, JExpr._null());
 
@@ -235,31 +248,48 @@ public class JavaGen {
 		return getter;
 	}
 
+	public void write(OutputStream outputstream)
+		throws java.io.IOException
+	{
+		this.model.build(new SingleStreamCodeWriter(outputstream));
+	}
+	public void write(File outputdir)
+		throws java.io.IOException
+	{
+		this.model.build(new FileCodeWriter(outputdir));
+	}
+
 	public static void main(String...args)
 		throws jsignalml.SyntaxError,
 		       java.io.IOException,
 		       JClassAlreadyExistsException
 	{
-		final String field_name = "duration_of_data_record";
-
 		BasicConfigurator.configure();
 
 		File outputdir = new File(args[0]);
 
-		JavaGen gen = new JavaGen(new JCodeModel(), "Test");
+		JavaGen gen = new JavaGen();
 
 		Expression expr = Processor.parse(args[1]);
-		gen.exprParam(gen.root, field_name, new Type.Int(), expr);
+
+		final String field_name = "duration_of_data_record";
+		ASTNode signalml = new ASTNode.Signalml("Test");
+		new ASTNode.ExprParam(signalml, field_name, new Type.Int(),
+				      new ASTNode.Positional[0], expr);
 
 		Expression expr2 = Processor.parse(field_name + "() + 1");
-		gen.exprParam(gen.root, field_name+"2", new Type.Int(), expr2);
-		gen.readParam(gen.root, "readTest", new Type.Int(),
-			      new BitForm.Int.Int32.LE(), 25);
-		gen.readParam(gen.root, "readTestConv", new Type.Int(),
-			      new BitForm.Str(8), 0);
+		new ASTNode.ExprParam(signalml, field_name+"2", new Type.Int(),
+				      new ASTNode.Positional[0], expr2);
 
-		gen.model.build(new SingleStreamCodeWriter(System.out));
-		gen.model.build(new FileCodeWriter(outputdir));
+		new ASTNode.BinaryParam(signalml, "readTest", new Type.Int(),
+					Expression.Const.make("'<i4'"), Expression.Const.make(25));
+					//new BitForm.Int.Int32.LE(), 25);
+		new ASTNode.BinaryParam(signalml, "readTestConv", new Type.Int(),
+					Expression.Const.make("'|S8'"), Expression.Const.make(0));
+					//new BitForm.Str(8), 0);
+		signalml.accept(gen, null);
+		gen.write(System.out);
+		gen.write(outputdir);
 	}
 
 

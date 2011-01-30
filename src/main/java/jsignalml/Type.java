@@ -13,19 +13,20 @@ import static java.lang.String.format;
 public abstract class Type {
 	static final Logger log = new Logger(Type.class);
 
-	static final Map<java.lang.String, Class<? extends Type>>
-		typeNames = util.newHashMap();
+	static final Map<java.lang.String, Type> typeNames = util.newHashMap();
 
-	private static void registerType(java.lang.String type,
-	                                 Class<? extends Type> theClass) {
-		Class<? extends Type> oldClass = typeNames.put(type, theClass);
-		log.info("type registered: %s->%s", type, theClass.getName());
+	private static void registerType(java.lang.String type, Type theClass) {
+		Type oldClass = typeNames.put(type, theClass);
+		log.info("type registered: %s->%s", type, theClass.getClass().getName());
 		assert oldClass == null;
 	}
-	public static Class<? extends Type> getType(java.lang.String type) {
-		Class<? extends Type> theClass = typeNames.get(type);
-		if (theClass != null)
-			return theClass;
+	public static Type getType(java.lang.String type) {
+		if (type == null) // null means "auto"
+			return null;
+
+		final Type thetype = typeNames.get(type);
+		if (thetype != null)
+			return thetype;
 
 		throw new IllegalArgumentException(format("unkown type '%s'", type));
 	}
@@ -249,7 +250,7 @@ public abstract class Type {
 	}
 
 	static {
-		registerType("int", Int.class);
+		registerType("int", new Int());
 	}
 	public static class Int extends Type {
 		public final int value;
@@ -474,7 +475,7 @@ public abstract class Type {
 	}
 
 	static {
-		registerType("float", Float.class);
+		registerType("float", new Float());
 	}
 	public static class Float extends Type {
 
@@ -645,7 +646,7 @@ public abstract class Type {
 	}
 
 	static {
-		registerType("str", String.class);
+		registerType("str", new String());
 	}
 	public static class String extends Type {
 		public final java.lang.String value;
@@ -805,7 +806,7 @@ public abstract class Type {
 	}
 
 	static {
-		registerType("list", List.class);
+		registerType("list", new List());
 	}
 	public static class List extends Type {
 		public final java.util.List<Type> value;
@@ -952,9 +953,5 @@ public abstract class Type {
 				        ind.value, this.value.size());
 			}
 		}
-	}
-
-	static {
-		registerType("auto", Type.class);
 	}
 }

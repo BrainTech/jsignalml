@@ -1,71 +1,69 @@
 package jsignalml;
 
 import java.util.Map;
+import java.util.TreeMap;
+import java.util.List;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import static java.util.Collections.unmodifiableMap;
 
-public abstract class Frame implements CallHelper {
-	final CallHelper parent; // may be null
+import org.apache.commons.lang.StringUtils;
 
-	protected Frame(CallHelper parent) {
+public class Frame {
+	static Logger log = new Logger(Frame.class);
+
+	final Frame parent; // may be null
+	final Map<String, Type> env;
+
+	public Frame(Frame parent) {
 		this.parent = parent;
+		this.env  = util.newTreeMap();
 	}
 
-	@Override
-	public void assign(String id, Expression expr)
-	{
-		// assign-ment is disallowed
-		throw new ExpressionFault.AssignmentError();
+	private Frame(Frame parent, Map<String, Type> locals) {
+		this.parent = parent;
+		this.env = unmodifiableMap(new TreeMap<String,Type>(locals));
 	}
 
-	static public class FrameNameError extends Exception {}
-
-	public Type call(String id, Type...args)
+	public void assign(String id, List<? extends Type> args, Type expr)
 	{
-		try {
-			return this.frame_call(id, args);
-		} catch (FrameNameError e) {}
+		log.info("%s = %s", id, expr);
+		if (args.size() > 0)
+			throw new RuntimeException("not implemented");
+		this.env.put(id, expr);
+	}
+
+	public Type lookup(String id, List<? extends Type> args)
+	{
+		log.info("lookup %s(%s)", id, StringUtils.join(args, ", "));
+
+		Type value = this.frame_lookup(id, args);
+		if (value != null)
+			return value;
 
 		if (parent != null)
-			return this.parent.call(id, args);
+			return this.parent.lookup(id, args);
 		else
 			throw new ExpressionFault.NameError(id);
 	}
 
-	public abstract Type frame_call(String id, Type...args)
-	throws FrameNameError;
-
-	@Override
-	public <T extends FileType> T getFile(FileHandle<T> handle)
+	public Type frame_lookup(String id, List<? extends Type> args)
 	{
-		assert false: "no one want to getFile";
-		return parent.getFile(handle);
+		if (args.size() > 0)
+			throw new RuntimeException("not implemented");
+		Type value = env.get(id);
+		return value;
 	}
 
-	public LocalState localize(Map<String,Type> locals) {
-		return new LocalState(this, locals);
+	// @Override
+	// public <T extends FileType> T getFile(FileHandle<T> handle)
+	// {
+	// 	assert false: "no one want to getFile";
+	// 	return parent.getFile(handle);
+	// }
+
+	public Frame localize(Map<String,Type> locals) {
+		return new Frame(this, locals);
 	}
 
-	public static class Builtins extends Frame {
-		public Builtins(Frame parent) {
-			super(parent);
-		}
-
-		public Type frame_call(String id, Type...args)
-		throws FrameNameError
-		{
-			if (id.equals("strip"))
-				return do_strip(args);
-			throw new FrameNameError();
-		}
-
-		Type.String do_strip(Type...args) {
-			if (args.length != 1)
-				throw new ExpressionFault.ArgMismatch();
-			if (!(args[0] instanceof Type.String))
-				throw new ExpressionFault.TypeError();
-			Type.String arg = (Type.String)args[0];
-			return new Type.String(arg.getValue().trim());
-		}
-	}
 }

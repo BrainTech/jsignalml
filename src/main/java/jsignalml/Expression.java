@@ -10,18 +10,15 @@ import static java.util.Collections.unmodifiableList;
 
 import org.apache.commons.lang.StringUtils;
 
-import com.sun.codemodel.JCodeModel;
-import com.sun.codemodel.JType;
-import com.sun.codemodel.JClass;
-import com.sun.codemodel.JExpression;
-import com.sun.codemodel.JExpr;
-import com.sun.codemodel.JInvocation;
-import com.sun.codemodel.JOp;
-
 public abstract class Expression {
-	public abstract Type eval(CallHelper state);
-	public abstract Type type(Context context);
-	public abstract JExpression toJava(Context context);
+	/**
+	 * Visitor pattern implementation.
+	 *
+	 * Visit all the nodes in the Expression starting at this, calling
+	 * v.visit on all nodes. The traversal order is depth-first, like
+	 * in normal expression evaluation.
+	 */
+	public abstract <T> T accept(ExpressionVisitor<T> v);
 
 	public static class BinaryOp extends Expression {
 		final Expression left, right;
@@ -35,51 +32,16 @@ public abstract class Expression {
 		}
 
 		@Override
-		public Type eval(CallHelper state)
-		{
-			Type left = this.left.eval(state);
-			Type right = this.right.eval(state);
-
-			return left.binaryOp(this.op, right);
+		public <T> T accept(ExpressionVisitor<T> v){
+			T left = this.left.accept(v);
+			T right = this.right.accept(v);
+			return v.visit(this, left, right);
 		}
 
 		@Override
 		public String toString()
 		{
 			return format("%s %s %s", left, op.rep, right);
-		}
-
-		@Override
-		public Type type(Context context)
-		{
-			Type a = this.left.type(context);
-			Type b = this.right.type(context);
-			return a.binaryOpType(this.op, b);
-		}
-
-		@Override
-		public JExpression toJava(Context context)
-		{
-			JExpression left = this.left.toJava(context);
-			JExpression right = this.right.toJava(context);
-			if (this.op.javaMethod == "cmp") {
-				JExpression cmp_res = left.invoke("cmp").arg(right);
-				JExpression cond;
-				switch(this.op){
-				case EQ: cond = cmp_res.eq(JExpr.lit(0)); break;
-				case NE: cond = cmp_res.ne(JExpr.lit(0)); break;
-				case LT: cond = cmp_res.lt(JExpr.lit(0)); break;
-				case GT: cond = cmp_res.gt(JExpr.lit(0)); break;
-				case LE: cond = cmp_res.lte(JExpr.lit(0)); break;
-				case GE: cond = cmp_res.gte(JExpr.lit(0)); break;
-				default: throw new RuntimeException();
-				}
-				JClass int_t = context.klass.owner().ref(JavaType.Int.class);
-				return JOp.cond(cond, int_t.staticRef("True"),
-						      int_t.staticRef("False"));
-			} else {
-				return left.invoke(op.javaMethod).arg(right);
-			}
 		}
 	}
 
@@ -89,50 +51,18 @@ public abstract class Expression {
 			super(opcode, left, right);
 		}
 
+		/**
+		 * This one is special. We have to deviate from the normal
+		 * pattern of visit left-visit right-perform op, because this
+		 * would break lazy evaluation.
+		 */
 		@Override
-		public Type eval(CallHelper state)
-		{
-			Type left = this.left.eval(state);
-			switch (this.op) {
-			case LOG_AND:
-				if (!left.isTrue())
-					return left;
-				break;
-			case LOG_OR:
-				if (left.isTrue())
-					return left;
-				break;
-			default:
-				throw new RuntimeException();
-			}
-
-			Type right = this.right.eval(state);
-			return right;
+		public <T> T accept(ExpressionVisitor<T> v){
+			T left = this.left.accept(v);
+			return v.visit(this, left);
 		}
 
 
-		@Override
-		public Type type(Context context)
-		{
-			Type a = this.left.type(context);
-			Type b = this.right.type(context);
-			return a.binaryOpType(this.op, b);
-		}
-
-		@Override
-		public JExpression toJava(Context context)
-		{
-			JExpression left = this.left.toJava(context);
-			JExpression right = this.right.toJava(context);
-			switch (this.op) {
-			case LOG_AND:
-				return JOp.cond(left, right, left);
-			case LOG_OR:
-				return JOp.cond(left, left, right);
-			default:
-				throw new RuntimeException();
-			}
-		}
 	}
 
 	public static class UnaryOp extends Expression {
@@ -146,33 +76,15 @@ public abstract class Expression {
 		}
 
 		@Override
-		public Type eval(CallHelper state)
-		{
-			Type sub = this.sub.eval(state);
-			if (this.op == Type.UnaryOp.LOG_NOT)
-				return sub.logical_not();
-			else
-				return sub.unaryOp(this.op);
-		}
-
-		@Override
-		public Type type(Context context)
-		{
-			Type a = this.sub.type(context);
-			return a.unaryOpType(this.op);
-		}
-
-		@Override
 		public String toString()
 		{
 			return format("%s %s", op.rep, sub);
 		}
 
 		@Override
-		public JExpression toJava(Context context)
-		{
-			JExpression sub = this.sub.toJava(context);
-			return JExpr.invoke(sub, op.javaMethod);
+		public <T> T accept(ExpressionVisitor<T> v){
+			T sub = this.sub.accept(v);
+			return v.visit(this, sub);
 		}
 	}
 
@@ -190,41 +102,19 @@ public abstract class Expression {
 		}
 
 		@Override
-		public Type eval(CallHelper state)
-		{
-			Type vals[] = new Type[this.args.size()];
-			for (int i = 0; i < vals.length; i++)
-				vals[i] = this.args.get(i).eval(state);
-
-			return state.call(this.name, vals);
-		}
-
-		@Override
-		public Type type(Context context)
-		{
-			// TODO
-			return null;
-		}
-
-		@Override
 		public String toString()
 		{
 			return this.name + "(" + StringUtils.join(this.args, ", ") + ")";
 		}
 
-		@Override
-		public JExpression toJava(Context context)
+		public <T> T accept(ExpressionVisitor<T> v)
 		{
-			Type types[] = new Type[this.args.size()];
-			for(int i=0; i<types.length; i++)
-				types[i] = this.args.get(i).type(context);
+			List<T> vals = util.newLinkedList();
 
-			JInvocation inv = context.find(name, types);
-			if (inv == null)
-				throw new ExpressionFault.NameError(name);
-			for (Expression arg: this.args)
-				inv.arg(arg.toJava(context));
-			return inv;
+			for (int i = 0; i < this.args.size(); i++)
+				vals.add( this.args.get(i).accept(v) );
+
+			return v.visit(this, vals);
 		}
 	}
 
@@ -237,52 +127,18 @@ public abstract class Expression {
 		}
 
 		@Override
-		public Type eval(CallHelper state)
-		{
-			ArrayList<Type> vals = new ArrayList<Type>(this.args.size());
-			for (int i = 0; i < this.args.size(); i++)
-				vals.add(this.args.get(i).eval(state));
-
-			return new Type.List(vals);
-		}
-
-		@Override
-		public Type type(Context context)
-		{
-			return new Type.List();
-		}
-
-		/**
-		 * If all elements are of the same type, return this type, otherwise null.
-		 */
-		public Type elementType(Context context)
-		{
-			Type type = null;
-			for (Expression el: this.args) {
-				Type t = el.type(context);
-				if (t == null)
-					return null;
-				if (type != null && !t.getClass().equals(type.getClass()))
-					return null;
-				type = t;
-			}
-			return type;
-		}
-
-
-		@Override
 		public String toString() {
 			return "[" + StringUtils.join(this.args, ", ") + "]";
 		}
 
-		@Override
-		public JExpression toJava(Context context)
+		public <T> T accept(ExpressionVisitor<T> v)
 		{
-			JInvocation list = JExpr._new(context.klass.owner().ref(JavaType.List.class));
-			for (Expression expr: this.args)
-				list.arg(expr.toJava(context));
-			return list;
+			List<T> vals = util.newLinkedList();
 
+			for (int i = 0; i < this.args.size(); i++)
+				vals.add( this.args.get(i).accept(v) );
+
+			return v.visit(this, vals);
 		}
 	}
 
@@ -297,42 +153,17 @@ public abstract class Expression {
 		}
 
 		@Override
-		public Type eval(CallHelper state)
-		{
-			Type vitem = this.item.eval(state);
-			Type vindex = this.index.eval(state);
-			return vitem.index(vindex);
-		}
-
-		@Override
-		public Type type(Context context)
-		{
-			final Type indextype = this.index.type(context);
-			if (indextype != null && !(indextype instanceof Type.Int))
-				throw new ExpressionFault.TypeError();
-
-			final Type listtype = this.item.type(context);
-			if (listtype != null && !(listtype instanceof Type.List))
-				throw new ExpressionFault.TypeError();
-
-			if (this.item instanceof List_)
-				return ((List_)this.item).elementType(context);
-
-			return null;
-		}
-
-		@Override
 		public String toString()
 		{
 			return format("%s[%s]", item, index);
 		}
 
 		@Override
-		public JExpression toJava(Context context)
+		public <T> T accept(ExpressionVisitor<T> v)
 		{
-			JExpression item = this.item.toJava(context);
-			JExpression index = this.index.toJava(context);
-			return JExpr.invoke(item, "index").arg(index);
+			final T seq = this.item.accept(v);
+			final T index = this.index.accept(v);
+			return v.visit(this, seq, index);
 		}
 	}
 
@@ -349,41 +180,6 @@ public abstract class Expression {
 			return this.value.repr();
 		}
 
-		@Override
-		public Type eval(CallHelper dummy)
-		{
-			return this.value;
-		}
-
-		@Override
-		public Type type(Context context)
-		{
-			return this.value;
-		}
-
-		@Override
-		public JExpression toJava(Context context)
-		{
-			Class<? extends JavaType> type;
-			JExpression repr;
-
-			if (this.value instanceof Type.Int) {
-				type = JavaType.Int.class;
-				// TODO: check if representation is not outside range
-				repr = JExpr.lit(((Type.Int)this.value).getValue());
-			} else if (this.value instanceof Type.Float) {
-				type = JavaType.Float.class;
-				repr = JExpr.lit(((Type.Float)this.value).getValue());
-			} else if (this.value instanceof Type.String) {
-				type = JavaType.Str.class;
-				repr = JExpr.lit(((Type.String)this.value).getValue());
-			} else {
-				throw new RuntimeException();
-			}
-
-			return JExpr._new(context.klass.owner().ref(type)).arg(repr);
-		}
-
 		public static Expression make(String str) {
 			assert str != null;
 			return new Const(new Type.String(str));
@@ -393,6 +189,12 @@ public abstract class Expression {
 		}
 		public static Expression make(double real) {
 			return new Const(new Type.Float(real));
+		}
+
+		@Override
+		public <T> T accept(ExpressionVisitor<T> v)
+		{
+			return v.visit(this);
 		}
 	}
 
@@ -407,38 +209,15 @@ public abstract class Expression {
 		}
 
 		@Override
-		public Type eval(CallHelper state)
-		{
-			Type qvalue = this.q.eval(state);
-
-			Expression which = qvalue.isTrue() ? this.a : this.b;
-			Type value = which.eval(state);
-			return value;
-		}
-
-		@Override
 		public String toString()
 		{
 			return format("if %s then %s else %s", q, a, b);
 		}
 
-		@Override
-		public Type type(Context context)
+		public <T> T accept(ExpressionVisitor<T> v)
 		{
-			Type a = this.a.type(context);
-			Type b = this.a.type(context);
-			if (a.getClass().equals(b.getClass()))
-				return a;
-			else
-				return null;
-		}
-
-		@Override
-		public JExpression toJava(Context context)
-		{
-			return JOp.cond(q.toJava(context),
-					a.toJava(context),
-					b.toJava(context));
+			final T cond = this.q.accept(v);
+			return v.visit(this, cond);
 		}
 	}
 
@@ -448,49 +227,22 @@ public abstract class Expression {
 	 */
 	public static class Assign extends Expression {
 		public final String id;
-		public final List<Argument> args;
 		public final Expression value;
 
-		// TODO: find a better home for this class
-		public static class Argument {
-			public final Type type;
-			public final String name;
-			public Argument(Type type, String name) {
-				this.type = type;
-				this.name = name;
-			}
-		}
-
-		// TODO: non-empty argument list
-		public Assign(String id, List<Argument> args, Expression value) {
-			this.id = id;
-			this.args = args;
-			this.value = value;
-
-			assert args.size() == 0;
-		}
-
 		public Assign(String id, Expression value) {
-			this(id, new LinkedList<Argument>(), value);
+			this.id = id;
+			this.value = value;
+		}
+
+		public <T> T accept(ExpressionVisitor<T> v)
+		{
+			return v.visit(this);
 		}
 
 		@Override
-		public Type eval(CallHelper state)
+		public String toString()
 		{
-			state.assign(this.id, this.value);
-			return null;
-		}
-
-		@Override
-		public Type type(Context context)
-		{
-			throw new RuntimeException();
-		}
-
-		@Override
-		public JExpression toJava(Context context)
-		{
-			throw new RuntimeException();
+			return format("%s = %s", id, value);
 		}
 	}
 }
