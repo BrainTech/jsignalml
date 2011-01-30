@@ -161,6 +161,9 @@ public class CodecParser {
 		final Expression name =
 		        name_ == null ? null : Expression.Const.make(name_);
 
+		if (type == null)
+			throw new SyntaxError("<file> needs a type attribute");
+
 		final ASTNode.FileHandle handle = ASTNode.FileHandle.make(parent, name, type);
 		return handle;
 	}
@@ -222,6 +225,7 @@ public class CodecParser {
 		BasicConfigurator.configure();
 
 		ASTNode codec = makeCodec(args[0]);
+		System.out.print(ASTDumper.dump(codec));
 
 		if (args.length <= 1)
 			return;
