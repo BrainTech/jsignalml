@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
-import com.sun.codemodel.JCodeModel;
 import com.sun.codemodel.JFormatter;
 
 import org.apache.log4j.BasicConfigurator;
@@ -175,10 +174,10 @@ public class Processor {
 				log.exception("evaluation", e);
 			}
 
+			final PrintWriter pw = new PrintWriter(System.out);
+			final JFormatter code = new JFormatter( pw );
+			final JavaGenVisitor javagen = new JavaGenVisitor();
 			try {
-				final PrintWriter pw = new PrintWriter(System.out);
-				final JFormatter code = new JFormatter( pw );
-				final JavaGenVisitor javagen = new JavaGenVisitor(new JCodeModel());
 				code.p("code: ").g(expr.accept(javagen)).nl();
 				pw.flush();
 			} catch (ExpressionFault e) {

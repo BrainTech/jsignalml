@@ -38,6 +38,7 @@ import com.sun.codemodel.writer.FileCodeWriter;
 */
 
 public class JavaGen extends ASTVisitor<JDefinedClass> {
+
 	public static final String PREFIX = "_jsignalml_";
 	static String makeIdentifier(String name)
 	{
@@ -168,8 +169,28 @@ public class JavaGen extends ASTVisitor<JDefinedClass> {
 		return method;
 	}
 
-	public JMethod exprParam(JDefinedClass klass, String ident,
-				 Type type, Expression expr)
+	@Override
+	public JDefinedClass visit(ASTNode.ExprParam node, JDefinedClass klass)
+	{
+		assert klass != null;
+		final JMethod impl = exprFunction(klass, node, node.id, node.type, node.expr);
+		final JMethod cache = cacheFunction(klass, node, node.id, impl);
+		return klass;
+	}
+
+	JavaGenVisitor.JavaNameResolver createResolver(final ASTNode start)
+	{
+		return new JavaGenVisitor.JavaNameResolver() {
+			public JInvocation call(String id)
+			{
+				final ASTNode target = start.find(id);
+				return JExpr.invoke(makeGetter(id));
+			}
+		};
+	}
+
+	public JMethod exprFunction(JDefinedClass klass, ASTNode node, String ident,
+				    Type type, Expression expr)
 	{
 		Class<? extends JavaType> javatype = convertType(type);
 		if (javatype == null)
@@ -177,14 +198,15 @@ public class JavaGen extends ASTVisitor<JDefinedClass> {
 
 		final JMethod impl = klass.method(JMod.NONE, javatype,
 						  makeGetterImpl(ident));
-		final JavaGenVisitor javagen = new JavaGenVisitor(this.model);
+		final JavaGenVisitor javagen =
+			new JavaGenVisitor(this.model,
+					   this.createResolver(node));
 		impl.body()._return( expr.accept(javagen) );
-
-		return this.cacheParam(klass, ident, impl);
+		return impl;
 	}
 
-	public JMethod readParam(JDefinedClass klass, String ident,
-				 Type type, BitForm format, int offset)
+	public JMethod readFunction(JDefinedClass klass, ASTNode node, String ident,
+				    Type type, BitForm format, int offset)
 	{
 		final String prefixed = makeIdentifier(ident);
 
@@ -207,11 +229,11 @@ public class JavaGen extends ASTVisitor<JDefinedClass> {
 		final JVar var = body.decl(javatype, "var",
 					   javatype.staticInvoke("make").arg(input));
 		body._return(var);
-
-		return this.cacheParam(klass, ident, impl);
+		return impl;
 	}
 
-	public JMethod cacheParam(JDefinedClass klass, String ident, JMethod impl)
+	public JMethod cacheFunction(JDefinedClass klass, ASTNode node, String ident,
+				     JMethod impl)
 	{
 		final String prefixed = makeIdentifier(ident);
 		final JFieldVar stor = klass.field(JMod.NONE, impl.type(),

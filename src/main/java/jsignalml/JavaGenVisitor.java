@@ -15,13 +15,41 @@ import com.sun.codemodel.JOp;
 public class JavaGenVisitor extends ExpressionVisitor<JExpression> {
 
 	final JCodeModel codemodel;
-	JavaGenVisitor(JCodeModel codemodel){
+	final JavaNameResolver context;
+
+	JavaGenVisitor(JCodeModel codemodel, JavaNameResolver context)
+	{
 		this.codemodel = codemodel;
+		this.context = context;
 	}
+
+	JavaGenVisitor()
+	{
+		this(new JCodeModel(), nullResolver);
+	}
+
+	public interface JavaNameResolver {
+		/**
+		 * Return a JInvocation which can be used to call
+		 * item named id.
+		 */
+		JInvocation call(String id);
+	}
+
+	static class NullResolver implements JavaNameResolver {
+		public JInvocation call(String id)
+		{
+			throw new ExpressionFault.NameError(id);
+		}
+	}
+	static JavaNameResolver nullResolver = new NullResolver();
+
+	//////////////////////////////////////////////////////////////////
+	//////////////////////////////////////////////////////////////////
 
 	@Override
 	public JExpression visit(Expression.BinaryOp op,
-			  JExpression left, JExpression right)
+				 JExpression left, JExpression right)
 	{
 		if (op.op.javaMethod == "cmp") {
 			JExpression cmp_res = left.invoke("cmp").arg(right);
@@ -67,9 +95,7 @@ public class JavaGenVisitor extends ExpressionVisitor<JExpression> {
 	@Override
 	public JExpression visit(Expression.Call fun, List<? extends JExpression> args)
 	{
-		JInvocation inv = null; // this.context.find(fun.name); // args ?
-		if (inv == null)
-			throw new ExpressionFault.NameError(fun.name);
+		final JInvocation inv = context.call(fun.name);
 		for (JExpression arg: args)
 			inv.arg(arg);
 		return inv;
