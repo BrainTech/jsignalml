@@ -7,6 +7,10 @@ public class SyntaxError extends Exception {
 		super(cause);
 	}
 
+	public SyntaxError(String message) {
+		super(message);
+	}
+
 	static class RuntimeFlavour extends RuntimeException {
 		final Exception cause;
 

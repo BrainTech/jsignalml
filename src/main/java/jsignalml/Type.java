@@ -21,9 +21,12 @@ public abstract class Type {
 		assert oldClass == null;
 	}
 	public static Type getType(java.lang.String type) {
-		Type theClass = typeNames.get(type);
-		if (theClass != null)
-			return theClass;
+		if (type == null) // null means "auto"
+			return null;
+
+		final Type thetype = typeNames.get(type);
+		if (thetype != null)
+			return thetype;
 
 		throw new IllegalArgumentException(format("unkown type '%s'", type));
 	}

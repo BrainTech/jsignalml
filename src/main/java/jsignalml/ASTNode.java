@@ -5,10 +5,12 @@ import java.util.TreeMap;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.List;
+import java.util.Arrays;
 import java.io.File;
 import java.io.IOException;
 import java.io.FileNotFoundException;
 import static java.lang.String.format;
+import static java.util.Collections.unmodifiableList;
 
 /**
  * Class to hold an AST correspoding to the XML file
@@ -83,12 +85,15 @@ public abstract class ASTNode {
 
 	public abstract static class Param extends ASTNode {
 		public final Type type;
-		public final Positional[] args;
+		public final List<Positional> args;
 
 		public Param(ASTNode parent, String id, Type type, Positional args[]) {
 			super(parent, id);
 			this.type = type;
-			this.args = args;
+			if(args == null)
+				this.args = util.newLinkedList();
+			else
+				this.args = unmodifiableList(Arrays.asList(args));
 		}
 	}
 
@@ -140,6 +145,27 @@ public abstract class ASTNode {
 		public String toString()
 		{
 			return format("ExprParam expression: %s", this.expr);
+		}
+
+		@Override
+		public <T> T _accept(ASTVisitor<T> v, T data)
+		{
+			return v.visit(this, data);
+		}
+	}
+
+	public static class Assert extends ASTNode {
+		final Expression expr;
+
+		public Assert(ASTNode parent, String id, Expression expr)
+		{
+			super(parent, id);
+			this.expr = expr;
+		}
+
+		public String toString()
+		{
+			return format("Assert expression: %s", this.expr);
 		}
 
 		@Override
@@ -212,14 +238,13 @@ public abstract class ASTNode {
 	public static class DataHandle extends ASTNode {
 		public final String mapping, format;
 
-		public DataHandle(ASTNode parent, String id,
-				  FileHandle<?> handle, String mapping, String format)
+		public DataHandle(ASTNode parent, String id, String mapping, String format)
 		{
 			super(parent, id);
 			this.mapping = mapping;
 			this.format = format;
 
-			handle.addData(this);
+			// TODO: handle.addData(this);
 		}
 
 		public String toString()
