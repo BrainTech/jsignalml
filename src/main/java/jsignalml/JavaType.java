@@ -76,7 +76,7 @@ public interface JavaType {
 			throw new ExpressionFault.TypeError();
 		}
 		public Int add(Int other){
-			return new Int(this.add(other));
+			return new Int(super.add(other));
 		}
 		public Float add(Float other){
 			return new Float(this.doubleValue() + other.value);
@@ -159,7 +159,7 @@ public interface JavaType {
 			throw new ExpressionFault.TypeError();
 		}
 		public Int mod(Int other){
-			return new Int(this.mod(other));
+			return new Int(super.mod(other));
 		}
 		public Float mod(Float other){
 			return new Float(this).mod(other);
@@ -200,7 +200,7 @@ public interface JavaType {
 			throw new ExpressionFault.TypeError();
 		}
 		public Int pow(Int other){
-			return new Int(this.pow(other));
+			return new Int(super.pow(other.intValue()));
 		}
 		public Float pow(Float other){
 			return new Float(Math.pow(this.doubleValue(), other.value));

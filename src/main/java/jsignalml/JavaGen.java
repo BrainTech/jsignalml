@@ -208,8 +208,6 @@ public class JavaGen extends ASTVisitor<JDefinedClass> {
 	public JMethod readFunction(JDefinedClass klass, ASTNode node, String ident,
 				    Type type, BitForm format, int offset)
 	{
-		final String prefixed = makeIdentifier(ident);
-
 		Class<? extends JavaType> javatype_ = convertType(type);
 		if (javatype_ == null)
 			javatype_ = JavaType.class;

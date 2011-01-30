@@ -20,13 +20,14 @@ import com.sun.codemodel.JClassAlreadyExistsException;
 public class Processor {
 	static Logger log = new Logger(Processor.class);
 
-	public static void processFile(Frame frame, String path)
-	throws java.io.FileNotFoundException,
-		java.io.IOException,
-		SyntaxError
+	public static CommonTree processFile(Frame frame, String path)
+		throws java.io.FileNotFoundException,
+		       java.io.IOException,
+		       SyntaxError
 	{
 		CommonTree ast = parseScript(new FileReader(path));
 		// TODO:  this.processNonInteractive();
+		return ast;
 	}
 
 	public static CommonTokenStream getTokenStream(java.io.Reader reader)

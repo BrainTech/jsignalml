@@ -902,15 +902,18 @@ public abstract class Type {
 			}
 		}
 
-		public int compareTo(List other)
+		public int compareTo(Object other)
 			throws ExpressionFault.TypeError
 		{
+			if (!(other instanceof List))
+				throw new ExpressionFault.TypeError(); // XXX: "uncomparable types"
+
 			int size1 = this.value.size();
-			int size2 = other.value.size();
+			int size2 = ((List)other).value.size();
 
 			for(int i=0; i < size1 && i < size2; i++) {
 				Type a = this.value.get(i);
-				Type b = other.value.get(i);
+				Type b = ((List)other).value.get(i);
 				if (a.binaryOp(Type.BinaryOp.LT, b).isTrue())
 					return -1;
 				if (b.binaryOp(Type.BinaryOp.LT, a).isTrue())
