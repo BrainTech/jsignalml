@@ -31,7 +31,7 @@ public class Processor {
 	}
 
 	public static CommonTokenStream getTokenStream(java.io.Reader reader)
-	throws java.io.IOException
+		throws java.io.IOException
 	{
 		SExpressionLexer lexer
 		= new SExpressionLexer(new ANTLRReaderStream(reader));
@@ -46,7 +46,7 @@ public class Processor {
 	}
 
 	public static CommonTree parseScript(java.io.Reader reader)
-	throws java.io.IOException, SyntaxError
+		throws java.io.IOException, SyntaxError
 	{
 		SExpressionParser parser =
 		        new SExpressionParser(getTokenStream(reader));
@@ -64,7 +64,7 @@ public class Processor {
 	}
 
 	public static CommonTree parseLine(String line)
-	throws SyntaxError
+		throws SyntaxError
 	{
 		SExpressionParser parser =
 		        new SExpressionParser(getTokenStream(line));
@@ -83,7 +83,7 @@ public class Processor {
 	}
 
 	public static CommonTree parseSingleexpr(String line)
-	throws SyntaxError
+		throws SyntaxError
 	{
 		SExpressionParser parser =
 		        new SExpressionParser(getTokenStream(line));
@@ -102,7 +102,7 @@ public class Processor {
 	}
 
 	public static Expression processLine(CommonTree ast)
-	throws SyntaxError
+		throws SyntaxError
 	{
 		STree tree = new STree(new CommonTreeNodeStream(ast));
 		Expression expr;
@@ -117,8 +117,7 @@ public class Processor {
 		return expr;
 	}
 
-	public static void processInteractive(Frame frame,
-	                                      InputStream in)
+	public static void processInteractive(Frame frame, InputStream in)
 	{
 		Scanner scanner = new Scanner(in);
 
@@ -210,7 +209,7 @@ public class Processor {
 	}
 
 	public static Expression parse(String line)
-	throws SyntaxError
+		throws SyntaxError
 	{
 		return Processor.processLine(Processor.parseSingleexpr(line));
 	}
