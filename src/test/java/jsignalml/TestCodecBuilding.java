@@ -8,6 +8,7 @@ import static org.hamcrest.core.IsNull.nullValue;
 import static org.hamcrest.core.IsNull.notNullValue;
 
 import java.util.List;
+import java.io.File;
 import java.io.InputStream;
 import java.io.IOException;
 import java.io.StringBufferInputStream;
@@ -39,40 +40,44 @@ public class TestCodecBuilding {
 		}
 	}
 
-	static void assert_arg_is(Machine.Positional arg, String name,
+	static void assert_arg_is(ASTNode.Positional arg, String name,
 				  Class<? extends Type> type)
 	{
-		assertEquals(arg.name, name);
+		assertEquals(arg.id, name);
 		assertEquals(arg.type, type);
 	}
 
 	@Test public void test_do_arg() throws Exception
 	{
 		Element element = doc.getElement("//arg");
-		List<Machine.Positional> list = util.newLinkedList();
+		final ASTNode.Param p =
+			new ASTNode.ExprParam(null, "expr", null,
+					      new ASTNode.Positional[0], null);
 
-		CodecCore.do_arg(element, list);
+		CodecParser.do_arg(p, element);
 
-		assertEquals(list.size(), 1);
+		assertEquals(p.args.size(), 1);
 
-		Machine.Positional arg = list.get(0);
+		ASTNode.Positional arg = p.args.get(0);
 		assert_arg_is(arg, "one", Type.Int.class);
 	}
 
 	@Test public void test_do_two_args() throws Exception
 	{
-		List<Machine.Positional> list = util.newLinkedList();
+		final ASTNode.Param p =
+			new ASTNode.ExprParam(null, "expr", null,
+					      new ASTNode.Positional[0], null);
 
 		Iterable<Element> nodes = doc.getNodes("//arg");
 		for(Element element: nodes)
-			CodecCore.do_arg(element, list);
+			CodecParser.do_arg(p, element);
 
-		assertEquals(list.size(), 4);
+		assertEquals(p.args.size(), 4);
 
-		assert_arg_is(list.get(0), "one", Type.Int.class);
-		assert_arg_is(list.get(1), "two", Type.Float.class);
-		assert_arg_is(list.get(2), "three", Type.String.class);
-		assert_arg_is(list.get(3), "four", Type.List.class);
+		assert_arg_is(p.args.get(0), "one", Type.Int.class);
+		assert_arg_is(p.args.get(1), "two", Type.Float.class);
+		assert_arg_is(p.args.get(2), "three", Type.String.class);
+		assert_arg_is(p.args.get(3), "four", Type.List.class);
 	}
 
 	@Test public void test_do_assert() throws Exception
@@ -85,69 +90,16 @@ public class TestCodecBuilding {
 	@Test public void test_do_param() throws Exception {
 		Element element = doc.getElement("//param");
 
-		CodecCore core = new CodecCore();
-		Machine.FileHandle<FileType.BinaryFile> handle =
-			Machine.FileHandle.make(null);
+		CodecParser parser = new CodecParser(new File("dummy.xml"));
+		final ASTNode.Signalml root = new ASTNode.Signalml("root");
 
-		core.do_param(element, handle);
+		parser.do_param(root, element);
 
-		Machine.Param p = core.getParam("only");
+		ASTNode.Param p = (ASTNode.Param) root.find("only");
 		assertEquals( p.id, "only");
 		assertEquals( p.type, Type.Int.class);
-		assertEquals( p.args.length, 4);
-		assertThat( p, instanceOf(Machine.ExprParam.class) );
+		assertEquals( p.args.size(), 4);
+		assertThat( p, instanceOf(ASTNode.ExprParam.class) );
 	}
 
-	@Test public void test_do_expr() throws Exception
-	{
-		Element element = doc.getElement("//expr");
-
-		Expression expr = CodecCore.do_expr(element);
-		assertThat( expr, instanceOf(Expression.BinaryOp.class) );
-	}
-
-	class FileHandleExtractor extends CodecCore
-	{
-		Machine.FileHandle<?> handle = null;
-		int params = 0, datas = 0, asserts = 0;
-
-		void set_handle(Machine.FileHandle<?> handle){
-			assert(this.handle == null || this.handle == handle);
-			this.handle = handle;
-			assert(handle != null);
-		}
-
-		@Override
-			public void do_param(Element element, Machine.FileHandle<?> handle){
-			this.set_handle(handle);
-			this.params++;
-		}
-
-		@Override
-			public void do_data(Element element, Machine.FileHandle<?> handle){
-			this.set_handle(handle);
-			this.datas++;
-		}
-
-		@Override
-			public void do_assert(Element element){
-			this.asserts++;
-		}
-	}
-
-	@Test public void test_do_file() throws Exception
-	{
-		Element element = doc.getElement("//file");
-
-		FileHandleExtractor core = new FileHandleExtractor();
-		core.do_file(element);
-
-		assertEquals(1, core.asserts);
-		assertEquals(1, core.params);
-		assertEquals(0, core.datas);
-
-		Machine.FileHandle<?> handle = core.handle;
-		assertThat(handle, notNullValue());
-		assertThat(handle.filename, nullValue());
-	}
 }

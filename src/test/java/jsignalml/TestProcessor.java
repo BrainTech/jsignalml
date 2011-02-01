@@ -3,20 +3,31 @@ package jsignalml;
 import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
+import java.math.BigInteger;
 
 public class TestProcessor {
-	Type eval(CallHelper state, String line)
+	Type eval(Frame state, String line)
 		throws Exception
 	{
 		Expression expr = Processor.parse(line);
-		Type value = expr.eval(state);
+		final ASTNode.ExprParam param =
+			new ASTNode.ExprParam(null, "expr", null,
+					      new ASTNode.Positional[0], expr);
+		Type value = expr.accept(new EvalVisitor(state, null));
 		return value;
 	}
 
 	void assertLeqR(String line, Type expected) throws Exception
 	{
-		Processor.State state = new Processor.State();
+		Frame state = new Frame(null);
 		Type result = eval(state, line);
+		assertTrue(expected.equals(result));
+	}
+
+	void assertLeqR(String line, BigInteger expected) throws Exception
+	{
+		Frame state = new Frame(null);
+		BigInteger result = ((Type.Int)eval(state, line)).getBigIntegerValue();
 		assertTrue(expected.equals(result));
 	}
 
@@ -30,5 +41,10 @@ public class TestProcessor {
 	@Test public void simpleAdd() throws Exception
 	{
 		assertLeqR("1", 1);
+	}
+
+	@Test public void powOverflow() throws Exception
+	{
+		assertLeqR("2**1024", BigInteger.valueOf(2).pow(1024));
 	}
 }

@@ -8,9 +8,12 @@ import static org.hamcrest.core.IsInstanceOf.instanceOf;
 public class TestTypes {
 	Type eval(String line) throws Exception
 	{
-		CallHelper state = new Processor.State();
+		Frame state = new Frame(null);
 		Expression expr = Processor.parse(line);
-		Type val = expr.eval(state);
+		final ASTNode.ExprParam param =
+			new ASTNode.ExprParam(null, "expr", null,
+					      new ASTNode.Positional[0], expr);
+		Type val = expr.accept(new EvalVisitor(state, param));
 		return val;
 	}
 
