@@ -6,6 +6,7 @@ import java.util.TreeMap;
 import java.util.HashMap;
 import java.util.ArrayList;
 import java.util.LinkedList;
+import java.math.BigInteger;
 
 import static java.util.Collections.unmodifiableList;
 import static java.lang.String.format;
@@ -302,6 +303,10 @@ public abstract class Type {
 		@Override
 		public Integer getValue() {
 			return this.value;
+		}
+
+		public BigInteger getBigIntegerValue() {
+			return BigInteger.valueOf(this.value);
 		}
 
 		@Override
