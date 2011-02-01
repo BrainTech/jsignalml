@@ -253,8 +253,8 @@ public abstract class Type {
 		registerType("int", new Int());
 	}
 	public static class Int extends Type {
-		public final int value;
-		public Int(int value) {
+		public final long value;
+		public Int(long value) {
 			this.value = value;
 		}
 		public Int(java.lang.String text) {
@@ -280,9 +280,6 @@ public abstract class Type {
 			}
 		}
 
-		public Int(long value) {
-			this((int)value);
-		}
 		public Int(boolean value) {
 			this(value?1:0);
 		}
@@ -300,7 +297,7 @@ public abstract class Type {
 		}
 
 		@Override
-		public Integer getValue() {
+		public Long getValue() {
 			return this.value;
 		}
 
@@ -329,7 +326,7 @@ public abstract class Type {
 			case FLOORDIV:
 				return new Int(this.value / other.value);
 			case MOD:
-				int value = this.value % other.value;
+				long value = this.value % other.value;
 				if ((other.value > 0 && value < 0) ||
 				    (other.value < 0 && value > 0))
 					value += other.value;
@@ -747,7 +744,7 @@ public abstract class Type {
 				throw new ExpressionFault.TypeError();
 
 			Int ind = (Int) sub;
-			int offset = ind.value;
+			int offset = util.safeLongToInt(ind.value);
 			if (offset < 0)
 				offset += this.value.length();
 			try {
@@ -946,7 +943,7 @@ public abstract class Type {
 				throw new ExpressionFault.TypeError();
 
 			Int ind = (Int) sub;
-			int offset = ind.value;
+			int offset = util.safeLongToInt(ind.value);
 			if (offset < 0)
 				offset += this.value.size();
 			try {

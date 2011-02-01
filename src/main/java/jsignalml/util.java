@@ -29,6 +29,14 @@ public class util {
 		return (T) object;
 	}
 
+	public static int safeLongToInt(long l) {
+		if (l < Integer.MIN_VALUE || l > Integer.MAX_VALUE)
+			//			throw new IllegalArgumentException
+			throw new ExpressionFault.ValueError
+				(l + " cannot be cast to int without changing its value.");
+		return (int) l;
+	}
+
 	public static String basename_noext(File file) {
 		String basename = StringUtils.split(file.getName(), ".")[0];
 		return basename.replace("[^a-zA-Z0-9_]", "_");
