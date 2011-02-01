@@ -6,7 +6,7 @@ import static org.hamcrest.core.IsInstanceOf.instanceOf;
 
 import java.util.TreeMap;
 
-public class Test_FileHandle {
+public class TestFileHandle {
 	static final Frame empty_state = new Frame(null);
 
 	static final String file1 = "target/test-classes/file1";

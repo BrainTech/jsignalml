@@ -8,7 +8,7 @@ import static org.hamcrest.core.IsEqual.equalTo;
 import java.util.Map;
 import java.util.TreeMap;
 
-public class Test_BinaryParam {
+public class TestBinaryParam {
 	static final Frame reader = new Frame(null);
 	/* parent=null means that no other parameters can be called,
 	   but this should be OK in this particuar case.
