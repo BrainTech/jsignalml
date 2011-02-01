@@ -264,18 +264,16 @@ public class JavaGen extends ASTVisitor<JDefinedClass> {
 	{
 		BasicConfigurator.configure();
 
-		File outputdir = new File(args[0]);
+		final File outputdir = new File(args[0]);
 
-		JavaGen gen = new JavaGen();
-
-		Expression expr = Processor.parse(args[1]);
+		final Expression expr = Processor.parse(args[1]);
 
 		final String field_name = "duration_of_data_record";
-		ASTNode signalml = new ASTNode.Signalml("Test");
+		final ASTNode signalml = new ASTNode.Signalml("Test");
 		new ASTNode.ExprParam(signalml, field_name, new Type.Int(),
 				      new ASTNode.Positional[0], expr);
 
-		Expression expr2 = Processor.parse(field_name + "() + 1");
+		final Expression expr2 = Processor.parse(field_name + "() + 1");
 		new ASTNode.ExprParam(signalml, field_name+"2", new Type.Int(),
 				      new ASTNode.Positional[0], expr2);
 
@@ -285,6 +283,11 @@ public class JavaGen extends ASTVisitor<JDefinedClass> {
 		new ASTNode.BinaryParam(signalml, "readTestConv", new Type.Int(),
 					Expression.Const.make("'|S8'"), Expression.Const.make(0));
 					//new BitForm.Str(8), 0);
+
+		final NameCheck check = new NameCheck();
+		signalml.accept(check, null);
+
+		final JavaGen gen = new JavaGen();
 		signalml.accept(gen, null);
 		gen.write(System.out);
 		gen.write(outputdir);
