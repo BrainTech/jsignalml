@@ -46,7 +46,10 @@ public abstract class ASTNode {
 	}
 
 	public ASTNode find(String id) {
+		log.debug("[%s] looking for %s", this.id, id);
 		ASTNode ans = this.lookup(id);
+		if (ans != null)
+			log.info("[%s] found %s here", this.id, id);
 		if (ans == null && this.parent != null)
 			ans = this.parent.find(id);
 		if (ans == null)
@@ -67,7 +70,7 @@ public abstract class ASTNode {
 		public Signalml(String name) {
 			super(null, name);
 		}
-		
+
 		@Override
 		public <T> T _accept(ASTVisitor<T> v, T data)
 		{

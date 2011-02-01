@@ -7,15 +7,46 @@ import org.apache.log4j.BasicConfigurator;
 public class NameCheck extends ASTVisitor<NullType> {
 	public static final Logger log = new Logger(NameCheck.class);
 
-	public NullType visit(ASTNode.ExprParam node, NullType parent){
+	// All Expression fields defined in subclasses of ASTNode should be
+	// checked.
+
+	@Override
+	public NullType visit(ASTNode.ExprParam node, NullType parent)
+	{
 		log.debug("checking %s", node);
 		node.expr.accept(new ExpressionNameCheck(node));
 		return null;
 	}
 
+	@Override
+	public NullType visit(ASTNode.BinaryParam node, NullType parent)
+	{
+		log.debug("checking %s", node);
+		ExpressionNameCheck checker = new ExpressionNameCheck(node);
+		node.format.accept(checker);
+		node.offset.accept(checker);
+		return null;
+	}
+
+	@Override
+	public NullType visit(ASTNode.Assert node, NullType parent)
+	{
+		log.debug("checking %s", node);
+		node.expr.accept(new ExpressionNameCheck(node));
+		return null;
+	}
+
+	@Override
+	public NullType visit(ASTNode.FileHandle node, NullType parent)
+	{
+		log.debug("checking %s", node);
+		node.filename.accept(new ExpressionNameCheck(node));
+		return null;
+	}
+
 	public static class ExpressionNameCheck extends ExpressionVisitor<NullType> {
-		final ASTNode.ExprParam context;
-		ExpressionNameCheck(ASTNode.ExprParam context)
+		final ASTNode context;
+		ExpressionNameCheck(ASTNode context)
 		{
 			this.context = context;
 		}
