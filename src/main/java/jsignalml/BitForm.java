@@ -26,8 +26,14 @@ public abstract class BitForm {
 		throw new BadBitForm(description);
 	}
 
+	public static BitForm get(JavaType.Str description)
+		throws BadBitForm
+	{
+		return get(description.value);
+	}
+
 	public abstract Type read(ByteBuffer buffer, int offset);
-	public abstract JavaType read2(ByteBuffer buffer, int offset);
+	public abstract JavaType read2(ByteBuffer buffer, JavaType.Int offset);
 	public String toString()
 	{
 		return this.getClass().getName().replace("$", ".") + "()";
@@ -38,7 +44,7 @@ public abstract class BitForm {
 		public abstract Type.Int read(ByteBuffer buffer, int offset);
 
 		@Override
-		public abstract JavaType.Int read2(ByteBuffer buffer, int offset);
+		public abstract JavaType.Int read2(ByteBuffer buffer, JavaType.Int offset);
 
 		public static class Int8 extends Int {
 			@Override
@@ -53,13 +59,14 @@ public abstract class BitForm {
 			}
 
 			@Override
-			public JavaType.Int read2(ByteBuffer buffer, int offset)
+			public JavaType.Int read2(ByteBuffer buffer, JavaType.Int offset)
 			{
 				byte data;
+				int offset_ = offset.safeIntValue();
 				try {
-					data = buffer.get(offset);
+					data = buffer.get(offset_);
 				} catch (IndexOutOfBoundsException e) {
-					throw new ExpressionFault.IndexError(offset, buffer.limit());
+					throw new ExpressionFault.IndexError(offset_, buffer.limit());
 				}
 				return new JavaType.Int(data);
 			}
@@ -79,12 +86,13 @@ public abstract class BitForm {
 					return new Type.Int(data);
 				}
 				@Override
-				public JavaType.Int read2(ByteBuffer buffer, int byteoffset) {
+				public JavaType.Int read2(ByteBuffer buffer, JavaType.Int byteoffset) {
 					int data;
+					int offset = byteoffset.safeIntValue();
 					try {
-						data = buffer.getInt(byteoffset);
+						data = buffer.getInt(offset);
 					} catch (IndexOutOfBoundsException e) {
-						throw new ExpressionFault.IndexError(byteoffset, buffer.limit());
+						throw new ExpressionFault.IndexError(offset, buffer.limit());
 					}
 					return new JavaType.Int(data);
 				}
@@ -110,10 +118,11 @@ public abstract class BitForm {
 		}
 
 		@Override
-		public JavaType.Str read2(ByteBuffer buffer, int byteoffset) {
-			log.info("BitForm.Str.read: buffer=%s byteoffset=%d",
-			         buffer, byteoffset);
-			buffer.limit(byteoffset + this.size).position(byteoffset);
+		public JavaType.Str read2(ByteBuffer buffer, JavaType.Int byteoffset) {
+			int offset = byteoffset.safeIntValue();
+ 			log.info("BitForm.Str.read: buffer=%s byteoffset=%d",
+			         buffer, offset);
+			buffer.limit(offset + this.size).position(offset);
 
 			byte[] data = new byte[this.size];
 			buffer.get(data);

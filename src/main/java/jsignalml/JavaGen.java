@@ -40,7 +40,7 @@ import com.sun.codemodel.writer.FileCodeWriter;
 public class JavaGen extends ASTVisitor<JDefinedClass> {
 	public static final Logger log = new Logger(JavaGen.class);
 
-	public static final String PREFIX = "_jsignalml_";
+	public static final String PREFIX = ""; //"_jsignalml_";
 	static String makeIdentifier(String name)
 	{
 		return PREFIX + name;
@@ -178,6 +178,62 @@ public class JavaGen extends ASTVisitor<JDefinedClass> {
 		return klass;
 	}
 
+	@Override
+	public JDefinedClass visit(ASTNode.BinaryParam node, JDefinedClass klass)
+	{
+		assert klass != null;
+		final JMethod impl = readParamFunction(klass, node, node.id, node.type,
+						       node.format, node.offset);
+		final JMethod cache = cacheFunction(klass, node, node.id, impl);
+		return klass;
+	}
+
+
+	public JMethod readParamFunction(JDefinedClass klass, ASTNode node, String ident,
+					 Type type, Expression format, Expression offset)
+	{
+		assert klass != null;
+
+		final JMethod formatfunc = exprFunction(klass, node, node.id + "_format", // XXX
+							new Type.String(), format);
+		final JMethod offsetfunc = exprFunction(klass, node, node.id + "_offset", // XXX
+							new Type.Int(), offset);
+
+		final JMethod readfunc = readFunction(klass, node, node.id + "_read", // XXX
+						      type);
+
+		Class<? extends JavaType> javatype = convertType(type);
+		if (javatype == null)
+			javatype = JavaType.class;
+
+		final JMethod impl = klass.method(JMod.NONE, javatype, makeGetterImpl(ident));
+		// -- generated code --
+		// JavaType.Str _jsignalml__get_readX_format();
+		// JavaType.Int _jsignalml__get_readX_offset();
+		// JavaType.Int _jsignalml__get_readX_read(BitForm bitform, JavaType.Int offset)
+		// JavaType.Int _jsignalml__get_readX() {
+		//     JavaType.Str format = _jsignalml__get_readX_format();
+		//     JavaType.Int offset = _jsignalml__get_readX_offset();
+		//     return _jsignalml__get_readX_read(BitForm.get(format), offset);
+	        // }
+		final JBlock body = impl.body();
+		final JVar format_ = body.decl(this.model.ref(JavaType.Str.class), "format",
+					       JExpr._this().invoke(formatfunc));
+		final JVar offset_ = body.decl(this.model.ref(JavaType.Int.class), "offset",
+					       JExpr._this().invoke(offsetfunc));
+		final JClass bitform_class = this.model.ref(BitForm.class);
+		final JVar theformat = body.decl(bitform_class, "theformat");
+		final JTryBlock tryblock = body._try();
+		tryblock.body().assign(theformat,
+				       bitform_class.staticInvoke("get").arg(format_));
+		final JClass badbitform = this.model.ref(BitForm.BadBitForm.class);
+		final JClass expressionfault = this.model.ref(ExpressionFault.class);
+		tryblock._catch(badbitform).body()
+			._throw(JExpr._new(expressionfault).arg(JExpr.ref("_x")));
+		impl.body()._return(JExpr._this().invoke(readfunc).arg(theformat).arg(offset_));
+		return impl;
+	}
+
 	JavaGenVisitor.JavaNameResolver createResolver(final ASTNode start)
 	{
 		return new JavaGenVisitor.JavaNameResolver() {
@@ -206,7 +262,7 @@ public class JavaGen extends ASTVisitor<JDefinedClass> {
 	}
 
 	public JMethod readFunction(JDefinedClass klass, ASTNode node, String ident,
-				    Type type, BitForm format, int offset)
+				    Type type)
 	{
 		Class<? extends JavaType> javatype_ = convertType(type);
 		if (javatype_ == null)
@@ -215,14 +271,16 @@ public class JavaGen extends ASTVisitor<JDefinedClass> {
 
 		final JMethod impl = klass.method(JMod.NONE, javatype,
 						  makeGetterImpl(ident));
+		final JVar bitform_param = impl.param(BitForm.class, "bitform");
+		final JVar offset_param = impl.param(JavaType.Int.class, "offset");
 		final JBlock body = impl.body();
 		body.directStatement(format("// type=%s", type));
-		body.directStatement(format("// format=%s", format));
-		final JClass javatype2 = bitform2javatype(format, this.model);
-		final JExpression expr = bitform2j(format).invoke("read2")
+
+		final JClass javatype2 = this.model.ref(JavaType.class);
+		final JExpression expr = bitform_param.invoke("read2")
 			.arg(JExpr.ref(JExpr.ref(JExpr._this(), "buffer"),
 				       "source"))
-			.arg(JExpr.lit(offset));
+			.arg(offset_param);
 		final JVar input = body.decl(javatype2, "input", expr);
 		final JVar var = body.decl(javatype, "var",
 					   javatype.staticInvoke("make").arg(input));
@@ -278,11 +336,9 @@ public class JavaGen extends ASTVisitor<JDefinedClass> {
 				      new ASTNode.Positional[0], expr2);
 
 		new ASTNode.BinaryParam(signalml, "readTest", new Type.Int(),
-					Expression.Const.make("'<i4'"), Expression.Const.make(25));
-					//new BitForm.Int.Int32.LE(), 25);
+					Expression.Const.make("<i4"), Expression.Const.make(25));
 		new ASTNode.BinaryParam(signalml, "readTestConv", new Type.Int(),
-					Expression.Const.make("'|S8'"), Expression.Const.make(0));
-					//new BitForm.Str(8), 0);
+					Expression.Const.make("|S8"), Expression.Const.make(0));
 
 		final NameCheck check = new NameCheck();
 		signalml.accept(check, null);
@@ -326,26 +382,5 @@ public class JavaGen extends ASTVisitor<JDefinedClass> {
 		if(type.equals(JavaType.List.class))
 			return new Type.List();
 		throw new RuntimeException("unknown JavaType");
-	}
-
-	static JExpression bitform2j(BitForm format)
-	{
-		assert format != null;
-
-		return JExpr.direct("new " + format.toString());
-	}
-
-	static JClass bitform2javatype(BitForm format, JCodeModel model)
-	{
-		assert format != null;
-
-		Class<? extends JavaType> klass;
-		if (format instanceof BitForm.Int)
-			klass = JavaType.Int.class;
-		else if (format instanceof BitForm.Str)
-			klass = JavaType.Str.class;
-		else
-			throw new RuntimeException("format not implemented");
-		return model.ref(klass);
 	}
 }

@@ -68,6 +68,14 @@ public interface JavaType {
 			super(_long_to_arr8((long)value));
 		}
 
+		public int safeIntValue() {
+			if (this.compareTo(valueOf(Integer.MIN_VALUE)) < 0
+			    || this.compareTo(valueOf(Integer.MAX_VALUE)) > 0)
+				throw new ExpressionFault.ValueError
+					("cannot cast to int without changing value.");
+			return this.intValue();
+		}
+
 		public JavaType add(JavaType other){
 			if(other instanceof Int)
 				return this.add((Int)other);
