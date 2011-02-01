@@ -34,14 +34,14 @@ public class Processor {
 		throws java.io.IOException
 	{
 		SExpressionLexer lexer
-		= new SExpressionLexer(new ANTLRReaderStream(reader));
+			= new SExpressionLexer(new ANTLRReaderStream(reader));
 		return new CommonTokenStream(lexer);
 	}
 
 	public static CommonTokenStream getTokenStream(String line)
 	{
 		SExpressionLexer lexer
-		= new SExpressionLexer(new ANTLRStringStream(line));
+			= new SExpressionLexer(new ANTLRStringStream(line));
 		return new CommonTokenStream(lexer);
 	}
 
@@ -104,8 +104,8 @@ public class Processor {
 	public static Expression processLine(CommonTree ast)
 		throws SyntaxError
 	{
-		STree tree = new STree(new CommonTreeNodeStream(ast));
-		Expression expr;
+		final STree tree = new STree(new CommonTreeNodeStream(ast));
+		final Expression expr;
 		try {
 			expr = tree.line();
 		} catch (RecognitionException e) {
@@ -119,7 +119,7 @@ public class Processor {
 
 	public static void processInteractive(Frame frame, InputStream in)
 	{
-		Scanner scanner = new Scanner(in);
+		final Scanner scanner = new Scanner(in);
 
 		while (true) {
 			System.out.print("expr> ");
@@ -135,7 +135,7 @@ public class Processor {
 			if ("q".equals(line))
 				break;
 
-			CommonTree ast;
+			final CommonTree ast;
 			try {
 				ast = parseLine(line);
 			} catch (SyntaxError e) {
@@ -144,7 +144,7 @@ public class Processor {
 			}
 			System.out.format("tree: %s\n", ast.toStringTree());
 
-			Expression expr;
+			final Expression expr;
 			try {
 				expr = processLine(ast);
 			} catch (SyntaxError e) {
@@ -153,9 +153,10 @@ public class Processor {
 			}
 			System.out.format("expr: %s\n", expr);
 
-			ASTNode.Signalml parent = new ASTNode.Signalml("root");
-			ASTNode.ExprParam param = new ASTNode.ExprParam(parent, "expr", null,
-									new ASTNode.Positional[0], expr);
+			final ASTNode.Signalml parent = new ASTNode.Signalml("root");
+			final ASTNode.ExprParam param =
+				new ASTNode.ExprParam(parent, "expr", null,
+						      new ASTNode.Positional[0], expr);
 
 			try {
 				final Type type = expr.accept(new TypeVisitor());
@@ -199,7 +200,7 @@ public class Processor {
 		log.info("tree grammar %s",
 		         new STree(null).getGrammarFileName());
 
-		Frame frame = new Frame(null);
+		final Frame frame = new Frame(null);
 		if (args.length == 0) {
 			processInteractive(frame, System.in);
 		} else {
