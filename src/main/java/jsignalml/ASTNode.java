@@ -262,12 +262,16 @@ public abstract class ASTNode {
 	public static class Positional extends ASTNode {
 		public final Type type;
 
-		public Positional(ASTNode parent, String id, Type type) {
-			super(parent, id);
+		public Positional(Param parent, String id, Type type) {
+			super((ASTNode)parent, id);
+			assert( parent != null );
 			this.type = type;
+			if( parent != null ) {
+				parent.args.add(this);
+			}
 		}
 
-		public static Positional make(ASTNode parent, String name, String type) {
+		public static Positional make(Param parent, String name, String type) {
 			return new Positional(parent, name, Type.getType(type));
 		}
 
