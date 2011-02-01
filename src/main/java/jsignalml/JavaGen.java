@@ -38,6 +38,7 @@ import com.sun.codemodel.writer.FileCodeWriter;
 */
 
 public class JavaGen extends ASTVisitor<JDefinedClass> {
+	public static final Logger log = new Logger(JavaGen.class);
 
 	public static final String PREFIX = "_jsignalml_";
 	static String makeIdentifier(String name)
@@ -65,11 +66,10 @@ public class JavaGen extends ASTVisitor<JDefinedClass> {
 	public JDefinedClass visit(ASTNode.Signalml node, JDefinedClass dummy)
 	{
 		assert dummy == null;
-		final String name = "signalml"; // XXX
 
 		final JDefinedClass klass;
 		try {
-			klass = this.model._class(name);
+			klass = this.model._class(node.id);
 		} catch(JClassAlreadyExistsException e) {
 			throw new RuntimeException("WTF?");
 		}

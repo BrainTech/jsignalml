@@ -4,6 +4,9 @@ import java.util.LinkedList;
 import java.util.HashMap;
 import java.util.TreeMap;
 import java.util.TreeSet;
+import java.io.File;
+
+import org.apache.commons.lang.StringUtils;
 
 public class util {
 	public static <T> LinkedList<T> newLinkedList() {
@@ -24,5 +27,11 @@ public class util {
 
 	public static <T> T cast(Object object) {
 		return (T) object;
+	}
+
+	public static String basename_noext(File file) {
+		String basename = StringUtils.split(file.getName(), ".")[0];
+		return basename.replace("[^a-zA-Z0-9_]", "_");
+		// TODO: tests needed
 	}
 }

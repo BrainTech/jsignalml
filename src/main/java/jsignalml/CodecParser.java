@@ -3,6 +3,7 @@ package jsignalml;
 import java.util.List;
 import java.util.Map;
 import java.io.InputStream;
+import java.io.File;
 import java.io.FileInputStream;
 
 import org.w3c.dom.Node;
@@ -16,12 +17,18 @@ import org.apache.log4j.BasicConfigurator;
 public class CodecParser {
 	public static final Logger log = new Logger(CodecParser.class);
 
-	public static ASTNode makeCodec(String filename)
+	final File filename;
+	CodecParser(File filename)
+	{
+		this.filename = filename;
+	}
+
+	public static ASTNode makeCodec(File filename)
 		throws java.io.IOException, org.xml.sax.SAXException, SyntaxError
 	{
 		final InputStream stream = new FileInputStream(filename);
 		final XMLDocument doc = new XMLDocument(stream);
-		final CodecParser parser = new CodecParser();
+		final CodecParser parser = new CodecParser(filename);
 		final ASTNode codec = parser.parse_signalml(doc);
 		return codec;
 	}
@@ -77,7 +84,11 @@ public class CodecParser {
 	{
 		assert element.getNodeName().equals("signalml");
 
-		return new ASTNode.Signalml("signalml"); // TODO
+		String name = _extract_string(element, "header/name");
+		if (name == null)
+			name = util.basename_noext(this.filename);
+
+		return new ASTNode.Signalml(name);
 	}
 
 	public ASTNode.Param do_param(ASTNode parent, Element element) throws SyntaxError
@@ -195,7 +206,7 @@ public class CodecParser {
 
 	/**
 	 * Get the expression pointed to by xpath (starting from where).
-	 * Returns null if not found or and Expression.
+	 * Returns Expression or null if not found.
 	 */
 	static Expression _extract(Node where, String xpath)
 		throws SyntaxError
@@ -224,7 +235,7 @@ public class CodecParser {
 	{
 		BasicConfigurator.configure();
 
-		ASTNode codec = makeCodec(args[0]);
+		ASTNode codec = makeCodec(new File(args[0]));
 		System.out.print(ASTDumper.dump(codec));
 
 		if (args.length <= 1)
