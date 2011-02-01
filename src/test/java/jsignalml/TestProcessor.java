@@ -5,17 +5,20 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 public class TestProcessor {
-	Type eval(CallHelper state, String line)
+	Type eval(Frame state, String line)
 		throws Exception
 	{
 		Expression expr = Processor.parse(line);
-		Type value = expr.eval(state);
+		final ASTNode.ExprParam param =
+			new ASTNode.ExprParam(null, "expr", null,
+					      new ASTNode.Positional[0], expr);
+		Type value = expr.accept(new EvalVisitor(state, null));
 		return value;
 	}
 
 	void assertLeqR(String line, Type expected) throws Exception
 	{
-		Processor.State state = new Processor.State();
+		Frame state = new Frame(null);
 		Type result = eval(state, line);
 		assertTrue(expected.equals(result));
 	}
