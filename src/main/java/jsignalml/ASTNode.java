@@ -66,6 +66,15 @@ public abstract class ASTNode {
 		return null;
 	}
 
+  public FileHandle<? extends FileType> lookupFile() {
+    // TODO: possibly this function shall take filetype as an argument
+    if(this.getClass() == FileHandle.class)
+      return (FileHandle<FileType.BinaryFile>)this;
+    if(parent != null)
+      return parent.lookupFile();
+    return null;
+  }
+
 	public static class Signalml extends ASTNode {
 		public Signalml(String name) {
 			super(null, name);
@@ -116,8 +125,8 @@ public abstract class ASTNode {
 		                   Expression format, Expression offset)
 		{
 			super(parent, id, type, new Positional[0]);
-			// XXX: this.handle = parent.currentFile() ?
-			this.handle = null;
+			this.handle = ( FileHandle<? extends FileType.BinaryFile> )parent.lookupFile();
+      assert this.handle != null;
 			this.format = format;
 			this.offset = offset;
 		}
@@ -244,10 +253,13 @@ public abstract class ASTNode {
 		public DataHandle(ASTNode parent, String id, String mapping, String format)
 		{
 			super(parent, id);
+			assert parent != null;
 			this.mapping = mapping;
 			this.format = format;
 
-			// TODO: handle.addData(this);
+      FileHandle<? extends FileType> handle = parent.lookupFile();
+			if( handle != null )
+				handle.addData(this);
 		}
 
 		public String toString()
