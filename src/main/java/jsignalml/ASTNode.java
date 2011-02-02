@@ -66,14 +66,11 @@ public abstract class ASTNode {
 		return null;
 	}
 
-  public FileHandle<? extends FileType> lookupFile() {
-    // TODO: possibly this function shall take filetype as an argument
-    if(this.getClass() == FileHandle.class)
-      return (FileHandle<FileType.BinaryFile>)this;
-    if(parent != null)
-      return parent.lookupFile();
-    return null;
-  }
+	public FileHandle<? extends FileType> lookupFile() {
+		if(parent != null)
+			return parent.lookupFile();
+		return null;
+	}
 
 	public static class Signalml extends ASTNode {
 		public Signalml(String name) {
@@ -122,12 +119,18 @@ public abstract class ASTNode {
 
 		public BinaryParam(ASTNode parent, String id, Type type,
 		                   Expression format, Expression offset)
+			throws SyntaxError
 		{
 			super(parent, id, type, new Positional[0]);
-			this.handle = ( FileHandle<? extends FileType.BinaryFile> )parent.lookupFile();
-      assert this.handle != null;
 			this.format = format;
 			this.offset = offset;
+
+			// handle is checked to be not null in CodecParser,
+			// here it can be null for testing purposes
+			if (this.parent != null)
+				this.handle = (FileHandle<? extends FileType.BinaryFile>)parent.lookupFile();
+			else
+				this.handle = null;
 		}
 
 		public String toString()
@@ -244,6 +247,11 @@ public abstract class ASTNode {
 		{
 			return v.visit(this, data);
 		}
+
+		@Override
+		public FileHandle<? extends FileType> lookupFile() {
+			return this;
+		}
 	}
 
 	public static class DataHandle extends ASTNode {
@@ -252,13 +260,15 @@ public abstract class ASTNode {
 		public DataHandle(ASTNode parent, String id, String mapping, String format)
 		{
 			super(parent, id);
-			assert parent != null;
 			this.mapping = mapping;
 			this.format = format;
 
-      FileHandle<? extends FileType> handle = parent.lookupFile();
-			if( handle != null )
-				handle.addData(this);
+			if (parent != null) {
+				final FileHandle<? extends FileType> handle
+					= parent.lookupFile();
+				if( handle != null )
+					handle.addData(this);
+			}
 		}
 
 		public String toString()
