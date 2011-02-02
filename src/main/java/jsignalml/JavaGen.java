@@ -361,8 +361,7 @@ public class JavaGen extends ASTVisitor<JDefinedClass> {
 					       String ident)
 	{
 		final JClass builtins_class = this.model.ref(Builtins.class);
-		final String prefixed = makeIdentifier(ident);
-		final JInvocation impl_inv = builtins_class.staticInvoke(prefixed);
+		final JInvocation impl_inv = builtins_class.staticInvoke(ident);
 		return cacheFunction(klass, node, ident, node.type, impl_inv);
 	}
 

@@ -22,7 +22,7 @@ public class Builtins extends ASTNode {
 		super(null, "builtins");
 	}
 
-	public static JavaType.Int _jsignalml_factorial(JavaType.Int x)
+	public static JavaType.Int factorial(JavaType.Int x)
 	{
 		JavaType.Int ret = new JavaType.Int(1);
 		if(x.compareTo(JavaType.Int.ZERO) < 0)
