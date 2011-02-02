@@ -11,8 +11,12 @@ import org.apache.commons.lang.StringUtils;
 public class Builtins extends ASTNode {
 	static final Logger log = new Logger(Builtins.class);
 
-	private static Builtins _builtins = new Builtins();
-	public static Builtins instance(){ return _builtins; };
+	/**
+	 * The builtin methods are declared as static. To write only necessary
+	 * the methods which are actually used, the list of used methods is kept
+	 * in a Builtins instance (as children), and then written by the proper
+	 * visitor.
+	 */
 
 	public Builtins() {
 		super(null, "builtins");
@@ -36,10 +40,13 @@ public class Builtins extends ASTNode {
 	{
 		log.debug("find: looking for %s", name);
 
+		assert this.children.size() == 1;
+		ASTNode owner = this.children.get(0);
+
 		if (name.equals("factorial")) {
 			ASTNode.BuiltinFunction function =
-				new ASTNode.BuiltinFunction(name, new Type.Int());
-			ASTNode.Positional arg = new ASTNode.Positional(function, "n", new Type.Int());
+				new ASTNode.BuiltinFunction(owner, name, new Type.Int());
+			function.arg("n", new Type.Int());
 			return function;
 		}
 

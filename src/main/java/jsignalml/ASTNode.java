@@ -5,6 +5,7 @@ import java.util.TreeMap;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.List;
+import java.util.LinkedList;
 import java.util.Arrays;
 import java.io.File;
 import java.io.IOException;
@@ -25,7 +26,9 @@ public abstract class ASTNode {
 	public <T> T accept(ASTVisitor<T> v, T data) {
 		log.info("%s.accept(%s, %s)", this, v, data);
 		T newdata = this._accept(v, data);
-		for(ASTNode child: this.children)
+
+		// use a copy of the children list in case it changes
+		for(ASTNode child: new LinkedList<ASTNode>(this.children))
 			child.accept(v, newdata);
 		return newdata;
 	}
@@ -74,22 +77,19 @@ public abstract class ASTNode {
 	}
 
 	public static class Signalml extends ASTNode {
-		public Signalml(String name) {
-			super(null, name);
+		public Signalml(String name)
+		{
+			super(new Builtins(), name);
 		}
 
+		/**
+		 * Contrary to normal behaviour, parent is visited here to give
+		 * it a chance to perform its duties.
+		 */
 		@Override
 		public <T> T _accept(ASTVisitor<T> v, T data)
 		{
 			return v.visit(this, data);
-		}
-
-		@Override
-		public ASTNode lookup(String id) {
-			ASTNode node = super.lookup(id);
-			if (node == null)
-				node = Builtins.instance().lookup(id);
-			return node;
 		}
 	}
 
@@ -167,14 +167,21 @@ public abstract class ASTNode {
 	}
 
 	public static class BuiltinFunction extends Param {
-		public BuiltinFunction(String id, Type type) {
-			super(null, id, type);
+		public BuiltinFunction(ASTNode parent, String id, Type type) {
+			super(parent, id, type);
+			log.info("created BuiltinFunction %s.%s -> %s",
+				 parent.id, this.id, type.getClass().getSimpleName());
 		}
 
 		@Override
 		public <T> T _accept(ASTVisitor<T> v, T data)
 		{
 			return v.visit(this, data);
+		}
+
+		Positional arg(String name, Type type)
+		{
+			return new ASTNode.Positional(this, "n", new Type.Int());
 		}
 	}
 

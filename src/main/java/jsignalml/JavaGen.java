@@ -182,7 +182,8 @@ public class JavaGen extends ASTVisitor<JDefinedClass> {
 	{
 		assert klass != null;
 		final JMethod impl = exprFunction(klass, node, node.id, node.type, node.expr);
-		final JMethod cache = cacheFunction(klass, node, node.id, impl);
+		final JMethod cache = cacheFunction(klass, node, node.id,
+						    node.type, JExpr.invoke(impl));
 		return klass;
 	}
 
@@ -192,7 +193,8 @@ public class JavaGen extends ASTVisitor<JDefinedClass> {
 		assert klass != null;
 		final JMethod impl = readParamFunction(klass, node, node.id, node.type,
 						       node.format, node.offset);
-		final JMethod cache = cacheFunction(klass, node, node.id, impl);
+		final JMethod cache = cacheFunction(klass, node, node.id,
+						    node.type, JExpr.invoke(impl));
 		return klass;
 	}
 
@@ -297,16 +299,16 @@ public class JavaGen extends ASTVisitor<JDefinedClass> {
 	}
 
 	public JMethod cacheFunction(JDefinedClass klass, ASTNode node, String ident,
-				     JMethod impl)
+				     Type type, JInvocation impl_inv)
 	{
 		final String prefixed = makeIdentifier(ident);
-		final JFieldVar stor = klass.field(JMod.NONE, impl.type(),
+		final JType type_ = this.model.ref(type.getClass());
+		final JFieldVar stor = klass.field(JMod.NONE, type_,
 						   prefixed, JExpr._null());
-
-		final JMethod getter = klass.method(JMod.PUBLIC, impl.type(),
+		final JMethod getter = klass.method(JMod.PUBLIC, type_,
 						    makeGetter(ident));
 		final JBlock then = getter.body()._if(stor.eq(JExpr._null()))._then();
-		then.assign(stor, JExpr.invoke(impl));
+		then.assign(stor, impl_inv);
 		getter.body()._return(stor);
 
 		return getter;
@@ -348,6 +350,22 @@ public class JavaGen extends ASTVisitor<JDefinedClass> {
 		return getter;
 	}
 
+	@Override
+	public JDefinedClass visit(ASTNode.BuiltinFunction node, JDefinedClass klass)
+	{
+		builtinFunctionAccessor(node, klass, node.id);
+		return klass;
+	}
+
+	public JMethod builtinFunctionAccessor(ASTNode.BuiltinFunction node, JDefinedClass klass,
+					       String ident)
+	{
+		final JClass builtins_class = this.model.ref(Builtins.class);
+		final String prefixed = makeIdentifier(ident);
+		final JInvocation impl_inv = builtins_class.staticInvoke(prefixed);
+		return cacheFunction(klass, node, ident, node.type, impl_inv);
+	}
+
 	public void write(OutputStream outputstream)
 		throws java.io.IOException
 	{
@@ -377,9 +395,11 @@ public class JavaGen extends ASTVisitor<JDefinedClass> {
 		final Expression expr2 = Processor.parse(field_name + "() + 1");
 		new ASTNode.ExprParam(signalml, field_name+"2", new Type.Int(), expr2);
 
-		new ASTNode.BinaryParam(signalml, "readTest", new Type.Int(),
+		ASTNode.FileHandle thefile = new ASTNode.FileHandle(signalml, "thefile", null);
+
+		new ASTNode.BinaryParam(thefile, "readTest", new Type.Int(),
 					Expression.Const.make("<i4"), Expression.Const.make(25));
-		new ASTNode.BinaryParam(signalml, "readTestConv", new Type.Int(),
+		new ASTNode.BinaryParam(thefile, "readTestConv", new Type.Int(),
 					Expression.Const.make("|S8"), Expression.Const.make(0));
 
 		final NameCheck check = new NameCheck();
