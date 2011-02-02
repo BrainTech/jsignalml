@@ -67,6 +67,12 @@ public abstract class ASTNode {
 		return null;
 	}
 
+	public FileHandle<? extends FileType> lookupFile() {
+		if(parent != null)
+			return parent.lookupFile();
+		return null;
+	}
+
 	public static class Signalml extends ASTNode {
 		public Signalml(String name) {
 			super(null, name);
@@ -91,21 +97,18 @@ public abstract class ASTNode {
 		public final Type type;
 		public final List<Positional> args;
 
-		public Param(ASTNode parent, String id, Type type, Positional args[]) {
+		public Param(ASTNode parent, String id, Type type)
+		{
 			super(parent, id);
 			this.type = type;
-			if(args == null)
-				this.args = util.newLinkedList();
-			else
-				this.args = unmodifiableList(Arrays.asList(args));
+			this.args = util.newLinkedList();
 		}
 	}
 
 	public abstract static class ReadParam extends Param {
-		public ReadParam(ASTNode parent, String id, Type type,
-		                 Positional args[])
+		public ReadParam(ASTNode parent, String id, Type type)
 		{
-			super(parent, id, type, args);
+			super(parent, id, type);
 		}
 	}
 
@@ -115,12 +118,18 @@ public abstract class ASTNode {
 
 		public BinaryParam(ASTNode parent, String id, Type type,
 		                   Expression format, Expression offset)
+			throws SyntaxError
 		{
-			super(parent, id, type, new Positional[0]);
-			// XXX: this.handle = parent.currentFile() ?
-			this.handle = null;
+			super(parent, id, type);
 			this.format = format;
 			this.offset = offset;
+
+			// handle is checked to be not null in CodecParser,
+			// here it can be null for testing purposes
+			if (this.parent != null)
+				this.handle = (FileHandle<? extends FileType.BinaryFile>)parent.lookupFile();
+			else
+				this.handle = null;
 		}
 
 		public String toString()
@@ -139,16 +148,27 @@ public abstract class ASTNode {
 	public static class ExprParam extends Param {
 		final Expression expr;
 
-		public ExprParam(ASTNode parent, String id, Type type,
-		                 Positional args[], Expression expr)
+		public ExprParam(ASTNode parent, String id, Type type, Expression expr)
 		{
-			super(parent, id, type, args);
+			super(parent, id, type);
 			this.expr = expr;
 		}
 
 		public String toString()
 		{
 			return format("ExprParam expression: %s", this.expr);
+		}
+
+		@Override
+		public <T> T _accept(ASTVisitor<T> v, T data)
+		{
+			return v.visit(this, data);
+		}
+	}
+
+	public static class BuiltinFunction extends Param {
+		public BuiltinFunction(String id, Type type) {
+			super(null, id, type);
 		}
 
 		@Override
@@ -170,19 +190,6 @@ public abstract class ASTNode {
 		public String toString()
 		{
 			return format("Assert expression: %s", this.expr);
-		}
-
-		@Override
-		public <T> T _accept(ASTVisitor<T> v, T data)
-		{
-			return v.visit(this, data);
-		}
-	}
-
-	public static class BuiltinFunction extends Param {
-		public BuiltinFunction(String id, Type type,
-				       Positional...args) {
-			super(null, id, type, args);
 		}
 
 		@Override
@@ -238,6 +245,11 @@ public abstract class ASTNode {
 		{
 			return v.visit(this, data);
 		}
+
+		@Override
+		public FileHandle<? extends FileType> lookupFile() {
+			return this;
+		}
 	}
 
 	public static class DataHandle extends ASTNode {
@@ -249,7 +261,12 @@ public abstract class ASTNode {
 			this.mapping = mapping;
 			this.format = format;
 
-			// TODO: handle.addData(this);
+			if (parent != null) {
+				final FileHandle<? extends FileType> handle
+					= parent.lookupFile();
+				if( handle != null )
+					handle.addData(this);
+			}
 		}
 
 		public String toString()
@@ -270,6 +287,7 @@ public abstract class ASTNode {
 		public Positional(ASTNode parent, String id, Type type) {
 			super(parent, id);
 			assert parent != null;
+			assert parent instanceof ASTNode.Param;
 
 			this.type = type;
 			if( parent != null )

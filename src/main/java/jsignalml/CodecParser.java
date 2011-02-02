@@ -114,10 +114,13 @@ public class CodecParser {
 		if (expr != null) {
 			if (format == null || offset == null || pattern == null ||
 			                line == null || xpath == null)
-				p = new ASTNode.ExprParam(parent, id, type, null, expr);
+				p = new ASTNode.ExprParam(parent, id, type, expr);
 		} else if (format != null && offset != null) {
 			if (expr == null && pattern == null && line == null && xpath == null) {
 				p = new ASTNode.BinaryParam(parent, id, type, format, offset);
+				if (((ASTNode.BinaryParam)p).handle == null)
+					throw new SyntaxError("binary <param> must live inside <file>");
+
 			}
 		} else if (pattern != null) {
 			throw new UnsupportedOperationException();

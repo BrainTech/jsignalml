@@ -155,8 +155,7 @@ public class Processor {
 
 			final ASTNode.Signalml parent = new ASTNode.Signalml("root");
 			final ASTNode.ExprParam param =
-				new ASTNode.ExprParam(parent, "expr", null,
-						      new ASTNode.Positional[0], expr);
+				new ASTNode.ExprParam(parent, "expr", null, expr);
 
 			try {
 				final Type type = expr.accept(new TypeVisitor());
