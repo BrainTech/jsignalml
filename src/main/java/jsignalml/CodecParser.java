@@ -95,7 +95,7 @@ public class CodecParser {
 	{
 		assert element.getNodeName().equals("param");
 
-		final String id = element.getAttribute("id");
+		final String id = _identifier(element);
 		final String type_ = _attribute(element, "type");
 		final Type type = Type.getType(type_);
 
@@ -151,11 +151,12 @@ public class CodecParser {
 		return arg;
         }
 
-	public ASTNode.Assert do_assert(ASTNode parent, Element element) throws SyntaxError
+	public ASTNode.Assert do_assert(ASTNode parent, Element element)
+		throws SyntaxError
 	{
 		assert element.getNodeName().equals("assert");
 
-		final String id = element.getAttribute("id");
+		final String id = _identifier(element);
 		final Expression expr = _extract(element, "expr");
 		if (expr == null)
 			throw new SyntaxError("<assert> needs an <expr> child");
@@ -163,10 +164,12 @@ public class CodecParser {
 		return new ASTNode.Assert(parent, id, expr);
 	}
 
-	public ASTNode.FileHandle do_file(ASTNode parent, Element element) throws SyntaxError
+	public ASTNode.FileHandle do_file(ASTNode parent, Element element)
+		throws SyntaxError
 	{
 		assert element.getNodeName().equals("file");
 
+		final String id = _identifier(element);
 		final String type = _attribute(element, "type");
 		final String name_ = _attribute(element, "name");
 		final Expression name =
@@ -175,21 +178,22 @@ public class CodecParser {
 		if (type == null)
 			throw new SyntaxError("<file> needs a type attribute");
 
-		final ASTNode.FileHandle handle = ASTNode.FileHandle.make(parent, name, type);
+		final ASTNode.FileHandle handle = ASTNode.FileHandle.make(parent, id, name, type);
 		return handle;
 	}
 
 	public ASTNode.DataHandle do_data(ASTNode parent, Element element)
+		throws SyntaxError
 	{
 		assert element.getNodeName().equals("data");
 
-		final String name = _attribute(element, "name");
+		final String id = _identifier(element);
 		final String mapping = element.getAttribute("mapping");
 		final String format = element.getAttribute("format");
 
 		log.warn("data not implemented");
 
-		return new ASTNode.DataHandle(parent, name, mapping, format);
+		return new ASTNode.DataHandle(parent, id, mapping, format);
 	}
 
 	////////////////////////////////////////////////////////////////////////
@@ -229,6 +233,19 @@ public class CodecParser {
 			return null;
 		else
 			return value;
+	}
+
+	static String _identifier(Element element)
+		throws SyntaxError
+	{
+		final String id = _attribute(element, "id");
+		final String name = _attribute(element, "name");
+		if (id != null && name != null)
+			throw new SyntaxError("both id and name set!");
+		if (id != null)
+			return id;
+		else
+			return name;
 	}
 
 	public static void main(String...args) throws Exception

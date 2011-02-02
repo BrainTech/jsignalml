@@ -61,7 +61,8 @@ public abstract class ASTNode {
 	 */
 	public ASTNode lookup(String id) {
 		for(ASTNode child: this.children)
-			if (child.id.equals(id))
+			// child.id might be null
+			if (id.equals(child.id))
 				return child;
 		return null;
 	}
@@ -213,10 +214,11 @@ public abstract class ASTNode {
 			return new FileHandle<V>(parent, null, filename);
 		}
 
-		public static FileHandle make(ASTNode parent, Expression filename, String type)
+		public static FileHandle make(ASTNode parent, String id,
+					      Expression filename, String type)
 		{
 			if (type.equals("binary"))
-				return new FileHandle<FileType.BinaryFile>(parent, null, filename);
+				return new FileHandle<FileType.BinaryFile>(parent, id, filename);
 
 			throw new IllegalArgumentException(format("unkown file type '%s'", type));
 		}
