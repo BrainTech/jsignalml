@@ -14,6 +14,7 @@ public class NameCheck extends ASTVisitor<NullType> {
 	public NullType visit(ASTNode.ExprParam node, NullType parent)
 	{
 		log.debug("checking %s", node);
+		assert node.expr != null;
 		node.expr.accept(new ExpressionNameCheck(node));
 		return null;
 	}
@@ -23,6 +24,8 @@ public class NameCheck extends ASTVisitor<NullType> {
 	{
 		log.debug("checking %s", node);
 		ExpressionNameCheck checker = new ExpressionNameCheck(node);
+		assert node.format != null;
+		assert node.offset != null;
 		node.format.accept(checker);
 		node.offset.accept(checker);
 		return null;
@@ -32,6 +35,7 @@ public class NameCheck extends ASTVisitor<NullType> {
 	public NullType visit(ASTNode.Assert node, NullType parent)
 	{
 		log.debug("checking %s", node);
+		assert node.expr != null;
 		node.expr.accept(new ExpressionNameCheck(node));
 		return null;
 	}
@@ -40,7 +44,8 @@ public class NameCheck extends ASTVisitor<NullType> {
 	public NullType visit(ASTNode.FileHandle node, NullType parent)
 	{
 		log.debug("checking %s", node);
-		node.filename.accept(new ExpressionNameCheck(node));
+		if (node.filename != null)
+			node.filename.accept(new ExpressionNameCheck(node));
 		return null;
 	}
 
