@@ -302,7 +302,7 @@ public class JavaGen extends ASTVisitor<JDefinedClass> {
 				     Type type, JInvocation impl_inv)
 	{
 		final String prefixed = makeIdentifier(ident);
-		final JType type_ = this.model.ref(type.getClass());
+		final JType type_ = this.model.ref(convertType(type));
 		final JFieldVar stor = klass.field(JMod.NONE, type_,
 						   prefixed, JExpr._null());
 		final JMethod getter = klass.method(JMod.PUBLIC, type_,
