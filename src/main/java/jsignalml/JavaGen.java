@@ -316,9 +316,16 @@ public class JavaGen extends ASTVisitor<JDefinedClass> {
 	@Override
 	public JDefinedClass visit(ASTNode.FileHandle node, JDefinedClass parent)
 	{
+		final JDefinedClass klass = this.fileClass(node, parent, node.id);
+		contextAccessor(parent, node, node.id, klass);
+		return klass;
+	}
+
+	public JDefinedClass fileClass(ASTNode.FileHandle node, JDefinedClass parent, String id)
+	{
 		final JDefinedClass klass;
 		try {
-			klass = parent._class("file_" + node.id);
+			klass = parent._class("file_" + id);
 		} catch(JClassAlreadyExistsException e) {
 			throw new RuntimeException("WTF?");
 		}
@@ -326,6 +333,20 @@ public class JavaGen extends ASTVisitor<JDefinedClass> {
 		return klass;
 	}
 
+	public JMethod contextAccessor(JDefinedClass klass, ASTNode node, String ident,
+				       JDefinedClass context)
+	{
+		final JFieldVar stor = klass.field(JMod.NONE, context,
+						   "file_" + ident, JExpr._null());
+
+		final JMethod getter = klass.method(JMod.PUBLIC, context,
+						    makeGetter("file_" + ident));
+		final JBlock then = getter.body()._if(stor.eq(JExpr._null()))._then();
+		then.assign(stor, JExpr._new(context));
+		getter.body()._return(stor);
+
+		return getter;
+	}
 
 	public void write(OutputStream outputstream)
 		throws java.io.IOException
