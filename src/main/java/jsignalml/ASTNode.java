@@ -102,10 +102,9 @@ public abstract class ASTNode {
 		public Param(ASTNode parent, String id, Type type, Positional args[]) {
 			super(parent, id);
 			this.type = type;
-			if(args == null)
-				this.args = util.newLinkedList();
-			else
-				this.args = unmodifiableList(Arrays.asList(args));
+      this.args = util.newLinkedList();
+			if(args != null)
+				this.args.addAll(Arrays.asList(args));
 		}
 	}
 
@@ -166,6 +165,19 @@ public abstract class ASTNode {
 		}
 	}
 
+	public static class BuiltinFunction extends Param {
+		public BuiltinFunction(String id, Type type,
+				       Positional...args) {
+			super(null, id, type, args);
+		}
+
+		@Override
+		public <T> T _accept(ASTVisitor<T> v, T data)
+		{
+			return v.visit(this, data);
+		}
+	}
+
 	public static class Assert extends ASTNode {
 		final Expression expr;
 
@@ -178,19 +190,6 @@ public abstract class ASTNode {
 		public String toString()
 		{
 			return format("Assert expression: %s", this.expr);
-		}
-
-		@Override
-		public <T> T _accept(ASTVisitor<T> v, T data)
-		{
-			return v.visit(this, data);
-		}
-	}
-
-	public static class BuiltinFunction extends Param {
-		public BuiltinFunction(String id, Type type,
-				       Positional...args) {
-			super(null, id, type, args);
 		}
 
 		@Override
