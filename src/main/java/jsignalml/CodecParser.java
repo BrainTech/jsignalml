@@ -252,13 +252,23 @@ public class CodecParser {
 	{
 		BasicConfigurator.configure();
 
-		ASTNode codec = makeCodec(new File(args[0]));
+		final ASTNode codec = makeCodec(new File(args[0]));
 		System.out.print(ASTDumper.dump(codec));
+
+		final NameCheck check = new NameCheck();
+		codec.accept(check, null);
+
+		final JavaGen gen = new JavaGen();
+		codec.accept(gen, null);
+		gen.write(System.out);
 
 		if (args.length <= 1)
 			return;
 
-		String[] files = new String[args.length-1];
-		System.arraycopy(args, 1, files, 0, files.length);
+		final File outputdir = new File(args[1]);
+		gen.write(outputdir);
+
+		// String[] files = new String[args.length-1];
+		// System.arraycopy(args, 1, files, 0, files.length);
 	}
 }
