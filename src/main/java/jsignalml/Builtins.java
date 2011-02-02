@@ -37,7 +37,8 @@ public class Builtins extends ASTNode {
 		log.debug("find: looking for %s", name);
 
 		if (name.equals("factorial")) {
-      ASTNode.BuiltinFunction function = new ASTNode.BuiltinFunction(name, new Type.Int(), new ASTNode.Positional[0]);
+			ASTNode.BuiltinFunction function =
+				new ASTNode.BuiltinFunction(name, new Type.Int());
 			ASTNode.Positional arg = new ASTNode.Positional(function, "n", new Type.Int());
 			return function;
 		}
@@ -46,7 +47,7 @@ public class Builtins extends ASTNode {
 	}
 
 	@Override
-		public <T> T _accept(ASTVisitor<T> v, T data)
+	public <T> T _accept(ASTVisitor<T> v, T data)
 	{
 		return v.visit(this, data);
 	}

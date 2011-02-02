@@ -328,12 +328,10 @@ public class JavaGen extends ASTVisitor<JDefinedClass> {
 
 		final String field_name = "duration_of_data_record";
 		final ASTNode signalml = new ASTNode.Signalml("Test");
-		new ASTNode.ExprParam(signalml, field_name, new Type.Int(),
-				      new ASTNode.Positional[0], expr);
+		new ASTNode.ExprParam(signalml, field_name, new Type.Int(), expr);
 
 		final Expression expr2 = Processor.parse(field_name + "() + 1");
-		new ASTNode.ExprParam(signalml, field_name+"2", new Type.Int(),
-				      new ASTNode.Positional[0], expr2);
+		new ASTNode.ExprParam(signalml, field_name+"2", new Type.Int(), expr2);
 
 		new ASTNode.BinaryParam(signalml, "readTest", new Type.Int(),
 					Expression.Const.make("<i4"), Expression.Const.make(25));

@@ -96,20 +96,18 @@ public abstract class ASTNode {
 		public final Type type;
 		public final List<Positional> args;
 
-		public Param(ASTNode parent, String id, Type type, Positional args[]) {
+		public Param(ASTNode parent, String id, Type type)
+		{
 			super(parent, id);
 			this.type = type;
-      this.args = util.newLinkedList();
-			if(args != null)
-				this.args.addAll(Arrays.asList(args));
+			this.args = util.newLinkedList();
 		}
 	}
 
 	public abstract static class ReadParam extends Param {
-		public ReadParam(ASTNode parent, String id, Type type,
-		                 Positional args[])
+		public ReadParam(ASTNode parent, String id, Type type)
 		{
-			super(parent, id, type, args);
+			super(parent, id, type);
 		}
 	}
 
@@ -121,7 +119,7 @@ public abstract class ASTNode {
 		                   Expression format, Expression offset)
 			throws SyntaxError
 		{
-			super(parent, id, type, new Positional[0]);
+			super(parent, id, type);
 			this.format = format;
 			this.offset = offset;
 
@@ -149,10 +147,9 @@ public abstract class ASTNode {
 	public static class ExprParam extends Param {
 		final Expression expr;
 
-		public ExprParam(ASTNode parent, String id, Type type,
-		                 Positional args[], Expression expr)
+		public ExprParam(ASTNode parent, String id, Type type, Expression expr)
 		{
-			super(parent, id, type, args);
+			super(parent, id, type);
 			this.expr = expr;
 		}
 
@@ -169,9 +166,8 @@ public abstract class ASTNode {
 	}
 
 	public static class BuiltinFunction extends Param {
-		public BuiltinFunction(String id, Type type,
-				       Positional...args) {
-			super(null, id, type, args);
+		public BuiltinFunction(String id, Type type) {
+			super(null, id, type);
 		}
 
 		@Override
@@ -289,6 +285,7 @@ public abstract class ASTNode {
 		public Positional(ASTNode parent, String id, Type type) {
 			super(parent, id);
 			assert parent != null;
+			assert parent instanceof ASTNode.Param;
 
 			this.type = type;
 			if( parent != null )
