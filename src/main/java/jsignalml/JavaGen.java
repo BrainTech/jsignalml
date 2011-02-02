@@ -75,11 +75,11 @@ public class JavaGen extends ASTVisitor<JDefinedClass> {
 		}
 		klass._implements(jsignalml.Source.class);
 		this.mainMethod(klass);
-		this.openMethod(klass);
 		this.getSetMethod(klass);
 		this.getCurrentFilenameMethod(klass);
 		this.getFormatDescriptionMethod(klass);
 		this.getFormatIDMethod(klass);
+		this.codecOpenMethod(klass);
 		this.closeMethod(klass);
 		return klass;
 	}
@@ -100,9 +100,6 @@ public class JavaGen extends ASTVisitor<JDefinedClass> {
 		JExpression file = JExpr._new(this.model.ref(File.class))
 			.arg(args.component(JExpr.lit(0)));
 		body.add(reader.invoke("open").arg(file));
-		JExpression input = reader.invoke(makeGetter("readTestConv"));
-		body.add(this.model.ref(System.class).staticRef("out")
-			 .invoke("println").arg(input) );
 		return main;
 	}
 
@@ -112,6 +109,17 @@ public class JavaGen extends ASTVisitor<JDefinedClass> {
 		JVar filename = method.param(File.class, "filename");
 		method.body().add(JExpr._this().invoke("open").arg(filename));
 		return method;
+	}
+
+	public JMethod codecOpenMethod(JDefinedClass klass)
+	{
+		final JClass file_class = this.model.ref(File.class);
+		final JFieldVar default_filename
+			= klass.field(JMod.NONE, file_class, "default_filename");
+		final JMethod open = klass.method(JMod.PUBLIC, this.model.VOID, "open");
+		final JVar arg = open.param(File.class, "filename");
+		open.body().assign(JExpr.ref(JExpr._this(), default_filename), arg);
+		return open;
 	}
 
 	public JMethod openMethod(JDefinedClass klass)
@@ -314,6 +322,7 @@ public class JavaGen extends ASTVisitor<JDefinedClass> {
 		} catch(JClassAlreadyExistsException e) {
 			throw new RuntimeException("WTF?");
 		}
+		this.openMethod(klass);
 		return klass;
 	}
 
