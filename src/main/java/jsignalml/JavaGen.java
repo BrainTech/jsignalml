@@ -304,6 +304,20 @@ public class JavaGen extends ASTVisitor<JDefinedClass> {
 		return getter;
 	}
 
+
+	@Override
+	public JDefinedClass visit(ASTNode.FileHandle node, JDefinedClass parent)
+	{
+		final JDefinedClass klass;
+		try {
+			klass = parent._class("file_" + node.id);
+		} catch(JClassAlreadyExistsException e) {
+			throw new RuntimeException("WTF?");
+		}
+		return klass;
+	}
+
+
 	public void write(OutputStream outputstream)
 		throws java.io.IOException
 	{
