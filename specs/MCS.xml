@@ -1,0 +1,66 @@
+<?xml version="1.0"?>
+<!DOCTYPE signalml SYSTEM "SignalML_2_0.dtd">
+<signalml>
+
+<header>
+ <text_info>MCS data format</text_info>
+ <url>http://www.multichannelsystems.com</url>
+</header>
+
+<file type='binary'>
+  <param id='magic_MCSSTRM' type='str'>
+    <format>'|S8'</format>
+    <offset>0</offset>
+  </param>
+  <assert id='magic_MCSSTRM_check'>
+    <expr>magic_MCSSTRM == "MCSSTRM "</expr>
+  </assert>
+
+  <!-- this is not used, it's a const -->
+  <param id='length_of_file' type='int'>
+    <format>'&lt;i8'</format>
+    <offset>8</offset>
+  </param>
+
+  <assert id='length_of_file_check'>
+    <expr>length_of_file == -1</expr>
+  </assert>
+
+  <param id='magic_LISThdr' type='str'>
+    <format>'|S8'</format>
+    <offset>16</offset>
+  </param>
+  <assert id='magic_LISThdr_check'>
+    <expr>magic_LISThdr == "LISThdr "</expr>
+  </assert>
+
+  <param id='size_of_LISThdr' type='int'>
+    <format>'&lt;i8'</format>
+    <offset>24</offset>
+  </param>
+
+  <param id='magic_MCSHDR' type='str'>
+    <format>'|S8'</format>
+    <offset>32</offset>
+  </param>
+  <assert id='magic_MCSHDR_check'>
+    <expr>magic_MCSHDR == "MCSHDR  "</expr>
+  </assert>
+  
+  <param id='size_of_MCSHDR' type='int'>
+    <format>'&lt;i8'</format>
+    <offset>40</offset>
+  </param>
+
+  <param id='header_version' type='int'>
+    <format>'&lt;i2'</format>
+    <offset>48</offset>
+  </param>
+  <assert id='header_version_check'>
+    <expr>header_version &lt;= 10</expr>
+  </assert>
+  
+ 
+</file>
+
+</signalml>
