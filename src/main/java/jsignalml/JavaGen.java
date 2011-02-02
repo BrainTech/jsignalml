@@ -15,6 +15,7 @@ import com.sun.codemodel.JInvocation;
 import com.sun.codemodel.JType;
 import com.sun.codemodel.JBlock;
 import com.sun.codemodel.JFieldVar;
+import com.sun.codemodel.JFieldRef;
 import com.sun.codemodel.JTryBlock;
 import com.sun.codemodel.JCatchBlock;
 import com.sun.codemodel.JVar;
@@ -55,6 +56,7 @@ public class JavaGen extends ASTVisitor<JDefinedClass> {
 	}
 
 	JCodeModel model;
+	JFieldVar default_filename;
 
 	public JavaGen()
 		throws JClassAlreadyExistsException
@@ -114,11 +116,13 @@ public class JavaGen extends ASTVisitor<JDefinedClass> {
 	public JMethod codecOpenMethod(JDefinedClass klass)
 	{
 		final JClass file_class = this.model.ref(File.class);
-		final JFieldVar default_filename
-			= klass.field(JMod.NONE, file_class, "default_filename");
+		this.default_filename =
+			//JExpr.ref(JExpr._this(),
+			klass.field(JMod.NONE, file_class, "default_filename");
+			//);
 		final JMethod open = klass.method(JMod.PUBLIC, this.model.VOID, "open");
 		final JVar arg = open.param(File.class, "filename");
-		open.body().assign(JExpr.ref(JExpr._this(), default_filename), arg);
+		open.body().assign(this.default_filename, arg);
 		return open;
 	}
 
@@ -128,8 +132,16 @@ public class JavaGen extends ASTVisitor<JDefinedClass> {
 		final JMethod open = klass.method(JMod.PUBLIC, this.model.VOID, "open");
 		final JVar arg = open.param(File.class, "filename");
 	        final JFieldVar buffer = klass.field(JMod.NONE, mybuffer, "buffer");
-		open.body().assign(JExpr.ref(JExpr._this(), buffer),
-				   mybuffer.staticInvoke("open").arg(arg));
+		final JBlock body = open.body();
+
+		final JExpression and = arg.eq(JExpr._null())
+			.cand( this.default_filename.ne(JExpr._null()) );
+		final JBlock then = body._if(and)._then();
+		then.assign(arg, this.default_filename);
+		then.assign(this.default_filename, JExpr._null());
+
+		body.assign(JExpr.ref(JExpr._this(), buffer),
+			    mybuffer.staticInvoke("open").arg(arg));
 		return open;
 	}
 
