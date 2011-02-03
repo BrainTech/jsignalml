@@ -76,6 +76,11 @@ public class JavaGen extends ASTVisitor<JDefinedClass> {
 			throw new RuntimeException("WTF?");
 		}
 		klass._implements(jsignalml.Source.class);
+
+		JMethod readall = this.readallMethod(klass);
+		klass.metadata = new Metadata(readall);
+		log.info("%s.metadata has been set", klass);
+
 		this.mainMethod(klass);
 		this.getSetMethod(klass);
 		this.getCurrentFilenameMethod(klass);
@@ -86,22 +91,51 @@ public class JavaGen extends ASTVisitor<JDefinedClass> {
 		return klass;
 	}
 
+	class Metadata {
+		final JBlock rungetters;
+		Metadata(JMethod readall)
+		{
+			this.rungetters = readall.body();
+		}
+
+		void registerGetter(JMethod getter)
+		{
+			final JExpression inv = JExpr._this().invoke(getter);
+			final JFieldRef system_out =
+				JavaGen.this.model.ref(System.class).staticRef("out");
+			this.rungetters.add(system_out.invoke("println").arg(inv));
+		}
+
+		void registerContextAccessor(JMethod getter)
+		{
+			final JInvocation inv = JExpr._this().invoke(getter).invoke("readall");
+			this.rungetters.add(inv);
+		}
+	}
+
+	public JMethod readallMethod(JDefinedClass klass)
+	{
+		final JMethod readall = klass.method(JMod.PUBLIC, this.model.VOID, "readall");
+		return readall;
+	}
+
 	public JMethod mainMethod(JDefinedClass klass)
 	{
 		final JMethod main = klass.method(JMod.STATIC | JMod.PUBLIC,
-						  klass.owner().VOID, "main");
+						  this.model.VOID, "main");
 		final JVar args = main.varParam(String.class, "args");
 
 		final JInvocation bc_configure =
 			this.model.ref(BasicConfigurator.class).staticInvoke("configure");
 
-		JBlock body = main.body();
+		final JBlock body = main.body();
 		body.add(bc_configure);
 
-		JVar reader = body.decl(klass, "reader", JExpr._new(klass));
-		JExpression file = JExpr._new(this.model.ref(File.class))
+		final JVar reader = body.decl(klass, "reader", JExpr._new(klass));
+		final JExpression file = JExpr._new(this.model.ref(File.class))
 			.arg(args.component(JExpr.lit(0)));
 		body.add(reader.invoke("open").arg(file));
+		body.add(reader.invoke("readall"));
 		return main;
 	}
 
@@ -323,6 +357,9 @@ public class JavaGen extends ASTVisitor<JDefinedClass> {
 		then.assign(stor, impl_inv);
 		getter.body()._return(stor);
 
+		Metadata metadata = (Metadata) klass.metadata;
+		metadata.registerGetter(getter);
+
 		return getter;
 	}
 
@@ -343,6 +380,11 @@ public class JavaGen extends ASTVisitor<JDefinedClass> {
 		} catch(JClassAlreadyExistsException e) {
 			throw new RuntimeException("WTF?");
 		}
+
+		JMethod readall = this.readallMethod(klass);
+		klass.metadata = new Metadata(readall);
+		log.info("%s.metadata has been set", klass);
+
 		this.openMethod(klass);
 		return klass;
 	}
@@ -358,6 +400,9 @@ public class JavaGen extends ASTVisitor<JDefinedClass> {
 		final JBlock then = getter.body()._if(stor.eq(JExpr._null()))._then();
 		then.assign(stor, JExpr._new(context));
 		getter.body()._return(stor);
+
+		Metadata metadata = (Metadata) klass.metadata;
+		metadata.registerContextAccessor(getter);
 
 		return getter;
 	}

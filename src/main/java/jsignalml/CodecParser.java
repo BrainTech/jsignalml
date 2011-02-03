@@ -256,13 +256,16 @@ public class CodecParser {
 		BasicConfigurator.configure();
 
 		final ASTNode codec = makeCodec(new File(args[0]));
+		log.info("-- codec is parsed --");
 		System.out.print(ASTDumper.dump(codec));
 
 		final NameCheck check = new NameCheck();
 		codec.accept(check, null);
+		log.info("-- name checking is done --");
 
 		final JavaGen gen = new JavaGen();
 		codec.accept(gen, null);
+		log.info("-- java has been generated --");
 		gen.write(System.out);
 
 		if (args.length <= 1)
@@ -270,6 +273,7 @@ public class CodecParser {
 
 		final File outputdir = new File(args[1]);
 		gen.write(outputdir);
+		log.info("-- java has been written --");
 
 		// String[] files = new String[args.length-1];
 		// System.arraycopy(args, 1, files, 0, files.length);
