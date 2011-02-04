@@ -314,10 +314,12 @@ public abstract class ASTNode {
 
 	public static class ForLoop extends ASTNode {
 		public final Expression expr;
+		public String itername;
 
-		public ForLoop(ASTNode parent, String id, Expression expr) {
+		public ForLoop(ASTNode parent, String id, String itername, Expression expr) {
 			super(parent, id);
 			this.expr = expr;
+			this.itername = itername;
 		}
 
 		@Override

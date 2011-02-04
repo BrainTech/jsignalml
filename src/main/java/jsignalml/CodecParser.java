@@ -42,6 +42,8 @@ public class CodecParser {
 			return this.do_param(parent, element);
 		if (name.equals("assert"))
 			return this.do_assert(parent, element);
+		if (name.equals("for-each"))
+			return this.do_forloop(parent, element);
 		if (name.equals("file"))
 			return this.do_file(parent, element);
 		if (name.equals("data"))
@@ -183,6 +185,28 @@ public class CodecParser {
 
 		final ASTNode.FileHandle handle = ASTNode.FileHandle.make(parent, id, name, type);
 		return handle;
+	}
+
+	public ASTNode.ForLoop do_forloop(ASTNode parent, Element element)
+		throws SyntaxError
+	{
+		assert element.getNodeName().equals("for-each");
+
+		final String id = _identifier(element);
+		final String var = _attribute(element, "var");
+		final String sequence = _attribute(element, "sequence");
+
+		Expression expr;
+		if (sequence==null)
+			expr = null;
+		try {
+			expr = Processor.parse(sequence);
+		} catch (SyntaxError e) {
+			log.error("failed to parse: '%s'", sequence);
+			throw e;
+		}
+		final ASTNode.ForLoop loop = new ASTNode.ForLoop(parent, id, var, expr);
+		return loop;
 	}
 
 	public ASTNode.DataHandle do_data(ASTNode parent, Element element)
