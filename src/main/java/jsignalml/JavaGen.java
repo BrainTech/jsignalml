@@ -97,12 +97,13 @@ public class JavaGen extends ASTVisitor<JDefinedClass> {
 			this.rungetters = readall.body();
 		}
 
-		void registerGetter(JMethod getter)
+		void registerGetter(String ident, JMethod getter)
 		{
 			final JExpression inv = JExpr._this().invoke(getter);
 			final JFieldRef system_out =
 				JavaGen.this.model.ref(System.class).staticRef("out");
-			this.rungetters.add(system_out.invoke("println").arg(inv));
+			final JExpression output = JExpr.lit(ident).plus(JExpr.lit(": ")).plus(inv);
+			this.rungetters.add(system_out.invoke("println").arg(output));
 		}
 
 		void registerContextAccessor(JMethod getter)
@@ -333,7 +334,7 @@ public class JavaGen extends ASTVisitor<JDefinedClass> {
 		getter.body()._return(stor);
 
 		Metadata metadata = (Metadata) klass.metadata;
-		metadata.registerGetter(getter);
+		metadata.registerGetter(ident, getter);
 
 		return getter;
 	}
