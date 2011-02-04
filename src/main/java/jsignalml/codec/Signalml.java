@@ -1,9 +1,13 @@
 package jsignalml.codec;
 
 import java.io.File;
+import java.util.List;
+import java.util.LinkedList;
 
 import jsignalml.MyBuffer;
 import jsignalml.ExpressionFault;
+import jsignalml.JavaType;
+import jsignalml.util;
 
 public abstract class Signalml implements jsignalml.Source {
 	protected File default_filename;
@@ -26,6 +30,13 @@ public abstract class Signalml implements jsignalml.Source {
 			if (this.buffer == null)
 				this.open(null);
 			return this.buffer;
+		}
+	}
+
+	public abstract class LoopClass {
+		final protected JavaType index;
+		public LoopClass(JavaType index) {
+			this.index = index;
 		}
 	}
 }

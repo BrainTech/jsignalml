@@ -293,11 +293,10 @@ public abstract class ASTNode {
 
 		public Positional(ASTNode parent, String id, Type type) {
 			super(parent, id);
-			assert parent != null;
-			assert parent instanceof ASTNode.Param;
+			assert parent == null || parent instanceof ASTNode.Param;
 
 			this.type = type;
-			if( parent != null )
+			if (parent != null)
 				((Param)parent).args.add(this);
 		}
 
@@ -312,14 +311,31 @@ public abstract class ASTNode {
 		}
 	}
 
-	public static class ForLoop extends ASTNode {
-		public final Expression expr;
-		public String itername;
+	public static class Itername extends ASTNode {
+		public final Type type;
 
-		public ForLoop(ASTNode parent, String id, String itername, Expression expr) {
+		public Itername(ASTNode parent, String id, Type type) {
 			super(parent, id);
-			this.expr = expr;
-			this.itername = itername;
+			assert parent == null || parent instanceof ASTNode.ForLoop;
+
+			this.type = type;
+		}
+
+		@Override
+		public <T> T _accept(ASTVisitor<T> v, T data)
+		{
+			return v.visit(this, data);
+		}
+	}
+
+	public static class ForLoop extends ASTNode {
+		public final Expression sequence;
+		public final Itername itername;
+
+		public ForLoop(ASTNode parent, String id, String itername, Expression sequence) {
+			super(parent, id);
+			this.sequence = sequence;
+			this.itername = new Itername(this, itername, null);
 		}
 
 		@Override

@@ -1,6 +1,7 @@
 package jsignalml;
 
 import static java.lang.String.format;
+import java.util.List;
 import java.io.File;
 import java.io.OutputStream;
 import org.apache.log4j.BasicConfigurator;
@@ -12,12 +13,14 @@ import com.sun.codemodel.JCodeModel;
 import com.sun.codemodel.JExpression;
 import com.sun.codemodel.JExpr;
 import com.sun.codemodel.JInvocation;
+import com.sun.codemodel.JConditional;
 import com.sun.codemodel.JType;
 import com.sun.codemodel.JBlock;
 import com.sun.codemodel.JFieldVar;
 import com.sun.codemodel.JFieldRef;
 import com.sun.codemodel.JTryBlock;
 import com.sun.codemodel.JCatchBlock;
+import com.sun.codemodel.JForEach;
 import com.sun.codemodel.JVar;
 import com.sun.codemodel.JMod;
 import com.sun.codemodel.JClassAlreadyExistsException;
@@ -104,6 +107,16 @@ public class JavaGen extends ASTVisitor<JDefinedClass> {
 				JavaGen.this.model.ref(System.class).staticRef("out");
 			final JExpression output = JExpr.lit(ident).plus(JExpr.lit(": ")).plus(inv);
 			this.rungetters.add(system_out.invoke("println").arg(output));
+		}
+
+		void registerLoopGetter(String ident, JDefinedClass klass, JMethod getter)
+		{
+			final JExpression inv = JExpr._this().invoke(getter);
+			final JFieldRef system_out =
+				JavaGen.this.model.ref(System.class).staticRef("out");
+			final JExpression output = JExpr.lit(ident).plus(JExpr.lit(": ")).plus(inv);
+			JForEach loop = this.rungetters.forEach(klass, "var", inv);
+			loop.body().add(loop.var().invoke("readall"));
 		}
 
 		void registerContextAccessor(JMethod getter)
@@ -235,10 +248,7 @@ public class JavaGen extends ASTVisitor<JDefinedClass> {
 		final JMethod readfunc = readFunction(klass, node, node.id + "_read", // XXX
 						      type);
 
-		Class<? extends JavaType> javatype = convertType(type);
-		if (javatype == null)
-			javatype = JavaType.class;
-
+		final JClass javatype = convertTypeToJClass(type);
 		final JMethod impl = klass.method(JMod.NONE, javatype, makeGetterImpl(ident));
 		// -- generated code --
 		// JavaType.Str _jsignalml__get_readX_format();
@@ -281,15 +291,11 @@ public class JavaGen extends ASTVisitor<JDefinedClass> {
 	public JMethod exprFunction(JDefinedClass klass, ASTNode node, String ident,
 				    Type type, Expression expr)
 	{
-		Class<? extends JavaType> javatype = convertType(type);
-		if (javatype == null)
-			javatype = JavaType.class;
-
+		final JClass javatype = convertTypeToJClass(type);
 		final JMethod impl = klass.method(JMod.NONE, javatype,
 						  makeGetterImpl(ident));
 		final JavaGenVisitor javagen =
-			new JavaGenVisitor(this.model,
-					   this.createResolver(node));
+			new JavaGenVisitor(this.model, this.createResolver(node));
 		impl.body()._return( expr.accept(javagen) );
 		return impl;
 	}
@@ -297,10 +303,7 @@ public class JavaGen extends ASTVisitor<JDefinedClass> {
 	public JMethod readFunction(JDefinedClass klass, ASTNode node, String ident,
 				    Type type)
 	{
-		Class<? extends JavaType> javatype_ = convertType(type);
-		if (javatype_ == null)
-			javatype_ = JavaType.class;
-		final JClass javatype = this.model.ref(javatype_);
+		final JClass javatype = this.convertTypeToJClass(type);
 
 		final JMethod impl = klass.method(JMod.NONE, javatype,
 						  makeGetterImpl(ident));
@@ -324,7 +327,7 @@ public class JavaGen extends ASTVisitor<JDefinedClass> {
 				     Type type, JInvocation impl_inv)
 	{
 		final String prefixed = makeIdentifier(ident);
-		final JType type_ = this.model.ref(convertType(type));
+		final JType type_ = this.convertTypeToJClass(type);
 		final JFieldVar stor = klass.field(JMod.NONE, type_,
 						   prefixed, JExpr._null());
 		final JMethod getter = klass.method(JMod.PUBLIC, type_,
@@ -352,7 +355,7 @@ public class JavaGen extends ASTVisitor<JDefinedClass> {
 	{
 		final JDefinedClass klass;
 		try {
-			klass = parent._class("file_" + id);
+			klass = parent._class("File_" + id);
 		} catch(JClassAlreadyExistsException e) {
 			throw new RuntimeException("WTF?");
 		}
@@ -398,6 +401,107 @@ public class JavaGen extends ASTVisitor<JDefinedClass> {
 		final JInvocation impl_inv = builtins_class.staticInvoke(ident);
 		return cacheFunction(klass, node, ident, node.type, impl_inv);
 	}
+
+	@Override
+	public JDefinedClass visit(ASTNode.Itername node, JDefinedClass klass)
+	{
+		iternameGetter(node, klass);
+		return klass;
+	}
+
+	JMethod iternameGetter(ASTNode.Itername node, JDefinedClass klass)
+	{
+		JClass type = this.convertTypeToJClass(node.type);
+		final JMethod getter = klass.method(JMod.PUBLIC, type,
+						    makeGetter(node.id));
+		getter.body()._return(JExpr._this().ref("index"));
+		return getter;
+	}
+
+	@Override
+	public JDefinedClass visit(ASTNode.ForLoop node, JDefinedClass parent)
+	{
+		final JDefinedClass klass = loopClass(node, parent);
+		loopAccessor(parent, node, klass);
+		loopIndexAccessor(parent, node, klass);
+		return klass;
+	}
+
+	public JDefinedClass loopClass(ASTNode.ForLoop node, JDefinedClass parent)
+	{
+		final JDefinedClass klass;
+		try {
+			klass = parent._class("Loop_" + node.id);
+		} catch(JClassAlreadyExistsException e) {
+			throw new RuntimeException("WTF?");
+		}
+
+		klass._extends(jsignalml.codec.Signalml.LoopClass.class);
+
+		JMethod constructor = klass.constructor(JMod.NONE);
+		JVar index = constructor.param(JavaType.class, "index");
+		constructor.body().directStatement("super(index);"); // TODO: convert to proper codemodel magic
+		JMethod readall = this.readallMethod(klass);
+		klass.metadata = new Metadata(readall);
+		log.info("%s.metadata has been set", klass);
+
+		return klass;
+	}
+
+	public JMethod loopAccessor(JDefinedClass klass, ASTNode.ForLoop node,
+				    JDefinedClass context)
+	{
+		final JClass javatype_class = this.model.ref(JavaType.class);
+		final JClass jt_list_class = this.model.ref(JavaType.List.class);
+		final JClass jt_int_class = this.model.ref(JavaType.Int.class);
+		final JClass util_class = this.model.ref(util.class);
+		final String ident = "loop_" + node.id;
+		final JType list_type = this.model.ref(List.class).narrow(context);
+		final JMethod getter = klass.method(JMod.PUBLIC, list_type,
+						    makeGetter(ident));
+		final JBlock body = getter.body();
+
+		final JavaGenVisitor javagen =
+			new JavaGenVisitor(this.model, this.createResolver(node));
+		final JVar range = body.decl(jt_list_class, "range",
+					     node.sequence.accept(javagen));
+		final JFieldVar stor = klass.field(JMod.NONE, list_type, ident, JExpr._null());
+		final JBlock then = body._if(stor.eq(JExpr._null()))._then();
+		then.assign(stor, util_class.staticInvoke("newLinkedList"));
+		final JForEach loop = then.forEach(javatype_class, "var", range);
+		loop.body().add(stor.invoke("add")
+				.arg(JExpr._new(context).arg(loop.var())));
+		body._return(stor);
+
+		Metadata metadata = (Metadata) klass.metadata;
+		metadata.registerLoopGetter(ident, context, getter);
+
+		return getter;
+	}
+
+	public JMethod loopIndexAccessor(JDefinedClass klass, ASTNode.ForLoop node,
+					 JDefinedClass context)
+	{
+		final JClass jt_int_class = this.model.ref(JavaType.Int.class);
+		final JClass efte = this.model.ref(ExpressionFault.TypeError.class);
+		final String ident = "loop_" + node.id;
+		final JMethod getter = klass.method(JMod.PUBLIC, context,
+						    makeGetter(ident));
+		final JVar index = getter.param(JavaType.class, "index");
+		final JBlock body = getter.body();
+
+		final JFieldRef stor = JExpr._this().ref(ident);
+
+		final JConditional typecheck = body._if(index._instanceof(jt_int_class));
+		typecheck._then()._return(stor.invoke("get")
+					  .arg(((JExpression)JExpr.cast(jt_int_class, index))
+					       .invoke("safeIntValue")));
+		typecheck._else()._throw(JExpr._new(efte));
+		return getter;
+	}
+
+	////////////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////////////
 
 	public void write(OutputStream outputstream)
 		throws java.io.IOException
@@ -464,18 +568,12 @@ public class JavaGen extends ASTVisitor<JDefinedClass> {
 			return JavaType.List.class;
 		throw new RuntimeException("unknown Type");
 	}
-	static Type unconvertType(Class<? extends JavaType> type)
+
+	JClass convertTypeToJClass(Type type)
 	{
-		if(type == null)
-			return null;
-		if(type.equals(JavaType.Int.class))
-			return new Type.Int();
-		if(type.equals(JavaType.Float.class))
-			return new Type.Float();
-		if(type.equals(JavaType.Str.class))
-			return new Type.String();
-		if(type.equals(JavaType.List.class))
-			return new Type.List();
-		throw new RuntimeException("unknown JavaType");
+		Class<? extends JavaType> javatype_ = convertType(type);
+		if (javatype_ == null)
+			javatype_ = JavaType.class;
+		return this.model.ref(javatype_);
 	}
 }
