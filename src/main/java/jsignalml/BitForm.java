@@ -19,8 +19,12 @@ public abstract class BitForm {
 		                description.equals(">i1") ||
 		                description.equals("|i1"))
 			return new Int.Int8();
-		if (description.equals("<i2"))
+		//if (description.equals("<i2"))
+		//	return new Int.Int16.LE();
+		if (description.equals("<i4"))
 			return new Int.Int32.LE();
+		if (description.equals("<i8"))
+			return new Int.Int64.LE();
 		if (description.startsWith("|S"))
 			return new Str(Integer.parseInt(description.substring(2)));
 		throw new BadBitForm(description);
@@ -98,6 +102,33 @@ public abstract class BitForm {
 				}
 			}
 		}
+
+		public static abstract class Int64 extends Int {
+			public static class LE extends Int64 {
+				@Override
+				public Type.Int read(ByteBuffer buffer, int byteoffset) {
+					long data;
+					try {
+						data = buffer.getLong(byteoffset);
+					} catch (IndexOutOfBoundsException e) {
+						throw new ExpressionFault.IndexError(byteoffset, buffer.limit());
+					}
+					return new Type.Int(data);
+				}
+				@Override
+				public JavaType.Int read2(ByteBuffer buffer, JavaType.Int byteoffset) {
+					long data;
+					int offset = byteoffset.safeIntValue();
+					try {
+						data = buffer.getLong(offset);
+					} catch (IndexOutOfBoundsException e) {
+						throw new ExpressionFault.IndexError(offset, buffer.limit());
+					}
+					return new JavaType.Int(data);
+				}
+			}
+		}
+
 	}
 
 	public static class Str extends BitForm {
