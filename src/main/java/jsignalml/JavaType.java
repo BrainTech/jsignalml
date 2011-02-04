@@ -10,6 +10,8 @@ import static java.util.Collections.unmodifiableList;
 import org.apache.commons.lang.StringUtils;
 
 public interface JavaType {
+	static final Logger log = new Logger(JavaType.class);
+
 	JavaType add(JavaType b);
 	JavaType sub(JavaType b);
 	JavaType mul(JavaType b);
@@ -56,10 +58,29 @@ public interface JavaType {
 
 		static Int makeFromUnsignedReadAsSigned(long value) {
 			Int ivalue = new Int(value);
+			log.info("converting long %s", value);
 			if (ivalue.compareTo(ZERO) >= 0)
 				return ivalue;
 			// TODO: add tests!!!
 			return new Int(ivalue.add(valueOf(Long.MIN_VALUE).multiply(valueOf(-2))));
+		}
+
+		static Int makeFromUnsignedReadAsSigned(int value) {
+			Int ivalue = new Int(value);
+			log.info("converting int %s", value);
+			if (ivalue.compareTo(ZERO) >= 0)
+				return ivalue;
+			// TODO: add tests!!!
+			return new Int(ivalue.add(valueOf(Integer.MIN_VALUE).multiply(valueOf(-2))));
+		}
+
+		static Int makeFromUnsignedReadAsSigned(short value) {
+			Int ivalue = new Int(value);
+			log.info("converting short %s", value);
+			if (ivalue.compareTo(ZERO) >= 0)
+				return ivalue;
+			// TODO: add tests!!!
+			return new Int(ivalue.add(valueOf(Short.MIN_VALUE).multiply(valueOf(-2))));
 		}
 
 		public Int(long value){
