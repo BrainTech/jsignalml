@@ -54,18 +54,11 @@ public interface JavaType {
 			throw new ExpressionFault.TypeError();
 		}
 
-		static byte[] _long_to_arr8(long value){
-			byte[] arr = new byte[8];
-			for(int i=0; i<arr.length; i++)
-				arr[i] = (byte)(value >> (7-i));
-			return arr;
-		}
-
 		public Int(long value){
-			super(_long_to_arr8(value));
+			this(BigInteger.valueOf(value));
 		}
 		public Int(double value){
-			super(_long_to_arr8((long)value));
+			this(BigInteger.valueOf((long)value));
 		}
 
 		public int safeIntValue() {
