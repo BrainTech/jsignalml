@@ -75,10 +75,10 @@ public class TestTypes {
 
 	@Test public void get_types_from_string()
 	{
-		assertEquals(Type.getType("int"), Type.Int.class);
-		assertEquals(Type.getType("float"), Type.Float.class);
-		assertEquals(Type.getType("str"), Type.String.class);
-		assertEquals(Type.getType("list"), Type.List.class);
+		assertEquals(Type.getType("int"), new Type.Int());
+		assertEquals(Type.getType("float"), new Type.Float());
+		assertEquals(Type.getType("str"), new Type.String());
+		assertEquals(Type.getType("list"), new Type.List());
 	}
 
 	@Test(expected=IllegalArgumentException.class)
