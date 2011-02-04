@@ -56,7 +56,6 @@ public class JavaGen extends ASTVisitor<JDefinedClass> {
 	}
 
 	JCodeModel model;
-	JFieldVar default_filename;
 
 	public JavaGen()
 		throws JClassAlreadyExistsException
@@ -75,7 +74,7 @@ public class JavaGen extends ASTVisitor<JDefinedClass> {
 		} catch(JClassAlreadyExistsException e) {
 			throw new RuntimeException("WTF?");
 		}
-		klass._implements(jsignalml.Source.class);
+		klass._extends(jsignalml.codec.Signalml.class);
 
 		JMethod readall = this.readallMethod(klass);
 		klass.metadata = new Metadata(readall);
@@ -98,12 +97,13 @@ public class JavaGen extends ASTVisitor<JDefinedClass> {
 			this.rungetters = readall.body();
 		}
 
-		void registerGetter(JMethod getter)
+		void registerGetter(String ident, JMethod getter)
 		{
 			final JExpression inv = JExpr._this().invoke(getter);
 			final JFieldRef system_out =
 				JavaGen.this.model.ref(System.class).staticRef("out");
-			this.rungetters.add(system_out.invoke("println").arg(inv));
+			final JExpression output = JExpr.lit(ident).plus(JExpr.lit(": ")).plus(inv);
+			this.rungetters.add(system_out.invoke("println").arg(output));
 		}
 
 		void registerContextAccessor(JMethod getter)
@@ -150,32 +150,9 @@ public class JavaGen extends ASTVisitor<JDefinedClass> {
 	public JMethod codecOpenMethod(JDefinedClass klass)
 	{
 		final JClass file_class = this.model.ref(File.class);
-		this.default_filename =
-			//JExpr.ref(JExpr._this(),
-			klass.field(JMod.NONE, file_class, "default_filename");
-			//);
 		final JMethod open = klass.method(JMod.PUBLIC, this.model.VOID, "open");
 		final JVar arg = open.param(File.class, "filename");
-		open.body().assign(this.default_filename, arg);
-		return open;
-	}
-
-	public JMethod openMethod(JDefinedClass klass)
-	{
-		final JClass mybuffer = this.model.ref(MyBuffer.class);
-		final JMethod open = klass.method(JMod.PUBLIC, this.model.VOID, "open");
-		final JVar arg = open.param(File.class, "filename");
-	        final JFieldVar buffer = klass.field(JMod.NONE, mybuffer, "buffer");
-		final JBlock body = open.body();
-
-		final JExpression and = arg.eq(JExpr._null())
-			.cand( this.default_filename.ne(JExpr._null()) );
-		final JBlock then = body._if(and)._then();
-		then.assign(arg, this.default_filename);
-		then.assign(this.default_filename, JExpr._null());
-
-		body.assign(JExpr.ref(JExpr._this(), buffer),
-			    mybuffer.staticInvoke("open").arg(arg));
+		open.body().assign(JExpr._this().ref("default_filename"), arg);
 		return open;
 	}
 
@@ -334,8 +311,7 @@ public class JavaGen extends ASTVisitor<JDefinedClass> {
 
 		final JClass javatype2 = this.model.ref(JavaType.class);
 		final JExpression expr = bitform_param.invoke("read2")
-			.arg(JExpr.ref(JExpr.ref(JExpr._this(), "buffer"),
-				       "source"))
+			.arg(JExpr.ref(JExpr._this().invoke("buffer"), "source"))
 			.arg(offset_param);
 		final JVar input = body.decl(javatype2, "input", expr);
 		final JVar var = body.decl(javatype, "var",
@@ -358,7 +334,7 @@ public class JavaGen extends ASTVisitor<JDefinedClass> {
 		getter.body()._return(stor);
 
 		Metadata metadata = (Metadata) klass.metadata;
-		metadata.registerGetter(getter);
+		metadata.registerGetter(ident, getter);
 
 		return getter;
 	}
@@ -381,11 +357,12 @@ public class JavaGen extends ASTVisitor<JDefinedClass> {
 			throw new RuntimeException("WTF?");
 		}
 
+		klass._extends(jsignalml.codec.Signalml.FileClass.class);
+
 		JMethod readall = this.readallMethod(klass);
 		klass.metadata = new Metadata(readall);
 		log.info("%s.metadata has been set", klass);
 
-		this.openMethod(klass);
 		return klass;
 	}
 

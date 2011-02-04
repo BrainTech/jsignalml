@@ -2,6 +2,7 @@ package jsignalml;
 
 import java.io.RandomAccessFile;
 import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 import java.nio.channels.FileChannel;
 import java.nio.channels.FileChannel.MapMode;
 import java.io.File;
@@ -14,6 +15,8 @@ public class MyBuffer {
 	final public java.nio.ByteBuffer source;
 	final java.io.File filename;
 
+	public static final ByteOrder byteorder = ByteOrder.LITTLE_ENDIAN;
+
 	public MyBuffer(File name)
 		throws java.io.FileNotFoundException, java.io.IOException
 	{
@@ -22,6 +25,9 @@ public class MyBuffer {
 		FileChannel channel = file.getChannel();
 		source = channel.map(MapMode.READ_ONLY, 0, channel.size());
 		this.filename = name;
+
+		log.info("setting byteorder %s", this.byteorder);
+		source.order(byteorder);
 	}
 
 	public Type read(BitForm format, int byteoffset) {

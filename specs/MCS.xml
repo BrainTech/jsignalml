@@ -2,65 +2,266 @@
 <!DOCTYPE signalml SYSTEM "SignalML_2_0.dtd">
 <signalml>
 
-<header>
- <text_info>MCS data format</text_info>
- <url>http://www.multichannelsystems.com</url>
-</header>
+  <header>
+    <text_info>MCS data format</text_info>
+    <url>http://www.multichannelsystems.com</url>
+  </header>
 
-<file type='binary'>
-  <param id='magic_MCSSTRM' type='str'>
-    <format>'|S8'</format>
-    <offset>0</offset>
-  </param>
-  <assert id='magic_MCSSTRM_check'>
-    <expr>magic_MCSSTRM == "MCSSTRM "</expr>
-  </assert>
+  <file type='binary'>
+    <param id='magic_MCSSTRM' type='str'>
+      <format>'|S8'</format>
+      <offset>0</offset>
+    </param>
+    <assert id='magic_MCSSTRM_check'>
+      <expr>magic_MCSSTRM == "MCSSTRM "</expr>
+    </assert>
 
-  <!-- this is not used, it's a const -->
-  <param id='length_of_file' type='int'>
-    <format>'&lt;i8'</format>
-    <offset>8</offset>
-  </param>
+    <!-- this is not used, it's a const -->
+    <param id='length_of_file' type='int'>
+      <format>'&lt;i8'</format>
+      <offset>8</offset>
+    </param>
 
-  <assert id='length_of_file_check'>
-    <expr>length_of_file == -1</expr>
-  </assert>
+    <assert id='length_of_file_check'>
+      <expr>length_of_file == -1</expr>
+    </assert>
 
-  <param id='magic_LISThdr' type='str'>
-    <format>'|S8'</format>
-    <offset>16</offset>
-  </param>
-  <assert id='magic_LISThdr_check'>
-    <expr>magic_LISThdr == "LISThdr "</expr>
-  </assert>
+    <param id='magic_LISThdr' type='str'>
+      <format>'|S8'</format>
+      <offset>16</offset>
+    </param>
+    <assert id='magic_LISThdr_check'>
+      <expr>magic_LISThdr == "LISThdr "</expr>
+    </assert>
 
-  <param id='size_of_LISThdr' type='int'>
-    <format>'&lt;i8'</format>
-    <offset>24</offset>
-  </param>
+    <param id='size_of_LISThdr' type='int'>
+      <format>'&lt;i8'</format>
+      <offset>24</offset>
+    </param>
 
-  <param id='magic_MCSHDR' type='str'>
-    <format>'|S8'</format>
-    <offset>32</offset>
-  </param>
-  <assert id='magic_MCSHDR_check'>
-    <expr>magic_MCSHDR == "MCSHDR  "</expr>
-  </assert>
-  
-  <param id='size_of_MCSHDR' type='int'>
-    <format>'&lt;i8'</format>
-    <offset>40</offset>
-  </param>
+    <param id='magic_MCSHDR' type='str'>
+      <format>'|S8'</format>
+      <offset>32</offset>
+    </param>
+    <assert id='magic_MCSHDR_check'>
+      <expr>magic_MCSHDR == "MCSHDR  "</expr>
+    </assert>
+    
+    <param id='size_of_MCSHDR' type='int'>
+      <format>'&lt;i8'</format>
+      <offset>40</offset>
+    </param>
 
-  <param id='header_version' type='int'>
-    <format>'&lt;i2'</format>
-    <offset>48</offset>
-  </param>
-  <assert id='header_version_check'>
-    <expr>header_version &lt;= 10</expr>
-  </assert>
-  
- 
-</file>
+    <param id='m_wHeaderVersion' type='int'>
+      <format>'&lt;i4'</format>
+      <offset>48</offset>
+    </param>
 
+    <param id='m_dwMSSoftwareVersion' type='int'>
+      <format>'&lt;i4'</format>
+      <offset>52</offset>
+    </param>
+
+    <param id='m_dwLSSoftwareVersion' type='int'>
+      <format>'&lt;i4'</format>
+      <offset>56</offset>
+    </param>
+
+    <param id='m_szFile' type='str'>
+      <format>'|S260'</format>
+      <offset>60</offset>
+    </param>
+
+    <param id='m_szComment' type='str'>
+      <format>'|S520'</format>
+      <offset>320</offset>
+    </param>
+
+    <param id='m_qwTimeStamp' type='int'>
+      <format>'&lt;u8'</format>
+      <offset>840</offset>
+    </param>
+
+    <param id='m_dwStreamCount' type='int'>
+      <format>'&lt;i4'</format>
+      <offset>848</offset>
+    </param>
+
+    <param id='m_dwMilliSamplesPerSecond' type='int'>
+      <format>'&lt;i4'</format>
+      <offset>852</offset>
+    </param>
+
+    <param id='m_iWindowChoice' type='int'>
+      <format>'&lt;i4'</format>
+      <offset>856</offset>
+    </param>
+
+    <param id='m_fTime1' type='float'>
+      <format>'&lt;f4'</format>
+      <offset>860</offset>
+    </param>
+
+    <param id='m_fTime2' type='float'>
+      <format>'&lt;f4'</format>
+      <offset>864</offset>
+    </param>
+
+    <param id='m_wID1' type='int'>
+      <format>'&lt;u2'</format>
+      <offset>868</offset>
+    </param>
+
+    <param id='m_wID2' type='int'>
+      <format>'&lt;u2'</format>
+      <offset>870</offset>
+    </param>
+
+    <param id='m_iSourceType' type='int'>
+      <format>'&lt;i4'</format>
+      <offset>872</offset>
+    </param>
+
+    <param id='m_wElectrodeChannels1' type='int'>
+      <format>'&lt;i2'</format>
+      <offset>876</offset>
+    </param>
+
+    <param id='m_wElectrodeChannelOffset1' type='int'>
+      <format>'&lt;i2'</format>
+      <offset>878</offset>
+    </param>
+
+    <param id='m_wAnalogChannels1' type='int'>
+      <format>'&lt;i2'</format>
+      <offset>880</offset>
+    </param>
+
+    <param id='m_wAnalogChannelOffset1' type='int'>
+      <format>'&lt;i2'</format>
+      <offset>882</offset>
+    </param>
+
+    <param id='m_wDigitalChannels' type='int'>
+      <format>'&lt;i2'</format>
+      <offset>884</offset>
+    </param>
+
+    <param id='m_wDigitalChannelOffset' type='int'>
+      <format>'&lt;i2'</format>
+      <offset>886</offset>
+    </param>
+
+    <param id='m_wTotalChannels' type='int'>
+      <format>'&lt;i8'</format>
+      <offset>888</offset>
+    </param>
+
+    <param id='m_qwEndTime' type='int'>
+      <format>'&lt;u8'</format>
+      <offset>896</offset>
+    </param>
+
+    <param id='m_qwSweepCount' type='int'>
+      <format>'&lt;i8'</format>
+      <offset>904</offset>
+    </param>
+
+    <param id='m_bWithIndex' type='int'>
+      <format>'&lt;i4'</format>
+      <offset>912</offset>
+    </param>
+
+    <param id='m_dwSegmentTime' type='int'>
+      <format>'&lt;i4'</format>
+      <offset>916</offset>
+    </param>
+
+    <param id='m_qwStartTime' type='int'>
+      <format>'&lt;u8'</format>
+      <offset>920</offset>
+    </param>
+
+    <param id='m_dwMSDriverVersion' type='int'>
+      <format>'&lt;u4'</format>
+      <offset>928</offset>
+    </param>
+
+    <param id='m_dwLSDriverVersion' type='int'>
+      <format>'&lt;i4'</format>
+      <offset>932</offset>
+    </param>
+
+    <param id='m_szBufferID1' type='str'>
+      <format>'|S10'</format>
+      <offset>936</offset>
+    </param>
+
+    <param id='m_szBufferID2' type='str'>
+      <format>'|S10'</format>
+      <offset>946</offset>
+    </param>
+
+    <!--
+    <param id='m_arrImageData' type='IMAGEDATA'>
+      <format>'None'</format>
+      <offset>956</offset>
+    </param>
+    -->
+
+    <param id='m_wElectrodeChannels2' type='int'>
+      <format>'&lt;i2'</format>
+      <offset>2240</offset>
+    </param>
+
+    <param id='m_wElectrodeChannelOffset2' type='int'>
+      <format>'&lt;i2'</format>
+      <offset>2242</offset>
+    </param>
+
+    <param id='m_wAnalogChannels2' type='int'>
+      <format>'&lt;i2'</format>
+      <offset>2244</offset>
+    </param>
+
+    <param id='m_wAnalogChannelOffset2' type='int'>
+      <format>'&lt;i2'</format>
+      <offset>2246</offset>
+    </param>
+
+    <param id='m_lADVoltage' type='int'>
+      <format>'&lt;i4'</format>
+      <offset>2248</offset>
+    </param>
+
+    <param id='m_MCRack_DataSourceType' type='int'>
+      <format>'&lt;i4'</format>
+      <offset>2252</offset>
+    </param>
+
+    <param id='m_DataSourceName' type='str'>
+      <format>'|S80'</format>
+      <offset>2256</offset>
+    </param>
+
+    <param id='m_SerialNumber' type='str'>
+      <format>'|S20'</format>
+      <offset>2336</offset>
+    </param>
+
+    <param id='m_BusType' type='int'>
+      <format>'&lt;i4'</format>
+      <offset>2356</offset>
+    </param>
+
+    <param id='m_VendorId' type='int'>
+      <format>'&lt;i4'</format>
+      <offset>2360</offset>
+    </param>
+
+    <param id='m_ProductId' type='int'>
+      <format>'&lt;i4'</format>
+      <offset>2364</offset>
+    </param>
+  </file>
 </signalml>

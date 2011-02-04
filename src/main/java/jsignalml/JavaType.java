@@ -10,6 +10,8 @@ import static java.util.Collections.unmodifiableList;
 import org.apache.commons.lang.StringUtils;
 
 public interface JavaType {
+	static final Logger log = new Logger(JavaType.class);
+
 	JavaType add(JavaType b);
 	JavaType sub(JavaType b);
 	JavaType mul(JavaType b);
@@ -54,18 +56,38 @@ public interface JavaType {
 			throw new ExpressionFault.TypeError();
 		}
 
-		static byte[] _long_to_arr8(long value){
-			byte[] arr = new byte[8];
-			for(int i=0; i<arr.length; i++)
-				arr[i] = (byte)(value >> (7-i));
-			return arr;
+		static Int makeFromUnsignedReadAsSigned(long value) {
+			Int ivalue = new Int(value);
+			log.info("converting long %s", value);
+			if (ivalue.compareTo(ZERO) >= 0)
+				return ivalue;
+			// TODO: add tests!!!
+			return new Int(ivalue.add(valueOf(Long.MIN_VALUE).multiply(valueOf(-2))));
+		}
+
+		static Int makeFromUnsignedReadAsSigned(int value) {
+			Int ivalue = new Int(value);
+			log.info("converting int %s", value);
+			if (ivalue.compareTo(ZERO) >= 0)
+				return ivalue;
+			// TODO: add tests!!!
+			return new Int(ivalue.add(valueOf(Integer.MIN_VALUE).multiply(valueOf(-2))));
+		}
+
+		static Int makeFromUnsignedReadAsSigned(short value) {
+			Int ivalue = new Int(value);
+			log.info("converting short %s", value);
+			if (ivalue.compareTo(ZERO) >= 0)
+				return ivalue;
+			// TODO: add tests!!!
+			return new Int(ivalue.add(valueOf(Short.MIN_VALUE).multiply(valueOf(-2))));
 		}
 
 		public Int(long value){
-			super(_long_to_arr8(value));
+			this(BigInteger.valueOf(value));
 		}
 		public Int(double value){
-			super(_long_to_arr8((long)value));
+			this(BigInteger.valueOf((long)value));
 		}
 
 		public int safeIntValue() {
