@@ -538,7 +538,7 @@ public interface JavaType {
 		}
 	}
 
-	public class List implements JavaType {
+	public class List implements JavaType, Iterable<JavaType> {
 		final java.util.List<JavaType> value;
 
 		public List(Collection<? extends JavaType> items){
@@ -554,6 +554,10 @@ public interface JavaType {
 			if (other instanceof List)
 				return (List)other;
 			throw new ExpressionFault.TypeError();
+		}
+
+		@Override public Iterator<JavaType> iterator() {
+			return value.iterator();
 		}
 
 		public String toString() {
