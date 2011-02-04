@@ -1,0 +1,11 @@
+Exception in thread "main" java.lang.IllegalArgumentException: unkown type 'bool'
+        at jsignalml.Type.getType(Type.java:32)
+        at jsignalml.CodecParser.do_param(CodecParser.java:100)
+        at jsignalml.CodecParser.dispatch(CodecParser.java:42)
+        at jsignalml.CodecParser.walk(CodecParser.java:58)
+        at jsignalml.CodecParser.walk(CodecParser.java:63)
+        at jsignalml.CodecParser.walk(CodecParser.java:63)
+        at jsignalml.CodecParser.parse_signalml(CodecParser.java:77)
+        at jsignalml.CodecParser.makeCodec(CodecParser.java:32)
+        at jsignalml.CodecParser.main(CodecParser.java:258)
+
