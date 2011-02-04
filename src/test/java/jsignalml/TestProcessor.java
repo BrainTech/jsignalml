@@ -11,8 +11,7 @@ public class TestProcessor {
 	{
 		Expression expr = Processor.parse(line);
 		final ASTNode.ExprParam param =
-			new ASTNode.ExprParam(null, "expr", null,
-					      new ASTNode.Positional[0], expr);
+			new ASTNode.ExprParam(null, "expr", null, expr);
 		Type value = expr.accept(new EvalVisitor(state, null));
 		return value;
 	}

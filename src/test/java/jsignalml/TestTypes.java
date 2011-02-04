@@ -11,8 +11,7 @@ public class TestTypes {
 		Frame state = new Frame(null);
 		Expression expr = Processor.parse(line);
 		final ASTNode.ExprParam param =
-			new ASTNode.ExprParam(null, "expr", null,
-					      new ASTNode.Positional[0], expr);
+			new ASTNode.ExprParam(null, "expr", null, expr);
 		Type val = expr.accept(new EvalVisitor(state, param));
 		return val;
 	}
