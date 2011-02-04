@@ -68,13 +68,13 @@
     </param>
 
     <param id='m_szFile' type='str'>
-      <format>'|S33'</format>
+      <format>'|S260'</format>
       <offset>60</offset>
     </param>
 
     <param id='m_szComment' type='str'>
-      <format>'|S1'</format>
-      <offset>93</offset>
+      <format>'|S520'</format>
+      <offset>320</offset>
     </param>
 
     <param id='m_qwTimeStamp' type='int'>
@@ -193,19 +193,19 @@
     </param>
 
     <param id='m_szBufferID1' type='str'>
-      <format>'|S9'</format>
+      <format>'|S10'</format>
       <offset>936</offset>
     </param>
 
     <param id='m_szBufferID2' type='str'>
-      <format>'|S9'</format>
-      <offset>945</offset>
+      <format>'|S10'</format>
+      <offset>946</offset>
     </param>
 
     <!--
     <param id='m_arrImageData' type='IMAGEDATA'>
       <format>'None'</format>
-      <offset>954</offset>
+      <offset>956</offset>
     </param>
     -->
 
