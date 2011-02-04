@@ -25,6 +25,8 @@ public abstract class BitForm {
 			return new Int.Int32.LE();
 		if (description.equals("<i8"))
 			return new Int.Int64.LE();
+		if (description.equals("<u8"))
+			return new Int.Unsigned64.LE();
 		if (description.startsWith("|S"))
 			return new Str(Integer.parseInt(description.substring(2)));
 		throw new BadBitForm(description);
@@ -119,12 +121,45 @@ public abstract class BitForm {
 				public JavaType.Int read2(ByteBuffer buffer, JavaType.Int byteoffset) {
 					long data;
 					int offset = byteoffset.safeIntValue();
+
+					log.debug("read2(%s, %s)", buffer, byteoffset);
+
 					try {
 						data = buffer.getLong(offset);
 					} catch (IndexOutOfBoundsException e) {
 						throw new ExpressionFault.IndexError(offset, buffer.limit());
 					}
 					return new JavaType.Int(data);
+				}
+			}
+		}
+
+
+		public static abstract class Unsigned64 extends Int {
+			public static class LE extends Unsigned64 {
+				@Override
+				public Type.Int read(ByteBuffer buffer, int byteoffset) {
+					long data;
+					try {
+						data = buffer.getLong(byteoffset);
+					} catch (IndexOutOfBoundsException e) {
+						throw new ExpressionFault.IndexError(byteoffset, buffer.limit());
+					}
+					return new Type.Int(data);
+				}
+				@Override
+				public JavaType.Int read2(ByteBuffer buffer, JavaType.Int byteoffset) {
+					long data;
+					int offset = byteoffset.safeIntValue();
+
+					log.debug("read2(%s, %s)", buffer, byteoffset);
+
+					try {
+						data = buffer.getLong(offset);
+					} catch (IndexOutOfBoundsException e) {
+						throw new ExpressionFault.IndexError(offset, buffer.limit());
+					}
+					return JavaType.Int.makeFromUnsignedReadAsSigned(data);
 				}
 			}
 		}

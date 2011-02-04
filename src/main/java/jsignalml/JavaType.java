@@ -54,6 +54,14 @@ public interface JavaType {
 			throw new ExpressionFault.TypeError();
 		}
 
+		static Int makeFromUnsignedReadAsSigned(long value) {
+			Int ivalue = new Int(value);
+			if (ivalue.compareTo(ZERO) >= 0)
+				return ivalue;
+			// TODO: add tests!!!
+			return new Int(ivalue.add(valueOf(Long.MIN_VALUE).multiply(valueOf(-2))));
+		}
+
 		public Int(long value){
 			this(BigInteger.valueOf(value));
 		}
