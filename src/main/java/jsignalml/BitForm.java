@@ -176,6 +176,7 @@ public abstract class BitForm {
 		public Type.String read(ByteBuffer buffer, int byteoffset) {
 			log.info("BitForm.Str.read: buffer=%s byteoffset=%d",
 			         buffer, byteoffset);
+			buffer = buffer.asReadOnlyBuffer(); // XXX: don't use limit?
 			buffer.limit(byteoffset + this.size).position(byteoffset);
 
 			byte[] data = new byte[this.size];
@@ -188,6 +189,7 @@ public abstract class BitForm {
 			int offset = byteoffset.safeIntValue();
  			log.info("BitForm.Str.read: buffer=%s byteoffset=%d",
 			         buffer, offset);
+			buffer = buffer.asReadOnlyBuffer(); // XXX: don't use limit?
 			buffer.limit(offset + this.size).position(offset);
 
 			byte[] data = new byte[this.size];
