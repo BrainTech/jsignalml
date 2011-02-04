@@ -311,4 +311,20 @@ public abstract class ASTNode {
 			return v.visit(this, data);
 		}
 	}
+
+	public static class ForLoop extends ASTNode {
+		public final Expression expr;
+
+		public ForLoop(ASTNode parent, String id, Expression expr) {
+			super(parent, id);
+			this.expr = expr;
+		}
+
+		@Override
+		public <T> T _accept(ASTVisitor<T> v, T data)
+		{
+			return v.visit(this, data);
+		}
+	}
+
 }
