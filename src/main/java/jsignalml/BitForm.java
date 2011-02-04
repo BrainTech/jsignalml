@@ -27,6 +27,8 @@ public abstract class BitForm {
 			return new Int.Int64.LE();
 		if (description.equals("<u8"))
 			return new Int.Unsigned64.LE();
+		if (description.equals("<f4"))
+			return new Float.Float32.LE();
 		if (description.startsWith("|S"))
 			return new Str(Integer.parseInt(description.substring(2)));
 		throw new BadBitForm(description);
@@ -160,6 +162,37 @@ public abstract class BitForm {
 						throw new ExpressionFault.IndexError(offset, buffer.limit());
 					}
 					return JavaType.Int.makeFromUnsignedReadAsSigned(data);
+				}
+			}
+		}
+
+	}
+
+	public static abstract class Float extends BitForm {
+		public abstract static class Float32 extends Float {
+			public static class LE extends Float32 {
+				@Override
+				public Type.Float read(ByteBuffer buffer, int offset) {
+					float data;
+					try {
+						data = buffer.getFloat(offset);
+					} catch (IndexOutOfBoundsException e) {
+						throw new ExpressionFault.IndexError(offset, buffer.limit());
+					}
+					return new Type.Float(data);
+				}
+
+				@Override
+				public JavaType.Float read2(ByteBuffer buffer, JavaType.Int offset)
+				{
+					float data;
+					int offset_ = offset.safeIntValue();
+					try {
+						data = buffer.getFloat(offset_);
+					} catch (IndexOutOfBoundsException e) {
+						throw new ExpressionFault.IndexError(offset_, buffer.limit());
+					}
+					return new JavaType.Float(data);
 				}
 			}
 		}
