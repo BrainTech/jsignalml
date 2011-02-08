@@ -251,18 +251,18 @@ public class JavaGen extends ASTVisitor<JDefinedClass> {
 		final JClass javatype = convertTypeToJClass(type);
 		final JMethod impl = klass.method(JMod.NONE, javatype, makeGetterImpl(ident));
 		// -- generated code --
-		// JavaType.Str _jsignalml__get_readX_format();
-		// JavaType.Int _jsignalml__get_readX_offset();
-		// JavaType.Int _jsignalml__get_readX_read(BitForm bitform, JavaType.Int offset)
-		// JavaType.Int _jsignalml__get_readX() {
-		//     JavaType.Str format = _jsignalml__get_readX_format();
-		//     JavaType.Int offset = _jsignalml__get_readX_offset();
+		// Type.String _jsignalml__get_readX_format();
+		// Type.Int _jsignalml__get_readX_offset();
+		// Type.Int _jsignalml__get_readX_read(BitForm bitform, Type.Int offset)
+		// Type.Int _jsignalml__get_readX() {
+		//     Type.String format = _jsignalml__get_readX_format();
+		//     Type.Int offset = _jsignalml__get_readX_offset();
 		//     return _jsignalml__get_readX_read(BitForm.get(format), offset);
 	        // }
 		final JBlock body = impl.body();
-		final JVar format_ = body.decl(this.model.ref(JavaType.Str.class), "format",
+		final JVar format_ = body.decl(this.model.ref(Type.String.class), "format",
 					       JExpr._this().invoke(formatfunc));
-		final JVar offset_ = body.decl(this.model.ref(JavaType.Int.class), "offset",
+		final JVar offset_ = body.decl(this.model.ref(Type.Int.class), "offset",
 					       JExpr._this().invoke(offsetfunc));
 		final JClass bitform_class = this.model.ref(BitForm.class);
 		final JVar theformat = body.decl(bitform_class, "theformat");
@@ -308,11 +308,11 @@ public class JavaGen extends ASTVisitor<JDefinedClass> {
 		final JMethod impl = klass.method(JMod.NONE, javatype,
 						  makeGetterImpl(ident));
 		final JVar bitform_param = impl.param(BitForm.class, "bitform");
-		final JVar offset_param = impl.param(JavaType.Int.class, "offset");
+		final JVar offset_param = impl.param(Type.Int.class, "offset");
 		final JBlock body = impl.body();
 		body.directStatement(format("// type=%s", type));
 
-		final JClass javatype2 = this.model.ref(JavaType.class);
+		final JClass javatype2 = this.model.ref(Type.class);
 		final JExpression expr = bitform_param.invoke("read2")
 			.arg(JExpr.ref(JExpr._this().invoke("buffer"), "source"))
 			.arg(offset_param);
@@ -439,7 +439,7 @@ public class JavaGen extends ASTVisitor<JDefinedClass> {
 		klass._extends(jsignalml.codec.Signalml.LoopClass.class);
 
 		JMethod constructor = klass.constructor(JMod.NONE);
-		JVar index = constructor.param(JavaType.class, "index");
+		JVar index = constructor.param(Type.class, "index");
 		constructor.body().add(JExpr.invoke("super").arg(index)); // TODO: convert to proper codemodel magic
 		JMethod readall = this.readallMethod(klass);
 		klass.metadata = new Metadata(readall);
@@ -451,9 +451,9 @@ public class JavaGen extends ASTVisitor<JDefinedClass> {
 	public JMethod loopAccessor(JDefinedClass klass, ASTNode.ForLoop node,
 				    JDefinedClass context)
 	{
-		final JClass javatype_class = this.model.ref(JavaType.class);
-		final JClass jt_list_class = this.model.ref(JavaType.List.class);
-		final JClass jt_int_class = this.model.ref(JavaType.Int.class);
+		final JClass javatype_class = this.model.ref(Type.class);
+		final JClass jt_list_class = this.model.ref(Type.List.class);
+		final JClass jt_int_class = this.model.ref(Type.Int.class);
 		final JClass util_class = this.model.ref(util.class);
 		final String ident = "loop_" + node.id;
 		final JType list_type = this.model.ref(List.class).narrow(context);
@@ -482,12 +482,12 @@ public class JavaGen extends ASTVisitor<JDefinedClass> {
 	public JMethod loopIndexAccessor(JDefinedClass klass, ASTNode.ForLoop node,
 					 JDefinedClass context)
 	{
-		final JClass jt_int_class = this.model.ref(JavaType.Int.class);
+		final JClass jt_int_class = this.model.ref(Type.Int.class);
 		final JClass efte = this.model.ref(ExpressionFault.TypeError.class);
 		final String ident = "loop_" + node.id;
 		final JMethod getter = klass.method(JMod.PUBLIC, context,
 						    makeGetter(ident));
-		final JVar index = getter.param(JavaType.class, "index");
+		final JVar index = getter.param(Type.class, "index");
 		final JBlock body = getter.body();
 
 		final JFieldRef stor = JExpr._this().ref(ident);
@@ -549,31 +549,31 @@ public class JavaGen extends ASTVisitor<JDefinedClass> {
 	}
 
 
-	/* Those two static classes go here and not in JavaType, because it's an
+	/* Those two static classes go here and not in Type, because it's an
 	 * interface and cannot contain methods. They cannot go into Type
 	 * either, in order to keep Type clean from Java implementation
 	 * details.
 	 */
-	static Class<? extends JavaType> convertType(Type type)
+	static Class<? extends Type> convertType(Type type)
 	{
 		if(type == null)
 			return null;
 		if(type instanceof Type.Int)
-			return JavaType.Int.class;
+			return Type.Int.class;
 		if(type instanceof Type.Float)
-			return JavaType.Float.class;
+			return Type.Float.class;
 		if(type instanceof Type.String)
-			return JavaType.Str.class;
+			return Type.String.class;
 		if(type instanceof Type.List)
-			return JavaType.List.class;
+			return Type.List.class;
 		throw new RuntimeException("unknown Type");
 	}
 
 	JClass convertTypeToJClass(Type type)
 	{
-		Class<? extends JavaType> javatype_ = convertType(type);
+		Class<? extends Type> javatype_ = convertType(type);
 		if (javatype_ == null)
-			javatype_ = JavaType.class;
+			javatype_ = Type.class;
 		return this.model.ref(javatype_);
 	}
 }

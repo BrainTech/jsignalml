@@ -26,7 +26,7 @@ public class TestProcessor {
 	void assertLeqR(String line, BigInteger expected) throws Exception
 	{
 		Frame state = new Frame(null);
-		BigInteger result = ((Type.Int)eval(state, line)).getBigIntegerValue();
+		BigInteger result = ((Type.Int)eval(state, line)).getValue();
 		assertTrue(expected.equals(result));
 	}
 

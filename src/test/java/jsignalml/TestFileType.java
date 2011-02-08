@@ -56,7 +56,7 @@ public class TestFileType {
 	@Test public void test_binary_file_read_string() throws Exception {
 		FileType.BinaryFile F = new FileType.BinaryFile(filename);
 
-		BitForm format = new BitForm.Str(4);
+		BitForm format = new BitForm.String(4);
 		Type s = F.read(format, 0);
 		assertThat(s, equalTo((Type)new Type.String("1234")));
 	}

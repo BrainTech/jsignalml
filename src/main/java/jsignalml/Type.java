@@ -6,12 +6,14 @@ import java.util.TreeMap;
 import java.util.HashMap;
 import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.Iterator;
 import java.math.BigInteger;
-
 import static java.util.Collections.unmodifiableList;
 import static java.lang.String.format;
 
-public abstract class Type {
+import org.apache.commons.lang.StringUtils;
+
+public abstract class Type implements Comparable<Type> {
 	static final Logger log = new Logger(Type.class);
 
 	static final Map<java.lang.String, Type> typeNames = util.newHashMap();
@@ -125,15 +127,67 @@ public abstract class Type {
 		throw new RuntimeException("unknown type in expression");
 	}
 
-	public abstract Type binaryOp(BinaryOp op, Int other);
-	public abstract Type binaryOp(BinaryOp op, Float other);
+	public Type binaryOp(BinaryOp op, Int other)
+	{
+		switch (op) {
+		case ADD: return this.add(other);
+		case SUB: return this.sub(other);
+		case MUL: return this.mul(other);
+		case DIV: return this.div(other);
+		case FLOORDIV: return this.floordiv(other);
+		case MOD: return this.mod(other);
+		case BIN_AND: return this.bin_and(other);
+		case BIN_OR: return this.bin_or(other);
+		case BIN_XOR: return this.bin_xor(other);
+		case POW: return this.pow(other);
+		case EQ: return new Int(this.compareTo(other) == 0);
+		case NE: return new Int(this.compareTo(other) != 0);
+		case LT: return new Int(this.compareTo(other) < 0);
+		case GT: return new Int(this.compareTo(other) > 0);
+		case LE: return new Int(this.compareTo(other) <= 0);
+		case GE: return new Int(this.compareTo(other) >= 0);
+		case LOG_AND:
+		case LOG_OR:
+			throw new RuntimeException();
+		default:
+			throw new ExpressionFault.TypeError(this.getClass(), other.getClass());
+		}
+	}
+
+	public Type binaryOp(BinaryOp op, Float other)
+	{
+		switch (op) {
+		case ADD: return this.add(other);
+		case SUB: return this.sub(other);
+		case MUL: return this.mul(other);
+		case DIV: return this.div(other);
+		case FLOORDIV: return this.floordiv(other);
+		case MOD: return this.mod(other);
+		case BIN_AND: return this.bin_and(other);
+		case BIN_OR: return this.bin_or(other);
+		case BIN_XOR: return this.bin_xor(other);
+		case POW: return this.pow(other);
+		case EQ: return new Int(this.compareTo(other) == 0);
+		case NE: return new Int(this.compareTo(other) != 0);
+		case LT: return new Int(this.compareTo(other) < 0);
+		case GT: return new Int(this.compareTo(other) > 0);
+		case LE: return new Int(this.compareTo(other) <= 0);
+		case GE: return new Int(this.compareTo(other) >= 0);
+		case LOG_AND:
+		case LOG_OR:
+			throw new RuntimeException();
+		default:
+			throw new ExpressionFault.TypeError(this.getClass(), other.getClass());
+		}
+	}
+
 	public Type binaryOp(BinaryOp op, String other)
 	{
-		throw new ExpressionFault.TypeError();
+		throw new ExpressionFault.TypeError(this.getClass(), other.getClass());
 	}
 	public Type binaryOp(BinaryOp op, List other)
 	{
-		throw new ExpressionFault.TypeError();
+		throw new ExpressionFault.TypeError(this.getClass(), other.getClass());
 	}
 
 	/**
@@ -250,15 +304,49 @@ public abstract class Type {
 			return new Int(1);
 	}
 
+	abstract Type add(Type b);
+	abstract Type sub(Type b);
+	abstract Type mul(Type b);
+	abstract Type div(Type b);
+	abstract Type floordiv(Type b);
+	abstract Type mod(Type b);
+
+	abstract Type bin_and(Type b);
+	abstract Type bin_or(Type b);
+	abstract Type bin_xor(Type b);
+
+	abstract Type pow(Type b);
+
+	abstract Type pos();
+	abstract Type neg();
+	abstract Type bin_neg();
+
+
+
 	static {
 		registerType("int", new Int());
 	}
 	public static class Int extends Type {
-		public final long value;
-		public Int(long value) {
+		public static final Int ZERO = new Int(BigInteger.ZERO);
+
+		public final BigInteger value;
+
+		public static final Int False = new Int(0);
+		public static final Int True = new Int(1);
+
+		public Int(BigInteger value){
 			this.value = value;
 		}
+		public Int(long value) {
+			this.value = BigInteger.valueOf(value);
+		}
+		public Int(double value) {
+			this((long)value);
+			if(value > Integer.MAX_VALUE || value < Integer.MIN_VALUE)
+				throw new ExpressionFault.ValueError("overflow");
+		}
 		public Int(java.lang.String text) {
+
 			int base = 10;
 			text = text.trim();
 			if (text.startsWith("+"))
@@ -275,12 +363,11 @@ public abstract class Type {
 			}
 
 			try {
-				this.value = Integer.parseInt(text, base);
+				this.value = new BigInteger(text, base);
 			} catch (NumberFormatException e) {
 				throw new SyntaxError.RuntimeFlavour(e);
 			}
 		}
-
 		public Int(boolean value) {
 			this(value?1:0);
 		}
@@ -289,26 +376,54 @@ public abstract class Type {
 		}
 
 		@Override
-		public Int make(Type value) {
-			if (value instanceof Int)
-				return (Int)value;
-			if (value instanceof String)
-				return new Int(((String)value).getValue());
-			throw new UnsupportedOperationException();
+		public Int make(Type other) {
+			if (other instanceof Int)
+				return (Int)other;
+			if (other instanceof Float)
+				return new Int(((Float)other).value);
+			if (other instanceof String)
+				return new Int(((String)other).value);
+			throw new ExpressionFault.TypeError();
+		}
+
+		static Int makeFromUnsignedReadAsSigned(long value) {
+			Int ivalue = new Int(value);
+			log.info("converting long %s", value);
+			if (ivalue.compareTo(ZERO) >= 0)
+				return ivalue;
+			// TODO: add tests!!!
+			return new Int(ivalue.value.add(BigInteger.valueOf(Long.MIN_VALUE)
+							.multiply(BigInteger.valueOf(-2))));
+		}
+
+		static Int makeFromUnsignedReadAsSigned(int value) {
+			Int ivalue = new Int(value);
+			log.info("converting int %s", value);
+			if (ivalue.compareTo(ZERO) >= 0)
+				return ivalue;
+			// TODO: add tests!!!
+			return new Int(ivalue.value.add(BigInteger.valueOf(Integer.MIN_VALUE)
+							.multiply(BigInteger.valueOf(-2))));
+		}
+
+		static Int makeFromUnsignedReadAsSigned(short value) {
+			Int ivalue = new Int(value);
+			log.info("converting short %s", value);
+			if (ivalue.compareTo(ZERO) >= 0)
+				return ivalue;
+			// TODO: add tests!!!
+			return new Int(ivalue.value.add(BigInteger.valueOf(Short.MIN_VALUE)
+							.multiply(BigInteger.valueOf(-2))));
 		}
 
 		@Override
-		public Long getValue() {
+		public BigInteger getValue() {
 			return this.value;
-		}
-
-		public BigInteger getBigIntegerValue() {
-			return BigInteger.valueOf(this.value);
 		}
 
 		@Override
 		public boolean isTrue() {
-			return this.value != 0;
+			return this.compareTo(ZERO) != 0;
 		}
 
 		@Override
@@ -316,101 +431,6 @@ public abstract class Type {
 			return java.lang.String.valueOf(this.value);
 		}
 
-		@Override
-		public Type binaryOp(BinaryOp op, Int other)
-		{
-			switch (op) {
-			case ADD:
-				return new Int(this.value + other.value);
-			case SUB:
-				return new Int(this.value - other.value);
-			case MUL:
-				return new Int(this.value * other.value);
-			case DIV:
-				return new Float((double)this.value / other.value);
-			case FLOORDIV:
-				return new Int(this.value / other.value);
-			case MOD:
-				long value = this.value % other.value;
-				if ((other.value > 0 && value < 0) ||
-				    (other.value < 0 && value > 0))
-					value += other.value;
-				return new Int(value);
-			case BIN_AND:
-				return new Int(this.value & other.value);
-			case BIN_OR:
-				return new Int(this.value | other.value);
-			case BIN_XOR:
-				return new Int(this.value ^ other.value);
-			case POW:
-				return new Int(Math.round(Math.pow(this.value, other.value)));
-			case EQ:
-				return new Int(this.value == other.value);
-			case NE:
-				return new Int(this.value != other.value);
-			case LT:
-				return new Int(this.value < other.value);
-			case GT:
-				return new Int(this.value > other.value);
-			case LE:
-				return new Int(this.value <= other.value);
-			case GE:
-				return new Int(this.value >= other.value);
-			case LOG_AND:
-			case LOG_OR:
-				throw new RuntimeException();
-			default:
-				throw new ExpressionFault.TypeError(this.getClass(), other.getClass());
-			}
-		}
-
-		@Override
-		public Type binaryOp(BinaryOp op, Float other)
-		{
-			switch (op) {
-			case ADD:
-				return new Float(this.value + other.value);
-			case SUB:
-				return new Float(this.value - other.value);
-			case MUL:
-				return new Float(this.value * other.value);
-			case DIV:
-				return new Float(this.value / other.value);
-			case FLOORDIV:
-				return new Int(Math.round(Math.floor(this.value / other.value)));
-			case MOD:
-				double value = this.value % other.value;
-				if ((other.value > 0 && value < 0) ||
-				    (other.value < 0 && value > 0))
-					value += other.value;
-				return new Float(value);
-			case POW:
-				return new Float(Math.pow(this.value, other.value));
-
-			case EQ:
-				return new Int(this.value == other.value);
-			case NE:
-				return new Int(this.value != other.value);
-			case LT:
-				return new Int(this.value < other.value);
-			case GT:
-				return new Int(this.value > other.value);
-			case LE:
-				return new Int(this.value <= other.value);
-			case GE:
-				return new Int(this.value >= other.value);
-
-			case LOG_AND:
-			case LOG_OR:
-				throw new RuntimeException();
-
-			case BIN_AND:
-			case BIN_OR:
-			case BIN_XOR:
-			default:
-				throw new ExpressionFault.TypeError();
-			}
-		}
 
 		@Override
 		public Type binaryOp(BinaryOp op, String other)
@@ -469,10 +489,183 @@ public abstract class Type {
 			case POS:
 				return this;
 			case NEG:
-				return new Int(-this.value);
+				return new Int(this.value.negate());
 			default:
 				throw new ExpressionFault.TypeError();
 			}
+		}
+
+		public Type add(Type other){
+			if(other instanceof Int)
+				return this.add((Int)other);
+			if(other instanceof Float)
+				return this.add((Float)other);
+			throw new ExpressionFault.TypeError();
+		}
+		public Int add(Int other){
+			return new Int(this.value.add(other.value));
+		}
+		public Float add(Float other){
+			return new Float(this.value.doubleValue() + other.value);
+		}
+
+		public Type sub(Type other){
+			if(other instanceof Int)
+				return this.sub((Int)other);
+			if(other instanceof Float)
+				return this.sub((Float)other);
+			throw new ExpressionFault.TypeError();
+		}
+		public Int sub(Int other){
+			return new Int(this.value.subtract(other.value));
+		}
+		public Int sub(BigInteger other){
+			return new Int(this.value.subtract(other));
+		}
+		public Float sub(Float other){
+			return new Float(this.value.doubleValue() - other.value);
+		}
+
+		public Type mul(Type other){
+			if(other instanceof Int)
+				return this.mul((Int)other);
+			if(other instanceof Float)
+				return this.mul((Float)other);
+			if(other instanceof String)
+				return this.mul((String)other);
+			if(other instanceof List)
+				return this.mul((List)other);
+			throw new ExpressionFault.TypeError();
+		}
+		public Int mul(Int other){
+			return new Int(this.value.multiply(other.value));
+		}
+		public Float mul(Float other){
+			return new Float(this.value.doubleValue() * other.value);
+		}
+		public String mul(String other){
+			return other.mul(this);
+		}
+		public List mul(List other){
+			return other.mul(this);
+		}
+
+		public Float div(Type other){
+			if(other instanceof Int)
+				return this.div((Int)other);
+			if(other instanceof Float)
+				return this.div((Float)other);
+			throw new ExpressionFault.TypeError();
+		}
+		public Float div(Int other){
+			return new Float(this.value.doubleValue() / other.value.doubleValue());
+		}
+		public Float div(Float other){
+			return new Float(this.value.doubleValue() / other.value);
+		}
+
+		public Int floordiv(Type other){
+			if(other instanceof Int)
+				return this.floordiv((Int)other);
+			if(other instanceof Float)
+				return this.floordiv((Float)other);
+			throw new ExpressionFault.TypeError();
+		}
+		public Int floordiv(Int other){
+			return new Int(this.value.divide(other.value));
+		}
+		public Int floordiv(Float other){
+			return new Int(this.value.doubleValue() / other.value);
+		}
+
+		public Type mod(Type other){
+			if(other instanceof Int)
+				return this.mod((Int)other);
+			if(other instanceof Float)
+				return this.mod((Float)other);
+			throw new ExpressionFault.TypeError();
+		}
+		public Int mod(Int other){
+			return new Int(this.value.mod(other.value));
+		}
+		public Float mod(Float other){
+			return new Float(this.value.doubleValue()).mod(other);
+		}
+
+		public Type bin_and(Type other){
+			if(other instanceof Int)
+				return this.bin_and((Int)other);
+			throw new ExpressionFault.TypeError();
+		}
+		public Int bin_and(Int other){
+			return new Int(this.value.and(other.value));
+		}
+
+		public Type bin_or(Type other){
+			if(other instanceof Int)
+				return this.bin_or((Int)other);
+			throw new ExpressionFault.TypeError();
+		}
+		public Int bin_or(Int other){
+			return new Int(this.value.or(other.value));
+		}
+
+		public Type bin_xor(Type other){
+			if(other instanceof Int)
+				return this.bin_xor((Int)other);
+			throw new ExpressionFault.TypeError();
+		}
+		public Int bin_xor(Int other){
+			return new Int(this.value.xor(other.value));
+		}
+
+		public Type pow(Type other){
+			if(other instanceof Int)
+				return this.pow((Int)other);
+			if(other instanceof Float)
+				return this.pow((Float)other);
+			throw new ExpressionFault.TypeError();
+		}
+		public Int pow(Int other){
+			return new Int(this.value.pow(other.value.intValue()));
+		}
+		public Float pow(Float other){
+			return new Float(Math.pow(this.value.doubleValue(), other.value));
+		}
+
+		public int compareTo(Type other){
+			if(other instanceof Int)
+				return this.compareTo((Int)other);
+			if(other instanceof Float)
+				return this.compareTo((Float)other);
+			throw new ExpressionFault.TypeError();
+		}
+		public int compareTo(Int other){
+			return this.value.compareTo(other.value);
+		}
+		public int compareTo(Float other){
+			return java.lang.Double.compare(this.value.doubleValue(),
+							other.value);
+		}
+
+		public Type index(Type i){
+			throw new ExpressionFault.TypeError();
+		}
+
+		public Int pos() { return this; }
+		public Int neg() {
+			return new Int(this.value.negate());
+		}
+		public Int bin_neg() {
+			return new Int(this.value.not());
+		}
+
+		public int safeIntValue() {
+			if (this.value.compareTo(BigInteger.valueOf(Integer.MIN_VALUE)) < 0
+			    || this.value.compareTo(BigInteger.valueOf(Integer.MAX_VALUE)) > 0)
+				throw new ExpressionFault.ValueError
+					("cannot cast to int without changing value.");
+			return this.value.intValue();
 		}
 	}
 
@@ -488,6 +681,12 @@ public abstract class Type {
 		public Float(java.lang.String text) {
 			this(new Double(text));
 		}
+		public Float(BigInteger value) {
+			this.value = value.doubleValue();
+		}
+		public Float(Int value) {
+			this(value.value);
+		}
 
 		public Float() {
 			this(0.0);
@@ -501,7 +700,7 @@ public abstract class Type {
 				return new Float(((Int)value).getValue());
 			if (value instanceof String)
 				return new Float(((String)value).getValue());
-			throw new UnsupportedOperationException();
+			throw new ExpressionFault.TypeError();
 		}
 
 		@Override
@@ -519,103 +718,163 @@ public abstract class Type {
 			return java.lang.String.valueOf(this.value);
 		}
 
-		@Override
-		public Type binaryOp(BinaryOp op, Int other)
-			throws ExpressionFault.TypeError
-		{
-			switch (op) {
-			case ADD:
-				return new Float(this.value + other.value);
-			case SUB:
-				return new Float(this.value - other.value);
-			case MUL:
-				return new Float(this.value * other.value);
-			case DIV:
-				return new Float(this.value / other.value);
-			case FLOORDIV:
-				return new Int(Math.round(Math.floor(this.value / other.value)));
-			case MOD:
-				double value = this.value % other.value;
-				if ((other.value > 0 && value < 0) ||
-				    (other.value < 0 && value > 0))
-					value += other.value;
-				return new Float(value);
-			case POW:
-				return new Float(Math.pow(this.value, other.value));
-			case EQ:
-				return new Int(this.value == other.value);
-			case NE:
-				return new Int(this.value != other.value);
-			case LT:
-				return new Int(this.value < other.value);
-			case GT:
-				return new Int(this.value > other.value);
-			case LE:
-				return new Int(this.value <= other.value);
-			case GE:
-				return new Int(this.value >= other.value);
-
-			case LOG_AND:
-			case LOG_OR:
-				throw new RuntimeException();
-
-			case BIN_AND:
-			case BIN_OR:
-			case BIN_XOR:
-			default:
-				throw new ExpressionFault.TypeError();
-			}
+		public int compareTo(Type other){
+			if(other instanceof Int)
+				return this.compareTo((Int)other);
+			if(other instanceof Float)
+				return this.compareTo((Float)other);
+			throw new ExpressionFault.TypeError();
+		}
+		public int compareTo(Int other){
+			return -other.compareTo(this);
+		}
+		public int compareTo(Float other){
+			return java.lang.Double.compare(this.value,
+							other.value);
 		}
 
-		@Override
-		public Type binaryOp(BinaryOp op, Float other)
-			throws ExpressionFault.TypeError
-		{
-			switch (op) {
-			case ADD:
-				return new Float(this.value + other.value);
-			case SUB:
-				return new Float(this.value - other.value);
-			case MUL:
-				return new Float(this.value * other.value);
-			case DIV:
-				return new Float(this.value / other.value);
-			case FLOORDIV:
-				return new Int(Math.round(Math.floor(this.value / other.value)));
-			case MOD:
-				double value = this.value % other.value;
-				if ((other.value > 0 && value < 0) ||
-				    (other.value < 0 && value > 0))
-					value += other.value;
-				return new Float(value);
-			case POW:
-				return new Float(Math.pow(this.value, other.value));
-
-			case EQ:
-				return new Int(this.value == other.value);
-			case NE:
-				return new Int(this.value != other.value);
-			case LT:
-				return new Int(this.value < other.value);
-			case GT:
-				return new Int(this.value > other.value);
-			case LE:
-				return new Int(this.value <= other.value);
-			case GE:
-				return new Int(this.value >= other.value);
-
-			case LOG_AND:
-			case LOG_OR:
-				throw new RuntimeException();
-
-			case BIN_AND:
-			case BIN_OR:
-			case BIN_XOR:
-			default:
-				throw new ExpressionFault.TypeError();
-			}
+		public Type add(Type other){
+			if(other instanceof Int)
+				return this.add((Int)other);
+			if(other instanceof Float)
+				return this.add((Float)other);
+			throw new ExpressionFault.TypeError();
+		}
+		public Float add(Int other){
+			return new Float(this.value + other.value.doubleValue());
+		}
+		public Float add(Float other){
+			return new Float(this.value + other.value);
 		}
 
+		public Type sub(Type other){
+			if(other instanceof Int)
+				return this.sub((Int)other);
+			if(other instanceof Float)
+				return this.sub((Float)other);
+			throw new ExpressionFault.TypeError();
+		}
+		public Float sub(Int other){
+			return new Float(this.value - other.value.doubleValue());
+		}
+		public Float sub(Float other){
+			return new Float(this.value - other.value);
+		}
+
+		public Type mul(Type other){
+			if(other instanceof Int)
+				return this.mul((Int)other);
+			if(other instanceof Float)
+				return this.mul((Float)other);
+			throw new ExpressionFault.TypeError();
+		}
+		public Float mul(Int other){
+			return new Float(this.value * other.value.doubleValue());
+		}
+		public Float mul(Float other){
+			return new Float(this.value * other.value);
+		}
+
+		public Float div(Type other){
+			if(other instanceof Int)
+				return this.div((Int)other);
+			if(other instanceof Float)
+				return this.div((Float)other);
+			throw new ExpressionFault.TypeError();
+		}
+		public Float div(Int other){
+			return new Float(this.value / other.value.doubleValue());
+		}
+		public Float div(Float other){
+			return new Float(this.value / other.value);
+		}
+
+		public Int floordiv(Type other){
+			if(other instanceof Int)
+				return this.floordiv((Int)other);
+			if(other instanceof Float)
+				return this.floordiv((Float)other);
+			throw new ExpressionFault.TypeError();
+		}
+		public Int floordiv(Int other){
+			return new Int(this.value / other.value.doubleValue());
+		}
+		public Int floordiv(Float other){
+			return new Int(this.value / other.value);
+		}
+
+		public Float mod(Type other){
+			if(other instanceof Int)
+				return this.mod((Int)other);
+			if(other instanceof Float)
+				return this.mod((Float)other);
+			throw new ExpressionFault.TypeError();
+		}
+		public Float mod(Float other){
+			double value = this.value % other.value;
+			if (value < 0)
+				value += other.value;
+			return new Float(value);
+		}
+		public Float mod(Int other){
+			return this.mod(new Float(other));
+		}
+
+		public Type bin_and(Type other){
+			throw new ExpressionFault.TypeError();
+		}
+		public Type bin_or(Type other){
+			throw new ExpressionFault.TypeError();
+		}
+		public Type bin_xor(Type other){
+			throw new ExpressionFault.TypeError();
+		}
+
+		public Type pow(Type other){
+			if(other instanceof Int)
+				return this.pow((Int)other);
+			if(other instanceof Float)
+				return this.pow((Float)other);
+			throw new ExpressionFault.TypeError();
+		}
+		public Float pow(Int other){
+			return new Float(Math.pow(this.value, other.value.doubleValue()));
+		}
+		public Float pow(Float other){
+			return new Float(Math.pow(this.value, other.value));
+		}
+
+		public Int cmp(Type other){
+			if(other instanceof Int)
+				return this.cmp((Int)other);
+			if(other instanceof Float)
+				return this.cmp((Float)other);
+			throw new ExpressionFault.TypeError();
+		}
+		public Int cmp(Int other){
+			int value = java.lang.Double.compare(this.value,
+							     other.value.doubleValue());
+			return new Int(value);
+		}
+		public Int cmp(Float other){
+			int value = java.lang.Double.compare(this.value,
+							     other.value);
+			return new Int(value);
+		}
+
+		public Type index(Type i){
+			throw new ExpressionFault.TypeError();
+		}
+
+		public Int bool(){
+			return this.value == 0.0 ? Int.False : Int.True;
+		}
+
+		public Float pos() { return this; }
+		public Float neg() { return new Float(-this.value); }
+		public Int bin_neg() {
+			throw new ExpressionFault.TypeError();
+		}
 
 		@Override
 		public Type _binaryOpType(BinaryOp op, Type.Int other)
@@ -665,7 +924,7 @@ public abstract class Type {
 
 		@Override
 		public String make(Type value) {
-			return value.str();
+			return new String(value.toString());
 		}
 
 		@Override
@@ -685,44 +944,24 @@ public abstract class Type {
 		}
 
 		@Override
-		public Type binaryOp(BinaryOp op, Int other)
-			throws ExpressionFault.TypeError
-		{
-			switch (op) {
-			case MUL:
-				// TODO
-			default:
-				throw new ExpressionFault.TypeError();
-			}
-		}
-
-		@Override
-		public Type binaryOp(BinaryOp op, Float other)
-			throws ExpressionFault.TypeError
-		{
-			throw new ExpressionFault.TypeError();
-		}
-
-		@Override
 		public Type binaryOp(BinaryOp op, String other)
 			throws ExpressionFault.TypeError
 		{
 			switch (op) {
-			case ADD:
-				return new String(this.value + other.value);
+			case ADD: return this.add(other);
 
-			case EQ:
-				return new Int(this.value.equals(other.value));
-			case NE:
-				return new Int(!this.value.equals(other.value));
+			case EQ: return new Int(this.compareTo(other) == 0);
+			case NE: return new Int(this.compareTo(other) != 0);
+			case LT: return new Int(this.compareTo(other) < 0);
+			case GT: return new Int(this.compareTo(other) > 0);
+			case LE: return new Int(this.compareTo(other) <= 0);
+			case GE: return new Int(this.compareTo(other) >= 0);
 
-			case LT: /* should those be implemented ? */
-			case GT:
-			case LE:
-			case GE:
-
+			case LOG_AND:
+			case LOG_OR:
+				throw new RuntimeException();
 			default:
-				throw new ExpressionFault.TypeError();
+				throw new ExpressionFault.TypeError(this.getClass(), other.getClass());
 			}
 		}
 
@@ -738,27 +977,6 @@ public abstract class Type {
 		{
 			/* "" should be safe and efficient for all ops */
 			return this.binaryOp(op, new Type.String());
-		}
-
-		@Override
-		public Type index(Type sub)
-			throws ExpressionFault.TypeError,
-			       ExpressionFault.IndexError
-		{
-			if (!(sub instanceof Int))
-				throw new ExpressionFault.TypeError();
-
-			Int ind = (Int) sub;
-			int offset = util.safeLongToInt(ind.value);
-			if (offset < 0)
-				offset += this.value.length();
-			try {
-				char c = this.value.charAt(offset);
-				return new String(c);
-			} catch (IndexOutOfBoundsException e) {
-				throw new ExpressionFault.IndexError(
-				        ind.value, this.value.length());
-			}
 		}
 
 		/** Synchronize with SExpression.g:ESC_SEQ ! */
@@ -788,29 +1006,100 @@ public abstract class Type {
 			return quoteless;
 		}
 
-		public static java.lang.String join(java.lang.String sep,
-		                                    java.util.List<? extends Type> list)
-		{
-			StringBuilder s = new StringBuilder();
-
-			// our list is array-based, so access is cheap
-			for (int i = 0; i < list.size(); i++) {
-				if (i > 0)
-					s.append(sep);
-				s.append(list.get(i).repr());
-			}
-
-			// TODO: add interface shared by Expression and Type
-			// with repr(), and call repr() on items() ?
-
-			return s.toString();
+		public Type add(Type other){
+			if(other instanceof String)
+				return this.add((String)other);
+			throw new ExpressionFault.TypeError();
 		}
+		public String add(String other){
+			return new String(this.value + other.value);
+		}
+
+		public Type sub(Type other){
+			throw new ExpressionFault.TypeError();
+		}
+
+		public Type mul(Type other){
+			if(other instanceof Int)
+				return this.mul((Int)other);
+			throw new ExpressionFault.TypeError();
+		}
+		public String mul(Int other){
+			StringBuilder result = new StringBuilder();
+			for(long count=other.value.longValue(); count > 0; count--)
+				result.append(this.value);
+			return new String(result.toString());
+		}
+
+		public Float div(Type other){
+			throw new ExpressionFault.TypeError();
+		}
+
+		public Int floordiv(Type other){
+			throw new ExpressionFault.TypeError();
+		}
+
+		public Type mod(Type other){
+			throw new ExpressionFault.TypeError();
+		}
+
+		public Type bin_and(Type other){
+			throw new ExpressionFault.TypeError();
+		}
+		public Type bin_or(Type other){
+			throw new ExpressionFault.TypeError();
+		}
+		public Type bin_xor(Type other){
+			throw new ExpressionFault.TypeError();
+		}
+
+		public Type pow(Type other){
+			throw new ExpressionFault.TypeError();
+		}
+
+		public int compareTo(Type other){
+			if(other instanceof String)
+				return this.compareTo((String)other);
+			throw new ExpressionFault.TypeError();
+		}
+		public int compareTo(String other){
+			return this.value.compareTo(other.value);
+		}
+
+		public Type index(Type i){
+			if(i instanceof Int)
+				return this.index((Int)i);
+			throw new ExpressionFault.TypeError();
+		}
+		public Type index(Int i){
+			int offset = i.safeIntValue();
+			if (offset < 0)
+				offset += this.value.length();
+			try {
+				char c = this.value.charAt(offset);
+				return new String(c);
+			} catch (IndexOutOfBoundsException e) {
+				throw new ExpressionFault.IndexError(
+				        offset, this.value.length());
+			}
+		}
+
+		public Int pos() {
+			throw new ExpressionFault.TypeError();
+		}
+		public Int neg() {
+			throw new ExpressionFault.TypeError();
+		}
+		public Int bin_neg() {
+			throw new ExpressionFault.TypeError();
+		}
+
 	}
 
 	static {
 		registerType("list", new List());
 	}
-	public static class List extends Type {
+	public static class List extends Type implements Iterable<Type> {
 		public final java.util.List<Type> value;
 
 		public List(java.util.List<? extends Type> value) {
@@ -822,8 +1111,12 @@ public abstract class Type {
 		}
 
 		@Override
-		public List make(Type value) {
-			throw new UnsupportedOperationException();
+		public List make(Type other) {
+			if (other instanceof String)
+				return null; // TODO
+			if (other instanceof List)
+				return (List)other;
+			throw new ExpressionFault.TypeError();
 		}
 
 		public static List make(Object... items) {
@@ -851,7 +1144,7 @@ public abstract class Type {
 
 		@Override
 		public java.lang.String repr() {
-			return "[" + String.join(", ", this.value) + "]";
+			return "[" + StringUtils.join(this.value, ", ") + "]";
 		}
 
 		@Override
@@ -883,46 +1176,28 @@ public abstract class Type {
 			throws ExpressionFault.TypeError
 		{
 			switch (op) {
-			case ADD:
-				// TODO
-			case EQ:
-				return new Int(this.compareTo(other) == 0);
-			case NE:
-				return new Int(this.compareTo(other) != 0);
+			case ADD: return this.add(other);
 
-			case LT:
-				return new Int(this.compareTo(other) < 0);
-			case GT:
-				return new Int(this.compareTo(other) > 0);
-			case LE:
-				return new Int(this.compareTo(other) <= 0);
-			case GE:
-				return new Int(this.compareTo(other) >= 0);
+			case EQ: return new Int(this.compareTo(other) == 0);
+			case NE: return new Int(this.compareTo(other) != 0);
+			case LT: return new Int(this.compareTo(other) < 0);
+			case GT: return new Int(this.compareTo(other) > 0);
+			case LE: return new Int(this.compareTo(other) <= 0);
+			case GE: return new Int(this.compareTo(other) >= 0);
 
+			case LOG_AND:
+			case LOG_OR:
+				throw new RuntimeException();
 			default:
-				throw new ExpressionFault.TypeError();
+				throw new ExpressionFault.TypeError(this.getClass(), other.getClass());
 			}
 		}
 
-		public int compareTo(Object other)
-			throws ExpressionFault.TypeError
-		{
-			if (!(other instanceof List))
-				throw new ExpressionFault.TypeError(); // XXX: "uncomparable types"
-
-			int size1 = this.value.size();
-			int size2 = ((List)other).value.size();
-
-			for(int i=0; i < size1 && i < size2; i++) {
-				Type a = this.value.get(i);
-				Type b = ((List)other).value.get(i);
-				if (a.binaryOp(Type.BinaryOp.LT, b).isTrue())
-					return -1;
-				if (b.binaryOp(Type.BinaryOp.LT, a).isTrue())
-					return 1;
-			}
-			return size1 - size2;
+		@Override
+		public Iterator<Type> iterator() {
+			return value.iterator();
 		}
+
 
 		@Override
 		public Type _binaryOpType(BinaryOp op, Type.Int other)
@@ -938,25 +1213,110 @@ public abstract class Type {
 			return this.binaryOp(op, new Type.List());
 		}
 
+		public Type add(Type other){
+			if(other instanceof List)
+				return this.add((List)other);
+			throw new ExpressionFault.TypeError();
+		}
+		public List add(List other){
+			ArrayList<Type> result = new ArrayList<Type>(this.value);
+			result.addAll(other.value);
+			return new List(result);
+		}
 
-		@Override
-		public Type index(Type sub)
-			throws ExpressionFault.TypeError,
-			       ExpressionFault.IndexError
-		{
-			if (!(sub instanceof Int))
-				throw new ExpressionFault.TypeError();
+		public Type sub(Type other){
+			throw new ExpressionFault.TypeError();
+		}
 
-			Int ind = (Int) sub;
-			int offset = util.safeLongToInt(ind.value);
+		public Type mul(Type other){
+			if(other instanceof Int)
+				return this.mul((Int)other);
+			throw new ExpressionFault.TypeError();
+		}
+		public List mul(Int other){
+			ArrayList<Type> result = new ArrayList<Type>(this.value);
+			for(long count=other.value.longValue(); count > 1; count--)
+				result.addAll(this.value);
+			return new List(result);
+		}
+
+		public Float div(Type other){
+			throw new ExpressionFault.TypeError();
+		}
+
+		public Int floordiv(Type other){
+			throw new ExpressionFault.TypeError();
+		}
+
+		public Type mod(Type other){
+			throw new ExpressionFault.TypeError();
+		}
+
+		public Type bin_and(Type other){
+			throw new ExpressionFault.TypeError();
+		}
+		public Type bin_or(Type other){
+			throw new ExpressionFault.TypeError();
+		}
+		public Type bin_xor(Type other){
+			throw new ExpressionFault.TypeError();
+		}
+
+		public Type pow(Type other){
+			throw new ExpressionFault.TypeError();
+		}
+
+		public int compareTo(Type other){
+			if(other instanceof List)
+				return this.compareTo((List)other);
+			throw new ExpressionFault.TypeError();
+		}
+		public int compareTo(List other){
+			Iterator<Type> itother = other.value.iterator();
+
+			for(Type item: this.value){
+				if(!itother.hasNext())
+					return 1;
+				Type itemother = itother.next();
+				int cmp = item.compareTo(itemother);
+				if(cmp != 0)
+					return cmp;
+			}
+
+			if(itother.hasNext())
+				return -1;
+			return 0;			
+		}
+
+		public Type index(Type i){
+			if(i instanceof Int)
+				return this.index((Int)i);
+			throw new ExpressionFault.TypeError();
+		}
+		public Type index(Int i){
+			int offset = i.safeIntValue();
 			if (offset < 0)
 				offset += this.value.size();
 			try {
 				return this.value.get(offset);
 			} catch (IndexOutOfBoundsException e) {
 				throw new ExpressionFault.IndexError(
-				        ind.value, this.value.size());
+				        offset, this.value.size());
 			}
+		}
+
+		public Int bool(){
+			return this.value.isEmpty() ? Int.False : Int.True;
+		}
+
+		public Int pos() {
+			throw new ExpressionFault.TypeError();
+		}
+		public Int neg() {
+			throw new ExpressionFault.TypeError();
+		}
+		public Int bin_neg() {
+			throw new ExpressionFault.TypeError();
 		}
 	}
 }

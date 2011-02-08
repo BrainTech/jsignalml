@@ -6,7 +6,7 @@ import java.util.LinkedList;
 
 import jsignalml.MyBuffer;
 import jsignalml.ExpressionFault;
-import jsignalml.JavaType;
+import jsignalml.Type;
 import jsignalml.util;
 
 public abstract class Signalml implements jsignalml.Source {
@@ -34,8 +34,8 @@ public abstract class Signalml implements jsignalml.Source {
 	}
 
 	public abstract class LoopClass {
-		final protected JavaType index;
-		public LoopClass(JavaType index) {
+		final protected Type index;
+		public LoopClass(Type index) {
 			this.index = index;
 		}
 	}
