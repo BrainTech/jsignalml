@@ -2,13 +2,40 @@
 
 <BugCollection version="1.3.9" sequence="0" timestamp="1296416629000" analysisTimestamp="1296416724323" release="">
   <Project projectName="jsignalml">
-    <Jar>target/classes/jsignalml</Jar>
-    <SrcDir>src/main/java</SrcDir>
-    <SrcDir>src/main/java/jsignalml</SrcDir>
+    <Jar>/home/zbyszek/eeg/jsignalml/target/classes/jsignalml</Jar>
+    <SrcDir>/home/zbyszek/eeg/jsignalml/src/main/java</SrcDir>
+    <SrcDir>/home/zbyszek/eeg/jsignalml/src/main/java/jsignalml</SrcDir>
+    <WrkDir>/home/zbyszek/eeg/jsignalml</WrkDir>
     <SuppressionFilter>
       <LastVersion value="-1" relOp="NEQ"/>
     </SuppressionFilter>
   </Project>
+  <BugInstance type="DLS_DEAD_LOCAL_STORE" priority="2" abbrev="DLS" category="STYLE" introducedByChange="true">
+    <Class classname="jsignalml.JavaGen">
+      <SourceLine classname="jsignalml.JavaGen" sourcefile="JavaGen.java" sourcepath="jsignalml/JavaGen.java"/>
+    </Class>
+    <Method classname="jsignalml.JavaGen" name="codecOpenMethod" signature="(Lcom/sun/codemodel/JDefinedClass;)Lcom/sun/codemodel/JMethod;" isStatic="false">
+      <SourceLine classname="jsignalml.JavaGen" start="165" end="169" startBytecode="0" endBytecode="27" sourcefile="JavaGen.java" sourcepath="jsignalml/JavaGen.java"/>
+    </Method>
+    <LocalVariable name="file_class" register="2" pc="11" role="LOCAL_VARIABLE_NAMED"/>
+    <SourceLine classname="jsignalml.JavaGen" start="165" end="165" startBytecode="10" endBytecode="10" sourcefile="JavaGen.java" sourcepath="jsignalml/JavaGen.java"/>
+    <Property name="edu.umd.cs.findbugs.detect.DeadLocalStoreProperty.NO_LOADS" value="true"/>
+    <Property name="edu.umd.cs.findbugs.detect.DeadLocalStoreProperty.LOCAL_NAME" value="file_class"/>
+    <Property name="edu.umd.cs.findbugs.detect.DeadLocalStoreProperty.METHOD_RESULT" value="true"/>
+  </BugInstance>
+  <BugInstance type="DLS_DEAD_LOCAL_STORE" priority="2" abbrev="DLS" category="STYLE" introducedByChange="true">
+    <Class classname="jsignalml.JavaGen">
+      <SourceLine classname="jsignalml.JavaGen" sourcefile="JavaGen.java" sourcepath="jsignalml/JavaGen.java"/>
+    </Class>
+    <Method classname="jsignalml.JavaGen" name="loopAccessor" signature="(Lcom/sun/codemodel/JDefinedClass;Ljsignalml/ASTNode$ForLoop;Lcom/sun/codemodel/JDefinedClass;)Lcom/sun/codemodel/JMethod;" isStatic="false">
+      <SourceLine classname="jsignalml.JavaGen" start="454" end="479" startBytecode="0" endBytecode="119" sourcefile="JavaGen.java" sourcepath="jsignalml/JavaGen.java"/>
+    </Method>
+    <LocalVariable name="jt_int_class" register="6" pc="36" role="LOCAL_VARIABLE_NAMED"/>
+    <SourceLine classname="jsignalml.JavaGen" start="456" end="456" startBytecode="34" endBytecode="34" sourcefile="JavaGen.java" sourcepath="jsignalml/JavaGen.java"/>
+    <Property name="edu.umd.cs.findbugs.detect.DeadLocalStoreProperty.NO_LOADS" value="true"/>
+    <Property name="edu.umd.cs.findbugs.detect.DeadLocalStoreProperty.LOCAL_NAME" value="jt_int_class"/>
+    <Property name="edu.umd.cs.findbugs.detect.DeadLocalStoreProperty.METHOD_RESULT" value="true"/>
+  </BugInstance>
   <BugInstance type="DLS_DEAD_LOCAL_STORE" priority="2" abbrev="DLS" category="STYLE">
     <Class classname="jsignalml.JavaGen">
       <SourceLine classname="jsignalml.JavaGen" sourcefile="JavaGen.java" sourcepath="jsignalml/JavaGen.java"/>
@@ -23,8 +50,35 @@
     <Property name="edu.umd.cs.findbugs.detect.DeadLocalStoreProperty.NO_LOADS" value="true"/>
     <Property name="edu.umd.cs.findbugs.detect.DeadLocalStoreProperty.BASE_VALUE" value="true"/>
   </BugInstance>
+  <BugInstance type="DLS_DEAD_LOCAL_STORE" priority="2" abbrev="DLS" category="STYLE" last="0" removedByChange="true">
+    <Class classname="jsignalml.JavaGen">
+      <SourceLine classname="jsignalml.JavaGen" sourcefile="JavaGen.java" sourcepath="jsignalml/JavaGen.java"/>
+    </Class>
+    <Method classname="jsignalml.JavaGen" name="readFunction" signature="(Lcom/sun/codemodel/JDefinedClass;Ljsignalml/ASTNode;Ljava/lang/String;Ljsignalml/Type;Ljsignalml/BitForm;I)Lcom/sun/codemodel/JMethod;" isStatic="false">
+      <SourceLine classname="jsignalml.JavaGen" start="211" end="232" startBytecode="0" endBytecode="86" sourcefile="JavaGen.java" sourcepath="jsignalml/JavaGen.java"/>
+    </Method>
+    <LocalVariable name="prefixed" register="7" pc="6" role="LOCAL_VARIABLE_NAMED"/>
+    <SourceLine classname="jsignalml.JavaGen" start="211" end="211" startBytecode="4" endBytecode="4" sourcefile="JavaGen.java" sourcepath="jsignalml/JavaGen.java"/>
+    <Property name="edu.umd.cs.findbugs.detect.DeadLocalStoreProperty.LOCAL_NAME" value="prefixed"/>
+    <Property name="edu.umd.cs.findbugs.detect.DeadLocalStoreProperty.METHOD_RESULT" value="true"/>
+    <Property name="edu.umd.cs.findbugs.detect.DeadLocalStoreProperty.NO_LOADS" value="true"/>
+    <Property name="edu.umd.cs.findbugs.detect.DeadLocalStoreProperty.BASE_VALUE" value="true"/>
+  </BugInstance>
+  <BugInstance type="DLS_DEAD_LOCAL_STORE" priority="2" abbrev="DLS" category="STYLE" introducedByChange="true">
+    <Class classname="jsignalml.JavaGen">
+      <SourceLine classname="jsignalml.JavaGen" sourcefile="JavaGen.java" sourcepath="jsignalml/JavaGen.java"/>
+    </Class>
+    <Method classname="jsignalml.JavaGen" name="visit" signature="(Ljsignalml/ASTNode$BinaryParam;Lcom/sun/codemodel/JDefinedClass;)Lcom/sun/codemodel/JDefinedClass;" isStatic="false">
+      <SourceLine classname="jsignalml.JavaGen" start="229" end="234" startBytecode="0" endBytecode="33" sourcefile="JavaGen.java" sourcepath="jsignalml/JavaGen.java"/>
+    </Method>
+    <LocalVariable name="cache" register="4" pc="61" role="LOCAL_VARIABLE_NAMED"/>
+    <SourceLine classname="jsignalml.JavaGen" start="232" end="232" startBytecode="59" endBytecode="59" sourcefile="JavaGen.java" sourcepath="jsignalml/JavaGen.java"/>
+    <Property name="edu.umd.cs.findbugs.detect.DeadLocalStoreProperty.NO_LOADS" value="true"/>
+    <Property name="edu.umd.cs.findbugs.detect.DeadLocalStoreProperty.LOCAL_NAME" value="cache"/>
+    <Property name="edu.umd.cs.findbugs.detect.DeadLocalStoreProperty.METHOD_RESULT" value="true"/>
+  </BugInstance>
   <BugInstance type="DLS_DEAD_LOCAL_STORE" priority="2" abbrev="DLS" category="STYLE">
-    <UserAnnotation designation="NOT_A_BUG" timestamp="1296416805056"/>
+    <UserAnnotation designation="NOT_A_BUG" timestamp="1297208514852"/>
     <Class classname="jsignalml.JavaGen">
       <SourceLine classname="jsignalml.JavaGen" sourcefile="JavaGen.java" sourcepath="jsignalml/JavaGen.java"/>
     </Class>
@@ -38,7 +92,21 @@
     <Property name="edu.umd.cs.findbugs.detect.DeadLocalStoreProperty.NO_LOADS" value="true"/>
   </BugInstance>
   <BugInstance type="DLS_DEAD_LOCAL_STORE" priority="2" abbrev="DLS" category="STYLE">
-    <UserAnnotation designation="NOT_A_BUG" timestamp="1296416844846"/>
+    <UserAnnotation designation="NOT_A_BUG" timestamp="1297208514853"/>
+    <Class classname="jsignalml.JavaGen">
+      <SourceLine classname="jsignalml.JavaGen" sourcefile="JavaGen.java" sourcepath="jsignalml/JavaGen.java"/>
+    </Class>
+    <Method classname="jsignalml.JavaGen" name="visit" signature="(Ljsignalml/ASTNode$ExprParam;Lcom/sun/codemodel/JDefinedClass;)Lcom/sun/codemodel/JDefinedClass;" isStatic="false">
+      <SourceLine classname="jsignalml.JavaGen" start="219" end="223" startBytecode="0" endBytecode="31" sourcefile="JavaGen.java" sourcepath="jsignalml/JavaGen.java"/>
+    </Method>
+    <LocalVariable name="cache" register="4" pc="57" role="LOCAL_VARIABLE_NAMED"/>
+    <SourceLine classname="jsignalml.JavaGen" start="221" end="221" startBytecode="55" endBytecode="55" sourcefile="JavaGen.java" sourcepath="jsignalml/JavaGen.java"/>
+    <Property name="edu.umd.cs.findbugs.detect.DeadLocalStoreProperty.NO_LOADS" value="true"/>
+    <Property name="edu.umd.cs.findbugs.detect.DeadLocalStoreProperty.LOCAL_NAME" value="cache"/>
+    <Property name="edu.umd.cs.findbugs.detect.DeadLocalStoreProperty.METHOD_RESULT" value="true"/>
+  </BugInstance>
+  <BugInstance type="DLS_DEAD_LOCAL_STORE" priority="2" abbrev="DLS" category="STYLE">
+    <UserAnnotation designation="NOT_A_BUG" timestamp="1297208514853"/>
     <Class classname="jsignalml.JavaGen$1">
       <SourceLine classname="jsignalml.JavaGen$1" sourcefile="JavaGen.java" sourcepath="jsignalml/JavaGen.java"/>
     </Class>
@@ -52,6 +120,59 @@
     <Property name="edu.umd.cs.findbugs.detect.DeadLocalStoreProperty.NO_LOADS" value="true"/>
   </BugInstance>
   <BugInstance type="DLS_DEAD_LOCAL_STORE" priority="2" abbrev="DLS" category="STYLE">
+    <UserAnnotation designation="NOT_A_BUG" timestamp="1297208514854"/>
+    <Class classname="jsignalml.JavaGen$1">
+      <SourceLine classname="jsignalml.JavaGen$1" sourcefile="JavaGen.java" sourcepath="jsignalml/JavaGen.java"/>
+    </Class>
+    <Method classname="jsignalml.JavaGen$1" name="call" signature="(Ljava/lang/String;)Lcom/sun/codemodel/JInvocation;" isStatic="false">
+      <SourceLine classname="jsignalml.JavaGen$1" start="285" end="286" startBytecode="0" endBytecode="8" sourcefile="JavaGen.java" sourcepath="jsignalml/JavaGen.java"/>
+    </Method>
+    <LocalVariable name="target" register="2" pc="9" role="LOCAL_VARIABLE_NAMED"/>
+    <SourceLine classname="jsignalml.JavaGen$1" start="285" end="285" startBytecode="8" endBytecode="8" sourcefile="JavaGen.java" sourcepath="jsignalml/JavaGen.java"/>
+    <Property name="edu.umd.cs.findbugs.detect.DeadLocalStoreProperty.NO_LOADS" value="true"/>
+    <Property name="edu.umd.cs.findbugs.detect.DeadLocalStoreProperty.LOCAL_NAME" value="target"/>
+    <Property name="edu.umd.cs.findbugs.detect.DeadLocalStoreProperty.METHOD_RESULT" value="true"/>
+  </BugInstance>
+  <BugInstance type="DLS_DEAD_LOCAL_STORE" priority="2" abbrev="DLS" category="STYLE">
+    <Class classname="jsignalml.JavaGen$Metadata">
+      <SourceLine classname="jsignalml.JavaGen$Metadata" sourcefile="JavaGen.java" sourcepath="jsignalml/JavaGen.java"/>
+    </Class>
+    <Method classname="jsignalml.JavaGen$Metadata" name="registerLoopGetter" signature="(Ljava/lang/String;Lcom/sun/codemodel/JDefinedClass;Lcom/sun/codemodel/JMethod;)V" isStatic="false">
+      <SourceLine classname="jsignalml.JavaGen$Metadata" start="114" end="120" startBytecode="0" endBytecode="35" sourcefile="JavaGen.java" sourcepath="jsignalml/JavaGen.java"/>
+    </Method>
+    <LocalVariable name="output" register="6" pc="54" role="LOCAL_VARIABLE_NAMED"/>
+    <SourceLine classname="jsignalml.JavaGen$Metadata" start="117" end="117" startBytecode="52" endBytecode="52" sourcefile="JavaGen.java" sourcepath="jsignalml/JavaGen.java"/>
+    <Property name="edu.umd.cs.findbugs.detect.DeadLocalStoreProperty.NO_LOADS" value="true"/>
+    <Property name="edu.umd.cs.findbugs.detect.DeadLocalStoreProperty.LOCAL_NAME" value="output"/>
+    <Property name="edu.umd.cs.findbugs.detect.DeadLocalStoreProperty.METHOD_RESULT" value="true"/>
+  </BugInstance>
+  <BugInstance type="DLS_DEAD_LOCAL_STORE" priority="2" abbrev="DLS" category="STYLE">
+    <Class classname="jsignalml.JavaGen$Metadata">
+      <SourceLine classname="jsignalml.JavaGen$Metadata" sourcefile="JavaGen.java" sourcepath="jsignalml/JavaGen.java"/>
+    </Class>
+    <Method classname="jsignalml.JavaGen$Metadata" name="registerLoopGetter" signature="(Ljava/lang/String;Lcom/sun/codemodel/JDefinedClass;Lcom/sun/codemodel/JMethod;)V" isStatic="false">
+      <SourceLine classname="jsignalml.JavaGen$Metadata" start="114" end="120" startBytecode="0" endBytecode="35" sourcefile="JavaGen.java" sourcepath="jsignalml/JavaGen.java"/>
+    </Method>
+    <LocalVariable name="system_out" register="5" pc="31" role="LOCAL_VARIABLE_NAMED"/>
+    <SourceLine classname="jsignalml.JavaGen$Metadata" start="115" end="115" startBytecode="29" endBytecode="29" sourcefile="JavaGen.java" sourcepath="jsignalml/JavaGen.java"/>
+    <Property name="edu.umd.cs.findbugs.detect.DeadLocalStoreProperty.NO_LOADS" value="true"/>
+    <Property name="edu.umd.cs.findbugs.detect.DeadLocalStoreProperty.LOCAL_NAME" value="system_out"/>
+    <Property name="edu.umd.cs.findbugs.detect.DeadLocalStoreProperty.METHOD_RESULT" value="true"/>
+  </BugInstance>
+  <BugInstance type="DLS_DEAD_LOCAL_STORE" priority="2" abbrev="DLS" category="STYLE">
+    <Class classname="jsignalml.Processor">
+      <SourceLine classname="jsignalml.Processor" sourcefile="Processor.java" sourcepath="jsignalml/Processor.java"/>
+    </Class>
+    <Method classname="jsignalml.Processor" name="processFile" signature="(Ljsignalml/Frame;Ljava/lang/String;)V" isStatic="true">
+      <SourceLine classname="jsignalml.Processor" start="28" end="30" startBytecode="0" endBytecode="6" sourcefile="Processor.java" sourcepath="jsignalml/Processor.java"/>
+    </Method>
+    <LocalVariable name="ast" register="2" pc="12" role="LOCAL_VARIABLE_NAMED"/>
+    <SourceLine classname="jsignalml.Processor" start="28" end="28" startBytecode="11" endBytecode="11" sourcefile="Processor.java" sourcepath="jsignalml/Processor.java"/>
+    <Property name="edu.umd.cs.findbugs.detect.DeadLocalStoreProperty.LOCAL_NAME" value="ast"/>
+    <Property name="edu.umd.cs.findbugs.detect.DeadLocalStoreProperty.METHOD_RESULT" value="true"/>
+    <Property name="edu.umd.cs.findbugs.detect.DeadLocalStoreProperty.NO_LOADS" value="true"/>
+  </BugInstance>
+  <BugInstance type="DLS_DEAD_LOCAL_STORE" priority="2" abbrev="DLS" category="STYLE" last="0" removedByChange="true">
     <Class classname="jsignalml.Processor">
       <SourceLine classname="jsignalml.Processor" sourcefile="Processor.java" sourcepath="jsignalml/Processor.java"/>
     </Class>
@@ -206,8 +327,8 @@
     <MissingClass>org.apache.log4j.BasicConfigurator</MissingClass>
     <MissingClass>org.apache.log4j.Logger</MissingClass>
   </Errors>
-  <FindBugsSummary timestamp="Sun, 30 Jan 2011 20:43:49 +0100" total_classes="102" referenced_classes="197" total_bugs="13" total_size="4975" num_packages="1" vm_version="16.0-b13" cpu_seconds="13.64" clock_seconds="326.80" peak_mbytes="434.39" alloc_mbytes="682.69" gc_seconds="1.12" priority_2="11" priority_1="2">
-    <PackageStats package="jsignalml" total_bugs="13" total_types="102" total_size="4975" priority_2="11" priority_1="2">
+  <FindBugsSummary timestamp="Sun, 30 Jan 2011 20:43:49 +0100" total_classes="102" referenced_classes="197" total_bugs="20" total_size="4975" num_packages="1" vm_version="16.0-b13" cpu_seconds="39.57" clock_seconds="65.77" peak_mbytes="375.06" alloc_mbytes="682.69" gc_seconds="1.20" priority_2="18" priority_1="2">
+    <PackageStats package="jsignalml" total_bugs="20" total_types="103" total_size="4975" priority_2="18" priority_1="2">
       <ClassStats class="jsignalml.ASTDumper" sourceFile="ASTDumper.java" interface="false" size="48" bugs="0"/>
       <ClassStats class="jsignalml.ASTNode" sourceFile="ASTNode.java" interface="false" size="34" bugs="0"/>
       <ClassStats class="jsignalml.ASTNode$Assert" sourceFile="ASTNode.java" interface="false" size="10" bugs="0"/>
@@ -259,8 +380,9 @@
       <ClassStats class="jsignalml.FileType" sourceFile="FileType.java" interface="false" size="9" bugs="0"/>
       <ClassStats class="jsignalml.FileType$BinaryFile" sourceFile="FileType.java" interface="false" size="9" bugs="0"/>
       <ClassStats class="jsignalml.Frame" sourceFile="Frame.java" interface="false" size="37" bugs="0"/>
-      <ClassStats class="jsignalml.JavaGen" sourceFile="JavaGen.java" interface="false" size="173" bugs="2" priority_2="2"/>
-      <ClassStats class="jsignalml.JavaGen$1" sourceFile="JavaGen.java" interface="false" size="8" bugs="1" priority_2="1"/>
+      <ClassStats class="jsignalml.JavaGen" sourceFile="JavaGen.java" interface="false" size="173" bugs="6" priority_2="6"/>
+      <ClassStats class="jsignalml.JavaGen$1" sourceFile="JavaGen.java" interface="false" size="8" bugs="2" priority_2="2"/>
+      <ClassStats class="jsignalml.JavaGen$Metadata" sourceFile="JavaGen.java" interface="false" size="0" bugs="2" priority_2="2"/>
       <ClassStats class="jsignalml.JavaGenVisitor" sourceFile="JavaGenVisitor.java" interface="false" size="74" bugs="0"/>
       <ClassStats class="jsignalml.JavaGenVisitor$1" sourceFile="JavaGenVisitor.java" interface="false" size="4" bugs="0"/>
       <ClassStats class="jsignalml.JavaGenVisitor$JavaNameResolver" sourceFile="JavaGenVisitor.java" interface="true" size="2" bugs="0"/>
@@ -312,73 +434,7 @@
       <ClassStats class="jsignalml.util" sourceFile="util.java" interface="false" size="13" bugs="1" priority_2="1"/>
     </PackageStats>
     <FindBugsProfile>
-      <ClassProfile name="edu.umd.cs.findbugs.detect.SerializableIdiom" totalMilliseconds="11" invocations="102" avgMicrosecondsPerInvocation="109" maxMicrosecondsPerInvocation="738" standardDeviationMircosecondsPerInvocation="96"/>
-      <ClassProfile name="edu.umd.cs.findbugs.detect.Naming" totalMilliseconds="11" invocations="102" avgMicrosecondsPerInvocation="112" maxMicrosecondsPerInvocation="576" standardDeviationMircosecondsPerInvocation="114"/>
-      <ClassProfile name="edu.umd.cs.findbugs.detect.FindUncalledPrivateMethods" totalMilliseconds="11" invocations="102" avgMicrosecondsPerInvocation="114" maxMicrosecondsPerInvocation="3484" standardDeviationMircosecondsPerInvocation="383"/>
-      <ClassProfile name="edu.umd.cs.findbugs.detect.FindDeadLocalStores" totalMilliseconds="13" invocations="102" avgMicrosecondsPerInvocation="128" maxMicrosecondsPerInvocation="1768" standardDeviationMircosecondsPerInvocation="239"/>
-      <ClassProfile name="edu.umd.cs.findbugs.detect.FindBadCast2" totalMilliseconds="13" invocations="102" avgMicrosecondsPerInvocation="131" maxMicrosecondsPerInvocation="4219" standardDeviationMircosecondsPerInvocation="483"/>
-      <ClassProfile name="edu.umd.cs.findbugs.detect.ReflectiveClasses" totalMilliseconds="13" invocations="197" avgMicrosecondsPerInvocation="70" maxMicrosecondsPerInvocation="1318" standardDeviationMircosecondsPerInvocation="161"/>
-      <ClassProfile name="edu.umd.cs.findbugs.detect.SynchronizeOnClassLiteralNotGetClass" totalMilliseconds="14" invocations="102" avgMicrosecondsPerInvocation="145" maxMicrosecondsPerInvocation="4181" standardDeviationMircosecondsPerInvocation="468"/>
-      <ClassProfile name="edu.umd.cs.findbugs.detect.FindNullDerefsInvolvingNonShortCircuitEvaluation" totalMilliseconds="16" invocations="102" avgMicrosecondsPerInvocation="160" maxMicrosecondsPerInvocation="4466" standardDeviationMircosecondsPerInvocation="503"/>
-      <ClassProfile name="edu.umd.cs.findbugs.detect.FindFieldSelfAssignment" totalMilliseconds="16" invocations="102" avgMicrosecondsPerInvocation="163" maxMicrosecondsPerInvocation="4523" standardDeviationMircosecondsPerInvocation="508"/>
-      <ClassProfile name="edu.umd.cs.findbugs.detect.ReadOfInstanceFieldInMethodInvokedByConstructorInSuperclass" totalMilliseconds="16" invocations="102" avgMicrosecondsPerInvocation="163" maxMicrosecondsPerInvocation="4617" standardDeviationMircosecondsPerInvocation="517"/>
-      <ClassProfile name="edu.umd.cs.findbugs.detect.FindRefComparison" totalMilliseconds="16" invocations="102" avgMicrosecondsPerInvocation="164" maxMicrosecondsPerInvocation="2281" standardDeviationMircosecondsPerInvocation="299"/>
-      <ClassProfile name="edu.umd.cs.findbugs.detect.NumberConstructor" totalMilliseconds="16" invocations="102" avgMicrosecondsPerInvocation="164" maxMicrosecondsPerInvocation="4472" standardDeviationMircosecondsPerInvocation="504"/>
-      <ClassProfile name="edu.umd.cs.findbugs.detect.SynchronizingOnContentsOfFieldToProtectField" totalMilliseconds="16" invocations="102" avgMicrosecondsPerInvocation="165" maxMicrosecondsPerInvocation="4649" standardDeviationMircosecondsPerInvocation="523"/>
-      <ClassProfile name="edu.umd.cs.findbugs.detect.FindFloatEquality" totalMilliseconds="16" invocations="102" avgMicrosecondsPerInvocation="166" maxMicrosecondsPerInvocation="4564" standardDeviationMircosecondsPerInvocation="511"/>
-      <ClassProfile name="edu.umd.cs.findbugs.detect.FindBadForLoop" totalMilliseconds="16" invocations="102" avgMicrosecondsPerInvocation="166" maxMicrosecondsPerInvocation="4558" standardDeviationMircosecondsPerInvocation="513"/>
-      <ClassProfile name="edu.umd.cs.findbugs.detect.FindReturnRef" totalMilliseconds="17" invocations="102" avgMicrosecondsPerInvocation="167" maxMicrosecondsPerInvocation="4636" standardDeviationMircosecondsPerInvocation="527"/>
-      <ClassProfile name="edu.umd.cs.findbugs.detect.InfiniteRecursiveLoop" totalMilliseconds="17" invocations="102" avgMicrosecondsPerInvocation="168" maxMicrosecondsPerInvocation="4605" standardDeviationMircosecondsPerInvocation="518"/>
-      <ClassProfile name="edu.umd.cs.findbugs.detect.CrossSiteScripting" totalMilliseconds="17" invocations="102" avgMicrosecondsPerInvocation="168" maxMicrosecondsPerInvocation="4565" standardDeviationMircosecondsPerInvocation="515"/>
-      <ClassProfile name="edu.umd.cs.findbugs.detect.AppendingToAnObjectOutputStream" totalMilliseconds="17" invocations="102" avgMicrosecondsPerInvocation="168" maxMicrosecondsPerInvocation="4648" standardDeviationMircosecondsPerInvocation="524"/>
-      <ClassProfile name="edu.umd.cs.findbugs.detect.FindInconsistentSync2" totalMilliseconds="17" invocations="102" avgMicrosecondsPerInvocation="169" maxMicrosecondsPerInvocation="3114" standardDeviationMircosecondsPerInvocation="343"/>
-      <ClassProfile name="edu.umd.cs.findbugs.classfile.impl.ZipCodeBaseFactory" totalMilliseconds="17" invocations="16" avgMicrosecondsPerInvocation="1096" maxMicrosecondsPerInvocation="17028" standardDeviationMircosecondsPerInvocation="4113"/>
-      <ClassProfile name="edu.umd.cs.findbugs.detect.FormatStringChecker" totalMilliseconds="17" invocations="102" avgMicrosecondsPerInvocation="172" maxMicrosecondsPerInvocation="4489" standardDeviationMircosecondsPerInvocation="505"/>
-      <ClassProfile name="edu.umd.cs.findbugs.detect.FindNonShortCircuit" totalMilliseconds="17" invocations="102" avgMicrosecondsPerInvocation="174" maxMicrosecondsPerInvocation="4686" standardDeviationMircosecondsPerInvocation="527"/>
-      <ClassProfile name="edu.umd.cs.findbugs.ba.obl.ObligationAnalysis" totalMilliseconds="17" invocations="67" avgMicrosecondsPerInvocation="265" maxMicrosecondsPerInvocation="6634" standardDeviationMircosecondsPerInvocation="810"/>
-      <ClassProfile name="edu.umd.cs.findbugs.detect.BadSyntaxForRegularExpression" totalMilliseconds="17" invocations="102" avgMicrosecondsPerInvocation="174" maxMicrosecondsPerInvocation="4757" standardDeviationMircosecondsPerInvocation="538"/>
-      <ClassProfile name="edu.umd.cs.findbugs.detect.BadResultSetAccess" totalMilliseconds="18" invocations="102" avgMicrosecondsPerInvocation="176" maxMicrosecondsPerInvocation="4597" standardDeviationMircosecondsPerInvocation="518"/>
-      <ClassProfile name="edu.umd.cs.findbugs.detect.LostLoggerDueToWeakReference" totalMilliseconds="18" invocations="102" avgMicrosecondsPerInvocation="176" maxMicrosecondsPerInvocation="4749" standardDeviationMircosecondsPerInvocation="535"/>
-      <ClassProfile name="edu.umd.cs.findbugs.detect.FindNullDeref" totalMilliseconds="18" invocations="102" avgMicrosecondsPerInvocation="178" maxMicrosecondsPerInvocation="1904" standardDeviationMircosecondsPerInvocation="290"/>
-      <ClassProfile name="edu.umd.cs.findbugs.detect.SynchronizationOnSharedBuiltinConstant" totalMilliseconds="18" invocations="102" avgMicrosecondsPerInvocation="182" maxMicrosecondsPerInvocation="4529" standardDeviationMircosecondsPerInvocation="515"/>
-      <ClassProfile name="edu.umd.cs.findbugs.detect.FindPuzzlers" totalMilliseconds="18" invocations="102" avgMicrosecondsPerInvocation="184" maxMicrosecondsPerInvocation="4821" standardDeviationMircosecondsPerInvocation="549"/>
-      <ClassProfile name="edu.umd.cs.findbugs.detect.RepeatedConditionals" totalMilliseconds="19" invocations="102" avgMicrosecondsPerInvocation="186" maxMicrosecondsPerInvocation="5030" standardDeviationMircosecondsPerInvocation="572"/>
-      <ClassProfile name="edu.umd.cs.findbugs.detect.MethodReturnCheck" totalMilliseconds="19" invocations="102" avgMicrosecondsPerInvocation="190" maxMicrosecondsPerInvocation="4673" standardDeviationMircosecondsPerInvocation="538"/>
-      <ClassProfile name="edu.umd.cs.findbugs.detect.FindSelfComparison" totalMilliseconds="19" invocations="102" avgMicrosecondsPerInvocation="195" maxMicrosecondsPerInvocation="5605" standardDeviationMircosecondsPerInvocation="630"/>
-      <ClassProfile name="edu.umd.cs.findbugs.detect.FindHEmismatch" totalMilliseconds="20" invocations="102" avgMicrosecondsPerInvocation="196" maxMicrosecondsPerInvocation="4741" standardDeviationMircosecondsPerInvocation="533"/>
-      <ClassProfile name="edu.umd.cs.findbugs.detect.InfiniteLoop" totalMilliseconds="21" invocations="102" avgMicrosecondsPerInvocation="207" maxMicrosecondsPerInvocation="5508" standardDeviationMircosecondsPerInvocation="632"/>
-      <ClassProfile name="edu.umd.cs.findbugs.detect.DumbMethods" totalMilliseconds="21" invocations="102" avgMicrosecondsPerInvocation="214" maxMicrosecondsPerInvocation="5263" standardDeviationMircosecondsPerInvocation="599"/>
-      <ClassProfile name="edu.umd.cs.findbugs.detect.SwitchFallthrough" totalMilliseconds="22" invocations="102" avgMicrosecondsPerInvocation="216" maxMicrosecondsPerInvocation="5745" standardDeviationMircosecondsPerInvocation="662"/>
-      <ClassProfile name="edu.umd.cs.findbugs.detect.RuntimeExceptionCapture" totalMilliseconds="22" invocations="102" avgMicrosecondsPerInvocation="220" maxMicrosecondsPerInvocation="5784" standardDeviationMircosecondsPerInvocation="651"/>
-      <ClassProfile name="edu.umd.cs.findbugs.detect.FindNullDeref$CheckCallSitesAndReturnInstructions" totalMilliseconds="23" invocations="625" avgMicrosecondsPerInvocation="37" maxMicrosecondsPerInvocation="877" standardDeviationMircosecondsPerInvocation="76"/>
-      <ClassProfile name="edu.umd.cs.findbugs.classfile.engine.bcel.LiveLocalStoreDataflowFactory" totalMilliseconds="24" invocations="626" avgMicrosecondsPerInvocation="38" maxMicrosecondsPerInvocation="973" standardDeviationMircosecondsPerInvocation="70"/>
-      <ClassProfile name="edu.umd.cs.findbugs.detect.LoadOfKnownNullValue" totalMilliseconds="24" invocations="102" avgMicrosecondsPerInvocation="244" maxMicrosecondsPerInvocation="7507" standardDeviationMircosecondsPerInvocation="814"/>
-      <ClassProfile name="edu.umd.cs.findbugs.detect.URLProblems" totalMilliseconds="27" invocations="102" avgMicrosecondsPerInvocation="271" maxMicrosecondsPerInvocation="7169" standardDeviationMircosecondsPerInvocation="806"/>
-      <ClassProfile name="edu.umd.cs.findbugs.detect.OverridingEqualsNotSymmetrical" totalMilliseconds="29" invocations="197" avgMicrosecondsPerInvocation="148" maxMicrosecondsPerInvocation="9631" standardDeviationMircosecondsPerInvocation="695"/>
-      <ClassProfile name="edu.umd.cs.findbugs.ba.npe.TypeQualifierNullnessAnnotationDatabase" totalMilliseconds="32" invocations="10057" avgMicrosecondsPerInvocation="3" maxMicrosecondsPerInvocation="84" standardDeviationMircosecondsPerInvocation="4"/>
-      <ClassProfile name="edu.umd.cs.findbugs.DetectorToDetector2Adapter" totalMilliseconds="32" invocations="11315" avgMicrosecondsPerInvocation="2" maxMicrosecondsPerInvocation="44" standardDeviationMircosecondsPerInvocation="1"/>
-      <ClassProfile name="edu.umd.cs.findbugs.classfile.engine.ClassDataAnalysisEngine" totalMilliseconds="33" invocations="742" avgMicrosecondsPerInvocation="45" maxMicrosecondsPerInvocation="117" standardDeviationMircosecondsPerInvocation="17"/>
-      <ClassProfile name="edu.umd.cs.findbugs.detect.UnreadFields" totalMilliseconds="34" invocations="102" avgMicrosecondsPerInvocation="338" maxMicrosecondsPerInvocation="7022" standardDeviationMircosecondsPerInvocation="824"/>
-      <ClassProfile name="edu.umd.cs.findbugs.detect.CalledMethods" totalMilliseconds="37" invocations="197" avgMicrosecondsPerInvocation="188" maxMicrosecondsPerInvocation="11574" standardDeviationMircosecondsPerInvocation="893"/>
-      <ClassProfile name="edu.umd.cs.findbugs.detect.NoteDirectlyRelevantTypeQualifiers" totalMilliseconds="39" invocations="197" avgMicrosecondsPerInvocation="202" maxMicrosecondsPerInvocation="2192" standardDeviationMircosecondsPerInvocation="391"/>
-      <ClassProfile name="edu.umd.cs.findbugs.detect.FindNonSerializableStoreIntoSession" totalMilliseconds="45" invocations="102" avgMicrosecondsPerInvocation="441" maxMicrosecondsPerInvocation="41698" standardDeviationMircosecondsPerInvocation="4105"/>
-      <ClassProfile name="edu.umd.cs.findbugs.detect.NoteNonnullReturnValues" totalMilliseconds="53" invocations="102" avgMicrosecondsPerInvocation="520" maxMicrosecondsPerInvocation="31024" standardDeviationMircosecondsPerInvocation="3049"/>
-      <ClassProfile name="edu.umd.cs.findbugs.classfile.engine.bcel.MethodGenFactory" totalMilliseconds="53" invocations="760" avgMicrosecondsPerInvocation="70" maxMicrosecondsPerInvocation="2254" standardDeviationMircosecondsPerInvocation="131"/>
-      <ClassProfile name="edu.umd.cs.findbugs.detect.FindOpenStream" totalMilliseconds="55" invocations="102" avgMicrosecondsPerInvocation="548" maxMicrosecondsPerInvocation="33704" standardDeviationMircosecondsPerInvocation="3496"/>
-      <ClassProfile name="edu.umd.cs.findbugs.detect.DuplicateBranches" totalMilliseconds="56" invocations="102" avgMicrosecondsPerInvocation="549" maxMicrosecondsPerInvocation="20386" standardDeviationMircosecondsPerInvocation="2567"/>
-      <ClassProfile name="edu.umd.cs.findbugs.classfile.engine.bcel.ConstantDataflowFactory" totalMilliseconds="56" invocations="709" avgMicrosecondsPerInvocation="79" maxMicrosecondsPerInvocation="3426" standardDeviationMircosecondsPerInvocation="201"/>
-      <ClassProfile name="edu.umd.cs.findbugs.detect.FieldItemSummary" totalMilliseconds="66" invocations="197" avgMicrosecondsPerInvocation="335" maxMicrosecondsPerInvocation="5300" standardDeviationMircosecondsPerInvocation="754"/>
-      <ClassProfile name="edu.umd.cs.findbugs.classfile.engine.ClassInfoAnalysisEngine" totalMilliseconds="68" invocations="740" avgMicrosecondsPerInvocation="91" maxMicrosecondsPerInvocation="7249" standardDeviationMircosecondsPerInvocation="296"/>
-      <ClassProfile name="edu.umd.cs.findbugs.OpcodeStack$JumpInfoFactory" totalMilliseconds="88" invocations="3489" avgMicrosecondsPerInvocation="25" maxMicrosecondsPerInvocation="941" standardDeviationMircosecondsPerInvocation="49"/>
-      <ClassProfile name="edu.umd.cs.findbugs.classfile.engine.bcel.CFGFactory" totalMilliseconds="92" invocations="712" avgMicrosecondsPerInvocation="130" maxMicrosecondsPerInvocation="3367" standardDeviationMircosecondsPerInvocation="243"/>
-      <ClassProfile name="edu.umd.cs.findbugs.classfile.engine.bcel.JavaClassAnalysisEngine" totalMilliseconds="97" invocations="242" avgMicrosecondsPerInvocation="401" maxMicrosecondsPerInvocation="70445" standardDeviationMircosecondsPerInvocation="4513"/>
-      <ClassProfile name="edu.umd.cs.findbugs.FindBugs2" totalMilliseconds="126" invocations="2" avgMicrosecondsPerInvocation="63100" maxMicrosecondsPerInvocation="65266" standardDeviationMircosecondsPerInvocation="2166"/>
-      <ClassProfile name="edu.umd.cs.findbugs.ba.npe.NullDerefAndRedundantComparisonFinder" totalMilliseconds="218" invocations="625" avgMicrosecondsPerInvocation="348" maxMicrosecondsPerInvocation="30310" standardDeviationMircosecondsPerInvocation="1429"/>
-      <ClassProfile name="edu.umd.cs.findbugs.classfile.engine.bcel.IsNullValueDataflowFactory" totalMilliseconds="223" invocations="709" avgMicrosecondsPerInvocation="315" maxMicrosecondsPerInvocation="13806" standardDeviationMircosecondsPerInvocation="848"/>
-      <ClassProfile name="edu.umd.cs.findbugs.classfile.engine.bcel.UnconditionalValueDerefDataflowFactory" totalMilliseconds="259" invocations="688" avgMicrosecondsPerInvocation="376" maxMicrosecondsPerInvocation="47320" standardDeviationMircosecondsPerInvocation="1913"/>
-      <ClassProfile name="edu.umd.cs.findbugs.detect.FindRefComparison$SpecialTypeAnalysis" totalMilliseconds="260" invocations="622" avgMicrosecondsPerInvocation="418" maxMicrosecondsPerInvocation="42001" standardDeviationMircosecondsPerInvocation="2272"/>
-      <ClassProfile name="edu.umd.cs.findbugs.classfile.engine.bcel.TypeDataflowFactory" totalMilliseconds="460" invocations="749" avgMicrosecondsPerInvocation="615" maxMicrosecondsPerInvocation="54066" standardDeviationMircosecondsPerInvocation="2855"/>
-      <ClassProfile name="edu.umd.cs.findbugs.classfile.engine.bcel.ValueNumberDataflowFactory" totalMilliseconds="600" invocations="874" avgMicrosecondsPerInvocation="686" maxMicrosecondsPerInvocation="317427" standardDeviationMircosecondsPerInvocation="10774"/>
+      <ClassProfile name="edu.umd.cs.findbugs.SAXBugCollectionHandler" totalMilliseconds="55" invocations="1" avgMicrosecondsPerInvocation="55989" maxMicrosecondsPerInvocation="55989" standardDeviationMircosecondsPerInvocation="0"/>
     </FindBugsProfile>
   </FindBugsSummary>
   <ClassFeatures></ClassFeatures>

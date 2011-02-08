@@ -112,9 +112,6 @@ public class JavaGen extends ASTVisitor<JDefinedClass> {
 		void registerLoopGetter(String ident, JDefinedClass klass, JMethod getter)
 		{
 			final JExpression inv = JExpr._this().invoke(getter);
-			final JFieldRef system_out =
-				JavaGen.this.model.ref(System.class).staticRef("out");
-			final JExpression output = JExpr.lit(ident).plus(JExpr.lit(": ")).plus(inv);
 			JForEach loop = this.rungetters.forEach(klass, "var", inv);
 			loop.body().add(loop.var().invoke("readall"));
 		}
@@ -162,7 +159,6 @@ public class JavaGen extends ASTVisitor<JDefinedClass> {
 
 	public JMethod codecOpenMethod(JDefinedClass klass)
 	{
-		final JClass file_class = this.model.ref(File.class);
 		final JMethod open = klass.method(JMod.PUBLIC, this.model.VOID, "open");
 		final JVar arg = open.param(File.class, "filename");
 		open.body().assign(JExpr._this().ref("default_filename"), arg);
@@ -453,7 +449,6 @@ public class JavaGen extends ASTVisitor<JDefinedClass> {
 	{
 		final JClass javatype_class = this.model.ref(Type.class);
 		final JClass jt_list_class = this.model.ref(Type.List.class);
-		final JClass jt_int_class = this.model.ref(Type.Int.class);
 		final JClass util_class = this.model.ref(util.class);
 		final String ident = "loop_" + node.id;
 		final JType list_type = this.model.ref(List.class).narrow(context);
