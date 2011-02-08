@@ -19,7 +19,7 @@ public class TestCodecBuilding {
 	static final XMLDocument doc;
 	static{
 		InputStream stream = new StringBufferInputStream(
-			"<signalml><file type='binary'>" +
+			"<signalml><file id='file' type='binary'>" +
 			"  <assert id='an_assert'>" +
 			"    <expr>1 + 1</expr>" +
 			"  </assert>" +
@@ -43,8 +43,8 @@ public class TestCodecBuilding {
 	static void assert_arg_is(ASTNode.Positional arg, String name,
 				  Class<? extends Type> type)
 	{
-		assertEquals(arg.id, name);
-		assertEquals(arg.type, type);
+		assertEquals(name, arg.id);
+		assertEquals(type, arg.type.getClass());
 	}
 
 	@Test public void test_do_arg() throws Exception
@@ -55,7 +55,7 @@ public class TestCodecBuilding {
 
 		CodecParser.do_arg(p, element);
 
-		assertEquals(p.args.size(), 1);
+		assertEquals(1, p.args.size());
 
 		ASTNode.Positional arg = p.args.get(0);
 		assert_arg_is(arg, "one", Type.Int.class);
@@ -70,7 +70,7 @@ public class TestCodecBuilding {
 		for(Element element: nodes)
 			CodecParser.do_arg(p, element);
 
-		assertEquals(p.args.size(), 4);
+		assertEquals(4, p.args.size());
 
 		assert_arg_is(p.args.get(0), "one", Type.Int.class);
 		assert_arg_is(p.args.get(1), "two", Type.Float.class);
@@ -85,19 +85,20 @@ public class TestCodecBuilding {
 		throw new UnsupportedOperationException("yet, even no interface to test");
 	}
 
-	@Test public void test_do_param() throws Exception {
-		Element element = doc.getElement("//param");
+	@Test public void test_do_param() throws Exception
+	{
+		Element element = doc.getElement("//file");
 
 		CodecParser parser = new CodecParser(new File("dummy.xml"));
-		final ASTNode.Signalml root = new ASTNode.Signalml("root");
+		ASTNode.Signalml root = new ASTNode.Signalml("root");
 
-		parser.do_param(root, element);
+		parser.walk(root, element);
 
-		ASTNode.Param p = (ASTNode.Param) root.find("only");
-		assertEquals( p.id, "only");
-		assertEquals( p.type, Type.Int.class);
-		assertEquals( p.args.size(), 4);
+		ASTNode.Param p = (ASTNode.Param) root.find("file").find("only");
+
+		assertEquals("only", p.id);
+		assertThat( p.type, instanceOf(Type.Int.class) );
+		assertEquals(4, p.args.size());
 		assertThat( p, instanceOf(ASTNode.ExprParam.class) );
 	}
-
 }

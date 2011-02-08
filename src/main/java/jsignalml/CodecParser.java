@@ -40,6 +40,8 @@ public class CodecParser {
 			return this.do_signalml(parent, element);
 		if (name.equals("param"))
 			return this.do_param(parent, element);
+		if (name.equals("arg"))
+			return this.do_arg(parent, element);
 		if (name.equals("assert"))
 			return this.do_assert(parent, element);
 		if (name.equals("for-each"))
@@ -143,7 +145,7 @@ public class CodecParser {
         {
                 assert element.getNodeName().equals("arg");
 
-                final String name = element.getAttribute("name");
+                final String name = _identifier(element);
                 final String type_ = element.getAttribute("type");
 		final Type type = Type.getType(type_);
 
@@ -151,8 +153,6 @@ public class CodecParser {
 
 		if (!(parent instanceof ASTNode.Param))
 			throw new SyntaxError("<arg> can only be a direct child of <param>");
-		final ASTNode.Param param = (ASTNode.Param)parent;
-                param.args.add(arg);
 		return arg;
         }
 
@@ -176,7 +176,7 @@ public class CodecParser {
 
 		final String id = _identifier(element);
 		final String type = _attribute(element, "type");
-		final String name_ = _attribute(element, "name");
+		final String name_ = _identifier(element);
 		final Expression name =
 		        name_ == null ? null : Expression.Const.make(name_);
 

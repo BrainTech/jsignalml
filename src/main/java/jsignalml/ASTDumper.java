@@ -87,7 +87,7 @@ public class ASTDumper extends ASTVisitor<Integer> {
 	@Override
 	public Integer visit(ASTNode.Positional node, Integer parent)
 	{
-		this.header(parent, node, "arg", "type=%s", node.type);
+		this.header(parent, node, "arg", "type=%s", node.type.getClass());
 		return parent + 1;
 	}
 }
