@@ -1065,6 +1065,7 @@ public abstract class Type implements Comparable<Type> {
 			if (offset < 0)
 				offset += this.value.length();
 			try {
+				log.debug("index=%s", i);
 				char c = this.value.charAt(offset);
 				return new String(c);
 			} catch (IndexOutOfBoundsException e) {

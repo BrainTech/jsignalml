@@ -58,7 +58,7 @@ public class TypeVisitor extends ExpressionVisitor<Type> {
 		if (index != null && !(index instanceof Type.Int))
 			throw new ExpressionFault.TypeError();
 
-		if (seq != null && !(seq instanceof Type.List))
+		if (seq != null && !(seq instanceof Type.List || seq instanceof Type.String))
 			throw new ExpressionFault.TypeError();
 
 		if (op.item instanceof Expression.List_)
