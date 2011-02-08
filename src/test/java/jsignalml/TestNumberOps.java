@@ -137,6 +137,7 @@ public class TestNumberOps {
 		equal("1.//2", 0);
 		equal("1.//2.", 0);
 		equal("3.//2.", 1);
+		equal("-3//2", -2);
 		equal("-3.//2.", -2);
 	}
 

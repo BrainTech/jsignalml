@@ -573,7 +573,7 @@ public abstract class Type implements Comparable<Type> {
 			throw new ExpressionFault.TypeError();
 		}
 		public Int floordiv(Int other){
-			return new Int(this.value.divide(other.value));
+			return make(this.sub(this.mod(other)).div(other));
 		}
 		public Int floordiv(Float other){
 			return new Int(this.value.doubleValue() / other.value);
@@ -587,6 +587,11 @@ public abstract class Type implements Comparable<Type> {
 			throw new ExpressionFault.TypeError();
 		}
 		public Int mod(Int other){
+			if(other.compareTo(ZERO) < 0)
+				// BigInteger doesn't allow negative factor.
+				// Nevertheless, -x mod -y == x mod y.
+				return new Int(this.value.negate()
+					       .mod(other.value.negate()).negate());
 			return new Int(this.value.mod(other.value));
 		}
 		public Float mod(Float other){
@@ -798,10 +803,10 @@ public abstract class Type implements Comparable<Type> {
 			throw new ExpressionFault.TypeError();
 		}
 		public Int floordiv(Int other){
-			return new Int(this.value / other.value.doubleValue());
+			return new Int(Math.round(Math.floor(this.value / other.value.doubleValue())));
 		}
 		public Int floordiv(Float other){
-			return new Int(this.value / other.value);
+			return new Int(Math.round(Math.floor(this.value / other.value)));
 		}
 
 		public Float mod(Type other){
@@ -813,7 +818,8 @@ public abstract class Type implements Comparable<Type> {
 		}
 		public Float mod(Float other){
 			double value = this.value % other.value;
-			if (value < 0)
+			if ((other.value > 0 && value < 0) ||
+			    (other.value < 0 && value > 0))
 				value += other.value;
 			return new Float(value);
 		}
@@ -843,24 +849,6 @@ public abstract class Type implements Comparable<Type> {
 		}
 		public Float pow(Float other){
 			return new Float(Math.pow(this.value, other.value));
-		}
-
-		public Int cmp(Type other){
-			if(other instanceof Int)
-				return this.cmp((Int)other);
-			if(other instanceof Float)
-				return this.cmp((Float)other);
-			throw new ExpressionFault.TypeError();
-		}
-		public Int cmp(Int other){
-			int value = java.lang.Double.compare(this.value,
-							     other.value.doubleValue());
-			return new Int(value);
-		}
-		public Int cmp(Float other){
-			int value = java.lang.Double.compare(this.value,
-							     other.value);
-			return new Int(value);
 		}
 
 		public Type index(Type i){

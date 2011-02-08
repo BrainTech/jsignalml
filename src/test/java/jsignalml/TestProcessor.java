@@ -42,7 +42,7 @@ public class TestProcessor {
 		assertLeqR("1", 1);
 	}
 
-	@Test public void powOverflow() throws Exception
+	@Test public void pow_overflow() throws Exception
 	{
 		assertLeqR("2**1024", BigInteger.valueOf(2).pow(1024));
 	}
