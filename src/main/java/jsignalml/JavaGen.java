@@ -318,7 +318,7 @@ public class JavaGen extends ASTVisitor<JDefinedClass> {
 			.arg(offset_param);
 		final JVar input = body.decl(javatype2, "input", expr);
 		final JVar var = body.decl(javatype, "var",
-					   javatype.staticInvoke("make").arg(input));
+					   JExpr._new(javatype).invoke("make").arg(input));
 		body._return(var);
 		return impl;
 	}

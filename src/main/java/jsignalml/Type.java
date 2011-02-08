@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.TreeMap;
 import java.util.HashMap;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.Iterator;
 import java.math.BigInteger;
@@ -1106,8 +1107,8 @@ public abstract class Type implements Comparable<Type> {
 			this.value = unmodifiableList(new ArrayList(value));
 		}
 
-		public List() {
-			this(new ArrayList());
+		public List(Type...items) {
+			this.value = unmodifiableList(Arrays.asList(items));
 		}
 
 		@Override
