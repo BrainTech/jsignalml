@@ -24,8 +24,8 @@ public class TestFileType {
 	FileType.BinaryFile F = new FileType.BinaryFile(filename);
 
 		BitForm format = new BitForm.Int.Int32.LE();
-		int val = ((int)'4') + ((int)'3' << 8) +
-			((int)'2' << 16) + ((int)'1' << 24);
+		int val = ((int)'1') + ((int)'2' << 8) +
+			((int)'3' << 16) + ((int)'4' << 24);
 		assertThat(F.read(format, 0), equalTo((Type)new Type.Int(val)));
 	}
 
