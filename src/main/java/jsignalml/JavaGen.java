@@ -440,7 +440,7 @@ public class JavaGen extends ASTVisitor<JDefinedClass> {
 
 		JMethod constructor = klass.constructor(JMod.NONE);
 		JVar index = constructor.param(JavaType.class, "index");
-		constructor.body().directStatement("super(index);"); // TODO: convert to proper codemodel magic
+		constructor.body().add(JExpr.invoke("super").arg(index)); // TODO: convert to proper codemodel magic
 		JMethod readall = this.readallMethod(klass);
 		klass.metadata = new Metadata(readall);
 		log.info("%s.metadata has been set", klass);
