@@ -1,6 +1,5 @@
 package jsignalml;
 
-import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -8,29 +7,29 @@ public class TestNumberOps {
 
 	static Type eval(String line) throws Exception
 	{
-		Frame state = new Frame(null);
-		Expression expr = Processor.parse(line);
+		final Frame state = new Frame(null);
+		final Expression expr = Processor.parse(line);
 		final ASTNode.ExprParam param =
 			new ASTNode.ExprParam(null, "expr", null, expr);
-		Type val = expr.accept(new EvalVisitor(state, param));
+		final Type val = expr.accept(new EvalVisitor(state, param));
 		return val;
 	}
 
 	static void equal(String line, int expected) throws Exception
 	{
-		assertTrue(eval(line).equals(new Type.Int(expected)));
+		assertEquals(new Type.Int(expected), eval(line));
 	}
 	static void equal(String line, double expected) throws Exception
 	{
-		assertTrue(eval(line).equals(new Type.Float(expected)));
+		assertEquals(new Type.Float(expected), eval(line));
 	}
 	static void equal(String line, String expected) throws Exception
 	{
-		assertTrue(eval(line).equals(new Type.String(expected)));
+		assertEquals(new Type.String(expected), eval(line));
 	}
 	static void listEqual(String line, Object...elements) throws Exception
 	{
-		assertTrue(eval(line).equals(Type.List.make(elements)));
+		assertEquals(Type.List.make(elements), eval(line));
 	}
 
 	static void verifyIsTrue(String line, boolean expected) throws Exception

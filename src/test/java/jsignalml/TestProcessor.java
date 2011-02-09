@@ -1,6 +1,5 @@
 package jsignalml;
 
-import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import java.math.BigInteger;
@@ -20,14 +19,14 @@ public class TestProcessor {
 	{
 		Frame state = new Frame(null);
 		Type result = eval(state, line);
-		assertTrue(expected.equals(result));
+		assertEquals(expected, result);
 	}
 
 	void assertLeqR(String line, BigInteger expected) throws Exception
 	{
 		Frame state = new Frame(null);
 		BigInteger result = ((Type.Int)eval(state, line)).getValue();
-		assertTrue(expected.equals(result));
+		assertEquals(expected, result);
 	}
 
 	void assertLeqR(String line, int expected) throws Exception

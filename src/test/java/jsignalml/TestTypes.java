@@ -1,42 +1,17 @@
 package jsignalml;
 
-import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import static org.hamcrest.core.IsInstanceOf.instanceOf;
 
+import static jsignalml.TestNumberOps.eval;
+import static jsignalml.TestNumberOps.equal;
+
 public class TestTypes {
-	Type eval(String line) throws Exception
-	{
-		Frame state = new Frame(null);
-		Expression expr = Processor.parse(line);
-		final ASTNode.ExprParam param =
-			new ASTNode.ExprParam(null, "expr", null, expr);
-		Type val = expr.accept(new EvalVisitor(state, param));
-		return val;
-	}
 
-	void equal(String line, int expected) throws Exception
+	public static void assertIsType(String line, Class<? extends Type> theClass)
+		throws Exception
 	{
-		assertTrue(eval(line).equals(new Type.Int(expected)));
-	}
-	void equal(String line, double expected) throws Exception
-	{
-		assertTrue(eval(line).equals(new Type.Float(expected)));
-	}
-	void equal(String line, String expected) throws Exception
-	{
-		assertTrue(eval(line).equals(new Type.String(expected)));
-	}
-
-	void verifyIsTrue(String line, boolean expected) throws Exception
-	{
-		assertEquals(eval(line).isTrue(), expected);
-	}
-
-	void assertIsType(String line, Class<? extends Type> theClass) throws Exception
-	{
-		//	assertTrue(eval(line) instanceof Type.Int);
 		assertThat(eval(line), instanceOf(theClass));
 	}
 
@@ -75,10 +50,10 @@ public class TestTypes {
 
 	@Test public void get_types_from_string()
 	{
-		assertEquals(Type.getType("int"), new Type.Int());
-		assertEquals(Type.getType("float"), new Type.Float());
-		assertEquals(Type.getType("str"), new Type.String());
-		assertEquals(Type.getType("list"), new Type.List());
+		assertEquals(new Type.Int(),  Type.getType("int"));
+		assertEquals(new Type.Float(), Type.getType("float"));
+		assertEquals(new Type.String(), Type.getType("str"));
+		assertEquals(new Type.List(), Type.getType("list"));
 	}
 
 	@Test(expected=IllegalArgumentException.class)
@@ -89,11 +64,11 @@ public class TestTypes {
 
 	@Test public void test_int_make_with_spaces()
 	{
-		assertEquals(new Type.Int("1"), new Type.Int(1));
-		assertEquals(new Type.Int("  1"), new Type.Int(1));
-		assertEquals(new Type.Int("1  "), new Type.Int(1));
-		assertEquals(new Type.Int("0       "), new Type.Int(0));
-		assertEquals(new Type.Int("+2"), new Type.Int(2));
-		assertEquals(new Type.Int("+ 3 "), new Type.Int(3));
+		assertEquals(new Type.Int(1), new Type.Int("1"));
+		assertEquals(new Type.Int(1), new Type.Int("  1"));
+		assertEquals(new Type.Int(1), new Type.Int("1  "));
+		assertEquals(new Type.Int(0), new Type.Int("0       "));
+		assertEquals(new Type.Int(2), new Type.Int("+2"));
+		assertEquals(new Type.Int(3), new Type.Int("+ 3 "));
 	}
 }

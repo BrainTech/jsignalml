@@ -1,6 +1,5 @@
 package jsignalml;
 
-import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -25,8 +24,8 @@ public class TestFrame {
 	@Test public void test_lookup() throws Exception
 	{
 		List<Type> args = util.newLinkedList();
-		assertTrue(state.lookup("a", args).equals(map.get("a")));
-		assertTrue(state.lookup("b", args).equals(map.get("b")));
+		assertEquals(map.get("a"), state.lookup("a", args));
+		assertEquals(map.get("b"), state.lookup("b", args));
 	}
 
 	@Test(expected=ExpressionFault.NameError.class)
@@ -47,9 +46,9 @@ public class TestFrame {
 	@Test public void test_parent_lookup() throws Exception
 	{
 		List<Type> args = util.newLinkedList();
-		assertTrue(state1.lookup("a", args).equals(map.get("a")));
-		assertTrue(state1.lookup("b", args).equals(map.get("b")));
-		assertTrue(state1.lookup("c", args).equals(map1.get("c")));
+		assertEquals(map.get("a"), state1.lookup("a", args));
+		assertEquals(map.get("b"), state1.lookup("b", args));
+		assertEquals(map1.get("c"), state1.lookup("c", args));
 	}
 
 	@Test(expected=ExpressionFault.ArgMismatch.class)
