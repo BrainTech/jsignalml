@@ -71,4 +71,47 @@ public class TestSequenceOps {
 	{
 		eval("'a'[-2]");
 	}
+
+	@Test(expected=ExpressionFault.TypeError.class)
+	public void eval_int_indexed() throws Exception
+	{
+		eval("1[0]");
+	}
+
+	@Test(expected=ExpressionFault.TypeError.class)
+	public void eval_float_indexed() throws Exception
+	{
+		eval("1.[0]");
+	}
+
+	@Test(expected=ExpressionFault.TypeError.class)
+	public void eval_list_indexed_string() throws Exception
+	{
+		eval("[1]['a']");
+	}
+	@Test(expected=ExpressionFault.TypeError.class)
+	public void eval_string_indexed_string() throws Exception
+	{
+		eval("'a'['a']");
+	}
+	@Test(expected=ExpressionFault.TypeError.class)
+	public void eval_list_indexed_float() throws Exception
+	{
+		eval("[1][1.]");
+	}
+	@Test(expected=ExpressionFault.TypeError.class)
+	public void eval_string_indexed_float() throws Exception
+	{
+		eval("'a'[1.]");
+	}
+	@Test(expected=ExpressionFault.TypeError.class)
+	public void eval_list_indexed_list() throws Exception
+	{
+		eval("[1][[1]]");
+	}
+	@Test(expected=ExpressionFault.TypeError.class)
+	public void eval_string_indexed_list() throws Exception
+	{
+		eval("'a'[[1]]");
+	}
 }
