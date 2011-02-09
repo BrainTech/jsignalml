@@ -331,6 +331,34 @@ public class TestNumberOps {
 		equal("-2.>=1.",0);
 	}
 
+	@Test public void eval_equal_less_than() throws Exception
+	{
+		equal("2<=2.", 1);
+		equal("2<=3", 1);
+		equal("2<=3.", 1);
+		equal("2<=2", 1);
+		equal("2<=-1",0);
+		equal("2<=-1.",0);
+		equal("2<=1",0);
+		equal("2<=1.",0);
+		equal("-2<=-1",1);
+		equal("-2<=-1.",1);
+		equal("-2<=1",1);
+		equal("-2<=1.",1);
+		equal("2.<=2.", 1);
+		equal("2.<=3", 1);
+		equal("2.<=3.", 1);
+		equal("2.<=2", 1);
+		equal("2.<=-1",0);
+		equal("2.<=-1.",0);
+		equal("2.<=1",0);
+		equal("2.<=1.",0);
+		equal("-2.<=-1",1);
+		equal("-2.<=-1.",1);
+		equal("-2.<=1",1);
+		equal("-2.<=1.",1);
+	}
+
 	@Test public void eval_equal_to() throws Exception
 	{
 		equal("2==2.", 1);

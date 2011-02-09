@@ -343,7 +343,7 @@ public abstract class Type implements Comparable<Type> {
 		}
 		public Int(double value) {
 			this((long)value);
-			if(value > Integer.MAX_VALUE || value < Integer.MIN_VALUE)
+			if(value > Long.MAX_VALUE || value < Long.MIN_VALUE)
 				throw new ExpressionFault.ValueError("overflow");
 		}
 		public Int(java.lang.String text) {

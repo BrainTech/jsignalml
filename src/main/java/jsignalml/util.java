@@ -8,7 +8,7 @@ import java.io.File;
 
 import org.apache.commons.lang.StringUtils;
 
-public class util {
+public abstract class util {
 	public static <T> LinkedList<T> newLinkedList() {
 		return new LinkedList<T>();
 	}
