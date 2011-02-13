@@ -57,7 +57,7 @@ public class NameCheck extends ASTVisitor<NullType> {
 		}
 
 		@Override
-		public NullType visit(Expression.Call call, List<? extends NullType> args)
+		public NullType visit(Expression.Call call, List<NullType> args)
 		{
 			log.debug("checking %s", call.name);
 			this.context.find(call.name);

@@ -51,13 +51,13 @@ public class EvalVisitor extends ExpressionVisitor<Type> {
 	}
 
 	@Override
-	public Type visit(Expression.Call fun, List<? extends Type> args)
+	public Type visit(Expression.Call fun, List<Type> args)
 	{
 		Type value = state.lookup(fun.name, args);
 		if (value != null)
 			return value;
 
-		return null;
+		throw new ExpressionFault.NameError(fun.name);
 		/*
 		ASTNode function = this.context.find(fun.name);
 

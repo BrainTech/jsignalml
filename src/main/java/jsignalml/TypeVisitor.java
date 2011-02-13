@@ -6,24 +6,24 @@ public class TypeVisitor extends ExpressionVisitor<Type> {
 	@Override
 	public Type visit(Expression.BinaryOp op, Type left, Type right)
 	{
-		return left.binaryOpType(op.op, right);
+		return left != null ? left.binaryOpType(op.op, right) : null;
 	}
 
 	@Override
 	public Type visit(Expression.LogicalBinaryOp op, Type left)
 	{
 		Type right = op.right.accept(this);
-		return left.binaryOpType(op.op, right);
+		return left != null ? left.binaryOpType(op.op, right) :  null;
 	}
 
 	@Override
 	public Type visit(Expression.UnaryOp op, Type sub)
 	{
-		return sub.unaryOpType(op.op);
+		return sub != null ? sub.unaryOpType(op.op) : null;
 	}
 
 	@Override
-	public Type visit(Expression.Call call, List<? extends Type> args)
+	public Type visit(Expression.Call call, List<Type> args)
 	{
 		// TODO
 		return null;

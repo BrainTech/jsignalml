@@ -10,7 +10,7 @@ public class TestFileType {
 	File filename = new File("target/test-classes/file1");
 
 	@Test public void test_binary_file_bytes() throws Exception {
-	FileType.BinaryFile F = new FileType.BinaryFile(filename);
+		FileType.BinaryFile F = new FileType.BinaryFile(filename);
 
 		BitForm format = new BitForm.Int.Int8();
 		assertThat(F.read(format, 0), equalTo((Type)new TypeInt('1')));
@@ -20,7 +20,7 @@ public class TestFileType {
 	}
 
 	@Test public void test_binary_file_int() throws Exception {
-	FileType.BinaryFile F = new FileType.BinaryFile(filename);
+		FileType.BinaryFile F = new FileType.BinaryFile(filename);
 
 		BitForm format = new BitForm.Int.Int32.LE();
 		int val = ((int)'1') + ((int)'2' << 8) +

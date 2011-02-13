@@ -93,7 +93,7 @@ public class JavaGenVisitor extends ExpressionVisitor<JExpression> {
 	}
 
 	@Override
-	public JExpression visit(Expression.Call fun, List<? extends JExpression> args)
+	public JExpression visit(Expression.Call fun, List<JExpression> args)
 	{
 		final JInvocation inv = context.call(fun.name);
 		for (JExpression arg: args)

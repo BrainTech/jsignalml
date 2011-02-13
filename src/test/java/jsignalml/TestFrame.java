@@ -6,6 +6,7 @@ import static org.junit.Assert.*;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.Arrays;
 
 public class TestFrame {
 	static final Map<String,Type> map, map1;
@@ -28,19 +29,10 @@ public class TestFrame {
 		assertEquals(map.get("b"), state.lookup("b", args));
 	}
 
-	@Test(expected=ExpressionFault.NameError.class)
-	public void test_lookup_bad_id() throws Exception
+	@Test public void test_lookup_with_args() throws Exception
 	{
-		List<Type> args = util.newLinkedList();
-		state.lookup("c", args);
-	}
-
-	@Test(expected=ExpressionFault.ArgMismatch.class)
-	public void test_lookup_with_args() throws Exception
-	{
-		List<Type> args = util.newLinkedList();
-		args.add((Type)(new TypeInt(666)));
-		state.lookup("a", args);
+		List<Type> args = Arrays.asList((Type)new TypeInt(666));
+		assertEquals(null, state.lookup("a", args));
 	}
 
 	@Test public void test_parent_lookup() throws Exception
@@ -51,18 +43,10 @@ public class TestFrame {
 		assertEquals(map1.get("c"), state1.lookup("c", args));
 	}
 
-	@Test(expected=ExpressionFault.ArgMismatch.class)
-	public void test_parent_lookup_with_args() throws Exception
+	@Test public void test_parent_lookup_with_args() throws Exception
 	{
-		List<Type> args = util.newLinkedList();
-		args.add(new TypeInt(666));
-		state.lookup("a", args);
+		List<Type> args = Arrays.asList((Type)new TypeInt(667));
+		assertEquals(null, state1.lookup("a", args));
 	}
 
-	@Test(expected=UnsupportedOperationException.class)
-	public void test_add_new_local()
-	{
-		Map<String,Type> mapcopy = new TreeMap<String,Type>(map);
-		new Frame(null).localize(mapcopy).env.put("xxx", new TypeInt(666));
-	}
 }
