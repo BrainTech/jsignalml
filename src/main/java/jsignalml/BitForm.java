@@ -38,14 +38,14 @@ public abstract class BitForm {
 		throw new BadBitForm(description);
 	}
 
-	public static BitForm get(Type.String description)
+	public static BitForm get(TypeString description)
 		throws BadBitForm
 	{
 		return get(description.value);
 	}
 
 	public abstract Type read(ByteBuffer buffer, int offset);
-	public abstract Type read2(ByteBuffer buffer, Type.Int offset);
+	public abstract Type read2(ByteBuffer buffer, TypeInt offset);
 	public java.lang.String toString()
 	{
 		return this.getClass().getName().replace("$", ".") + "()";
@@ -53,26 +53,26 @@ public abstract class BitForm {
 
 	public static abstract class Int extends BitForm {
 		@Override
-		public abstract Type.Int read(ByteBuffer buffer, int offset);
+		public abstract TypeInt read(ByteBuffer buffer, int offset);
 
 		@Override
-		public abstract Type.Int read2(ByteBuffer buffer, Type.Int offset);
+		public abstract TypeInt read2(ByteBuffer buffer, TypeInt offset);
 
 		public static class Int8 extends Int {
 			protected static final Logger log = new Logger(Int8.class);
 			@Override
-			public Type.Int read(ByteBuffer buffer, int offset) {
+			public TypeInt read(ByteBuffer buffer, int offset) {
 				byte data;
 				try {
 					data = buffer.get(offset);
 				} catch (IndexOutOfBoundsException e) {
 					throw new ExpressionFault.IndexError(offset, buffer.limit());
 				}
-				return new Type.Int(data);
+				return new TypeInt(data);
 			}
 
 			@Override
-			public Type.Int read2(ByteBuffer buffer, Type.Int offset)
+			public TypeInt read2(ByteBuffer buffer, TypeInt offset)
 			{
 				byte data;
 				int offset_ = offset.safeIntValue();
@@ -84,7 +84,7 @@ public abstract class BitForm {
 				} catch (IndexOutOfBoundsException e) {
 					throw new ExpressionFault.IndexError(offset_, buffer.limit());
 				}
-				return new Type.Int(data);
+				return new TypeInt(data);
 			}
 
 		}
@@ -93,17 +93,17 @@ public abstract class BitForm {
 			public static class LE extends Int16 {
 				protected static final Logger log = new Logger(Int16.LE.class);
 				@Override
-				public Type.Int read(ByteBuffer buffer, int byteoffset) {
+				public TypeInt read(ByteBuffer buffer, int byteoffset) {
 					int data;
 					try {
 						data = buffer.getShort(byteoffset);
 					} catch (IndexOutOfBoundsException e) {
 						throw new ExpressionFault.IndexError(byteoffset, buffer.limit());
 					}
-					return new Type.Int(data);
+					return new TypeInt(data);
 				}
 				@Override
-				public Type.Int read2(ByteBuffer buffer, Type.Int byteoffset) {
+				public TypeInt read2(ByteBuffer buffer, TypeInt byteoffset) {
 					int data;
 					int offset = byteoffset.safeIntValue();
 
@@ -114,7 +114,7 @@ public abstract class BitForm {
 					} catch (IndexOutOfBoundsException e) {
 						throw new ExpressionFault.IndexError(offset, buffer.limit());
 					}
-					return new Type.Int(data);
+					return new TypeInt(data);
 				}
 			}
 		}
@@ -123,17 +123,17 @@ public abstract class BitForm {
 			public static class LE extends Int32 {
 				protected static final Logger log = new Logger(Int32.LE.class);
 				@Override
-				public Type.Int read(ByteBuffer buffer, int byteoffset) {
+				public TypeInt read(ByteBuffer buffer, int byteoffset) {
 					int data;
 					try {
 						data = buffer.getInt(byteoffset);
 					} catch (IndexOutOfBoundsException e) {
 						throw new ExpressionFault.IndexError(byteoffset, buffer.limit());
 					}
-					return new Type.Int(data);
+					return new TypeInt(data);
 				}
 				@Override
-				public Type.Int read2(ByteBuffer buffer, Type.Int byteoffset) {
+				public TypeInt read2(ByteBuffer buffer, TypeInt byteoffset) {
 					int data;
 					int offset = byteoffset.safeIntValue();
 
@@ -144,7 +144,7 @@ public abstract class BitForm {
 					} catch (IndexOutOfBoundsException e) {
 						throw new ExpressionFault.IndexError(offset, buffer.limit());
 					}
-					return new Type.Int(data);
+					return new TypeInt(data);
 				}
 			}
 		}
@@ -153,17 +153,17 @@ public abstract class BitForm {
 			public static class LE extends Int64 {
 				protected static final Logger log = new Logger(Int64.LE.class);
 				@Override
-				public Type.Int read(ByteBuffer buffer, int byteoffset) {
+				public TypeInt read(ByteBuffer buffer, int byteoffset) {
 					long data;
 					try {
 						data = buffer.getLong(byteoffset);
 					} catch (IndexOutOfBoundsException e) {
 						throw new ExpressionFault.IndexError(byteoffset, buffer.limit());
 					}
-					return new Type.Int(data);
+					return new TypeInt(data);
 				}
 				@Override
-				public Type.Int read2(ByteBuffer buffer, Type.Int byteoffset) {
+				public TypeInt read2(ByteBuffer buffer, TypeInt byteoffset) {
 					long data;
 					int offset = byteoffset.safeIntValue();
 
@@ -174,7 +174,7 @@ public abstract class BitForm {
 					} catch (IndexOutOfBoundsException e) {
 						throw new ExpressionFault.IndexError(offset, buffer.limit());
 					}
-					return new Type.Int(data);
+					return new TypeInt(data);
 				}
 			}
 		}
@@ -184,17 +184,17 @@ public abstract class BitForm {
 			public static class LE extends Unsigned16 {
 				protected static final Logger log = new Logger(Unsigned16.LE.class);
 				@Override
-				public Type.Int read(ByteBuffer buffer, int byteoffset) {
+				public TypeInt read(ByteBuffer buffer, int byteoffset) {
 					short data;
 					try {
 						data = buffer.getShort(byteoffset);
 					} catch (IndexOutOfBoundsException e) {
 						throw new ExpressionFault.IndexError(byteoffset, buffer.limit());
 					}
-					return new Type.Int(data);
+					return new TypeInt(data);
 				}
 				@Override
-				public Type.Int read2(ByteBuffer buffer, Type.Int byteoffset) {
+				public TypeInt read2(ByteBuffer buffer, TypeInt byteoffset) {
 					short data;
 					int offset = byteoffset.safeIntValue();
 
@@ -205,7 +205,7 @@ public abstract class BitForm {
 					} catch (IndexOutOfBoundsException e) {
 						throw new ExpressionFault.IndexError(offset, buffer.limit());
 					}
-					return Type.Int.makeFromUnsignedReadAsSigned(data);
+					return TypeInt.makeFromUnsignedReadAsSigned(data);
 				}
 			}
 		}
@@ -214,17 +214,17 @@ public abstract class BitForm {
 			public static class LE extends Unsigned32 {
 				protected static final Logger log = new Logger(Unsigned32.LE.class);
 				@Override
-				public Type.Int read(ByteBuffer buffer, int byteoffset) {
+				public TypeInt read(ByteBuffer buffer, int byteoffset) {
 					int data;
 					try {
 						data = buffer.getInt(byteoffset);
 					} catch (IndexOutOfBoundsException e) {
 						throw new ExpressionFault.IndexError(byteoffset, buffer.limit());
 					}
-					return new Type.Int(data);
+					return new TypeInt(data);
 				}
 				@Override
-				public Type.Int read2(ByteBuffer buffer, Type.Int byteoffset) {
+				public TypeInt read2(ByteBuffer buffer, TypeInt byteoffset) {
 					int data;
 					int offset = byteoffset.safeIntValue();
 
@@ -235,7 +235,7 @@ public abstract class BitForm {
 					} catch (IndexOutOfBoundsException e) {
 						throw new ExpressionFault.IndexError(offset, buffer.limit());
 					}
-					return Type.Int.makeFromUnsignedReadAsSigned(data);
+					return TypeInt.makeFromUnsignedReadAsSigned(data);
 				}
 			}
 		}
@@ -244,17 +244,17 @@ public abstract class BitForm {
 			public static class LE extends Unsigned64 {
 				protected static final Logger log = new Logger(Unsigned64.LE.class);
 				@Override
-				public Type.Int read(ByteBuffer buffer, int byteoffset) {
+				public TypeInt read(ByteBuffer buffer, int byteoffset) {
 					long data;
 					try {
 						data = buffer.getLong(byteoffset);
 					} catch (IndexOutOfBoundsException e) {
 						throw new ExpressionFault.IndexError(byteoffset, buffer.limit());
 					}
-					return new Type.Int(data);
+					return new TypeInt(data);
 				}
 				@Override
-				public Type.Int read2(ByteBuffer buffer, Type.Int byteoffset) {
+				public TypeInt read2(ByteBuffer buffer, TypeInt byteoffset) {
 					long data;
 					int offset = byteoffset.safeIntValue();
 
@@ -265,7 +265,7 @@ public abstract class BitForm {
 					} catch (IndexOutOfBoundsException e) {
 						throw new ExpressionFault.IndexError(offset, buffer.limit());
 					}
-					return Type.Int.makeFromUnsignedReadAsSigned(data);
+					return TypeInt.makeFromUnsignedReadAsSigned(data);
 				}
 			}
 		}
@@ -277,18 +277,18 @@ public abstract class BitForm {
 			public static class LE extends Float32 {
 				protected static final Logger log = new Logger(Float32.LE.class);
 				@Override
-				public Type.Float read(ByteBuffer buffer, int offset) {
+				public TypeFloat read(ByteBuffer buffer, int offset) {
 					float data;
 					try {
 						data = buffer.getFloat(offset);
 					} catch (IndexOutOfBoundsException e) {
 						throw new ExpressionFault.IndexError(offset, buffer.limit());
 					}
-					return new Type.Float(data);
+					return new TypeFloat(data);
 				}
 
 				@Override
-				public Type.Float read2(ByteBuffer buffer, Type.Int offset)
+				public TypeFloat read2(ByteBuffer buffer, TypeInt offset)
 				{
 					float data;
 					int offset_ = offset.safeIntValue();
@@ -300,7 +300,7 @@ public abstract class BitForm {
 					} catch (IndexOutOfBoundsException e) {
 						throw new ExpressionFault.IndexError(offset_, buffer.limit());
 					}
-					return new Type.Float(data);
+					return new TypeFloat(data);
 				}
 			}
 		}
@@ -316,7 +316,7 @@ public abstract class BitForm {
 		}
 
 		@Override
-		public Type.String read(ByteBuffer buffer, int byteoffset) {
+		public TypeString read(ByteBuffer buffer, int byteoffset) {
 			log.info("BitForm.String.read: buffer=%s byteoffset=%d",
 			         buffer, byteoffset);
 			buffer = buffer.asReadOnlyBuffer(); // XXX: don't use limit?
@@ -324,11 +324,11 @@ public abstract class BitForm {
 
 			byte[] data = new byte[this.size];
 			buffer.get(data);
-			return new Type.String(new java.lang.String(data));
+			return new TypeString(new java.lang.String(data));
 		}
 
 		@Override
-		public Type.String read2(ByteBuffer buffer, Type.Int byteoffset) {
+		public TypeString read2(ByteBuffer buffer, TypeInt byteoffset) {
 			int offset = byteoffset.safeIntValue();
  			log.info("BitForm.String.read: buffer=%s byteoffset=%d",
 			         buffer, offset);
@@ -339,7 +339,7 @@ public abstract class BitForm {
 
 			byte[] data = new byte[this.size];
 			buffer.get(data);
-			return new Type.String(new java.lang.String(data));
+			return new TypeString(new java.lang.String(data));
 		}
 
 		public java.lang.String toString()

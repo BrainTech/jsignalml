@@ -69,11 +69,11 @@ expr returns [Expression value]
     | ^(INDEX a=expr s=expr)
         { $value = new Expression.Index($a.value, $s.value); }
     | INT
-        { $value = new Expression.Const(new Type.Int($INT.text)); }
+        { $value = new Expression.Const(new TypeInt($INT.text)); }
     | FLOAT
-        { $value = new Expression.Const(new Type.Float($FLOAT.text)); }
+        { $value = new Expression.Const(new TypeFloat($FLOAT.text)); }
     | STRING
-        { Type.String tmp = Type.String.fromQuoted($STRING.text);
+        { TypeString tmp = TypeString.fromQuoted($STRING.text);
           $value = new Expression.Const(tmp); }
     | ^(TERN q=expr a=expr b=expr)
         { $value = new Expression.Ternary($q.value, $a.value, $b.value); }

@@ -36,8 +36,8 @@ import com.sun.codemodel.writer.FileCodeWriter;
 	}
 	double _get_duration_of_data_record() {
 		long offset = 244;
-		Type.String str = (Type.String) buffer.read(new BitForm.Str(8), offset);
-		return new Type.Float().make(str).getValue();
+		TypeString str = (TypeString) buffer.read(new BitForm.Str(8), offset);
+		return new TypeFloat().make(str).getValue();
 	}
 */
 
@@ -237,9 +237,9 @@ public class JavaGen extends ASTVisitor<JDefinedClass> {
 		assert klass != null;
 
 		final JMethod formatfunc = exprFunction(klass, node, node.id + "_format", // XXX
-							new Type.String(), format);
+							new TypeString(), format);
 		final JMethod offsetfunc = exprFunction(klass, node, node.id + "_offset", // XXX
-							new Type.Int(), offset);
+							new TypeInt(), offset);
 
 		final JMethod readfunc = readFunction(klass, node, node.id + "_read", // XXX
 						      type);
@@ -247,18 +247,18 @@ public class JavaGen extends ASTVisitor<JDefinedClass> {
 		final JClass javatype = convertTypeToJClass(type);
 		final JMethod impl = klass.method(JMod.NONE, javatype, makeGetterImpl(ident));
 		// -- generated code --
-		// Type.String _jsignalml__get_readX_format();
-		// Type.Int _jsignalml__get_readX_offset();
-		// Type.Int _jsignalml__get_readX_read(BitForm bitform, Type.Int offset)
-		// Type.Int _jsignalml__get_readX() {
-		//     Type.String format = _jsignalml__get_readX_format();
-		//     Type.Int offset = _jsignalml__get_readX_offset();
+		// TypeString _jsignalml__get_readX_format();
+		// TypeInt _jsignalml__get_readX_offset();
+		// TypeInt _jsignalml__get_readX_read(BitForm bitform, TypeInt offset)
+		// TypeInt _jsignalml__get_readX() {
+		//     TypeString format = _jsignalml__get_readX_format();
+		//     TypeInt offset = _jsignalml__get_readX_offset();
 		//     return _jsignalml__get_readX_read(BitForm.get(format), offset);
 	        // }
 		final JBlock body = impl.body();
-		final JVar format_ = body.decl(this.model.ref(Type.String.class), "format",
+		final JVar format_ = body.decl(this.model.ref(TypeString.class), "format",
 					       JExpr._this().invoke(formatfunc));
-		final JVar offset_ = body.decl(this.model.ref(Type.Int.class), "offset",
+		final JVar offset_ = body.decl(this.model.ref(TypeInt.class), "offset",
 					       JExpr._this().invoke(offsetfunc));
 		final JClass bitform_class = this.model.ref(BitForm.class);
 		final JVar theformat = body.decl(bitform_class, "theformat");
@@ -304,7 +304,7 @@ public class JavaGen extends ASTVisitor<JDefinedClass> {
 		final JMethod impl = klass.method(JMod.NONE, javatype,
 						  makeGetterImpl(ident));
 		final JVar bitform_param = impl.param(BitForm.class, "bitform");
-		final JVar offset_param = impl.param(Type.Int.class, "offset");
+		final JVar offset_param = impl.param(TypeInt.class, "offset");
 		final JBlock body = impl.body();
 		body.directStatement(format("// type=%s", type));
 
@@ -448,7 +448,7 @@ public class JavaGen extends ASTVisitor<JDefinedClass> {
 				    JDefinedClass context)
 	{
 		final JClass javatype_class = this.model.ref(Type.class);
-		final JClass jt_list_class = this.model.ref(Type.List.class);
+		final JClass jt_list_class = this.model.ref(TypeList.class);
 		final JClass util_class = this.model.ref(util.class);
 		final String ident = "loop_" + node.id;
 		final JType list_type = this.model.ref(List.class).narrow(context);
@@ -477,7 +477,7 @@ public class JavaGen extends ASTVisitor<JDefinedClass> {
 	public JMethod loopIndexAccessor(JDefinedClass klass, ASTNode.ForLoop node,
 					 JDefinedClass context)
 	{
-		final JClass jt_int_class = this.model.ref(Type.Int.class);
+		final JClass jt_int_class = this.model.ref(TypeInt.class);
 		final JClass efte = this.model.ref(ExpressionFault.TypeError.class);
 		final String ident = "loop_" + node.id;
 		final JMethod getter = klass.method(JMod.PUBLIC, context,
@@ -522,16 +522,16 @@ public class JavaGen extends ASTVisitor<JDefinedClass> {
 
 		final String field_name = "duration_of_data_record";
 		final ASTNode signalml = new ASTNode.Signalml("Test");
-		new ASTNode.ExprParam(signalml, field_name, new Type.Int(), expr);
+		new ASTNode.ExprParam(signalml, field_name, new TypeInt(), expr);
 
 		final Expression expr2 = Processor.parse(field_name + "() + 1");
-		new ASTNode.ExprParam(signalml, field_name+"2", new Type.Int(), expr2);
+		new ASTNode.ExprParam(signalml, field_name+"2", new TypeInt(), expr2);
 
 		ASTNode.FileHandle thefile = new ASTNode.FileHandle(signalml, "thefile", null);
 
-		new ASTNode.BinaryParam(thefile, "readTest", new Type.Int(),
+		new ASTNode.BinaryParam(thefile, "readTest", new TypeInt(),
 					Expression.Const.make("<i4"), Expression.Const.make(25));
-		new ASTNode.BinaryParam(thefile, "readTestConv", new Type.Int(),
+		new ASTNode.BinaryParam(thefile, "readTestConv", new TypeInt(),
 					Expression.Const.make("|S8"), Expression.Const.make(0));
 
 		final NameCheck check = new NameCheck();
@@ -553,14 +553,14 @@ public class JavaGen extends ASTVisitor<JDefinedClass> {
 	{
 		if(type == null)
 			return null;
-		if(type instanceof Type.Int)
-			return Type.Int.class;
-		if(type instanceof Type.Float)
-			return Type.Float.class;
-		if(type instanceof Type.String)
-			return Type.String.class;
-		if(type instanceof Type.List)
-			return Type.List.class;
+		if(type instanceof TypeInt)
+			return TypeInt.class;
+		if(type instanceof TypeFloat)
+			return TypeFloat.class;
+		if(type instanceof TypeString)
+			return TypeString.class;
+		if(type instanceof TypeList)
+			return TypeList.class;
 		throw new RuntimeException("unknown Type");
 	}
 

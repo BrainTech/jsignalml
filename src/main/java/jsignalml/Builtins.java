@@ -17,7 +17,7 @@ public class Builtins extends ASTNode {
 		super(null, "builtins");
 	}
 
-	public static Type.Int factorial(Type.Int x)
+	public static TypeInt factorial(TypeInt x)
 	{
 		BigInteger val = x.getValue();
 		if(val.compareTo(BigInteger.ZERO) < 0)
@@ -29,7 +29,7 @@ public class Builtins extends ASTNode {
 			val = val.subtract(BigInteger.ONE);
 		}
 
-		return new Type.Int(ret);
+		return new TypeInt(ret);
 	}
 
 	public ASTNode.BuiltinFunction lookup(String name)
@@ -41,8 +41,8 @@ public class Builtins extends ASTNode {
 
 		if (name.equals("factorial")) {
 			ASTNode.BuiltinFunction function =
-				new ASTNode.BuiltinFunction(owner, name, new Type.Int());
-			function.arg("n", new Type.Int());
+				new ASTNode.BuiltinFunction(owner, name, new TypeInt());
+			function.arg("n", new TypeInt());
 			return function;
 		}
 

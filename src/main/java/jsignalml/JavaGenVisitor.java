@@ -63,7 +63,7 @@ public class JavaGenVisitor extends ExpressionVisitor<JExpression> {
 			case GE: cond = cmp_res.gte(JExpr.lit(0)); break;
 			default: throw new RuntimeException();
 			}
-			JClass int_t = this.codemodel.ref(Type.Int.class);
+			JClass int_t = this.codemodel.ref(TypeInt.class);
 			return JOp.cond(cond, int_t.staticRef("True"),
 					int_t.staticRef("False"));
 		} else {
@@ -104,7 +104,7 @@ public class JavaGenVisitor extends ExpressionVisitor<JExpression> {
 	@Override
 	public JExpression visit(Expression.List_ list, List<? extends JExpression> args)
 	{
-		JInvocation cons = JExpr._new(this.codemodel.ref(Type.List.class));
+		JInvocation cons = JExpr._new(this.codemodel.ref(TypeList.class));
 
 		for (JExpression arg: args)
 			cons.arg(arg);
@@ -126,16 +126,16 @@ public class JavaGenVisitor extends ExpressionVisitor<JExpression> {
 
 		// XXX
 
-		if (val.value instanceof Type.Int) {
-			type = Type.Int.class;
+		if (val.value instanceof TypeInt) {
+			type = TypeInt.class;
 			// TODO: check if representation is not outside range
-			repr = JExpr.lit(((Type.Int)val.value).safeIntValue()); // XXX
-		} else if (val.value instanceof Type.Float) {
-			type = Type.Float.class;
-			repr = JExpr.lit(((Type.Float)val.value).getValue());
-		} else if (val.value instanceof Type.String) {
-			type = Type.String.class;
-			repr = JExpr.lit(((Type.String)val.value).getValue());
+			repr = JExpr.lit(((TypeInt)val.value).safeIntValue()); // XXX
+		} else if (val.value instanceof TypeFloat) {
+			type = TypeFloat.class;
+			repr = JExpr.lit(((TypeFloat)val.value).getValue());
+		} else if (val.value instanceof TypeString) {
+			type = TypeString.class;
+			repr = JExpr.lit(((TypeString)val.value).getValue());
 		} else {
 			throw new RuntimeException();
 		}

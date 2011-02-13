@@ -57,7 +57,7 @@ public class TestCodecBuilding {
 		assertEquals(1, p.args.size());
 
 		ASTNode.Positional arg = p.args.get(0);
-		assert_arg_is(arg, "one", Type.Int.class);
+		assert_arg_is(arg, "one", TypeInt.class);
 	}
 
 	@Test public void test_do_two_args() throws Exception
@@ -71,10 +71,10 @@ public class TestCodecBuilding {
 
 		assertEquals(4, p.args.size());
 
-		assert_arg_is(p.args.get(0), "one", Type.Int.class);
-		assert_arg_is(p.args.get(1), "two", Type.Float.class);
-		assert_arg_is(p.args.get(2), "three", Type.String.class);
-		assert_arg_is(p.args.get(3), "four", Type.List.class);
+		assert_arg_is(p.args.get(0), "one", TypeInt.class);
+		assert_arg_is(p.args.get(1), "two", TypeFloat.class);
+		assert_arg_is(p.args.get(2), "three", TypeString.class);
+		assert_arg_is(p.args.get(3), "four", TypeList.class);
 	}
 
 	@Test public void test_do_assert() throws Exception
@@ -96,7 +96,7 @@ public class TestCodecBuilding {
 		ASTNode.Param p = (ASTNode.Param) root.find("file").find("only");
 
 		assertEquals("only", p.id);
-		assertThat( p.type, instanceOf(Type.Int.class) );
+		assertThat( p.type, instanceOf(TypeInt.class) );
 		assertEquals(4, p.args.size());
 		assertThat( p, instanceOf(ASTNode.ExprParam.class) );
 	}

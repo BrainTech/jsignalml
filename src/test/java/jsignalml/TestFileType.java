@@ -13,10 +13,10 @@ public class TestFileType {
 	FileType.BinaryFile F = new FileType.BinaryFile(filename);
 
 		BitForm format = new BitForm.Int.Int8();
-		assertThat(F.read(format, 0), equalTo((Type)new Type.Int('1')));
-		assertThat(F.read(format, 1), equalTo((Type)new Type.Int('2')));
-		assertThat(F.read(format, 2), equalTo((Type)new Type.Int('3')));
-		assertThat(F.read(format, 3), equalTo((Type)new Type.Int('4')));
+		assertThat(F.read(format, 0), equalTo((Type)new TypeInt('1')));
+		assertThat(F.read(format, 1), equalTo((Type)new TypeInt('2')));
+		assertThat(F.read(format, 2), equalTo((Type)new TypeInt('3')));
+		assertThat(F.read(format, 3), equalTo((Type)new TypeInt('4')));
 	}
 
 	@Test public void test_binary_file_int() throws Exception {
@@ -25,7 +25,7 @@ public class TestFileType {
 		BitForm format = new BitForm.Int.Int32.LE();
 		int val = ((int)'1') + ((int)'2' << 8) +
 			((int)'3' << 16) + ((int)'4' << 24);
-		assertThat(F.read(format, 0), equalTo((Type)new Type.Int(val)));
+		assertThat(F.read(format, 0), equalTo((Type)new TypeInt(val)));
 	}
 
 	@Test(expected=ExpressionFault.IndexError.class)
@@ -57,6 +57,6 @@ public class TestFileType {
 
 		BitForm format = new BitForm.String(4);
 		Type s = F.read(format, 0);
-		assertThat(s, equalTo((Type)new Type.String("1234")));
+		assertThat(s, equalTo((Type)new TypeString("1234")));
 	}
 }

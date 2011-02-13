@@ -181,7 +181,7 @@ public abstract class ASTNode {
 
 		Positional arg(String name, Type type)
 		{
-			return new ASTNode.Positional(this, "n", new Type.Int());
+			return new ASTNode.Positional(this, "n", new TypeInt());
 		}
 	}
 

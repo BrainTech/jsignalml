@@ -182,13 +182,13 @@ public abstract class Expression {
 
 		public static Expression make(String str) {
 			assert str != null;
-			return new Const(new Type.String(str));
+			return new Const(new TypeString(str));
 		}
 		public static Expression make(int integer) {
-			return new Const(new Type.Int(integer));
+			return new Const(new TypeInt(integer));
 		}
 		public static Expression make(double real) {
-			return new Const(new Type.Float(real));
+			return new Const(new TypeFloat(real));
 		}
 
 		@Override

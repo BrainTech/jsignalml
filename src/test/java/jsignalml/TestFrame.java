@@ -11,11 +11,11 @@ public class TestFrame {
 	static final Map<String,Type> map, map1;
 	static {
 		map = util.newTreeMap();
-		map.put("a", new Type.Int(1));
-		map.put("b", new Type.Float(2.));
+		map.put("a", new TypeInt(1));
+		map.put("b", new TypeFloat(2.));
 
 		map1 = util.newTreeMap();
-		map1.put("c", new Type.String("ccc"));
+		map1.put("c", new TypeString("ccc"));
 	}
 
 	final Frame state = new Frame(null).localize(map);
@@ -39,7 +39,7 @@ public class TestFrame {
 	public void test_lookup_with_args() throws Exception
 	{
 		List<Type> args = util.newLinkedList();
-		args.add((Type)(new Type.Int(666)));
+		args.add((Type)(new TypeInt(666)));
 		state.lookup("a", args);
 	}
 
@@ -55,7 +55,7 @@ public class TestFrame {
 	public void test_parent_lookup_with_args() throws Exception
 	{
 		List<Type> args = util.newLinkedList();
-		args.add(new Type.Int(666));
+		args.add(new TypeInt(666));
 		state.lookup("a", args);
 	}
 
@@ -63,6 +63,6 @@ public class TestFrame {
 	public void test_add_new_local()
 	{
 		Map<String,Type> mapcopy = new TreeMap<String,Type>(map);
-		new Frame(null).localize(mapcopy).env.put("xxx", new Type.Int(666));
+		new Frame(null).localize(mapcopy).env.put("xxx", new TypeInt(666));
 	}
 }

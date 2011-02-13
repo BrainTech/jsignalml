@@ -11,11 +11,11 @@ public class TestASTNode {
 	static final Map<String,Type> map, map1;
 	static {
 		map = util.newTreeMap();
-		map.put("a", new Type.Int(1));
-		map.put("b", new Type.Float(2.));
+		map.put("a", new TypeInt(1));
+		map.put("b", new TypeFloat(2.));
 
 		map1 = util.newTreeMap();
-		map1.put("c", new Type.String("ccc"));
+		map1.put("c", new TypeString("ccc"));
 	}
 
 	static final ASTNode.Signalml signalml = new ASTNode.Signalml("root");
@@ -26,11 +26,11 @@ public class TestASTNode {
 	@Test public void create_ExprParam() throws Exception
 	{
 		final int VAL = 11;
-		final Type.Int intval = new Type.Int(VAL);
-		ASTNode.ExprParam p = new ASTNode.ExprParam(signalml, "p", new Type.Int(1),
+		final TypeInt intval = new TypeInt(VAL);
+		ASTNode.ExprParam p = new ASTNode.ExprParam(signalml, "p", new TypeInt(1),
 							new Expression.Const(intval));
 		final Type val = p.expr.accept(new EvalVisitor(state, p));
-		assertThat(val, instanceOf(Type.Int.class));
+		assertThat(val, instanceOf(TypeInt.class));
 		assertEquals(val, intval);
 	}
 
@@ -43,9 +43,9 @@ public class TestASTNode {
 
 	@Test public void eval_ExprParam() throws Exception
 	{
-		ASTNode.ExprParam p = makeExprParam(new Type.Float(1), "a+b");
+		ASTNode.ExprParam p = makeExprParam(new TypeFloat(1), "a+b");
 		final Type val = p.expr.accept(new EvalVisitor(state, p));
-		assertThat(val, instanceOf(Type.Float.class));
-		assertEquals(val, new Type.Float(3.));
+		assertThat(val, instanceOf(TypeFloat.class));
+		assertEquals(val, new TypeFloat(3.));
 	}
 }

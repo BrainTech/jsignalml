@@ -17,19 +17,19 @@ public class TestNumberOps {
 
 	static void equal(String line, int expected) throws Exception
 	{
-		assertEquals(new Type.Int(expected), eval(line));
+		assertEquals(new TypeInt(expected), eval(line));
 	}
 	static void equal(String line, double expected) throws Exception
 	{
-		assertEquals(new Type.Float(expected), eval(line));
+		assertEquals(new TypeFloat(expected), eval(line));
 	}
 	static void equal(String line, String expected) throws Exception
 	{
-		assertEquals(new Type.String(expected), eval(line));
+		assertEquals(new TypeString(expected), eval(line));
 	}
 	static void listEqual(String line, Object...elements) throws Exception
 	{
-		assertEquals(Type.List.make(elements), eval(line));
+		assertEquals(TypeList.make(elements), eval(line));
 	}
 
 	static void verifyIsTrue(String line, boolean expected) throws Exception

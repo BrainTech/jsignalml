@@ -32,9 +32,9 @@ public class TestBinaryParam {
 
 	@Test public void read_binary_file_param() throws Exception
 	{
-		ASTNode.Param p = new ASTNode.BinaryParam(handle, "p", new Type.Int(),
+		ASTNode.Param p = new ASTNode.BinaryParam(handle, "p", new TypeInt(),
 							  const_format, const_offset);
 		// TODO: write eval visitor for ASTNodes
-		// assertThat(p.eval(reader), equalTo((Type)new Type.Int('2')));
+		// assertThat(p.eval(reader), equalTo((Type)new TypeInt('2')));
 	}
 }

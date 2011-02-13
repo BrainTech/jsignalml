@@ -32,7 +32,7 @@ public class TypeVisitor extends ExpressionVisitor<Type> {
 	@Override
 	public Type visit(Expression.List_ list, List<? extends Type> args)
 	{
-		return new Type.List();
+		return new TypeList();
 	}
 
 	/**
@@ -55,10 +55,10 @@ public class TypeVisitor extends ExpressionVisitor<Type> {
 	@Override
 	public Type visit(Expression.Index op, Type seq, Type index)
 	{
-		if (index != null && !(index instanceof Type.Int))
+		if (index != null && !(index instanceof TypeInt))
 			throw new ExpressionFault.TypeError();
 
-		if (seq != null && !(seq instanceof Type.List || seq instanceof Type.String))
+		if (seq != null && !(seq instanceof TypeList || seq instanceof TypeString))
 			throw new ExpressionFault.TypeError();
 
 		if (op.item instanceof Expression.List_)

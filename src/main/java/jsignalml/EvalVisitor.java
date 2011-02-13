@@ -83,7 +83,7 @@ public class EvalVisitor extends ExpressionVisitor<Type> {
 	@Override
 	public Type visit(Expression.List_ list, List<? extends Type> args)
 	{
-		return new Type.List(args);
+		return new TypeList(args);
 	}
 
 	@Override

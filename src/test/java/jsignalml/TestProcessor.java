@@ -25,16 +25,16 @@ public class TestProcessor {
 	void assertLeqR(String line, BigInteger expected) throws Exception
 	{
 		Frame state = new Frame(null);
-		BigInteger result = ((Type.Int)eval(state, line)).getValue();
+		BigInteger result = ((TypeInt)eval(state, line)).getValue();
 		assertEquals(expected, result);
 	}
 
 	void assertLeqR(String line, int expected) throws Exception
-	{ assertLeqR(line, new Type.Int(expected)); }
+	{ assertLeqR(line, new TypeInt(expected)); }
 	void assertLeqR(String line, double expected) throws Exception
-	{ assertLeqR(line, new Type.Float(expected)); }
+	{ assertLeqR(line, new TypeFloat(expected)); }
 	void assertLeqR(String line, String expected) throws Exception
-	{ assertLeqR(line, new Type.String(expected)); }
+	{ assertLeqR(line, new TypeString(expected)); }
 
 	@Test public void simpleAdd() throws Exception
 	{
