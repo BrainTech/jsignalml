@@ -114,4 +114,47 @@ public class TestSequenceOps {
 	{
 		eval("'a'[[1]]");
 	}
+
+	@Test public void list_plus_list() throws Exception
+	{
+		listEqual("[0,1,2] + [-1]", 0, 1, 2, -1);
+		listEqual("[0,1,2] + []", 0, 1, 2);
+	}
+	@Test public void string_plus_string() throws Exception
+	{
+		equal("'abc' + 'd'", "abcd");
+		equal("'abc' + ''", "abc");
+	}
+
+	@Test(expected=ExpressionFault.TypeError.class)
+	public void eval_list_plus_int() throws Exception
+	{
+		eval("[1] + 2");
+	}
+	@Test(expected=ExpressionFault.TypeError.class)
+	public void eval_list_plus_float() throws Exception
+	{
+		eval("[1] + 2.");
+	}
+	@Test(expected=ExpressionFault.TypeError.class)
+	public void eval_list_plus_string() throws Exception
+	{
+		eval("[1] + 'a'");
+	}
+
+	@Test(expected=ExpressionFault.TypeError.class)
+	public void eval_string_plus_int() throws Exception
+	{
+		eval("'1' + 2");
+	}
+	@Test(expected=ExpressionFault.TypeError.class)
+	public void eval_string_plus_float() throws Exception
+	{
+		eval("'1' + 2.");
+	}
+	@Test(expected=ExpressionFault.TypeError.class)
+	public void eval_string_plus_list() throws Exception
+	{
+		eval("'1' + [1]");
+	}
 }
