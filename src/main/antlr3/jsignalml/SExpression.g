@@ -57,30 +57,32 @@ tokens {
         static final Logger log = new Logger(SExpressionLexer.class);
 
         @Override
-        public void reportError(RecognitionException e)
-        {
-            displayRecognitionError(this.getTokenNames(), e);
-            throw new SyntaxError.RuntimeFlavour(e);
-        }
-
-        @Override
         public void displayRecognitionError(String[] tokenNames,
                                             RecognitionException e)
         {
             log.error("displayRecognitionError()", e);
             super.displayRecognitionError(tokenNames, e);
+            throw new SyntaxError.RuntimeFlavour(e);
         }
 
         @Override
-        public void emitErrorMessage(String msg){
+        public void emitErrorMessage(String msg)
+	{
             log.error(msg);
+        }
+
+        @Override
+        public Object recoverFromMismatchedToken(IntStream input, int ttype, BitSet follow)
+        {
+            throw new SyntaxError.RuntimeFlavour(new MismatchedTokenException(ttype, input));
         }
     }
 
 @parser::members {
         static final Logger log = new Logger(SExpressionParser.class);
 
-        @Override public void recover(IntStream input, RecognitionException re){
+        @Override public void recover(IntStream input, RecognitionException re)
+        {
             throw new SyntaxError.RuntimeFlavour(re);
         }
 
@@ -93,8 +95,15 @@ tokens {
         }
 
         @Override
-        public void emitErrorMessage(String msg){
+        public void emitErrorMessage(String msg)
+        {
             log.error(msg);
+        }
+
+        @Override
+        public Object recoverFromMismatchedToken(IntStream input, int ttype, BitSet follow)
+        {
+            throw new SyntaxError.RuntimeFlavour(new MismatchedTokenException(ttype, input));
         }
     }
 
