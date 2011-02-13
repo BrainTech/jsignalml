@@ -30,7 +30,7 @@ public class MyBuffer {
 		source.order(byteorder);
 	}
 
-	public Type read(BitForm format, int byteoffset) {
+	public Type read(BitForm format, TypeInt byteoffset) {
 		return format.read(this.source, byteoffset);
 	}
 

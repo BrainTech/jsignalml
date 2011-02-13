@@ -236,14 +236,11 @@ public class JavaGen extends ASTVisitor<JDefinedClass> {
 	{
 		assert klass != null;
 
-		final JMethod formatfunc = exprFunction(klass, node, node.id + "_format", // XXX
-							new TypeString(), format);
-		final JMethod offsetfunc = exprFunction(klass, node, node.id + "_offset", // XXX
-							new TypeInt(), offset);
-
 		final JMethod readfunc = readFunction(klass, node, node.id + "_read", // XXX
 						      type);
 
+		final JavaGenVisitor javagen =
+			new JavaGenVisitor(this.model, this.createResolver(node));
 		final JClass javatype = convertTypeToJClass(type);
 		final JMethod impl = klass.method(JMod.NONE, javatype, makeGetterImpl(ident));
 		// -- generated code --
@@ -257,9 +254,9 @@ public class JavaGen extends ASTVisitor<JDefinedClass> {
 	        // }
 		final JBlock body = impl.body();
 		final JVar format_ = body.decl(this.model.ref(TypeString.class), "format",
-					       JExpr._this().invoke(formatfunc));
+					       format.accept(javagen));
 		final JVar offset_ = body.decl(this.model.ref(TypeInt.class), "offset",
-					       JExpr._this().invoke(offsetfunc));
+					       offset.accept(javagen));
 		final JClass bitform_class = this.model.ref(BitForm.class);
 		final JVar theformat = body.decl(bitform_class, "theformat");
 		final JTryBlock tryblock = body._try();
@@ -309,7 +306,7 @@ public class JavaGen extends ASTVisitor<JDefinedClass> {
 		body.directStatement(format("// type=%s", type));
 
 		final JClass javatype2 = this.model.ref(Type.class);
-		final JExpression expr = bitform_param.invoke("read2")
+		final JExpression expr = bitform_param.invoke("read")
 			.arg(JExpr.ref(JExpr._this().invoke("buffer"), "source"))
 			.arg(offset_param);
 		final JVar input = body.decl(javatype2, "input", expr);

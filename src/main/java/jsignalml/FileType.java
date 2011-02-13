@@ -18,9 +18,13 @@ public abstract class FileType {
 			buffer = new MyBuffer(filename);
 		}
 
-		public Type read(BitForm format, int offset)
+		public Type read(BitForm format, TypeInt offset)
 		{
 			return this.buffer.read(format, offset);
+		}
+		public Type read(BitForm format, int offset)
+		{
+			return this.read(format, new TypeInt(offset));
 		}
 	}
 
