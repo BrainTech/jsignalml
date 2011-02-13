@@ -138,6 +138,60 @@ public class TestParsing {
 		parse("a+b;\nc");
 	}
 
+	@Test(expected=SyntaxError.class)
+	public void parse_invalid_quote_1() throws Exception
+	{
+		parse("'a");
+	}
+
+	@Test(expected=SyntaxError.class)
+	public void parse_invalid_quote_2() throws Exception
+	{
+		parse("\"a");
+	}
+
+	@Test(expected=SyntaxError.class)
+	public void parse_invalid_quote_escaped_quote() throws Exception
+	{
+		parse("\"a\\\"");
+	}
+
+	@Test(expected=SyntaxError.class)
+	public void parse_unbalanced_paren_1() throws Exception
+	{
+		parse("(1");
+	}
+
+	@Test(expected=SyntaxError.class)
+	public void parse_unbalanced_paren_2() throws Exception
+	{
+		parse("1)");
+	}
+
+	@Test(expected=SyntaxError.class)
+	public void parse_unbalanced_paren_3() throws Exception
+	{
+		parse(") + 3");
+	}
+
+	@Test(expected=SyntaxError.class)
+	public void parse_unbalanced_brace_1() throws Exception
+	{
+		parse("[1");
+	}
+
+	@Test(expected=SyntaxError.class)
+	public void parse_unbalanced_brace_2() throws Exception
+	{
+		parse("1]");
+	}
+
+	@Test(expected=SyntaxError.class)
+	public void parse_unbalanced_brace_3() throws Exception
+	{
+		parse("] + 3");
+	}
+
 	@Test public void parse_empty_list() throws Exception
 	{
 		parse("[]");
