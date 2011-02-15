@@ -27,6 +27,12 @@ public class CodecParser {
 		throws java.io.IOException, org.xml.sax.SAXException
 	{
 		final InputStream stream = new FileInputStream(filename);
+		return makeCodec(stream, filename);
+	}
+
+	public static ASTNode makeCodec(InputStream stream, File filename)
+		throws java.io.IOException, org.xml.sax.SAXException
+	{
 		final XMLDocument doc = new XMLDocument(stream);
 		final CodecParser parser = new CodecParser(filename);
 		final ASTNode codec = parser.parse_signalml(doc);
