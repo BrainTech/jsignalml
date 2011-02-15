@@ -53,25 +53,20 @@ public class EvalVisitor extends ExpressionVisitor<Type> {
 	@Override
 	public Type visit(Expression.Call fun, List<Type> args)
 	{
-		Type value = state.lookup(fun.name, args);
-		if (value != null)
-			return value;
+		Type ret = this.state.lookup(fun.name, args);
+		if (ret != null)
+			return ret;
 
-		throw new ExpressionFault.NameError(fun.name);
-		/*
-		ASTNode function = this.context.find(fun.name);
-
-		if(fun.args.size() != args.size())
-			throw new ExpressionFault.ArgMismatch();
-
-		Map<String,Type> map = util.newTreeMap();
-		for (int i=0; i<fun.args.size(); i++) {
-			ASTNode.Positional arg =  fun.args.get(i);
-			map.put(arg.id, args.get(i));
+		ASTNode node = this.context.find(fun.name);
+		if (node != null) {
+			ASTEvalVisitor visitor = new ASTEvalVisitor(this.state, args);
+			ret = node.accept(visitor, null);
+			if(ret == null)
+				throw new ExpressionFault.TypeError();
+			return ret;
 		}
 
-		Frame newstate = state.localize(map);
-		*/
+		throw new ExpressionFault.NameError(fun.name);
 	}
 
 	@Override
@@ -104,7 +99,7 @@ public class EvalVisitor extends ExpressionVisitor<Type> {
 	public Type visit(Expression.Assign op)
 	{
 		Type value = op.value.accept(this);
-		this.state.assign(op.id, new LinkedList<Type>(), value);
+		this.state.assign(op.id, value);
 		return null;
 	}
 }

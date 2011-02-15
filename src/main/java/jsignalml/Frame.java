@@ -15,54 +15,9 @@ import org.apache.commons.lang.StringUtils;
 public class Frame {
 	static Logger log = new Logger(Frame.class);
 
-	static class Invocation implements Comparable<Invocation> {
-		final String id;
-		final List<Type> args;
-
-		Invocation (String id, List<Type> args)
-		{
-			this.id = id;
-			this.args = unmodifiableList(args);
-		}
-
-		Invocation (String id)
-		{
-			this(id, Collections.EMPTY_LIST);
-		}
-
-		public int compareTo(Invocation other)
-		{
-			int r = this.id.compareTo(other.id);
-			if (r != 0)
-				return r;
-
-			Iterator<Type> itother = other.args.iterator();
-
-			for(Type item: this.args){
-				if(!itother.hasNext())
-					return 1;
-				Type itemother = itother.next();
-				int cmp = item.compareTo(itemother);
-				if(cmp != 0)
-					return cmp;
-			}
-
-			if(itother.hasNext())
-				return -1;
-			return 0;
-		}
-
-		public static Map<Invocation, Type> map(Map<String, Type> locals)
-		{
-			Map<Invocation, Type> map = util.newTreeMap();
-			for(Map.Entry<String, Type> entry: locals.entrySet())
-				map.put(new Invocation(entry.getKey()), entry.getValue());
-			return map;
-		}
-	}
-
 	final Frame parent; // may be null
-	final Map<Invocation, Type> env;
+
+	final Map<String, Type> env;
 
 	public Frame(Frame parent) {
 		this.parent = parent;
@@ -72,32 +27,27 @@ public class Frame {
 	private Frame(Frame parent, Map<String, Type> locals)
 	{
 		this.parent = parent;
-		this.env = unmodifiableMap(Invocation.map(locals));
+		this.env = unmodifiableMap(locals);
 	}
 
-	public void assign(String id, List<Type> args, Type expr)
+	public void assign(String id, Type val)
 	{
-		log.info("%s = %s", id, expr);
-		this.env.put(new Invocation(id, args), expr);
+		log.info("%s = %s", id, val);
+		this.env.put(id, val);
 	}
 
 	public Type lookup(String id, List<Type> args)
 	{
 		log.info("lookup %s(%s)", id, StringUtils.join(args, ", "));
 
-		Type value = this.frame_lookup(id, args);
-		if (value != null)
-			return value;
+		final Type val = this.env.get(id);
+		if (val != null) {
+			if (args.size() != 0)
+				throw new ExpressionFault.TypeError();
+			return val;
+		}
 
-		if (parent != null)
-			return this.parent.lookup(id, args);
-		else
-			return null;
-	}
-
-	public Type frame_lookup(String id, List<Type> args)
-	{
-		return this.env.get(new Invocation(id, args));
+		return null;
 	}
 
 	// @Override
