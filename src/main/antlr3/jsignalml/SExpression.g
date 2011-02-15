@@ -62,7 +62,7 @@ tokens {
         {
             log.error("displayRecognitionError()", e);
             super.displayRecognitionError(tokenNames, e);
-            throw new SyntaxError.RuntimeFlavour(e);
+            throw new SyntaxError(e);
         }
 
         @Override
@@ -74,7 +74,7 @@ tokens {
         @Override
         public Object recoverFromMismatchedToken(IntStream input, int ttype, BitSet follow)
         {
-            throw new SyntaxError.RuntimeFlavour(new MismatchedTokenException(ttype, input));
+            throw new SyntaxError(new MismatchedTokenException(ttype, input));
         }
     }
 
@@ -83,7 +83,7 @@ tokens {
 
         @Override public void recover(IntStream input, RecognitionException re)
         {
-            throw new SyntaxError.RuntimeFlavour(re);
+            throw new SyntaxError(re);
         }
 
         @Override
@@ -103,7 +103,7 @@ tokens {
         @Override
         public Object recoverFromMismatchedToken(IntStream input, int ttype, BitSet follow)
         {
-            throw new SyntaxError.RuntimeFlavour(new MismatchedTokenException(ttype, input));
+            throw new SyntaxError(new MismatchedTokenException(ttype, input));
         }
     }
 

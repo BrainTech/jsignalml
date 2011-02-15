@@ -10,7 +10,8 @@ public class TestNumberOps {
 		final Frame state = new Frame(null);
 		final Expression expr = Processor.parse(line);
 		final ASTNode.ExprParam param =
-			new ASTNode.ExprParam(null, "expr", null, expr);
+			new ASTNode.ExprParam(new ASTNode.Signalml("test"),
+					      "expr", null, expr);
 		final Type val = expr.accept(new EvalVisitor(state, param));
 		return val;
 	}

@@ -16,7 +16,7 @@ options {
         static final Logger log = new Logger(STree.class);
 
         @Override public void recover(IntStream input, RecognitionException re){
-            throw new SyntaxError.RuntimeFlavour(re);
+            throw new SyntaxError(re);
         }
 
         @Override

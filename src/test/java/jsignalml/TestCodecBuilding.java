@@ -50,7 +50,8 @@ public class TestCodecBuilding {
 	{
 		Element element = doc.getElement("//arg");
 		final ASTNode.Param p =
-			new ASTNode.ExprParam(null, "expr", null, null);
+			new ASTNode.ExprParam(new ASTNode.Signalml("test"),
+					      "expr", null, null);
 
 		CodecParser.do_arg(p, element);
 
@@ -63,7 +64,8 @@ public class TestCodecBuilding {
 	@Test public void test_do_two_args() throws Exception
 	{
 		final ASTNode.Param p =
-			new ASTNode.ExprParam(null, "expr", null, null);
+			new ASTNode.ExprParam(new ASTNode.Signalml("test"),
+					      "expr", null, null);
 
 		Iterable<Element> nodes = doc.getNodes("//arg");
 		for(Element element: nodes)

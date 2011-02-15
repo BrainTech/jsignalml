@@ -53,7 +53,7 @@ public class TypeInt extends Type {
 		try {
 			this.value = new BigInteger(text, base);
 		} catch (NumberFormatException e) {
-			throw new SyntaxError.RuntimeFlavour(e);
+			throw new SyntaxError(e);
 		}
 	}
 	public TypeInt(boolean value) {

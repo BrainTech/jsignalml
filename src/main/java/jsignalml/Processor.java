@@ -46,7 +46,7 @@ public class Processor {
 	}
 
 	public static CommonTree parseScript(java.io.Reader reader)
-		throws java.io.IOException, SyntaxError
+		throws java.io.IOException
 	{
 		SExpressionParser parser =
 		        new SExpressionParser(getTokenStream(reader));
@@ -56,15 +56,12 @@ public class Processor {
 			result = parser.script();
 		} catch (RecognitionException e) {
 			throw new SyntaxError(e);
-		} catch (SyntaxError.RuntimeFlavour e) {
-			throw e.unrunify();
 		}
 		reader.close();
 		return (CommonTree) result.getTree();
 	}
 
 	public static CommonTree parseLine(String line)
-		throws SyntaxError
 	{
 		SExpressionParser parser =
 		        new SExpressionParser(getTokenStream(line));
@@ -74,8 +71,6 @@ public class Processor {
 			result = parser.line();
 		} catch (RecognitionException e) {
 			throw new SyntaxError(e);
-		} catch (SyntaxError.RuntimeFlavour e) {
-			throw e.unrunify();
 		}
 
 		CommonTree ast = (CommonTree) result.getTree();
@@ -93,8 +88,6 @@ public class Processor {
 			result = parser.singleexpr();
 		} catch (RecognitionException e) {
 			throw new SyntaxError(e);
-		} catch (SyntaxError.RuntimeFlavour e) {
-			throw e.unrunify();
 		}
 
 		CommonTree ast = (CommonTree) result.getTree();
@@ -102,7 +95,6 @@ public class Processor {
 	}
 
 	public static Expression processLine(CommonTree ast)
-		throws SyntaxError
 	{
 		final STree tree = new STree(new CommonTreeNodeStream(ast));
 		final Expression expr;
@@ -110,8 +102,6 @@ public class Processor {
 			expr = tree.line();
 		} catch (RecognitionException e) {
 			throw new SyntaxError(e);
-		} catch (SyntaxError.RuntimeFlavour e) {
-			throw e.unrunify();
 		}
 
 		return expr;

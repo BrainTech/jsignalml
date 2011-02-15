@@ -79,7 +79,7 @@ public class EvalVisitor extends ExpressionVisitor<Type> {
 	{
 		return seq.index(index);
 	}
-	
+
 	@Override
 	public Type visit(Expression.List_ list, List<? extends Type> args)
 	{

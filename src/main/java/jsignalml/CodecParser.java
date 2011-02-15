@@ -24,7 +24,7 @@ public class CodecParser {
 	}
 
 	public static ASTNode makeCodec(File filename)
-		throws java.io.IOException, org.xml.sax.SAXException, SyntaxError
+		throws java.io.IOException, org.xml.sax.SAXException
 	{
 		final InputStream stream = new FileInputStream(filename);
 		final XMLDocument doc = new XMLDocument(stream);
@@ -33,7 +33,7 @@ public class CodecParser {
 		return codec;
 	}
 
-	public ASTNode dispatch(ASTNode parent, Element element) throws SyntaxError
+	public ASTNode dispatch(ASTNode parent, Element element)
 	{
 		final String name = element.getNodeName();
 		if (name.equals("signalml"))
@@ -57,7 +57,7 @@ public class CodecParser {
 		return null;
 	}
 
-	public ASTNode walk(ASTNode parent, Element element) throws SyntaxError
+	public ASTNode walk(ASTNode parent, Element element)
 	{
 		final ASTNode node = this.dispatch(parent, element);
 
@@ -70,7 +70,7 @@ public class CodecParser {
 		return node;
 	}
 
-	public ASTNode parse_signalml(XMLDocument doc) throws SyntaxError
+	public ASTNode parse_signalml(XMLDocument doc)
 	{
 		final Element element;
 		try {
@@ -84,7 +84,7 @@ public class CodecParser {
 	////////////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////////////
 
-	public ASTNode.Signalml do_signalml(ASTNode parent, Element element) throws SyntaxError
+	public ASTNode.Signalml do_signalml(ASTNode parent, Element element)
 	{
 		assert element.getNodeName().equals("signalml");
 
@@ -95,7 +95,7 @@ public class CodecParser {
 		return new ASTNode.Signalml(name);
 	}
 
-	public ASTNode.Param do_param(ASTNode parent, Element element) throws SyntaxError
+	public ASTNode.Param do_param(ASTNode parent, Element element)
 	{
 		assert element.getNodeName().equals("param");
 
@@ -120,12 +120,8 @@ public class CodecParser {
 			                line == null || xpath == null)
 				p = new ASTNode.ExprParam(parent, id, type, expr);
 		} else if (format != null && offset != null) {
-			if (expr == null && pattern == null && line == null && xpath == null) {
+			if (expr == null && pattern == null && line == null && xpath == null)
 				p = new ASTNode.BinaryParam(parent, id, type, format, offset);
-				if (((ASTNode.BinaryParam)p).handle == null)
-					throw new SyntaxError("binary <param> must live inside <file>");
-
-			}
 		} else if (pattern != null) {
 			throw new UnsupportedOperationException();
 		} else if (xpath != null) {
@@ -141,7 +137,6 @@ public class CodecParser {
 	}
 
         static public ASTNode.Positional do_arg(ASTNode parent, Element element)
-		throws SyntaxError
         {
                 assert element.getNodeName().equals("arg");
 
@@ -151,13 +146,10 @@ public class CodecParser {
 
                 final ASTNode.Positional arg = new ASTNode.Positional(parent, name, type);
 
-		if (!(parent instanceof ASTNode.Param))
-			throw new SyntaxError("<arg> can only be a direct child of <param>");
 		return arg;
         }
 
 	public ASTNode.Assert do_assert(ASTNode parent, Element element)
-		throws SyntaxError
 	{
 		assert element.getNodeName().equals("assert");
 
@@ -170,7 +162,6 @@ public class CodecParser {
 	}
 
 	public ASTNode.FileHandle do_file(ASTNode parent, Element element)
-		throws SyntaxError
 	{
 		assert element.getNodeName().equals("file");
 
@@ -188,7 +179,6 @@ public class CodecParser {
 	}
 
 	public ASTNode.ForLoop do_forloop(ASTNode parent, Element element)
-		throws SyntaxError
 	{
 		assert element.getNodeName().equals("for-each");
 
@@ -210,7 +200,6 @@ public class CodecParser {
 	}
 
 	public ASTNode.DataHandle do_data(ASTNode parent, Element element)
-		throws SyntaxError
 	{
 		assert element.getNodeName().equals("data");
 
@@ -240,7 +229,6 @@ public class CodecParser {
 	 * Returns Expression or null if not found.
 	 */
 	static Expression _extract(Node where, String xpath)
-		throws SyntaxError
 	{
 		String expr = _extract_string(where, xpath);
 		if (expr==null)
@@ -263,7 +251,6 @@ public class CodecParser {
 	}
 
 	static String _identifier(Element element)
-		throws SyntaxError
 	{
 		final String id = _attribute(element, "id");
 		final String name = _attribute(element, "name");

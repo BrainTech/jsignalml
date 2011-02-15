@@ -100,20 +100,27 @@ public abstract class ASTNode {
 		public Param(ASTNode parent, String id, Type type)
 		{
 			super(parent, id);
+			if (parent==null)
+				throw new SyntaxError("<param> must have a parent");
 			this.type = type;
 			this.args = util.newLinkedList();
 		}
 	}
 
 	public abstract static class ReadParam extends Param {
+		final FileHandle<? extends FileType> handle;
+
 		public ReadParam(ASTNode parent, String id, Type type)
 		{
 			super(parent, id, type);
+
+			this.handle = parent.lookupFile();
+			if (this.handle == null)
+				throw new SyntaxError("<param> must live inside <file>");
 		}
 	}
 
 	public static class BinaryParam extends ReadParam {
-		final FileHandle<? extends FileType.BinaryFile> handle;
 		final Expression format, offset;
 
 		public BinaryParam(ASTNode parent, String id, Type type,
@@ -124,12 +131,7 @@ public abstract class ASTNode {
 			this.format = format;
 			this.offset = offset;
 
-			// handle is checked to be not null in CodecParser,
-			// here it can be null for testing purposes
-			if (this.parent != null)
-				this.handle = (FileHandle<? extends FileType.BinaryFile>)parent.lookupFile();
-			else
-				this.handle = null;
+			// TODO: test file type
 		}
 
 		public String toString()
@@ -191,6 +193,10 @@ public abstract class ASTNode {
 		public Assert(ASTNode parent, String id, Expression expr)
 		{
 			super(parent, id);
+			if (parent==null)
+				throw new SyntaxError("<assert> must have a parent");
+			if (expr==null)
+				throw new SyntaxError("<assert> needs an <expr> child");
 			this.expr = expr;
 		}
 
@@ -220,6 +226,8 @@ public abstract class ASTNode {
 
 		public FileHandle(ASTNode parent, String id, Expression filename) {
 			super(parent, id);
+			if (parent==null)
+				throw new SyntaxError("<file> must have a parent");
 			this.filename = filename;
 		}
 
@@ -265,15 +273,15 @@ public abstract class ASTNode {
 		public DataHandle(ASTNode parent, String id, String mapping, String format)
 		{
 			super(parent, id);
+			if (parent==null)
+				throw new SyntaxError("<data> must have a parent");
 			this.mapping = mapping;
 			this.format = format;
 
-			if (parent != null) {
-				final FileHandle<? extends FileType> handle
-					= parent.lookupFile();
-				if( handle != null )
-					handle.addData(this);
-			}
+			final FileHandle<? extends FileType> handle = parent.lookupFile();
+			if (handle == null)
+				throw new SyntaxError("<data> must live inside <file>");
+			handle.addData(this);
 		}
 
 		public String toString()
@@ -293,11 +301,13 @@ public abstract class ASTNode {
 
 		public Positional(ASTNode parent, String id, Type type) {
 			super(parent, id);
-			assert parent == null || parent instanceof ASTNode.Param;
+			if (parent==null)
+				throw new SyntaxError("<arg> must have a parent");
+			if (!(parent instanceof ASTNode.Param))
+				throw new SyntaxError("<arg> must live inside <param>");
 
 			this.type = type;
-			if (parent != null)
-				((Param)parent).args.add(this);
+			((Param)parent).args.add(this);
 		}
 
 		public static Positional make(Param parent, String name, String type) {
@@ -316,7 +326,7 @@ public abstract class ASTNode {
 
 		public Itername(ASTNode parent, String id, Type type) {
 			super(parent, id);
-			assert parent == null || parent instanceof ASTNode.ForLoop;
+			assert parent instanceof ASTNode.ForLoop;
 
 			this.type = type;
 		}
@@ -334,6 +344,8 @@ public abstract class ASTNode {
 
 		public ForLoop(ASTNode parent, String id, String itername, Expression sequence) {
 			super(parent, id);
+			if (parent==null)
+				throw new SyntaxError("<for-each> must have a parent");
 			this.sequence = sequence;
 			this.itername = new Itername(this, itername, null);
 		}

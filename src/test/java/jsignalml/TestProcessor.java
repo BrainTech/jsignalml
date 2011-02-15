@@ -3,29 +3,18 @@ package jsignalml;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import java.math.BigInteger;
+import static jsignalml.TestNumberOps.eval;
 
 public class TestProcessor {
-	Type eval(Frame state, String line)
-		throws Exception
-	{
-		Expression expr = Processor.parse(line);
-		final ASTNode.ExprParam param =
-			new ASTNode.ExprParam(null, "expr", null, expr);
-		Type value = expr.accept(new EvalVisitor(state, null));
-		return value;
-	}
-
 	void assertLeqR(String line, Type expected) throws Exception
 	{
-		Frame state = new Frame(null);
-		Type result = eval(state, line);
+		Type result = eval(line);
 		assertEquals(expected, result);
 	}
 
 	void assertLeqR(String line, BigInteger expected) throws Exception
 	{
-		Frame state = new Frame(null);
-		BigInteger result = ((TypeInt)eval(state, line)).getValue();
+		BigInteger result = ((TypeInt)eval(line)).getValue();
 		assertEquals(expected, result);
 	}
 

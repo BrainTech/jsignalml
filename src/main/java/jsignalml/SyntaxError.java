@@ -2,28 +2,12 @@ package jsignalml;
 
 import org.antlr.runtime.RecognitionException;
 
-public class SyntaxError extends Exception {
+public class SyntaxError extends RuntimeException {
 	public SyntaxError(Exception cause) {
 		super(cause);
 	}
 
 	public SyntaxError(String message) {
 		super(message);
-	}
-
-	static class RuntimeFlavour extends RuntimeException {
-		final Exception cause;
-
-		RuntimeFlavour(RecognitionException cause) {
-			this.cause = cause;
-		}
-
-		RuntimeFlavour(NumberFormatException cause) {
-			this.cause = cause;
-		}
-
-		SyntaxError unrunify() {
-			return new SyntaxError(this.cause);
-		}
 	}
 }
