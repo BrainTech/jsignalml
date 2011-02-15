@@ -9,3 +9,13 @@ Exception in thread "main" java.lang.IllegalArgumentException: unkown type 'bool
         at jsignalml.CodecParser.makeCodec(CodecParser.java:32)
         at jsignalml.CodecParser.main(CodecParser.java:258)
 
+- tests for generated code;
+- tests for built-in functions;
+- new built-in functions;
+- built-in function implementation scheme;
+- develop ASTEvalVisitor;
+- fix context passing between Frame, EvalVisitor, ASTEvalVisitor;
+- display backtraces;
+- implement cache;
+- text file reading;
+- data reading;
