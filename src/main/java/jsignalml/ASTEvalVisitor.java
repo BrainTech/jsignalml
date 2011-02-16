@@ -5,11 +5,32 @@ import java.util.Map;
 
 public class ASTEvalVisitor extends ASTVisitor<Type> {
 	final List<Type> args;
-	final Frame state;
 
-	ASTEvalVisitor(Frame state, List<Type> args){
+	ASTEvalVisitor(List<Type> args){
 		this.args = args;
-		this.state = state;
+	}
+
+	public Frame scope(ASTNode node) {
+		assert node != null;
+		Frame state;
+
+		if (node.parent != null) {
+			state = new Frame(scope(node.parent));
+		}
+		else {
+			state = new Frame(null);
+		}
+
+		if (node instanceof ASTNode.ExprParam) {
+			Map<String, Type> locals = util.newHashMap();
+
+			for (int i=0; i<((ASTNode.ExprParam)node).args.size(); i++) {
+				ASTNode.Positional arg =  ((ASTNode.ExprParam)node).args.get(i);
+				locals.put(arg.id, this.args.get(i));
+			}
+			return state.localize(locals);
+		}
+		return state;
 	}
 
 	public Type visit(ASTNode.ExprParam p, Type dummy) {
@@ -18,15 +39,7 @@ public class ASTEvalVisitor extends ASTVisitor<Type> {
 		if(p.args.size() != this.args.size())
 			throw new ExpressionFault.ArgMismatch();
 
-		Map<String, Type> locals = util.newHashMap();
-
-		for (int i=0; i<p.args.size(); i++) {
-			ASTNode.Positional arg =  p.args.get(i);
-			locals.put(arg.id, this.args.get(i));
-		}
-
-		Frame newstate = this.state.localize(locals);
-		return p.expr.accept(new EvalVisitor(newstate, p));
+		return p.expr.accept(new EvalVisitor(scope(p), p));
 	}
 
 	public Type visit(ASTNode.BuiltinFunction p, Type dummy) {

@@ -14,7 +14,7 @@ Exception in thread "main" java.lang.IllegalArgumentException: unkown type 'bool
 - new built-in functions;
 - built-in function implementation scheme;
 - develop ASTEvalVisitor;
-- fix context passing between Frame, EvalVisitor, ASTEvalVisitor;
++ fix context passing between Frame, EvalVisitor, ASTEvalVisitor;
 - display backtraces;
 - implement cache;
 - text file reading;

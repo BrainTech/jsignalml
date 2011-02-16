@@ -40,12 +40,15 @@ public class Frame {
 	{
 		log.info("lookup %s(%s)", id, StringUtils.join(args, ", "));
 
-		final Type val = this.env.get(id);
+		Type val = this.env.get(id);
 		if (val != null) {
 			if (args.size() != 0)
 				throw new ExpressionFault.TypeError();
 			return val;
 		}
+
+    if(parent != null)
+      return parent.lookup(id, args);
 
 		return null;
 	}

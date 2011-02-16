@@ -59,7 +59,7 @@ public class EvalVisitor extends ExpressionVisitor<Type> {
 
 		ASTNode node = this.context.find(fun.name);
 		if (node != null) {
-			ASTEvalVisitor visitor = new ASTEvalVisitor(this.state, args);
+			ASTEvalVisitor visitor = new ASTEvalVisitor(args);
 			ret = node.accept(visitor, null);
 			if(ret == null)
 				throw new ExpressionFault.TypeError();
