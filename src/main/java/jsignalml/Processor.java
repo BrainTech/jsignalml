@@ -107,23 +107,21 @@ public class Processor {
 		return expr;
 	}
 
-	public static void processInteractive(Frame frame, InputStream in)
+	public static void processInteractive(Frame frame)
 	{
-		final Scanner scanner = new Scanner(in);
+		Console console  = System.console();
 
 		while (true) {
-			System.out.print("expr> ");
-			String line;
-			try {
-				line = scanner.nextLine().trim();
-			} catch (NoSuchElementException e) {
+			String line = console.readLine("expr> ");
+			if(line == null) {
 				// EOF
+				System.out.println(); // We've already written the prompt,
+				                      // so we should print a newline.
 				break;
 			}
+			line = line.trim();
 			if (line.isEmpty())
 				continue;
-			if ("q".equals(line))
-				break;
 
 			final CommonTree ast;
 			try {
@@ -191,7 +189,7 @@ public class Processor {
 
 		final Frame frame = new Frame(null);
 		if (args.length == 0) {
-			processInteractive(frame, System.in);
+			processInteractive(frame);
 		} else {
 			for (String path: args)
 				processFile(frame, path);
