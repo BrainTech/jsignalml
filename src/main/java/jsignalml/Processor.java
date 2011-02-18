@@ -9,6 +9,8 @@ import java.util.TreeMap;
 
 import com.sun.codemodel.JFormatter;
 
+import jline.ConsoleReader;
+
 import org.apache.log4j.BasicConfigurator;
 
 import org.antlr.runtime.*;
@@ -108,8 +110,9 @@ public class Processor {
 	}
 
 	public static void processInteractive(Frame frame)
+		throws java.io.IOException
 	{
-		Console console  = System.console();
+		ConsoleReader console  = new ConsoleReader();
 
 		while (true) {
 			String line = console.readLine("expr> ");
