@@ -19,34 +19,35 @@ public class TestFrame {
 		map1.put("c", new TypeString("ccc"));
 	}
 
-	final Frame state = new Frame(null).localize(map);
-	final Frame state1 = state.localize(map1);
+	ASTNode node = new ASTNode.Signalml("test");
+	final Frame state = new Frame(node, map);
+	final Frame state1 = state.localize(node, map1);
 
-	@Test public void test_lookup() throws Exception
+	@Test public void test_call() throws Exception
 	{
 		List<Type> args = util.newLinkedList();
-		assertEquals(map.get("a"), state.lookup("a", args));
-		assertEquals(map.get("b"), state.lookup("b", args));
+		assertEquals(map.get("a"), state.call("a", args));
+		assertEquals(map.get("b"), state.call("b", args));
 	}
 
-	@Test public void test_lookup_with_args() throws Exception
+	@Test public void test_call_with_args() throws Exception
 	{
 		List<Type> args = Arrays.asList((Type)new TypeInt(666));
-		assertEquals(null, state.lookup("a", args));
+		assertEquals(null, state.call("a", args));
 	}
 
-	@Test public void test_parent_lookup() throws Exception
+	@Test public void test_parent_call() throws Exception
 	{
 		List<Type> args = util.newLinkedList();
-		assertEquals(map.get("a"), state1.lookup("a", args));
-		assertEquals(map.get("b"), state1.lookup("b", args));
-		assertEquals(map1.get("c"), state1.lookup("c", args));
+		assertEquals(map.get("a"), state1.call("a", args));
+		assertEquals(map.get("b"), state1.call("b", args));
+		assertEquals(map1.get("c"), state1.call("c", args));
 	}
 
-	@Test public void test_parent_lookup_with_args() throws Exception
+	@Test public void test_parent_call_with_args() throws Exception
 	{
 		List<Type> args = Arrays.asList((Type)new TypeInt(667));
-		assertEquals(null, state1.lookup("a", args));
+		assertEquals(null, state1.call("a", args));
 	}
 
 }

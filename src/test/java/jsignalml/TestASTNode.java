@@ -19,9 +19,9 @@ public class TestASTNode {
 	}
 
 	static final ASTNode.Signalml signalml = new ASTNode.Signalml("root");
-	Frame state = new Frame(null).localize(map);
+	Frame state = new Frame(signalml, map);
 	//XXX there should be a test for nested namespaces (thus state1/map1)
-	Frame state1 = state.localize(map1);
+	Frame state1 = state.localize(signalml, map1);
 
 	@Test public void create_ExprParam() throws Exception
 	{
@@ -29,7 +29,7 @@ public class TestASTNode {
 		final TypeInt intval = new TypeInt(VAL);
 		ASTNode.ExprParam p = new ASTNode.ExprParam(signalml, "p", new TypeInt(1),
 							new Expression.Const(intval));
-		final Type val = p.expr.accept(new EvalVisitor(state, p));
+		final Type val = p.expr.accept(new EvalVisitor(state));
 		assertThat(val, instanceOf(TypeInt.class));
 		assertEquals(val, intval);
 	}
@@ -44,7 +44,7 @@ public class TestASTNode {
 	@Test public void eval_ExprParam() throws Exception
 	{
 		ASTNode.ExprParam p = makeExprParam(new TypeFloat(1), "a+b");
-		final Type val = p.expr.accept(new EvalVisitor(state, p));
+		final Type val = p.expr.accept(new EvalVisitor(state));
 		assertThat(val, instanceOf(TypeFloat.class));
 		assertEquals(val, new TypeFloat(3.));
 	}

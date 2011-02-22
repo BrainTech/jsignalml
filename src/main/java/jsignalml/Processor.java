@@ -157,7 +157,7 @@ public class Processor {
 			}
 
 			try {
-				final Type value = expr.accept(new EvalVisitor(frame, param));
+				final Type value = expr.accept(new EvalVisitor(frame));
 				System.out.format("----> %s\n",
 				                  value == null ? "null" : value.repr());
 			} catch (ExpressionFault e) {

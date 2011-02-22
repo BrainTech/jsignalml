@@ -7,12 +7,9 @@ public class TestNumberOps {
 
 	static Type eval(String line) throws Exception
 	{
-		final Frame state = new Frame(null);
 		final Expression expr = Processor.parse(line);
-		final ASTNode.ExprParam param =
-			new ASTNode.ExprParam(new ASTNode.Signalml("test"),
-					      "expr", null, expr);
-		final Type val = expr.accept(new EvalVisitor(state, param));
+		final Frame state = new Frame(new ASTNode.Signalml("test"));
+		final Type val = expr.accept(new EvalVisitor(state));
 		return val;
 	}
 

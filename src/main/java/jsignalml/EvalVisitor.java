@@ -6,12 +6,10 @@ import java.util.LinkedList;
 import java.util.Map;
 
 public class EvalVisitor extends ExpressionVisitor<Type> {
-	final Frame state;
-	final ASTNode context;
+	final CallHelper context;
 
-	public EvalVisitor(Frame state, ASTNode context)
+	public EvalVisitor(CallHelper context)
 	{
-		this.state = state;
 		this.context = context;
 	}
 
@@ -53,20 +51,7 @@ public class EvalVisitor extends ExpressionVisitor<Type> {
 	@Override
 	public Type visit(Expression.Call fun, List<Type> args)
 	{
-		Type ret = this.state.lookup(fun.name, args);
-		if (ret != null)
-			return ret;
-
-		ASTNode node = this.context.find(fun.name);
-		if (node != null) {
-			ASTEvalVisitor visitor = new ASTEvalVisitor(args);
-			ret = node.accept(visitor, null);
-			if(ret == null)
-				throw new ExpressionFault.TypeError();
-			return ret;
-		}
-
-		throw new ExpressionFault.NameError(fun.name);
+		return this.context.call(fun.name, args);
 	}
 
 	@Override
@@ -99,7 +84,7 @@ public class EvalVisitor extends ExpressionVisitor<Type> {
 	public Type visit(Expression.Assign op)
 	{
 		Type value = op.value.accept(this);
-		this.state.assign(op.id, value);
+		this.context.assign(op.id, value);
 		return null;
 	}
 }
