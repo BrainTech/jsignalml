@@ -32,6 +32,13 @@ public class ASTEvalVisitor extends ASTVisitor<Type> {
 			if(!(arg instanceof TypeInt))
 				throw new ExpressionFault.TypeError();
 			return Builtins.factorial((TypeInt)arg);
+		} else if (p.id.equals("strip")) {
+			if(this.args.size() != 1)
+				throw new ExpressionFault.ArgMismatch();
+			Type arg = this.args.get(0);
+			if(!(arg instanceof TypeString))
+				throw new ExpressionFault.TypeError();
+			return Builtins.strip((TypeString)arg);
 		}
 
 		throw new RuntimeException("???");

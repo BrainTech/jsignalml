@@ -32,6 +32,12 @@ public class Builtins extends ASTNode {
 		return new TypeInt(ret);
 	}
 
+	public static TypeString strip(TypeString x)
+	{
+		String val = x.getValue();
+		return new TypeString(StringUtils.strip(val));
+	}
+
 	public ASTNode.BuiltinFunction lookup(String name)
 	{
 		log.debug("find: looking for %s", name);
@@ -43,6 +49,11 @@ public class Builtins extends ASTNode {
 			ASTNode.BuiltinFunction function =
 				new ASTNode.BuiltinFunction(owner, name, new TypeInt());
 			function.arg("n", new TypeInt());
+			return function;
+		} else if (name.equals("strip")) {
+			ASTNode.BuiltinFunction function =
+				new ASTNode.BuiltinFunction(owner, name, new TypeString());
+			function.arg("s", new TypeString());
 			return function;
 		}
 
