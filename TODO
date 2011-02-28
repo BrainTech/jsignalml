@@ -19,3 +19,14 @@ Exception in thread "main" java.lang.IllegalArgumentException: unkown type 'bool
 - implement cache;
 - text file reading;
 - data reading;
+
+output filename in parsing exception:
+Fatal Error] :157:7: The element type "for-each" must be terminated by the matching end-tag "</for-each>".
+Exception in thread "main" org.xml.sax.SAXParseException: The element type "for-each" must be terminated by the matching end-tag "</for-each>".
+        at org.apache.xerces.parsers.DOMParser.parse(Unknown Source)
+        at org.apache.xerces.jaxp.DocumentBuilderImpl.parse(Unknown Source)
+        at javax.xml.parsers.DocumentBuilder.parse(DocumentBuilder.java:121)
+        at jsignalml.XMLDocument.<init>(XMLDocument.java:49)
+        at jsignalml.CodecParser.makeCodec(CodecParser.java:36)
+        at jsignalml.CodecParser.makeCodec(CodecParser.java:30)
+        at jsignalml.CodecParser.main(CodecParser.java:299)

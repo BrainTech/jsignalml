@@ -46,6 +46,20 @@ public class ASTDumper extends ASTVisitor<Integer> {
 	}
 
 	@Override
+	public Integer visit(ASTNode.ChannelSet node, Integer parent)
+	{
+		this.header(parent, node, "channelset", "");
+		return parent + 1;
+	}
+
+	@Override
+	public Integer visit(ASTNode.Channel node, Integer parent)
+	{
+		this.header(parent, node, "channel", "");
+		return parent + 1;
+	}
+
+	@Override
 	public Integer visit(ASTNode.BinaryParam node, Integer parent)
 	{
 		this.header(parent, node, "param (read binary)", "");
@@ -74,6 +88,13 @@ public class ASTDumper extends ASTVisitor<Integer> {
 	public Integer visit(ASTNode.FileHandle node, Integer parent)
 	{
 		this.header(parent, node, "file", "filename=%s", node.filename);
+		return parent + 1;
+	}
+
+	@Override
+	public Integer visit(ASTNode.ForLoop node, Integer parent)
+	{
+		this.header(parent, node, "for-each", "%s in %s", node.itername, node.sequence);
 		return parent + 1;
 	}
 

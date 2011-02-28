@@ -44,6 +44,10 @@ public class CodecParser {
 		final String name = element.getNodeName();
 		if (name.equals("signalml"))
 			return this.do_signalml(parent, element);
+		if (name.equals("channelset"))
+			return this.do_channelset(parent, element);
+		if (name.equals("channel"))
+			return this.do_channel(parent, element);
 		if (name.equals("param"))
 			return this.do_param(parent, element);
 		if (name.equals("arg"))
@@ -167,20 +171,40 @@ public class CodecParser {
 		return new ASTNode.Assert(parent, id, expr);
 	}
 
+	public ASTNode.ChannelSet do_channelset(ASTNode parent, Element element)
+	{
+		assert element.getNodeName().equals("channelset");
+
+		final String id = _identifier(element);
+
+		final ASTNode.ChannelSet node = new ASTNode.ChannelSet(parent, id);
+		return node;
+	}
+
+	public ASTNode.Channel do_channel(ASTNode parent, Element element)
+	{
+		assert element.getNodeName().equals("channel");
+
+		final String id = _identifier(element);
+
+		final ASTNode.Channel node = new ASTNode.Channel(parent, id);
+		return node;
+	}
+
 	public ASTNode.FileHandle do_file(ASTNode parent, Element element)
 	{
 		assert element.getNodeName().equals("file");
 
 		final String id = _identifier(element);
 		final String type = _attribute(element, "type");
-		final String name_ = _identifier(element);
-		final Expression name =
-		        name_ == null ? null : Expression.Const.make(name_);
+		final String filename_ = _attribute(element, "filename");
+		final Expression filename =
+		        filename_ == null ? null : Expression.Const.make(filename_);
 
 		if (type == null)
 			throw new SyntaxError("<file> needs a type attribute");
 
-		final ASTNode.FileHandle handle = ASTNode.FileHandle.make(parent, id, name, type);
+		final ASTNode.FileHandle handle = ASTNode.FileHandle.make(parent, id, filename, type);
 		return handle;
 	}
 
@@ -192,14 +216,16 @@ public class CodecParser {
 		final String var = _attribute(element, "var");
 		final String sequence = _attribute(element, "sequence");
 
-		Expression expr;
-		if (sequence==null)
+		final Expression expr;
+		if (sequence==null) {
 			expr = null;
-		try {
-			expr = Processor.parse(sequence);
-		} catch (SyntaxError e) {
-			log.error("failed to parse: '%s'", sequence);
-			throw e;
+		} else {
+			try {
+				expr = Processor.parse(sequence);
+			} catch (SyntaxError e) {
+				log.error("failed to parse: '%s'", sequence);
+				throw e;
+			}
 		}
 		final ASTNode.ForLoop loop = new ASTNode.ForLoop(parent, id, var, expr);
 		return loop;

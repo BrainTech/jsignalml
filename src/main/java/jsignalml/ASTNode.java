@@ -24,7 +24,7 @@ public abstract class ASTNode {
 	final List<ASTNode> children;
 
 	public <T> T accept(ASTVisitor<T> v, T data) {
-		log.info("%s.accept(%s, %s)", this, v, data);
+		log.info("%s accept(%s, %s)", this, v, data);
 		T newdata = this._accept(v, data);
 
 		// use a copy of the children list in case it changes
@@ -93,6 +93,44 @@ public abstract class ASTNode {
 		}
 	}
 
+	public static class ChannelSet extends ASTNode {
+		public ChannelSet(ASTNode parent, String name)
+		{
+			super(parent, name);
+		}
+
+		public String toString()
+		{
+			return format("ChannelSet %s", this.id);
+		}
+
+		@Override
+		public <T> T _accept(ASTVisitor<T> v, T data)
+		{
+			return v.visit(this, data);
+		}
+
+	}
+
+	public static class Channel extends ASTNode {
+		public Channel(ASTNode parent, String name)
+		{
+			super(parent, name);
+		}
+
+		public String toString()
+		{
+			return format("Channel %s", this.id);
+		}
+
+		@Override
+		public <T> T _accept(ASTVisitor<T> v, T data)
+		{
+			return v.visit(this, data);
+		}
+
+	}
+
 	public abstract static class Param extends ASTNode {
 		public final Type type;
 		public final List<Positional> args;
@@ -136,8 +174,8 @@ public abstract class ASTNode {
 
 		public String toString()
 		{
-			return format("BinaryParam on %s format: %s offset: %s",
-			              this.handle, this.format, this.offset);
+			return format("BinaryParam %s on %s format=%s offset=%s",
+			              this.id, this.handle, this.format, this.offset);
 		}
 
 		@Override
@@ -158,7 +196,7 @@ public abstract class ASTNode {
 
 		public String toString()
 		{
-			return format("ExprParam expression: %s", this.expr);
+			return format("ExprParam %s expr=%s", this.id, this.expr);
 		}
 
 		@Override
@@ -202,7 +240,7 @@ public abstract class ASTNode {
 
 		public String toString()
 		{
-			return format("Assert expression: %s", this.expr);
+			return format("Assert %s expr=%s", this.id, this.expr);
 		}
 
 		@Override
@@ -252,7 +290,7 @@ public abstract class ASTNode {
 
 		public String toString()
 		{
-			return format("FileHandle: filename=%s", filename);
+			return format("FileHandle %s filename=%s", id, filename);
 		}
 
 		@Override
@@ -286,7 +324,8 @@ public abstract class ASTNode {
 
 		public String toString()
 		{
-			return format("DataHandle: mapping=%s format=%s", mapping, format);
+			return format("DataHandle id mapping=%s format=%s",
+				      id, mapping, format);
 		}
 
 		@Override
