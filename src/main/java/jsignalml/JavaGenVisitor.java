@@ -24,9 +24,9 @@ public class JavaGenVisitor extends ExpressionVisitor<JExpression> {
 		this.context = context;
 	}
 
-	JavaGenVisitor()
+	JavaGenVisitor(ASTNode context)
 	{
-		this(new JCodeModel(), nullResolver);
+		this(new JCodeModel(), JavaGen.createResolver(context));
 	}
 
 	public interface JavaNameResolver {
@@ -44,7 +44,6 @@ public class JavaGenVisitor extends ExpressionVisitor<JExpression> {
 			throw new ExpressionFault.NameError(id);
 		}
 	}
-	static JavaNameResolver nullResolver = new NullResolver();
 
 	//////////////////////////////////////////////////////////////////
 	//////////////////////////////////////////////////////////////////

@@ -166,7 +166,7 @@ public class Processor {
 
 			final PrintWriter pw = new PrintWriter(System.out);
 			final JFormatter code = new JFormatter( pw );
-			final JavaGenVisitor javagen = new JavaGenVisitor();
+			final JavaGenVisitor javagen = new JavaGenVisitor(param);
 			try {
 				code.p("code: ").g(expr.accept(javagen)).nl();
 				pw.flush();

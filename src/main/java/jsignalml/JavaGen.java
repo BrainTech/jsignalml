@@ -240,7 +240,7 @@ public class JavaGen extends ASTVisitor<JDefinedClass> {
 						      type);
 
 		final JavaGenVisitor javagen =
-			new JavaGenVisitor(this.model, this.createResolver(node));
+			new JavaGenVisitor(this.model, createResolver(node));
 		final JClass javatype = convertTypeToJClass(type);
 		final JMethod impl = klass.method(JMod.NONE, javatype, makeGetterImpl(ident));
 		// -- generated code --
@@ -270,7 +270,7 @@ public class JavaGen extends ASTVisitor<JDefinedClass> {
 		return impl;
 	}
 
-	JavaGenVisitor.JavaNameResolver createResolver(final ASTNode start)
+	public static JavaGenVisitor.JavaNameResolver createResolver(final ASTNode start)
 	{
 		return new JavaGenVisitor.JavaNameResolver() {
 			@Override
@@ -289,7 +289,7 @@ public class JavaGen extends ASTVisitor<JDefinedClass> {
 		final JMethod impl = klass.method(JMod.NONE, javatype,
 						  makeGetterImpl(ident));
 		final JavaGenVisitor javagen =
-			new JavaGenVisitor(this.model, this.createResolver(node));
+			new JavaGenVisitor(this.model, createResolver(node));
 		impl.body()._return( expr.accept(javagen) );
 		return impl;
 	}
@@ -455,7 +455,7 @@ public class JavaGen extends ASTVisitor<JDefinedClass> {
 		final JBlock body = getter.body();
 
 		final JavaGenVisitor javagen =
-			new JavaGenVisitor(this.model, this.createResolver(node));
+			new JavaGenVisitor(this.model, createResolver(node));
 		final JVar range = body.decl(jt_list_class, "range",
 					     node.sequence.accept(javagen));
 		final JFieldVar stor = klass.field(JMod.NONE, list_type, ident, JExpr._null());
