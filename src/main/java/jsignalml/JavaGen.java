@@ -273,7 +273,8 @@ public class JavaGen extends ASTVisitor<JDefinedClass> {
 	JavaGenVisitor.JavaNameResolver createResolver(final ASTNode start)
 	{
 		return new JavaGenVisitor.JavaNameResolver() {
-			public JInvocation call(String id)
+			@Override
+			public JInvocation lookup(String id)
 			{
 				final ASTNode target = start.find(id);
 				return JExpr.invoke(makeGetter(id));

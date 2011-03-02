@@ -57,10 +57,16 @@ public class NameCheck extends ASTVisitor<NullType> {
 		}
 
 		@Override
-		public NullType visit(Expression.Call call, List<NullType> args)
+		public NullType visit(Expression.Call call, NullType what_, List<NullType> args_)
 		{
-			log.debug("checking %s", call.name);
-			this.context.find(call.name);
+			log.debug("checking %s", call.what);
+			if (call.what instanceof Expression.Const) {
+				Expression.Const what = (Expression.Const) call.what;
+				if (what.value instanceof TypeString)
+					this.context.find(((TypeString)what.value).getValue());
+				else
+					throw new ExpressionFault.AttributeError(what.toString());
+			}
 			return null;
 		}
 	}

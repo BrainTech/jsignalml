@@ -89,35 +89,59 @@ public abstract class Expression {
 	}
 
 	public static class Call extends Expression {
-		final String name;
+		final Expression what;
 		final /*immutable*/ List<Expression> args;
 
-		Call(String name, List<? extends Expression> args) {
-			this.name = name;
+		Call(Expression what, List<? extends Expression> args) {
+			this.what = what;
 			this.args = unmodifiableList(new ArrayList(args));
 		}
 
-		Call(String name) {
-			this(name, new ArrayList());
+		Call(Expression what) {
+			this(what, new ArrayList());
 		}
 
 		@Override
 		public String toString()
 		{
-			return this.name + "(" + StringUtils.join(this.args, ", ") + ")";
+			final String what;
+			if (this.what instanceof Ref)
+				what = ((Ref)this.what).toString();
+			else
+				what = "(" + this.what.toString() + ")";
+			return what + "(" + StringUtils.join(this.args, ", ") + ")";
 		}
 
 		public <T> T accept(ExpressionVisitor<T> v)
 		{
-			List<T> vals = util.newLinkedList();
+			final T what = this.what.accept(v);
 
+			final List<T> vals = util.newLinkedList();
 			for (int i = 0; i < this.args.size(); i++)
 				vals.add( this.args.get(i).accept(v) );
 
-			return v.visit(this, vals);
+			return v.visit(this, what, vals);
 		}
 	}
 
+	public static class Ref extends Expression {
+		final String name;
+
+		Ref(String name) {
+			this.name = name;
+		}
+
+		@Override
+		public String toString()
+		{
+			return this.name;
+		}
+
+		public <T> T accept(ExpressionVisitor<T> v)
+		{
+			return v.visit(this);
+		}
+	}
 
 	public static class List_ extends Expression {
 		final /*immutable*/ List<Expression> args;
@@ -167,6 +191,28 @@ public abstract class Expression {
 		}
 	}
 
+	public static class Access extends Expression {
+		final Expression struct;
+		final String item;
+
+		Access(Expression struct, String item) {
+			this.struct = struct;
+			this.item = item;
+		}
+
+		@Override
+		public String toString()
+		{
+			return format("%s.%s", struct, item);
+		}
+
+		@Override
+		public <T> T accept(ExpressionVisitor<T> v)
+		{
+			final T struct = this.struct.accept(v);
+			return v.visit(this, struct);
+		}
+	}
 	public static class Const extends Expression {
 		public final Type value;
 

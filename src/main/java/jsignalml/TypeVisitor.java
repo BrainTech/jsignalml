@@ -23,7 +23,7 @@ public class TypeVisitor extends ExpressionVisitor<Type> {
 	}
 
 	@Override
-	public Type visit(Expression.Call call, List<Type> args)
+	public Type visit(Expression.Call call, Type what, List<Type> args)
 	{
 		// TODO
 		return null;

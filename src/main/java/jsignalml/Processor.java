@@ -144,9 +144,8 @@ public class Processor {
 			}
 			System.out.format("expr: %s\n", expr);
 
-			final ASTNode.Signalml parent = new ASTNode.Signalml("root");
 			final ASTNode.ExprParam param =
-				new ASTNode.ExprParam(parent, "expr", null, expr);
+				new ASTNode.ExprParam(frame.node, "expr", null, expr);
 
 			try {
 				final Type type = expr.accept(new TypeVisitor());
@@ -190,7 +189,8 @@ public class Processor {
 		log.info("tree grammar %s",
 		         new STree(null).getGrammarFileName());
 
-		final Frame frame = new Frame(null);
+		final ASTNode.Signalml root = new ASTNode.Signalml("root");
+		final Frame frame = new Frame(root);
 		if (args.length == 0) {
 			processInteractive(frame);
 		} else {

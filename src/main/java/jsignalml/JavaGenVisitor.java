@@ -7,6 +7,7 @@ import com.sun.codemodel.JClass;
 import com.sun.codemodel.JExpression;
 import com.sun.codemodel.JExpr;
 import com.sun.codemodel.JInvocation;
+import com.sun.codemodel.JStringLiteral;
 import com.sun.codemodel.JOp;
 
 /**
@@ -33,11 +34,12 @@ public class JavaGenVisitor extends ExpressionVisitor<JExpression> {
 		 * Return a JInvocation which can be used to call
 		 * item named id.
 		 */
-		JInvocation call(String id);
+		JInvocation lookup(String id);
 	}
 
 	static class NullResolver implements JavaNameResolver {
-		public JInvocation call(String id)
+		@Override
+		public JInvocation lookup(String id)
 		{
 			throw new ExpressionFault.NameError(id);
 		}
@@ -93,12 +95,24 @@ public class JavaGenVisitor extends ExpressionVisitor<JExpression> {
 	}
 
 	@Override
-	public JExpression visit(Expression.Call fun, List<JExpression> args)
+	public JExpression visit(Expression.Call fun, JExpression what, List<JExpression> args)
 	{
-		final JInvocation inv = context.call(fun.name);
+ 		final JInvocation inv = (JInvocation) what;
 		for (JExpression arg: args)
 			inv.arg(arg);
 		return inv;
+	}
+
+	@Override
+	public JExpression visit(Expression.Ref ref)
+	{
+		return context.lookup(ref.name);
+	}
+
+	@Override
+	public JExpression visit(Expression.Access accessor, JExpression struct) 
+	{
+		throw new ExpressionFault.AttributeError(accessor.item);
 	}
 
 	@Override

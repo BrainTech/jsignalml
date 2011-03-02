@@ -3,6 +3,6 @@ package jsignalml;
 import java.util.List;
 
 public interface CallHelper {
-	public Type call(String id, List<Type> args);
+	public Type lookup(String name);
 	public void assign(String id, Type value);
 }

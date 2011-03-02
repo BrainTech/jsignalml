@@ -1,9 +1,7 @@
 package jsignalml;
 
 import java.util.Map;
-import java.util.TreeMap;
-import java.util.HashMap;
-import java.util.LinkedList;
+import java.util.List;
 import java.util.Iterator;
 import static java.lang.String.format;
 
@@ -104,6 +102,7 @@ public abstract class Type implements Comparable<Type> {
 
 	public abstract Object getValue();
 
+	@Override
 	public java.lang.String toString() {
 		return super.toString() + "=" + this.getValue();
 	}
@@ -267,6 +266,18 @@ public abstract class Type implements Comparable<Type> {
 		throw new ExpressionFault.TypeError();
 	}
 
+	public Type access(String item)
+	{
+		throw new ExpressionFault.AttributeError(item);
+	}
+
+	public Type call(List<Type> args)
+	{
+		if(args.isEmpty())
+			return this;
+		throw new ExpressionFault.TypeError();
+	}
+
 	public abstract boolean isTrue();
 	public abstract java.lang.String repr();
 
@@ -286,6 +297,10 @@ public abstract class Type implements Comparable<Type> {
 	@Override
 	public int hashCode() {
 		return this.getValue().hashCode();
+	}
+
+	protected int superHashCode() {
+		return super.hashCode();
 	}
 
 	public Type logical_not() {

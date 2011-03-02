@@ -224,4 +224,40 @@ public class TestParsing {
 	{
 		parse("data_format(0,0)[-1]");
 	}
+
+	@Test public void parse_oo_notation() throws Exception
+	{
+		parse("a.b");
+	}
+
+	@Test public void parse_oo_notation_chained() throws Exception
+	{
+		parse("a.b.c");
+	}
+
+	@Test public void parse_oo_notation_call() throws Exception
+	{
+		parse("a.b()");
+	}
+
+	@Test public void parse_oo_notation_chained_call_last() throws Exception
+	{
+		parse("a.b.c()");
+	}
+
+	@Test public void parse_oo_notation_chained_call_first() throws Exception
+	{
+		parse("a().b.c");
+	}
+
+	@Test public void parse_oo_notation_chained_call_all() throws Exception
+	{
+		parse("a().b().c()");
+	}
+
+	@Test(expected=SyntaxError.class)
+	public void parse_oo_notation_bad() throws Exception
+	{
+		parse("a..b.c");
+	}
 }

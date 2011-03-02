@@ -14,6 +14,7 @@ tokens {
 
     INDEX       = '[';
     CALL        = '(';
+    ACCESS      = '.';
 
     ADD         = '+';
     SUBTRACT    = '-';
@@ -172,6 +173,7 @@ baseitem
     : (atom | ID)
         ( INDEX^ indextail
         | CALL^ calltail
+	| ACCESS^ ID
         )*
     ;
 

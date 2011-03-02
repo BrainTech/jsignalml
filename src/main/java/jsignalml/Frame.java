@@ -20,6 +20,7 @@ public class Frame implements CallHelper {
 	public Frame(ASTNode node, Map<String, Type> locals)
 	{
 		//		this.parent = parent;
+		assert node != null;
 		this.node = node;
 		this.env = locals;
 	}
@@ -36,20 +37,16 @@ public class Frame implements CallHelper {
 	}
 
 	@Override
-	public Type call(String id, List<Type> args)
+	public Type lookup(String name)
 	{
-		log.info("lookup %s(%s)", id, StringUtils.join(args, ", "));
+		log.info("lookup =%s=", name);
 
-		Type val = this.env.get(id);
-		if (val != null) {
-			if (args.size() != 0)
-				throw new ExpressionFault.TypeError();
+		Type val = this.env.get(name);
+		if (val != null)
 			return val;
-		}
 
-		ASTNode where = this.node.find(id);
-		ASTEvalVisitor visitor = new ASTEvalVisitor(this, args);
-		return where.accept(visitor, null);
+		ASTNode where = this.node.find(name);
+		return new TypeFunction(where, this);
 	}
 
 	// @Override
@@ -75,5 +72,20 @@ public class Frame implements CallHelper {
 			}
 		}
 		return this.localize(node, locals);
+	}
+
+	public static class TypeFunction extends TypeObject {
+
+		public final Frame frame;
+		
+		TypeFunction(ASTNode node, Frame frame) {
+			super(node);
+			this.frame = frame;
+		}
+
+		public Type call(List<Type> args) {
+			ASTEvalVisitor visitor = new ASTEvalVisitor(this.frame, args);
+			return this.node.accept(visitor, null);
+		}
 	}
 }

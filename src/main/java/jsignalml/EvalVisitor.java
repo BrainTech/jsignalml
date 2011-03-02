@@ -49,9 +49,21 @@ public class EvalVisitor extends ExpressionVisitor<Type> {
 	}
 
 	@Override
-	public Type visit(Expression.Call fun, List<Type> args)
+	public Type visit(Expression.Call fun, Type what, List<Type> args)
 	{
-		return this.context.call(fun.name, args);
+		return what.call(args);
+	}
+
+	@Override
+	public Type visit(Expression.Ref ref)
+	{
+		return this.context.lookup(ref.name);
+	}
+
+	@Override
+	public Type visit(Expression.Access op, Type struct)
+	{
+		return struct.access(op.item);
 	}
 
 	@Override

@@ -68,6 +68,20 @@ public class ExpressionFault extends RuntimeException {
 	}
 
 	/**
+	 * Attribute with a given name was not found.
+	 */
+	public static class AttributeError extends ExpressionFault {
+		public final String name;
+		public AttributeError(java.lang.String name) {
+			this.name = name;
+		}
+
+		public String getMessage() {
+			return format("attribute '%s' not found", name);
+		}
+	}
+
+	/**
 	 * An out of bounds index.
 	 */
 	public static class IndexError extends ExpressionFault {

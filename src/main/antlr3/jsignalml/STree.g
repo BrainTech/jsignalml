@@ -63,11 +63,13 @@ expr returns [Expression value]
     | ^(LIST alist)
         { $value = new Expression.List_($alist.value); }
     | ID
-        { $value = new Expression.Call($ID.text); }
-    | ^(CALL ID alist)
-        { $value = new Expression.Call($ID.text, $alist.value); }
+        { $value = new Expression.Ref($ID.text); }
+    | ^(CALL a=expr alist)
+        { $value = new Expression.Call($a.value, $alist.value); }
     | ^(INDEX a=expr s=expr)
         { $value = new Expression.Index($a.value, $s.value); }
+    | ^(ACCESS a=expr ID)
+	{ $value = new Expression.Access($a.value, $ID.text); }
     | INT
         { $value = new Expression.Const(new TypeInt($INT.text)); }
     | FLOAT
