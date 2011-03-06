@@ -25,29 +25,39 @@ public class TestFrame {
 
 	@Test public void test_call() throws Exception
 	{
-		List<Type> args = util.newLinkedList();
-		assertEquals(map.get("a"), state.call("a", args));
-		assertEquals(map.get("b"), state.call("b", args));
+		assertEquals(map.get("a"), state.lookup("a"));
+		assertEquals(map.get("b"), state.lookup("b"));
 	}
 
-	@Test public void test_call_with_args() throws Exception
+	@Test(expected=ExpressionFault.TypeError.class)
+	public void test_call_with_args() throws Exception
 	{
 		List<Type> args = Arrays.asList((Type)new TypeInt(666));
-		assertEquals(null, state.call("a", args));
+		state.lookup("a").call(args);
+	}
+
+	@Test public void test_local_lookup() throws Exception
+	{
+		assertEquals(map1.get("c"), state1.lookup("c"));
+	}
+
+	@Test(expected=ExpressionFault.NameError.class)
+	public void test_parent_lookup() throws Exception
+	{
+		state1.lookup("a");
 	}
 
 	@Test public void test_parent_call() throws Exception
 	{
-		List<Type> args = util.newLinkedList();
-		assertEquals(map.get("a"), state1.call("a", args));
-		assertEquals(map.get("b"), state1.call("b", args));
-		assertEquals(map1.get("c"), state1.call("c", args));
+		List<Type> noargs = util.newLinkedList();
+		assertEquals(map1.get("c"), state1.lookup("c").call(noargs));
 	}
 
-	@Test public void test_parent_call_with_args() throws Exception
+	@Test(expected=ExpressionFault.TypeError.class)
+	public void test_parent_call_with_args() throws Exception
 	{
 		List<Type> args = Arrays.asList((Type)new TypeInt(667));
-		assertEquals(null, state1.call("a", args));
+		state1.lookup("c").call(args);
 	}
 
 }
