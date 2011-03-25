@@ -216,19 +216,8 @@ public class CodecParser {
 		final String var = _attribute(element, "var");
 		final String sequence = _attribute(element, "sequence");
 
-		final Expression expr;
-		if (sequence==null) {
-			expr = null;
-		} else {
-			try {
-				expr = Processor.parse(sequence);
-			} catch (SyntaxError e) {
-				log.error("failed to parse: '%s'", sequence);
-				throw e;
-			}
-		}
-		final ASTNode.ForLoop loop = new ASTNode.ForLoop(parent, id, var, expr);
-		return loop;
+		final Expression expr = _null_or_parse(sequence);
+		return new ASTNode.ForLoop(parent, id, var, expr);
 	}
 
 	public ASTNode.DataHandle do_data(ASTNode parent, Element element)
@@ -236,10 +225,8 @@ public class CodecParser {
 		assert element.getNodeName().equals("data");
 
 		final String id = _identifier(element);
-		final String mapping = element.getAttribute("mapping");
-		final String format = element.getAttribute("format");
-
-		log.warn("data not implemented");
+		final Expression mapping = _null_or_parse(_attribute(element, "mapping"));
+		final Expression format = _null_or_parse(_attribute(element, "format"));
 
 		return new ASTNode.DataHandle(parent, id, mapping, format);
 	}
@@ -263,12 +250,18 @@ public class CodecParser {
 	static Expression _extract(Node where, String xpath)
 	{
 		String expr = _extract_string(where, xpath);
-		if (expr==null)
+		return _null_or_parse(expr);
+	}
+
+	static Expression _null_or_parse(String expression)
+		throws SyntaxError
+	{
+		if (expression==null)
 			return null;
 		try {
-			return Processor.parse(expr);
+			return Processor.parse(expression);
 		} catch (SyntaxError e) {
-			log.error("failed to parse: '%s'", expr);
+			log.error("failed to parse: '%s'", expression);
 			throw e;
 		}
 	}

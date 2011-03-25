@@ -306,9 +306,9 @@ public abstract class ASTNode {
 	}
 
 	public static class DataHandle extends ASTNode {
-		public final String mapping, format;
+		public final Expression mapping, format;
 
-		public DataHandle(ASTNode parent, String id, String mapping, String format)
+		public DataHandle(ASTNode parent, String id, Expression mapping, Expression format)
 		{
 			super(parent, id);
 			if (parent==null)

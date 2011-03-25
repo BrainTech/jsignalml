@@ -101,7 +101,8 @@ public class ASTDumper extends ASTVisitor<Integer> {
 	@Override
 	public Integer visit(ASTNode.DataHandle node, Integer parent)
 	{
-		this.header(parent, node, "data", "");
+		this.header(parent, node, "data", "format=%s", node.format);
+		this.put(parent + 1, "* mapping=%s", node.mapping);
 		return parent + 1;
 	}
 
