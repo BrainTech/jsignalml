@@ -1,6 +1,5 @@
 package jsignalml;
 
-import java.util.regex.Pattern;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
@@ -9,6 +8,7 @@ import static java.util.Collections.unmodifiableList;
 import static java.lang.String.format;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.NotImplementedException;
 
 public class TypeList extends Type implements Iterable<Type> {
 	public final java.util.List<Type> value;
@@ -24,7 +24,7 @@ public class TypeList extends Type implements Iterable<Type> {
 	@Override
 	public TypeList make(Type other) {
 		if (other instanceof TypeString)
-			return null; // TODO
+			throw new NotImplementedException();
 		if (other instanceof TypeList)
 			return (TypeList)other;
 		throw new ExpressionFault.TypeError();
@@ -60,7 +60,7 @@ public class TypeList extends Type implements Iterable<Type> {
 
 	@Override
 	public boolean isTrue() {
-		return this.value.size() > 0;
+		return this.value.isEmpty();
 	}
 
 	@Override
@@ -106,7 +106,7 @@ public class TypeList extends Type implements Iterable<Type> {
 
 	@Override
 	public Iterator<Type> iterator() {
-		return value.iterator();
+		return this.value.iterator();
 	}
 
 
@@ -217,7 +217,7 @@ public class TypeList extends Type implements Iterable<Type> {
 	}
 
 	public TypeInt bool(){
-		return this.value.isEmpty() ? TypeInt.False : TypeInt.True;
+		return this.isTrue() ? TypeInt.False : TypeInt.True;
 	}
 
 	public TypeInt pos() {

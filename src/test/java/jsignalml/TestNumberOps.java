@@ -32,7 +32,7 @@ public class TestNumberOps {
 
 	static void verifyIsTrue(String line, boolean expected) throws Exception
 	{
-		assertEquals(eval(line).isTrue(), expected);
+		assertEquals(expected, eval(line).isTrue());
 	}
 
 

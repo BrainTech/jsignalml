@@ -114,6 +114,7 @@ public abstract class Expression {
 			return what + "(" + StringUtils.join(this.args, ", ") + ")";
 		}
 
+		@Override
 		public <T> T accept(ExpressionVisitor<T> v)
 		{
 			final T what = this.what.accept(v);
@@ -139,6 +140,7 @@ public abstract class Expression {
 			return this.name;
 		}
 
+		@Override
 		public <T> T accept(ExpressionVisitor<T> v)
 		{
 			return v.visit(this);
@@ -157,6 +159,7 @@ public abstract class Expression {
 			return "[" + StringUtils.join(this.args, ", ") + "]";
 		}
 
+		@Override
 		public <T> T accept(ExpressionVisitor<T> v)
 		{
 			List<T> vals = util.newLinkedList();
@@ -301,6 +304,7 @@ public abstract class Expression {
 			return format("if %s then %s else %s", q, a, b);
 		}
 
+		@Override
 		public <T> T accept(ExpressionVisitor<T> v)
 		{
 			final T cond = this.q.accept(v);
@@ -321,15 +325,16 @@ public abstract class Expression {
 			this.value = value;
 		}
 
-		public <T> T accept(ExpressionVisitor<T> v)
-		{
-			return v.visit(this);
-		}
-
 		@Override
 		public String toString()
 		{
 			return format("%s = %s", id, value);
+		}
+
+		@Override
+		public <T> T accept(ExpressionVisitor<T> v)
+		{
+			return v.visit(this);
 		}
 	}
 }
