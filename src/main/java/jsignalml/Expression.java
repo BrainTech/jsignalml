@@ -5,6 +5,8 @@ import java.util.LinkedList;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.AbstractMap.SimpleImmutableEntry;
+
 import static java.lang.String.format;
 import static java.util.Collections.unmodifiableList;
 
@@ -166,6 +168,45 @@ public abstract class Expression {
 		}
 	}
 
+
+	public static class Map_ extends Expression {
+		final List<Map.Entry<Expression, Expression>> args;
+
+		Map_(List<Map.Entry<Expression, Expression>> args) {
+			this.args = unmodifiableList(args!=null ? new ArrayList(args) : new ArrayList());
+		}
+
+		//		@Override
+		public String toString() {
+			StringBuilder repr = new StringBuilder("{");
+			boolean first = true;
+			for (Map.Entry<Expression, Expression> entry: this.args) {
+				if (first)
+					first = false;
+				else
+					repr.append(", ");
+				repr.append(entry.getKey().toString());
+				repr.append(":");
+				repr.append(entry.getValue().toString());
+			}
+			repr.append("}");
+			return repr.toString();
+		}
+
+		@Override
+		public <T> T accept(ExpressionVisitor<T> v)
+		{
+			List<Map.Entry<T, T>> vals = util.newLinkedList();
+
+			for (Map.Entry<Expression, Expression> entry: this.args) {
+				T key = entry.getKey().accept(v);
+				T value = entry.getValue().accept(v);
+				vals.add( new SimpleImmutableEntry(key, value) );
+			}
+
+			return v.visit(this, vals);
+		}
+	}
 
 	public static class Index extends Expression {
 		final Expression item;

@@ -96,6 +96,17 @@ public class ExpressionFault extends RuntimeException {
 		}
 	}
 
+	public static class KeyError extends ExpressionFault {
+		public final Type key;
+		public KeyError(Type key) {
+			this.key = key;
+		}
+
+		public String getMessage() {
+			return format("key %s not found", this.key.repr());
+		}
+	}
+
 	/**
 	 * A wrong number of arguments was used.
 	 */

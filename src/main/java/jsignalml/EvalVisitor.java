@@ -79,6 +79,12 @@ public class EvalVisitor extends ExpressionVisitor<Type> {
 	}
 
 	@Override
+	public Type visit(Expression.Map_ map, List<Map.Entry<Type, Type>> args)
+	{
+		return new TypeMap(args);
+	}
+
+	@Override
 	public Type visit(Expression.Const val)
 	{
 		return val.value;

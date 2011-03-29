@@ -117,6 +117,8 @@ public abstract class Type implements Comparable<Type> {
 			return this.binaryOp(op, (TypeString) other);
 		if (other instanceof TypeList)
 			return this.binaryOp(op, (TypeList) other);
+		if (other instanceof TypeMap)
+			return this.binaryOp(op, (TypeMap) other);
 		throw new RuntimeException("unknown type in expression");
 	}
 
@@ -182,6 +184,10 @@ public abstract class Type implements Comparable<Type> {
 	{
 		throw new ExpressionFault.TypeError(this.getClass(), other.getClass());
 	}
+	public Type binaryOp(BinaryOp op, TypeMap other)
+	{
+		throw new ExpressionFault.TypeError(this.getClass(), other.getClass());
+	}
 
 	/**
 	 * Return the superset type of the possible results of expression. The
@@ -221,6 +227,8 @@ public abstract class Type implements Comparable<Type> {
 			return this._binaryOpType(op, (TypeString) other);
 		if (other instanceof TypeList)
 			return this._binaryOpType(op, (TypeList) other);
+		if (other instanceof TypeMap)
+			return this._binaryOpType(op, (TypeMap) other);
 		throw new RuntimeException("unknown type in expression");
 	}
 
@@ -234,6 +242,10 @@ public abstract class Type implements Comparable<Type> {
 		throw new ExpressionFault.TypeError();
 	}
 	public Type _binaryOpType(BinaryOp op, TypeList other)
+	{
+		throw new ExpressionFault.TypeError();
+	}
+	public Type _binaryOpType(BinaryOp op, TypeMap other)
 	{
 		throw new ExpressionFault.TypeError();
 	}
@@ -328,11 +340,11 @@ public abstract class Type implements Comparable<Type> {
 	abstract Type bin_neg();
 
 
-
 	static {
 		registerType("int", new TypeInt());
 		registerType("float", new TypeFloat());
 		registerType("str", new TypeString());
 		registerType("list", new TypeList());
+		registerType("map", new TypeMap());
 	}
 }

@@ -1,6 +1,7 @@
 package jsignalml;
 
 import java.util.List;
+import java.util.Map;
 import com.sun.codemodel.JCodeModel;
 import com.sun.codemodel.JType;
 import com.sun.codemodel.JClass;
@@ -121,6 +122,20 @@ public class JavaGenVisitor extends ExpressionVisitor<JExpression> {
 
 		for (JExpression arg: args)
 			cons.arg(arg);
+
+		return cons;
+	}
+
+	@Override
+	public JExpression visit(Expression.Map_ map,
+				 List<Map.Entry<JExpression, JExpression>> args)
+	{
+		JInvocation cons = JExpr._new(this.codemodel.ref(TypeMap.class));
+
+		for (Map.Entry<JExpression, JExpression> entry: args) {
+			cons.arg(entry.getKey());
+			cons.arg(entry.getValue());
+		}
 
 		return cons;
 	}

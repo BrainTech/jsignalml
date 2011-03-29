@@ -7,6 +7,8 @@ options {
 
 tokens {
     LIST;
+    MAP;
+    KEYVALUE;
     TERN;
 
     UNARY_ADD;
@@ -185,6 +187,10 @@ calltail
     : (expr (',' expr)*)? ')' -> expr*
     ;
 
+keyvalue
+    : s1=expr ':' s2=expr -> ^(KEYVALUE $s1 $s2)
+    ;
+
 atom
     :	INT
     |	FLOAT
@@ -192,6 +198,8 @@ atom
     |	'('! expr ')'!
     |   '[' ']' -> ^(LIST)
     |   '[' expr (',' expr)* ','? ']' -> ^(LIST expr+)
+    |   '{' '}' -> ^(MAP)
+    |   '{' keyvalue (',' keyvalue)* ','? '}' -> ^(MAP keyvalue+)
 	;
 
 ID  :	(LETTER|'_') (LETTER|DIGIT|'_')*

@@ -10,6 +10,8 @@ options {
 
     import java.util.List;
     import java.util.LinkedList;
+    import java.util.Map;
+    import java.util.AbstractMap.SimpleImmutableEntry;
 }
 
 @members {
@@ -43,6 +45,12 @@ line returns [Expression value]
         { $value = $expr.value; }
     ;
 
+
+keyvalue returns [Map.Entry<Expression, Expression> value] 
+    : ^(KEYVALUE key=expr val=expr)
+	{ $value = new SimpleImmutableEntry($key.value, $val.value); }
+    ;
+
 expr returns [Expression value]
     : ^( ( op=LOGICAL_NOT
          | op=UNARY_ADD
@@ -62,6 +70,8 @@ expr returns [Expression value]
         { $value = new Expression.LogicalBinaryOp($op.type, $a.value, $b.value); }
     | ^(LIST alist)
         { $value = new Expression.List_($alist.value); }
+    | ^(MAP keyvalues)
+	{ $value = new Expression.Map_($keyvalues.value); }
     | ID
         { $value = new Expression.Ref($ID.text); }
     | ^(CALL a=expr alist)
@@ -84,4 +94,9 @@ expr returns [Expression value]
 alist returns [List<Expression> value]
 @init { $value = new LinkedList<Expression>(); }
     : (expr { $value.add($expr.value); })*
+    ;
+
+keyvalues returns [List<Map.Entry<Expression, Expression>> value]
+@init { $value = new LinkedList<Map.Entry<Expression, Expression>>(); }
+    : (keyvalue { $value.add($keyvalue.value); })*
     ;

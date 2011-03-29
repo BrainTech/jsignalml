@@ -207,6 +207,26 @@ public class TestParsing {
 		parse("[1, -2, 3, 4, 5, 6, 9, 10, 12092020]");
 	}
 
+	@Test public void parse_map_1() throws Exception
+	{
+		parse("{1:2}");
+		parse("{1: 2}");
+		parse(" { 1 : 2 } ");
+	}
+
+	@Test public void parse_map_nested() throws Exception
+	{
+		parse("{{{}:{}}:{}}");
+		parse("{{}: {}}");
+		parse("[{}, {[]:[]}]");
+	}
+
+	@Test public void parse_map_empty() throws Exception
+	{
+		parse("{}");
+		parse("{ }");
+	}
+
 	@Test public void parse_index_basic() throws Exception
 	{
 		parse("a[0]");
