@@ -7,7 +7,7 @@
     <url>http://www.multichannelsystems.com</url>
   </header>
 
-  <file type='binary'>
+  <file id='main' type='binary'>
     <param id='magic_MCSSTRM' type='str'>
       <format>'|S8'</format>
       <offset>0</offset>

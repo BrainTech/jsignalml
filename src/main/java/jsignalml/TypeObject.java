@@ -14,22 +14,22 @@ public abstract class TypeObject extends Type {
 		throw new ExpressionFault.AttributeError(item);
 	}
 
-	@Override Type add(Type b) { throw new ExpressionFault.TypeError(); }
-	@Override Type sub(Type b) { throw new ExpressionFault.TypeError(); }
-	@Override Type mul(Type b) { throw new ExpressionFault.TypeError(); }
-	@Override Type div(Type b) { throw new ExpressionFault.TypeError(); }
-	@Override Type floordiv(Type b) { throw new ExpressionFault.TypeError(); }
-	@Override Type mod(Type b) { throw new ExpressionFault.TypeError(); }
+	@Override public Type add(Type b) { throw new ExpressionFault.TypeError(); }
+	@Override public Type sub(Type b) { throw new ExpressionFault.TypeError(); }
+	@Override public Type mul(Type b) { throw new ExpressionFault.TypeError(); }
+	@Override public Type div(Type b) { throw new ExpressionFault.TypeError(); }
+	@Override public Type floordiv(Type b) { throw new ExpressionFault.TypeError(); }
+	@Override public Type mod(Type b) { throw new ExpressionFault.TypeError(); }
 
-	@Override Type bin_and(Type b) { throw new ExpressionFault.TypeError(); }
-	@Override Type bin_or(Type b) { throw new ExpressionFault.TypeError(); }
-	@Override Type bin_xor(Type b) { throw new ExpressionFault.TypeError(); }
+	@Override public Type bin_and(Type b) { throw new ExpressionFault.TypeError(); }
+	@Override public Type bin_or(Type b) { throw new ExpressionFault.TypeError(); }
+	@Override public Type bin_xor(Type b) { throw new ExpressionFault.TypeError(); }
 
-	@Override Type pow(Type b) { throw new ExpressionFault.TypeError(); }
+	@Override public Type pow(Type b) { throw new ExpressionFault.TypeError(); }
 
-	@Override Type pos() { throw new ExpressionFault.TypeError(); }
-	@Override Type neg() { throw new ExpressionFault.TypeError(); }
-	@Override Type bin_neg() { throw new ExpressionFault.TypeError(); }
+	@Override public Type pos() { throw new ExpressionFault.TypeError(); }
+	@Override public Type neg() { throw new ExpressionFault.TypeError(); }
+	@Override public Type bin_neg() { throw new ExpressionFault.TypeError(); }
 
 	@Override public boolean isTrue(){ return true; }
 	@Override public String repr(){ return this.toString(); }

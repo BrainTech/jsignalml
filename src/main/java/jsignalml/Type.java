@@ -322,22 +322,22 @@ public abstract class Type implements Comparable<Type> {
 			return new TypeInt(1);
 	}
 
-	abstract Type add(Type b);
-	abstract Type sub(Type b);
-	abstract Type mul(Type b);
-	abstract Type div(Type b);
-	abstract Type floordiv(Type b);
-	abstract Type mod(Type b);
+	public abstract Type add(Type b);
+	public abstract Type sub(Type b);
+	public abstract Type mul(Type b);
+	public abstract Type div(Type b);
+	public abstract Type floordiv(Type b);
+	public abstract Type mod(Type b);
 
-	abstract Type bin_and(Type b);
-	abstract Type bin_or(Type b);
-	abstract Type bin_xor(Type b);
+	public abstract Type bin_and(Type b);
+	public abstract Type bin_or(Type b);
+	public abstract Type bin_xor(Type b);
 
-	abstract Type pow(Type b);
+	public abstract Type pow(Type b);
 
-	abstract Type pos();
-	abstract Type neg();
-	abstract Type bin_neg();
+	public abstract Type pos();
+	public abstract Type neg();
+	public abstract Type bin_neg();
 
 
 	static {
