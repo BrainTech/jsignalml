@@ -4,7 +4,7 @@ import jsignalml.Type;
 import jsignalml.SyntaxError;
 import java.util.Map;
 
-public abstract class Param<T> extends Context {
+public abstract class Param<T extends Type> extends Context {
 	T cache = null;
 
 	abstract protected T _get();

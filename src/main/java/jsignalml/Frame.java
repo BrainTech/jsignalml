@@ -7,8 +7,8 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-
 import org.apache.commons.lang.StringUtils;
+import static java.lang.String.format;
 
 public class Frame implements CallHelper {
 	static Logger log = new Logger(Frame.class);
@@ -75,17 +75,22 @@ public class Frame implements CallHelper {
 	}
 
 	public static class TypeFunction extends TypeObject {
+		final ASTNode node;
+		final Frame frame;
 
-		public final Frame frame;
-		
 		TypeFunction(ASTNode node, Frame frame) {
-			super(node);
+			this.node = node;
 			this.frame = frame;
 		}
 
 		public Type call(List<Type> args) {
 			ASTEvalVisitor visitor = new ASTEvalVisitor(this.frame, args);
 			return this.node.accept(visitor, null);
+		}
+
+		@Override
+		public java.lang.String toString() {
+			return format("Function[%s] in %s", node, frame);
 		}
 	}
 }

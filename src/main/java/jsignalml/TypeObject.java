@@ -1,14 +1,6 @@
 package jsignalml;
 
-import static java.lang.String.format;
-
 public abstract class TypeObject extends Type {
-	final ASTNode node;
-
-	TypeObject(ASTNode node) {
-		this.node = node;
-	}
-
 	@Override public Type access(String item)
 	{
 		throw new ExpressionFault.AttributeError(item);
@@ -44,11 +36,6 @@ public abstract class TypeObject extends Type {
 	@Override
 	public int hashCode() {
 		return this.superHashCode();
-	}
-
-	@Override
-	public java.lang.String toString() {
-		return format("Node[%s]", this.node);
 	}
 
 	@Override public Type make(Type value){ throw new ExpressionFault.TypeError(); }
