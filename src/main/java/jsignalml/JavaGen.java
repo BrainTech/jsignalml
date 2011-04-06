@@ -288,7 +288,10 @@ public class JavaGen extends ASTVisitor<JDefinedClass> {
 		final JMethod impl = klass.method(JMod.PROTECTED, javatype, "_get");
 		final JavaGenVisitor javagen =
 			new JavaGenVisitor(this.model, createResolver(node));
-		impl.body()._return( expr.accept(javagen) );
+		JExpression value = expr.accept(javagen);
+		if (type != null)
+			value = JExpr._new(javatype).invoke("make").arg(value);
+		impl.body()._return(value);
 		return impl;
 	}
 
