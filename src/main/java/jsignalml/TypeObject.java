@@ -33,6 +33,8 @@ public abstract class TypeObject extends Type {
 
 	@Override public Object getValue(){ return this; }
 
+	@Override public String toString() { return "TypeObject"; }
+
 	@Override
 	public int hashCode() {
 		return this.superHashCode();
