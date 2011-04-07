@@ -8,10 +8,17 @@ import java.util.Map;
 import jsignalml.MyBuffer;
 import jsignalml.ExpressionFault;
 import jsignalml.Type;
+import jsignalml.ContextVisitor;
 import jsignalml.util;
 
 public abstract class Signalml extends Context implements jsignalml.Source {
 	protected File default_filename;
+
+	@Override
+	public <T> T _accept(ContextVisitor<T> v, String name, T data)
+	{
+		return v.visit(this, name, data);
+	}
 
 	public abstract class FileClass extends Context {
 		MyBuffer buffer;
@@ -33,6 +40,12 @@ public abstract class Signalml extends Context implements jsignalml.Source {
 				this.open(null);
 			return this.buffer;
 		}
+
+		@Override
+		public <T> T _accept(ContextVisitor<T> v, String name, T data)
+		{
+			return v.visit(this, name, data);
+		}
 	}
 
 	public abstract class LoopClass extends Context {
@@ -41,12 +54,24 @@ public abstract class Signalml extends Context implements jsignalml.Source {
 			this.index = new IndexClass(index);
 		}
 
+		@Override
+		public <T> T _accept(ContextVisitor<T> v, String name, T data)
+		{
+			return v.visit(this, name, data);
+		}
+
 		public class IndexClass extends Param<Type> {
 			IndexClass(Type index) {
 				this.cache = index;
 			}
 			protected Type _get() {
 				throw new RuntimeException();
+			}
+
+			@Override
+			public <T> T _accept(ContextVisitor<T> v, String name, T data)
+			{
+				return v.visit(this, name, data);
 			}
 		}
 	}

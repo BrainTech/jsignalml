@@ -103,10 +103,8 @@ public class JavaGen extends ASTVisitor<JDefinedClass> {
 
 		void registerParam(String name, JExpression param_obj)
 		{
-			final JInvocation inv = JExpr.invoke("register")
-				.arg(name).arg(param_obj);
-			this.create_params.add(inv);
-			log.info("registered %s", name);
+			log.info("register %s", name);
+			this.create_params.add(JExpr.invoke("register").arg(name).arg(param_obj));
 		}
 
 		void registerLoopGetter(String ident, JDefinedClass klass, JMethod getter)
@@ -115,8 +113,11 @@ public class JavaGen extends ASTVisitor<JDefinedClass> {
 
 		void registerContext(String name, JDefinedClass context_class)
 		{
-			log.info("registered context %s=>%s", name, context_class);
-			registerParam(name, JExpr._new(context_class));
+			log.info("register context %s=>%s", name, context_class);
+			final JVar obj = this.create_params.decl(context_class, "obj",
+								 JExpr._new(context_class));
+			registerParam(name, obj);
+			this.create_params.add(obj.invoke("createParams"));
 		}
 	}
 
@@ -136,6 +137,11 @@ public class JavaGen extends ASTVisitor<JDefinedClass> {
 		body.add(reader.invoke("open").arg(file));
 
 		body.add(reader.invoke("createParams"));
+
+		final JExpression dumper_dump = this.model.ref(jsignalml.ContextDumper.class)
+			.staticInvoke("dump").arg(reader);
+		body.add(this.model.ref(System.class).staticRef("out")
+			 .invoke("print").arg(dumper_dump));
 
 		return main;
 	}
