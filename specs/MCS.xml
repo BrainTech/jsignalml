@@ -264,6 +264,10 @@
       <offset>2364</offset>
     </param>
 
+    <param id='expr_1' type='int'>
+      <expr>m_ProductId ** 4</expr>
+    </param>
+
     <for-each id='streams' var='index' sequence='[0, 1, 2, 3]'>
       <param id='test'>
 	<expr>index</expr>

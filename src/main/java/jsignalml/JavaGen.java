@@ -113,11 +113,10 @@ public class JavaGen extends ASTVisitor<JDefinedClass> {
 		{
 		}
 
-		void registerContext(JDefinedClass context_class)
+		void registerContext(String name, JDefinedClass context_class)
 		{
-			final JInvocation inv = JExpr._new(context_class);
-			this.create_params.add(inv);
-			log.info("registered %s", context_class);
+			log.info("registered context %s=>%s", name, context_class);
+			registerParam(name, JExpr._new(context_class));
 		}
 	}
 
@@ -127,16 +126,17 @@ public class JavaGen extends ASTVisitor<JDefinedClass> {
 						  this.model.VOID, "main");
 		final JVar args = main.varParam(String.class, "args");
 
-		final JInvocation bc_configure =
-			this.model.ref(BasicConfigurator.class).staticInvoke("configure");
-
 		final JBlock body = main.body();
-		body.add(bc_configure);
+
+		body.add(this.model.ref(BasicConfigurator.class).staticInvoke("configure"));
 
 		final JVar reader = body.decl(klass, "reader", JExpr._new(klass));
 		final JExpression file = JExpr._new(this.model.ref(File.class))
 			.arg(args.component(JExpr.lit(0)));
 		body.add(reader.invoke("open").arg(file));
+
+		body.add(reader.invoke("createParams"));
+
 		return main;
 	}
 
@@ -276,7 +276,7 @@ public class JavaGen extends ASTVisitor<JDefinedClass> {
 			public JInvocation lookup(String id)
 			{
 				final ASTNode target = start.find(id);
-				return JExpr.invoke(makeGetter(id)).invoke("get");
+				return JExpr.invoke(makeGetter(id));
 			}
 		};
 	}
@@ -320,10 +320,9 @@ public class JavaGen extends ASTVisitor<JDefinedClass> {
 				     JDefinedClass nested)
 	{
 		final String prefixed = makeIdentifier(ident);
-		final JMethod getter = klass.method(JMod.PUBLIC, jsignalml.codec.Param.class,
+		final JMethod getter = klass.method(JMod.PUBLIC, jsignalml.Type.class,
 						    makeGetter(ident));
-		getter.body()._return(JExpr.cast(this.model.ref(jsignalml.codec.Param.class),
-						 JExpr.invoke("getChild").arg(ident)));
+		getter.body()._return(JExpr.invoke("access").arg(ident));
 
 		return getter;
 	}
@@ -350,16 +349,16 @@ public class JavaGen extends ASTVisitor<JDefinedClass> {
 
 
 		/* add methods
-		   - Context getChild(String name) { return super.getChild(name); }
+		   - T access(String name) { return super.access(name); }
 		   - void register(String name, Context child) { super.register(name, child); }
 		   because otherwise methods abstract super classes cannot be called
 		   from nested classes.
 		*/
 		{
 			final JMethod get_child =
-			   klass.method(JMod.PUBLIC, jsignalml.codec.Context.class, "getChild");
+				klass.method(JMod.PUBLIC, jsignalml.Type.class, "access");
 			final JVar name = get_child.param(String.class, "name");
-			get_child.body()._return(JExpr._super().invoke("getChild").arg(name));
+			get_child.body()._return(JExpr._super().invoke("access").arg(name));
 		}
 
 		{
@@ -390,7 +389,7 @@ public class JavaGen extends ASTVisitor<JDefinedClass> {
 		getter.body()._return(stor);
 
 		Metadata metadata = (Metadata) klass.metadata;
-		metadata.registerContext(klass);
+		metadata.registerContext(ident, context);
 
 		return getter;
 	}
