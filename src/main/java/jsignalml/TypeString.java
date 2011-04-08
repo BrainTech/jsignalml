@@ -18,7 +18,7 @@ public class TypeString extends Type {
 
 	@Override
 	public TypeString make(Type value) {
-		return new TypeString(value.toString());
+		return new TypeString(value.getValue().toString());
 	}
 
 	@Override
