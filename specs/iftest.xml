@@ -19,8 +19,10 @@
   </if>
 
   <param id='p2'>
-    <expr>
-      if1.p1 * 2
-    </expr>
+    <expr>if1.p1 * 2</expr>
+  </param>
+
+  <param id='requires_builtin_strip'>
+    <expr>strip('aaa ')</expr>
   </param>
 </signalml>

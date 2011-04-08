@@ -27,7 +27,7 @@ public class JavaGenVisitor extends ExpressionVisitor<JExpression> {
 
 	JavaGenVisitor(ASTNode context)
 	{
-		this(new JCodeModel(), JavaGen.createResolver(context));
+		this(new JCodeModel(), new JavaGen().createResolver(context));
 	}
 
 	public interface JavaNameResolver {

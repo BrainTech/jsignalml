@@ -240,6 +240,10 @@
     </param>
 
     <param id='m_DataSourceName' type='str'>
+      <expr>strip(_m_DataSourceName)</expr>
+    </param>
+
+    <param id='_m_DataSourceName' type='str'>
       <format>'|S80'</format>
       <offset>2256</offset>
     </param>

@@ -278,14 +278,20 @@ public class JavaGen extends ASTVisitor<JDefinedClass> {
 		return impl;
 	}
 
-	public static JavaGenVisitor.JavaNameResolver createResolver(final ASTNode start)
+	public JavaGenVisitor.JavaNameResolver createResolver(final ASTNode start)
 	{
 		return new JavaGenVisitor.JavaNameResolver() {
 			@Override
 			public JInvocation lookup(String id)
 			{
 				final ASTNode target = start.find(id);
-				return JExpr.invoke(makeGetter(id));
+				if (target instanceof ASTNode.BuiltinFunction) {
+					final JClass klass = JavaGen.this.model.ref(Builtins.class);
+					final JInvocation impl_inv = klass.staticInvoke(id);
+					return impl_inv;
+				} else {
+					return JExpr.invoke(makeGetter(id));
+				}
 			}
 		};
 	}
