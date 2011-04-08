@@ -94,11 +94,17 @@ public class JavaGen extends ASTVisitor<JDefinedClass> {
 
 	class Metadata {
 		final JBlock create_params;
-		Metadata(JDefinedClass klass)
+
+		Metadata(JDefinedClass klass, String method_name)
 		{
 			final JMethod register_params =
-				klass.method(JMod.PUBLIC, JavaGen.this.model.VOID, "createParams");
+				klass.method(JMod.PUBLIC, JavaGen.this.model.VOID, method_name);
 			this.create_params = register_params.body();
+		}
+
+		Metadata(JDefinedClass klass)
+		{
+			this(klass, "createParams");
 		}
 
 		void registerParam(String name, JExpression param_obj)
@@ -114,6 +120,29 @@ public class JavaGen extends ASTVisitor<JDefinedClass> {
 								 JExpr._new(context_class));
 			registerParam(name, obj);
 			this.create_params.add(obj.invoke("createParams"));
+		}
+	}
+
+	/**
+	 * Metadata which adds parameters to createIfParams function, for use with an if.
+	 */
+	class MetadataIfBranch extends Metadata {
+		final JBlock else_params;
+
+		MetadataIfBranch(JDefinedClass klass)
+		{
+			super(klass, "createIfParams");
+			final JMethod else_params =
+				klass.method(JMod.PUBLIC, JavaGen.this.model.VOID,
+					     "createElseParams");
+			this.else_params = else_params.body();
+
+		}
+
+		void registerElseParam(String name, JExpression param_obj)
+		{
+			log.info("register for else %s", name);
+			this.else_params.add(JExpr.invoke("register").arg(name).arg(param_obj));
 		}
 	}
 
@@ -518,6 +547,74 @@ public class JavaGen extends ASTVisitor<JDefinedClass> {
 
 		return klass;
 	}
+
+	@Override
+	public JDefinedClass visit(ASTNode.Conditional node, JDefinedClass parent)
+	{
+		final JDefinedClass klass = conditionalClass(node, parent);
+		conditionMethod(klass, node);
+		return klass;
+	}
+
+	JDefinedClass conditionalClass(ASTNode.Conditional node, JDefinedClass parent)
+	{
+		final JDefinedClass klass;
+		try {
+			klass = parent._class("If_" + node.id);
+		} catch(JClassAlreadyExistsException e) {
+			throw new RuntimeException("WTF?");
+		}
+
+		klass._extends(jsignalml.codec.ConditionalClass.class);
+
+		klass.metadata = new MetadataIfBranch(klass);
+		log.info("%s.metadata/if has been set", klass);
+
+		Metadata metadata = (Metadata) parent.metadata;
+		metadata.registerContext(node.id, klass);
+
+		return klass;
+	}
+
+	public JMethod conditionMethod(JDefinedClass klass, ASTNode.Conditional node)
+	{
+		final JType type = this.model.ref(Type.class);
+		final JMethod condition = klass.method(JMod.PUBLIC, type, "getCondition");
+		final JavaGenVisitor javagen =
+			new JavaGenVisitor(this.model, createResolver(node));
+		final JVar test = condition.body().decl(type, "test",
+						       node.condition.accept(javagen));
+		condition.body()._return(test);
+		return condition;
+	}
+
+	@Override
+	public JDefinedClass visit(ASTNode.ElseBranch node, JDefinedClass parent)
+	{
+		final JDefinedClass klass = elseBranchClass(node, parent);
+		return klass;
+	}
+
+	public JDefinedClass elseBranchClass(ASTNode.ElseBranch node, JDefinedClass parent)
+	{
+		final JDefinedClass klass;
+		try {
+			klass = parent._class("Else_" + node.id);
+		} catch(JClassAlreadyExistsException e) {
+			throw new RuntimeException("WTF?");
+		}
+
+		klass._extends(jsignalml.codec.ConditionalClass.ElseBranchClass.class);
+
+		klass.metadata = new Metadata(klass);
+		log.info("%s.metadata has been set", klass);
+
+		MetadataIfBranch metadata = (MetadataIfBranch) parent.metadata;
+		metadata.registerElseParam(node.id, JExpr._new(klass));
+
+		return klass;
+	}
+
 
 	////////////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////////////

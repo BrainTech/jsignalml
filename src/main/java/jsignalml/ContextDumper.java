@@ -3,6 +3,7 @@ import jsignalml.codec.Context;
 import jsignalml.codec.Signalml;
 import jsignalml.codec.Param;
 import jsignalml.codec.OuterLoopClass;
+import jsignalml.codec.ConditionalClass;
 
 /**
  * Produces a human readable representation of the Context tree.
@@ -38,6 +39,20 @@ public class ContextDumper extends ContextVisitor<Integer> {
 	@Override public Integer visit(Param node, String name, Integer parent)
 	{
 		dumper.put(parent + 1, "%s => %s", name, node.get().repr());
+		return parent + 1;
+	}
+
+	@Override public Integer visit(ConditionalClass node, String name, Integer parent)
+	{
+		dumper.put(parent + 1, "%s => Condition is %s", name,
+			   node.getCondition().isTrue() ? "True" : "False");
+		return parent + 1;
+	}
+
+	@Override public Integer visit(ConditionalClass.ElseBranchClass node,
+				       String name, Integer parent)
+	{
+		// do nothing
 		return parent + 1;
 	}
 

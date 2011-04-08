@@ -86,6 +86,20 @@ public class ASTDumper extends ASTVisitor<Integer> {
 	}
 
 	@Override
+	public Integer visit(ASTNode.Conditional node, Integer parent)
+	{
+		this.header(parent, node, "if", "%s", node.condition);
+		return parent + 1;
+	}
+
+	@Override
+	public Integer visit(ASTNode.ElseBranch node, Integer parent)
+	{
+		this.header(parent, node, "else", "");
+		return parent + 1;
+	}
+
+	@Override
 	public Integer visit(ASTNode.DataHandle node, Integer parent)
 	{
 		this.header(parent, node, "data", "format=%s", node.format);

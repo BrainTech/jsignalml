@@ -133,7 +133,7 @@ public abstract class ASTNode {
 
 	public abstract static class Param extends ASTNode {
 		public final Type type;
-		public final List<Positional> args;
+		public final List<Positional> args = util.newLinkedList();
 
 		public Param(ASTNode parent, String id, Type type)
 		{
@@ -141,7 +141,6 @@ public abstract class ASTNode {
 			if (parent==null)
 				throw new SyntaxError("<param> must have a parent");
 			this.type = type;
-			this.args = util.newLinkedList();
 		}
 	}
 
@@ -386,6 +385,8 @@ public abstract class ASTNode {
 			if (parent==null)
 				throw new SyntaxError("<for-each> must have a parent");
 			this.sequence = sequence;
+			if (sequence==null)
+				throw new SyntaxError("<for-each> must have sequence attribute'");
 			this.itername = new Itername(this, itername, null);
 		}
 
@@ -396,4 +397,43 @@ public abstract class ASTNode {
 		}
 	}
 
+	public static class Conditional extends ASTNode {
+		public final Expression condition;
+		public ElseBranch elsebranch = null;
+
+		public Conditional(ASTNode parent, String id, Expression condition) {
+			super(parent, id);
+			if (parent==null)
+				throw new SyntaxError("<if> must have a parent");
+			if (condition==null)
+				throw new SyntaxError("<if> must have test attribute'");
+			this.condition = condition;
+		}
+
+		@Override
+		public <T> T _accept(ASTVisitor<T> v, T data)
+		{
+			return v.visit(this, data);
+		}
+	}
+
+	public static class ElseBranch extends ASTNode {
+		public ElseBranch(ASTNode parent, String id) {
+			super(parent, id);
+			if (parent==null)
+				throw new SyntaxError("<else> must have a parent");
+			if (!(parent instanceof Conditional))
+				throw new SyntaxError("<else> can only be used with <if>");
+			Conditional ifparent = (Conditional) parent;
+			if (ifparent.elsebranch != null)
+				throw new SyntaxError("cannot have more than one <else>");
+			ifparent.elsebranch = this;
+		}
+
+		@Override
+		public <T> T _accept(ASTVisitor<T> v, T data)
+		{
+			return v.visit(this, data);
+		}
+	}
 }

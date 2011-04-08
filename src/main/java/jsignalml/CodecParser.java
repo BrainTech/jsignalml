@@ -56,6 +56,12 @@ public class CodecParser {
 			return this.do_assert(parent, element);
 		if (name.equals("for-each"))
 			return this.do_forloop(parent, element);
+		if (name.equals("if"))
+			return this.do_conditional(parent, element, false);
+		if (name.equals("else"))
+			return this.do_else(parent, element);
+		if (name.equals("else-if"))
+			return this.do_conditional(parent, element, true);
 		if (name.equals("file"))
 			return this.do_file(parent, element);
 		if (name.equals("data"))
@@ -218,6 +224,26 @@ public class CodecParser {
 
 		final Expression expr = _null_or_parse(sequence);
 		return new ASTNode.ForLoop(parent, id, var, expr);
+	}
+
+	public ASTNode.Conditional do_conditional(ASTNode parent, Element element,
+						  boolean elsebranch)
+	{
+		assert element.getNodeName().equals(elsebranch ? "else-if" : "if");
+
+		final String id = _identifier(element);
+		final String condition = _attribute(element, "test");
+
+		final Expression expr = _null_or_parse(condition);
+		return new ASTNode.Conditional(parent, id, expr);
+	}
+
+	public ASTNode.ElseBranch do_else(ASTNode parent, Element element)
+	{
+		assert element.getNodeName().equals("else");
+
+		final String id = parent.id + "_else";
+		return new ASTNode.ElseBranch(parent, id);
 	}
 
 	public ASTNode.DataHandle do_data(ASTNode parent, Element element)

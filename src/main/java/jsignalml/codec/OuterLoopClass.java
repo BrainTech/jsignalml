@@ -4,6 +4,7 @@ import jsignalml.Type;
 import jsignalml.TypeList;
 import jsignalml.TypeInt;
 import jsignalml.ContextVisitor;
+import jsignalml.Logger;
 import jsignalml.util;
 
 import java.util.List;
@@ -12,6 +13,7 @@ import java.util.ArrayList;
 import static java.lang.String.format;
 
 public abstract class OuterLoopClass extends Param<TypeList> {
+	static final Logger log = new Logger(OuterLoopClass.class);
 
 	abstract protected TypeList getSequence();
 	abstract protected LoopClass createLoop(Type index);
