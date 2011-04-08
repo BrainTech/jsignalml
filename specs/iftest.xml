@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+<!DOCTYPE signalml SYSTEM "SignalML_2_0.dtd">
+<signalml>
+
+  <header>
+    <text_info>testfile for ifs</text_info>
+    <url>http://wheredoyouwantogotoday.to</url>
+  </header>
+
+  <if id='if1' test='1'>
+    <param id='p1' type='int'>
+      <expr>333</expr>
+    </param>
+    <else>
+      <param id='p1' type='str'>
+	<expr>333</expr>
+      </param>
+    </else>
+  </if>
+
+  <param id='p2'>
+    <expr>
+      if1.p1 * 2
+    </expr>
+  </param>
+</signalml>

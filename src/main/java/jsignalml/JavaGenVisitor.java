@@ -112,7 +112,7 @@ public class JavaGenVisitor extends ExpressionVisitor<JExpression> {
 	@Override
 	public JExpression visit(Expression.Access accessor, JExpression struct) 
 	{
-		throw new ExpressionFault.AttributeError(accessor.item);
+		return struct.invoke("access").arg(accessor.item);
 	}
 
 	@Override

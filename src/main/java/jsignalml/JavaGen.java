@@ -215,7 +215,7 @@ public class JavaGen extends ASTVisitor<JDefinedClass> {
 		assert klass != null;
 		final JDefinedClass nested = paramClass(klass, node.type, node.id);
 		exprFunction(nested, node, node.type, node.expr);
-		cacheFunction(klass, node.id, nested);
+		getterMethod(klass, node.id, nested);
 		return nested;
 	}
 
@@ -225,7 +225,7 @@ public class JavaGen extends ASTVisitor<JDefinedClass> {
 		assert klass != null;
 		JDefinedClass nested = paramClass(klass, node.type, node.id);
 		readParamFunction(nested, node, node.type, node.format, node.offset);
-		cacheFunction(klass, node.id, nested);
+		getterMethod(klass, node.id, nested);
 		return nested;
 	}
 
@@ -325,7 +325,7 @@ public class JavaGen extends ASTVisitor<JDefinedClass> {
 		return impl;
 	}
 
-	public JMethod cacheFunction(JDefinedClass klass, String ident,
+	public JMethod getterMethod(JDefinedClass klass, String ident,
 				     JDefinedClass nested)
 	{
 		final String prefixed = makeIdentifier(ident);
@@ -340,16 +340,16 @@ public class JavaGen extends ASTVisitor<JDefinedClass> {
 	@Override
 	public JDefinedClass visit(ASTNode.FileHandle node, JDefinedClass parent)
 	{
-		final JDefinedClass klass = this.fileClass(node, parent, node.id);
-		contextAccessor(parent, node, node.id, klass);
+		final JDefinedClass klass = this.fileClass(node, parent);
+		getterMethod(parent, node.id, klass);
 		return klass;
 	}
 
-	public JDefinedClass fileClass(ASTNode.FileHandle node, JDefinedClass parent, String id)
+	public JDefinedClass fileClass(ASTNode.FileHandle node, JDefinedClass parent)
 	{
 		final JDefinedClass klass;
 		try {
-			klass = parent._class("File_" + id);
+			klass = parent._class("File_" + node.id);
 		} catch(JClassAlreadyExistsException e) {
 			throw new RuntimeException("WTF?");
 		}
@@ -382,25 +382,10 @@ public class JavaGen extends ASTVisitor<JDefinedClass> {
 		klass.metadata = new Metadata(klass);
 		log.info("%s.metadata has been set", klass);
 
+		Metadata metadata = (Metadata) parent.metadata;
+		metadata.registerContext(node.id, klass);
+
 		return klass;
-	}
-
-	public JMethod contextAccessor(JDefinedClass klass, ASTNode node, String ident,
-				       JDefinedClass context)
-	{
-		final JFieldVar stor = klass.field(JMod.NONE, context,
-						   "file_" + ident, JExpr._null());
-
-		final JMethod getter = klass.method(JMod.PUBLIC, context,
-						    makeGetter("file_" + ident));
-		final JBlock then = getter.body()._if(stor.eq(JExpr._null()))._then();
-		then.assign(stor, JExpr._new(context));
-		getter.body()._return(stor);
-
-		Metadata metadata = (Metadata) klass.metadata;
-		metadata.registerContext(ident, context);
-
-		return getter;
 	}
 
 	@Override
@@ -415,10 +400,10 @@ public class JavaGen extends ASTVisitor<JDefinedClass> {
 	{
 		final JClass builtins_class = this.model.ref(Builtins.class);
 		final JInvocation impl_inv = builtins_class.staticInvoke(ident);
-		return cacheFunction(klass, node, ident, node.type, impl_inv);
+		return getterMethod(klass, node, ident, node.type, impl_inv);
 	}
 
-	public JMethod cacheFunction(JDefinedClass klass, ASTNode node, String ident,
+	public JMethod getterMethod(JDefinedClass klass, ASTNode node, String ident,
 				     Type type, JInvocation impl_inv)
 	{
 		final String prefixed = makeIdentifier(ident);
@@ -461,6 +446,7 @@ public class JavaGen extends ASTVisitor<JDefinedClass> {
 		sequenceMethod(outer, node);
 		final JDefinedClass inner = loopClass(node, outer);
 		createLoopMethod(outer, node, inner);
+		getterMethod(parent, node.id, outer);
 		return inner;
 	}
 
@@ -531,6 +517,7 @@ public class JavaGen extends ASTVisitor<JDefinedClass> {
 	{
 		final JDefinedClass klass = conditionalClass(node, parent);
 		conditionMethod(klass, node);
+		getterMethod(parent, node.id, klass);
 		return klass;
 	}
 
