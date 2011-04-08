@@ -11,49 +11,43 @@ import jsignalml.codec.ConditionalClass;
 public class ContextDumper extends ContextVisitor<Integer> {
 	TreeDumper dumper = new TreeDumper();
 
-	@Override public Integer visit(Signalml node, String name, Integer parent)
+	@Override public Integer visit(Signalml node, String name, Integer level)
 	{
-		dumper.put(parent + 1, "Signalml %s", name);
-		return parent + 1;
+		return dumper.put(level, "Signalml %s\n", name);
 	}
 
-	@Override public Integer visit(Signalml.FileClass node, String name, Integer parent)
+	@Override public Integer visit(Signalml.FileClass node, String name, Integer level)
 	{
-		dumper.put(parent + 1, "File %s", name);
-		return parent + 1;
+		return dumper.put(level, "File %s\n", name);
 	}
 
-	@Override public Integer visit(OuterLoopClass node, String name, Integer parent)
+	@Override public Integer visit(OuterLoopClass node, String name, Integer level)
 	{
-		dumper.put(parent + 1, "%s => loop", name);
-		return parent + 1;
+		return dumper.put(level, "%s => loop\n", name);
 	}
 
 	@Override public Integer visit(OuterLoopClass.LoopClass node,
-				       String name, Integer parent)
+				       String name, Integer level)
 	{
-		dumper.put(parent + 1, "%s => %s", name, node);
-		return parent + 1;
+		return dumper.put(level, "%s => %s\n", name, node);
 	}
 
-	@Override public Integer visit(Param node, String name, Integer parent)
+	@Override public Integer visit(Param node, String name, Integer level)
 	{
-		dumper.put(parent + 1, "%s => %s", name, node.get().repr());
-		return parent + 1;
+		return dumper.put(level, "%s => %s\n", name, node.get().repr());
 	}
 
-	@Override public Integer visit(ConditionalClass node, String name, Integer parent)
+	@Override public Integer visit(ConditionalClass node, String name, Integer level)
 	{
-		dumper.put(parent + 1, "%s => Condition is %s", name,
-			   node.getCondition().isTrue() ? "True" : "False");
-		return parent + 1;
+		return dumper.put(level, "%s => Condition is %s\n", name,
+				  node.getCondition().isTrue() ? "True" : "False");
 	}
 
 	@Override public Integer visit(ConditionalClass.ElseBranchClass node,
-				       String name, Integer parent)
+				       String name, Integer level)
 	{
 		// do nothing
-		return parent + 1;
+		return level;
 	}
 
 	public static String dump(Context node)

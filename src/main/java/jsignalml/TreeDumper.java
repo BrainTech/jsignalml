@@ -16,10 +16,11 @@ public class TreeDumper {
 			this.buffer.append("    ");
 	}
 
-	public void put(int level, String fmt, Object...args)
+	public int put(int level, String fmt, Object...args)
 	{
-		this.indent(level + 1);
-		this.buffer.append(String.format(fmt, args));
+		this.indent(level);
+		this.format(fmt, args);
+		return level + 1;
 	}
 
 	public void format(String fmt, Object...args)

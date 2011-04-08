@@ -8,7 +8,7 @@ import static java.lang.String.format;
 public class ASTDumper extends ASTVisitor<Integer> {
 	final private TreeDumper dumper = new TreeDumper();
 
-	private void header(int level, ASTNode node, String display,
+	private int header(int level, ASTNode node, String display,
 			    String extrafmt, Object...args)
 	{
 		this.dumper.put(level,
@@ -16,6 +16,7 @@ public class ASTDumper extends ASTVisitor<Integer> {
 				node.parent == null
 				? "no parent" : format("parent=[%s]", node.parent.id));
 		this.dumper.format(extrafmt + "\n", args);
+		return level + 1;
 	}
 
 	public static String dump(ASTNode node)
@@ -28,89 +29,78 @@ public class ASTDumper extends ASTVisitor<Integer> {
 	@Override
 	public Integer visit(ASTNode.Signalml node, Integer parent)
 	{
-		this.header(parent, node, "signalml", "");
-		return parent + 1;
+		return this.header(parent, node, "signalml", "");
 	}
 
 	@Override
 	public Integer visit(ASTNode.ChannelSet node, Integer parent)
 	{
-		this.header(parent, node, "channelset", "");
-		return parent + 1;
+		return this.header(parent, node, "channelset", "");
 	}
 
 	@Override
 	public Integer visit(ASTNode.Channel node, Integer parent)
 	{
-		this.header(parent, node, "channel", "");
-		return parent + 1;
+		return this.header(parent, node, "channel", "");
 	}
 
 	@Override
 	public Integer visit(ASTNode.BinaryParam node, Integer parent)
 	{
 		this.header(parent, node, "param (read binary)", "");
-		this.dumper.put(parent + 1, "* format=%s", node.format);
-		this.dumper.put(parent + 1, "* offset=%s", node.offset);
-		return parent + 1;
+		this.dumper.put(parent + 1, "* format=%s\n", node.format);
+		return this.dumper.put(parent + 1, "* offset=%s\n", node.offset);
 	}
 
 	@Override
 	public Integer visit(ASTNode.ExprParam node, Integer parent)
 	{
 		this.header(parent, node, "param (expression)", "");
-		this.dumper.put(parent + 1, "* expression=%s", node.expr);
-		return parent + 1;
+		return this.dumper.put(parent + 1, "* expression=%s\n", node.expr);
 	}
 
 	@Override
 	public Integer visit(ASTNode.Assert node, Integer parent)
 	{
 		this.header(parent, node, "assert", "");
-		this.dumper.put(parent + 1, "* expression=%s", node.expr);
-		return parent + 1;
+		return this.dumper.put(parent + 1, "* expression=%s\n", node.expr);
 	}
 
 	@Override
 	public Integer visit(ASTNode.FileHandle node, Integer parent)
 	{
-		this.header(parent, node, "file", "filename=%s", node.filename);
-		return parent + 1;
+		return this.header(parent, node, "file", "filename=%s\n", node.filename);
 	}
 
 	@Override
 	public Integer visit(ASTNode.ForLoop node, Integer parent)
 	{
-		this.header(parent, node, "for-each", "%s in %s", node.itername, node.sequence);
-		return parent + 1;
+		return this.header(parent, node, "for-each", "%s in %s",
+				   node.itername, node.sequence);
 	}
 
 	@Override
 	public Integer visit(ASTNode.Conditional node, Integer parent)
 	{
-		this.header(parent, node, "if", "%s", node.condition);
-		return parent + 1;
+		return this.header(parent, node, "if", "%s", node.condition);
 	}
 
 	@Override
 	public Integer visit(ASTNode.ElseBranch node, Integer parent)
 	{
-		this.header(parent, node, "else", "");
-		return parent + 1;
+		return this.header(parent, node, "else", "");
 	}
 
 	@Override
 	public Integer visit(ASTNode.DataHandle node, Integer parent)
 	{
 		this.header(parent, node, "data", "format=%s", node.format);
-		this.dumper.put(parent + 1, "* mapping=%s", node.mapping);
-		return parent + 1;
+		return this.dumper.put(parent + 1, "* mapping=%s\n", node.mapping);
 	}
 
 	@Override
 	public Integer visit(ASTNode.Positional node, Integer parent)
 	{
-		this.header(parent, node, "arg", "type=%s", node.type.getClass());
-		return parent + 1;
+		return this.header(parent, node, "arg", "type=%s", node.type.getClass());
 	}
 }
