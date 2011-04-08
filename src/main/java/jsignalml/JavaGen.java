@@ -29,20 +29,6 @@ import com.sun.codemodel.JClassAlreadyExistsException;
 import com.sun.codemodel.writer.SingleStreamCodeWriter;
 import com.sun.codemodel.writer.FileCodeWriter;
 
-/*
-	double duration_of_data_record = null;
-	public double get_duration_of_data_record() {
-		if (duration_of_data_record == null)
-			duration_of_data_record = _get_duration_of_data_record();
-		return duration_of_data_record;
-	}
-	double _get_duration_of_data_record() {
-		long offset = 244;
-		TypeString str = (TypeString) buffer.read(new BitForm.Str(8), offset);
-		return new TypeFloat().make(str).getValue();
-	}
-*/
-
 public class JavaGen extends ASTVisitor<JDefinedClass> {
 	public static final Logger log = new Logger(JavaGen.class);
 
@@ -169,14 +155,6 @@ public class JavaGen extends ASTVisitor<JDefinedClass> {
 			 .invoke("print").arg(dumper_dump));
 
 		return main;
-	}
-
-	public JMethod fileConstructor(JDefinedClass klass)
-	{
-		JMethod method = klass.constructor(JMod.NONE);
-		JVar filename = method.param(File.class, "filename");
-		method.body().add(JExpr._this().invoke("open").arg(filename));
-		return method;
 	}
 
 	public JMethod codecOpenMethod(JDefinedClass klass)
