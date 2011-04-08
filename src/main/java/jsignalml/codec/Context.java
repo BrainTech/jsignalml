@@ -49,4 +49,11 @@ public abstract class Context extends TypeObject {
 	 * this.
 	 */
 	public abstract <T> T _accept(ContextVisitor<T> v, String name, T data);
+
+	/**
+	 * Register names in this namespace. After this function executes, all
+	 * static names in this namespace should be available.
+	 */
+	public abstract void createParams();
+
 }

@@ -107,10 +107,6 @@ public class JavaGen extends ASTVisitor<JDefinedClass> {
 			this.create_params.add(JExpr.invoke("register").arg(name).arg(param_obj));
 		}
 
-		void registerLoopGetter(String ident, JDefinedClass klass, JMethod getter)
-		{
-		}
-
 		void registerContext(String name, JDefinedClass context_class)
 		{
 			log.info("register context %s=>%s", name, context_class);
@@ -440,7 +436,7 @@ public class JavaGen extends ASTVisitor<JDefinedClass> {
 
 	JMethod iternameGetter(ASTNode.Itername node, JDefinedClass klass)
 	{
-		JClass type = this.model.ref(jsignalml.codec.Signalml.LoopClass.IndexClass.class);
+		JClass type = this.model.ref(jsignalml.codec.OuterLoopClass.LoopClass.IndexClass.class);
 		final JMethod getter = klass.method(JMod.PUBLIC, type,
 						    makeGetter(node.id));
 		getter.body()._return(JExpr._this().ref("index"));
@@ -454,13 +450,14 @@ public class JavaGen extends ASTVisitor<JDefinedClass> {
 	@Override
 	public JDefinedClass visit(ASTNode.ForLoop node, JDefinedClass parent)
 	{
-		final JDefinedClass klass = loopClass(node, parent);
-		loopAccessor(parent, node, klass);
-		loopIndexAccessor(parent, node, klass);
-		return klass;
+		final JDefinedClass outer = outerLoopClass(node, parent);
+		sequenceMethod(outer, node);
+		final JDefinedClass inner = loopClass(node, outer);
+		createLoopMethod(outer, node, inner);
+		return inner;
 	}
 
-	public JDefinedClass loopClass(ASTNode.ForLoop node, JDefinedClass parent)
+	public JDefinedClass outerLoopClass(ASTNode.ForLoop node, JDefinedClass parent)
 	{
 		final JDefinedClass klass;
 		try {
@@ -469,7 +466,48 @@ public class JavaGen extends ASTVisitor<JDefinedClass> {
 			throw new RuntimeException("WTF?");
 		}
 
-		klass._extends(jsignalml.codec.Signalml.LoopClass.class);
+		klass._extends(jsignalml.codec.OuterLoopClass.class);
+
+		klass.metadata = new Metadata(klass);
+		log.info("%s.metadata has been set", klass);
+
+		Metadata metadata = (Metadata) parent.metadata;
+		metadata.registerParam(node.id, JExpr._new(klass));
+
+		return klass;
+	}
+
+	public JMethod sequenceMethod(JDefinedClass klass, ASTNode.ForLoop node)
+	{
+		final JType list_type = this.model.ref(TypeList.class);
+		final JMethod sequence = klass.method(JMod.PROTECTED, list_type, "getSequence");
+		final JavaGenVisitor javagen =
+			new JavaGenVisitor(this.model, createResolver(node));
+		final JVar range = sequence.body().decl(list_type, "range",
+							node.sequence.accept(javagen));
+		sequence.body()._return(range);
+		return sequence;
+	}
+
+	public JMethod createLoopMethod(JDefinedClass klass, ASTNode.ForLoop node,
+					JDefinedClass child_class)
+	{
+		final JMethod create_loop = klass.method(JMod.PROTECTED, child_class, "createLoop");
+		final JVar index = create_loop.param(Type.class, "index");
+		create_loop.body()._return(JExpr._new(child_class).arg(index));
+		return create_loop;
+	}
+
+	public JDefinedClass loopClass(ASTNode.ForLoop node, JDefinedClass parent)
+	{
+		final JDefinedClass klass;
+		try {
+			klass = parent._class("LoopItem_" + node.id);
+		} catch(JClassAlreadyExistsException e) {
+			throw new RuntimeException("WTF?");
+		}
+
+		klass._extends(jsignalml.codec.OuterLoopClass.LoopClass.class);
 
 		JMethod constructor = klass.constructor(JMod.NONE);
 		JVar index = constructor.param(Type.class, "index");
@@ -479,57 +517,6 @@ public class JavaGen extends ASTVisitor<JDefinedClass> {
 		log.info("%s.metadata has been set", klass);
 
 		return klass;
-	}
-
-	public JMethod loopAccessor(JDefinedClass klass, ASTNode.ForLoop node,
-				    JDefinedClass context)
-	{
-		final JClass javatype_class = this.model.ref(Type.class);
-		final JClass jt_list_class = this.model.ref(TypeList.class);
-		final JClass util_class = this.model.ref(util.class);
-		final String ident = "loop_" + node.id;
-		final JType list_type = this.model.ref(List.class).narrow(context);
-		final JMethod getter = klass.method(JMod.PUBLIC, list_type,
-						    makeGetter(ident));
-		final JBlock body = getter.body();
-
-		final JavaGenVisitor javagen =
-			new JavaGenVisitor(this.model, createResolver(node));
-		final JVar range = body.decl(jt_list_class, "range",
-					     node.sequence.accept(javagen));
-		final JFieldVar stor = klass.field(JMod.NONE, list_type, ident, JExpr._null());
-		final JBlock then = body._if(stor.eq(JExpr._null()))._then();
-		then.assign(stor, util_class.staticInvoke("newLinkedList"));
-		final JForEach loop = then.forEach(javatype_class, "var", range);
-		loop.body().add(stor.invoke("add")
-				.arg(JExpr._new(context).arg(loop.var())));
-		body._return(stor);
-
-		Metadata metadata = (Metadata) klass.metadata;
-		metadata.registerLoopGetter(ident, context, getter);
-
-		return getter;
-	}
-
-	public JMethod loopIndexAccessor(JDefinedClass klass, ASTNode.ForLoop node,
-					 JDefinedClass context)
-	{
-		final JClass jt_int_class = this.model.ref(TypeInt.class);
-		final JClass efte = this.model.ref(ExpressionFault.TypeError.class);
-		final String ident = "loop_" + node.id;
-		final JMethod getter = klass.method(JMod.PUBLIC, context,
-						    makeGetter(ident));
-		final JVar index = getter.param(Type.class, "index");
-		final JBlock body = getter.body();
-
-		final JFieldRef stor = JExpr._this().ref(ident);
-
-		final JConditional typecheck = body._if(index._instanceof(jt_int_class));
-		typecheck._then()._return(stor.invoke("get")
-					  .arg(((JExpression)JExpr.cast(jt_int_class, index))
-					       .invoke("safeIntValue")));
-		typecheck._else()._throw(JExpr._new(efte));
-		return getter;
 	}
 
 	////////////////////////////////////////////////////////////////////////

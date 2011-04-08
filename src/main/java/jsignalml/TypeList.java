@@ -199,6 +199,10 @@ public class TypeList extends Type implements Iterable<Type> {
 		return 0;			
 	}
 
+	public TypeInt len() {
+		return new TypeInt(this.value.size());
+	}
+
 	public Type index(Type i){
 		if(i instanceof TypeInt)
 			return this.index((TypeInt)i);

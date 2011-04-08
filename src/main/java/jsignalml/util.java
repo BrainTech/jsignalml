@@ -1,5 +1,6 @@
 package jsignalml;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.HashMap;
 import java.util.TreeMap;
@@ -11,6 +12,10 @@ import org.apache.commons.lang.StringUtils;
 public abstract class util {
 	public static <T> LinkedList<T> newLinkedList() {
 		return new LinkedList<T>();
+	}
+
+	public static <T> ArrayList<T> newArrayList() {
+		return new ArrayList<T>();
 	}
 
 	public static <K,V> HashMap<K,V> newHashMap() {

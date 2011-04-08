@@ -2,6 +2,7 @@ package jsignalml;
 import jsignalml.codec.Context;
 import jsignalml.codec.Signalml;
 import jsignalml.codec.Param;
+import jsignalml.codec.OuterLoopClass;
 
 /**
  * Produces a human readable representation of the Context tree.
@@ -21,15 +22,22 @@ public class ContextDumper extends ContextVisitor<Integer> {
 		return parent + 1;
 	}
 
-	@Override public Integer visit(Signalml.LoopClass node, String name, Integer parent)
+	@Override public Integer visit(OuterLoopClass node, String name, Integer parent)
 	{
-		dumper.put(parent + 1, "Loop XXX %s", name);
+		dumper.put(parent + 1, "%s => loop", name);
+		return parent + 1;
+	}
+
+	@Override public Integer visit(OuterLoopClass.LoopClass node,
+				       String name, Integer parent)
+	{
+		dumper.put(parent + 1, "%s => %s", name, node);
 		return parent + 1;
 	}
 
 	@Override public Integer visit(Param node, String name, Integer parent)
 	{
-		dumper.put(parent + 1, "%s => %s", name, node.get());
+		dumper.put(parent + 1, "%s => %s", name, node.get().repr());
 		return parent + 1;
 	}
 

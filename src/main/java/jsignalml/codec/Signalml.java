@@ -47,32 +47,4 @@ public abstract class Signalml extends Context implements jsignalml.Source {
 			return v.visit(this, name, data);
 		}
 	}
-
-	public abstract class LoopClass extends Context {
-		final public IndexClass index;
-		public LoopClass(Type index) {
-			this.index = new IndexClass(index);
-		}
-
-		@Override
-		public <T> T _accept(ContextVisitor<T> v, String name, T data)
-		{
-			return v.visit(this, name, data);
-		}
-
-		public class IndexClass extends Param<Type> {
-			IndexClass(Type index) {
-				this.cache = index;
-			}
-			protected Type _get() {
-				throw new RuntimeException();
-			}
-
-			@Override
-			public <T> T _accept(ContextVisitor<T> v, String name, T data)
-			{
-				return v.visit(this, name, data);
-			}
-		}
-	}
 }

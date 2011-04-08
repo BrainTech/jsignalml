@@ -20,4 +20,11 @@ public abstract class Param<T extends Type> extends Context {
 	{
 		return v.visit(this, name, data);
 	}
+
+
+	@Override
+	public void createParams()
+	{
+		// nothing to be done here
+	}
 }
