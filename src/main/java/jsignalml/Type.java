@@ -278,6 +278,11 @@ public abstract class Type implements Comparable<Type> {
 		throw new ExpressionFault.TypeError();
 	}
 
+	public Type slice(Type start, Type stop, Type step)
+	{
+		throw new ExpressionFault.TypeError();
+	}
+
 	public Type access(String item)
 	{
 		throw new ExpressionFault.AttributeError(item);

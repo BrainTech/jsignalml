@@ -73,6 +73,12 @@ public class EvalVisitor extends ExpressionVisitor<Type> {
 	}
 
 	@Override
+	public Type visit(Expression.Slice op, Type seq, Type start, Type stop, Type step)
+	{
+		return seq.slice(start, stop, step);
+	}
+
+	@Override
 	public Type visit(Expression.List_ list, List<? extends Type> args)
 	{
 		return new TypeList(args);

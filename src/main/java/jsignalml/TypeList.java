@@ -1,5 +1,6 @@
 package jsignalml;
 
+import java.util.List;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
@@ -55,7 +56,10 @@ public class TypeList extends Type implements Iterable<Type> {
 
 	@Override
 	public java.lang.String repr() {
-		return "[" + StringUtils.join(this.value, ", ") + "]";
+		List<String> list = util.newArrayList(this.value.size());
+		for(Type item: this.value)
+			list.add(item.repr());
+		return "[" + StringUtils.join(list, ", ") + "]";
 	}
 
 	@Override
@@ -218,6 +222,51 @@ public class TypeList extends Type implements Iterable<Type> {
 			throw new ExpressionFault.IndexError(
 			        offset, this.value.size());
 		}
+	}
+
+	public Type slice(Type start, Type stop, Type step){
+		if( (start == null || start instanceof TypeInt) &&
+		    (stop == null || stop instanceof TypeInt) &&
+		    (step == null || step instanceof TypeInt) )
+			return this.slice((TypeInt)start, (TypeInt)stop, (TypeInt)step);
+		throw new ExpressionFault.TypeError();
+	}
+	public Type slice(final TypeInt start, final TypeInt stop, final TypeInt step){
+		final int len = this.value.size();
+		final int step_ = step != null ? step.safeIntValue() : 1;
+
+		if (step_ == 0)
+			throw new ExpressionFault.ValueError("slice step cannot be 0");
+
+		final int default_start = step_ > 0 ? 0 : -1;
+		final int default_stop = step_ > 0 ? len : -1;
+
+		int start_ = start != null ? start.safeIntValue() : default_start;
+		if (start_ < 0)
+			start_ += len;
+
+		int stop_;
+		if (stop != null) {
+			stop_ = stop.safeIntValue();
+			if (stop_ < 0)
+				stop_ += len;
+		} else {
+			stop_ = default_stop;
+		}
+
+		final int newsize = (stop_ - start_) / step_;
+		List<Type> ans = util.newArrayList(newsize);
+		int i = -1; // value will not be ever used, I think
+		try {
+			int j;
+			for(i=start_, j=0; j<newsize; i+=step_, j++)
+				ans.add(this.value.get(i));
+		} catch (IndexOutOfBoundsException e) {
+			log.exception("this.value = %s, stop=%s, start=%s", e, this.value,
+				      stop_, start_);
+			throw new ExpressionFault.IndexError(i, len);
+		}
+		return new TypeList(ans);
 	}
 
 	public TypeInt bool(){

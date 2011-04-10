@@ -18,6 +18,10 @@ public abstract class util {
 		return new ArrayList<T>();
 	}
 
+	public static <T> ArrayList<T> newArrayList(int size) {
+		return new ArrayList<T>(size);
+	}
+
 	public static <K,V> HashMap<K,V> newHashMap() {
 		return new HashMap<K,V>();
 	}

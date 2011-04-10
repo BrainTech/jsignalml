@@ -15,6 +15,8 @@ tokens {
     UNARY_SUBTRACT;
 
     INDEX       = '[';
+    SLICE;
+    NIL;
     CALL        = '(';
     ACCESS      = '.';
 
@@ -173,14 +175,37 @@ powexpr
 
 baseitem
     : (atom | ID)
-        ( INDEX^ indextail
+	(indexexpr^
         | CALL^ calltail
 	| ACCESS^ ID
         )*
     ;
 
-indextail // TODO
-    : expr ']'!
+indexexpr
+    : INDEX
+	( start=expr
+	    (                                  -> ^(INDEX $start)
+	    | ':' stop=expr
+		( ':' step=expr                -> ^(SLICE $start $stop $step)
+		| ':'?                         -> ^(SLICE $start $stop NIL)
+		)
+	    | ':'
+		( ':' step=expr                -> ^(SLICE $start NIL $step)
+		| ':' ?                        -> ^(SLICE $start NIL NIL)
+		)
+	    )
+	| ':'
+	    (                                  -> ^(SLICE NIL NIL NIL)
+	    | stop=expr
+		( ':' step=expr                -> ^(SLICE NIL $stop $step)
+		| ':'?                         -> ^(SLICE NIL $stop NIL)
+		)
+	    | ':'
+		( step=expr                    -> ^(SLICE NIL NIL $step)
+		|                              -> ^(SLICE NIL NIL NIL)
+		)
+	    )
+	) ']'
     ;
 
 calltail

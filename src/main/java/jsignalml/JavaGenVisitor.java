@@ -147,6 +147,19 @@ public class JavaGenVisitor extends ExpressionVisitor<JExpression> {
 	}
 
 	@Override
+	public JExpression visit(Expression.Slice op, JExpression seq,
+				 JExpression start, JExpression stop, JExpression step)
+	{
+		if(start == null)
+			start = JExpr._null();
+		if(stop == null)
+			stop = JExpr._null();
+		if(step == null)
+			step = JExpr._null();
+		return JExpr.invoke(seq, "slice").arg(start).arg(stop).arg(step);
+	}
+
+	@Override
 	public JExpression visit(Expression.Const val)
 	{
 		Class<? extends Type> type;

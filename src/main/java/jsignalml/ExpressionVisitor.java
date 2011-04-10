@@ -14,6 +14,7 @@ public abstract class ExpressionVisitor<T> {
 	public T visit(Expression.Map_ map, List<Map.Entry<T, T>> args)
 		{ return null; }
 	public T visit(Expression.Index op, T seq, T index){ return null; }
+	public T visit(Expression.Slice op, T seq, T start, T stop, T step){ return null; }
 	public T visit(Expression.Const val){ return null; }
 	public T visit(Expression.Ternary op, T cond){ return null; }
 	public T visit(Expression.Assign op){ return null; }

@@ -76,8 +76,10 @@ expr returns [Expression value]
         { $value = new Expression.Ref($ID.text); }
     | ^(CALL a=expr alist)
         { $value = new Expression.Call($a.value, $alist.value); }
-    | ^(INDEX a=expr s=expr)
+    | ^(INDEX s=expr a=expr)
         { $value = new Expression.Index($a.value, $s.value); }
+    | ^(SLICE start=expr stop=expr step=expr a=expr)
+        { $value = new Expression.Slice($a.value, $start.value, $stop.value, $step.value); }
     | ^(ACCESS a=expr ID)
 	{ $value = new Expression.Access($a.value, $ID.text); }
     | INT
@@ -89,6 +91,8 @@ expr returns [Expression value]
           $value = new Expression.Const(tmp); }
     | ^(TERN q=expr a=expr b=expr)
         { $value = new Expression.Ternary($q.value, $a.value, $b.value); }
+    | NIL
+	{ $value = null; }
     ;
 
 alist returns [List<Expression> value]

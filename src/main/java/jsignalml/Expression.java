@@ -235,6 +235,38 @@ public abstract class Expression {
 		}
 	}
 
+	public static class Slice extends Expression {
+		final Expression item;
+		final Expression start, stop, step; // may be null
+
+		Slice(Expression item, Expression start, Expression stop, Expression step) {
+			this.item = item;
+			this.start = start;
+			this.stop = stop;
+			this.step = step;
+		}
+
+		@Override
+		public String toString()
+		{
+			return format("%s[%s:%s%s%s]", item,
+				      start != null ? start : "",
+				      stop != null ? stop : "",
+				      step != null ? ":" : "",
+				      step != null ? step : "");
+		}
+
+		@Override
+		public <T> T accept(ExpressionVisitor<T> v)
+		{
+			final T seq = this.item.accept(v);
+			final T start = this.start != null ? this.start.accept(v) : null;
+			final T stop = this.stop != null ? this.stop.accept(v) : null;
+			final T step = this.step != null ? this.step.accept(v) : null;
+			return v.visit(this, seq, start, stop, step);
+		}
+	}
+
 	public static class Access extends Expression {
 		final Expression struct;
 		final String item;

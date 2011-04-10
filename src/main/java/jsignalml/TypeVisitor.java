@@ -1,6 +1,7 @@
 package jsignalml;
 
 import java.util.List;
+import java.util.Map;
 
 public class TypeVisitor extends ExpressionVisitor<Type> {
 	@Override
@@ -30,6 +31,20 @@ public class TypeVisitor extends ExpressionVisitor<Type> {
 	}
 
 	@Override
+	public Type visit(Expression.Ref ref)
+	{
+		// TODO
+		return null;
+	}
+
+	@Override
+	public Type visit(Expression.Access accessor, Type struct)
+	{
+		// TODO
+		return null;
+	}
+
+	@Override
 	public Type visit(Expression.List_ list, List<? extends Type> args)
 	{
 		return new TypeList();
@@ -50,6 +65,12 @@ public class TypeVisitor extends ExpressionVisitor<Type> {
 			type = t;
 		}
 		return type;
+	}
+
+	@Override
+	public Type visit(Expression.Map_ call, List<Map.Entry<Type,Type>> args)
+	{
+		return new TypeMap();
 	}
 
 	@Override
