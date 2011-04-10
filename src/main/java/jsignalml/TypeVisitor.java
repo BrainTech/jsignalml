@@ -89,6 +89,27 @@ public class TypeVisitor extends ExpressionVisitor<Type> {
 	}
 
 	@Override
+	public Type visit(Expression.Slice op, Type seq, Type start, Type stop, Type step)
+	{
+		if (start != null && !(start instanceof TypeInt))
+			throw new ExpressionFault.TypeError();
+		if (stop != null && !(stop instanceof TypeInt))
+			throw new ExpressionFault.TypeError();
+		if (step != null && !(step instanceof TypeInt))
+			throw new ExpressionFault.TypeError();
+
+		if (seq != null && !(seq instanceof TypeList || seq instanceof TypeString))
+			throw new ExpressionFault.TypeError();
+
+		if (op.item instanceof Expression.List_)
+			return this.elementType((Expression.List_)op.item);
+		if (seq instanceof TypeString)
+			return seq;
+
+		return null;
+	}
+
+	@Override
 	public Type visit(Expression.Const val)
 	{
 		return val.value;
