@@ -2,7 +2,6 @@ package jsignalml;
 
 import java.util.List;
 import javax.lang.model.type.NullType;
-import org.apache.log4j.BasicConfigurator;
 
 public class NameCheck extends ASTVisitor<NullType> {
 	public static final Logger log = new Logger(NameCheck.class);

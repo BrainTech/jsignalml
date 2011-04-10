@@ -231,7 +231,7 @@ public class JavaGen extends ASTVisitor<JDefinedClass> {
 
 	JDefinedClass paramClass(JDefinedClass parent, Type type, String id)
 	{
-		JClass typeref = convertTypeToJClass(type);
+		final JClass typeref = convertTypeToJClass(type);
 		final JClass param_class = this.model.ref(jsignalml.codec.Param.class).narrow(typeref);
 		final JDefinedClass nested;
 		try {
@@ -331,18 +331,6 @@ public class JavaGen extends ASTVisitor<JDefinedClass> {
 		return impl;
 	}
 
-	public JMethod getterMethod(JDefinedClass klass, String ident,
-				     JDefinedClass nested)
-	{
-		final String prefixed = makeIdentifier(ident);
-		final JMethod getter = klass.method(JMod.PUBLIC, jsignalml.Type.class,
-						    makeGetter(ident));
-		getter.body()._return(JExpr.invoke("access").arg(ident));
-
-		return getter;
-	}
-
-
 	@Override
 	public JDefinedClass visit(ASTNode.FileHandle node, JDefinedClass parent)
 	{
@@ -394,33 +382,13 @@ public class JavaGen extends ASTVisitor<JDefinedClass> {
 		return klass;
 	}
 
-	@Override
-	public JDefinedClass visit(ASTNode.BuiltinFunction node, JDefinedClass klass)
-	{
-		builtinFunctionAccessor(node, klass, node.id);
-		return klass;
-	}
-
-	public JMethod builtinFunctionAccessor(ASTNode.BuiltinFunction node, JDefinedClass klass,
-					       String ident)
-	{
-		final JClass builtins_class = this.model.ref(Builtins.class);
-		final JInvocation impl_inv = builtins_class.staticInvoke(ident);
-		return getterMethod(klass, node, ident, node.type, impl_inv);
-	}
-
-	public JMethod getterMethod(JDefinedClass klass, ASTNode node, String ident,
-				     Type type, JInvocation impl_inv)
+	public JMethod getterMethod(JDefinedClass klass, String ident,
+				     JDefinedClass nested)
 	{
 		final String prefixed = makeIdentifier(ident);
-		final JType type_ = this.convertTypeToJClass(type);
-		final JFieldVar stor = klass.field(JMod.NONE, type_,
-						   prefixed, JExpr._null());
-		final JMethod getter = klass.method(JMod.PUBLIC, type_,
+		final JMethod getter = klass.method(JMod.PUBLIC, jsignalml.Type.class,
 						    makeGetter(ident));
-		final JBlock then = getter.body()._if(stor.eq(JExpr._null()))._then();
-		then.assign(stor, impl_inv);
-		getter.body()._return(stor);
+		getter.body()._return(JExpr.invoke("access").arg(ident));
 
 		return getter;
 	}
