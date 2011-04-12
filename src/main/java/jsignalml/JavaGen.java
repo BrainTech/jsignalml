@@ -213,8 +213,8 @@ public class JavaGen extends ASTVisitor<JDefinedClass> {
 	public JDefinedClass visit(ASTNode.ExprParam node, JDefinedClass klass)
 	{
 		assert klass != null;
-		final JDefinedClass nested = paramClass(klass, node.type, node.id);
-		exprFunction(nested, node, node.type, node.expr);
+		final JDefinedClass nested = paramClass(klass, node);
+		exprFunction(nested, node);
 		getterMethod(klass, node.id, nested);
 		return nested;
 	}
@@ -223,48 +223,47 @@ public class JavaGen extends ASTVisitor<JDefinedClass> {
 	public JDefinedClass visit(ASTNode.BinaryParam node, JDefinedClass klass)
 	{
 		assert klass != null;
-		JDefinedClass nested = paramClass(klass, node.type, node.id);
-		readParamFunction(nested, node, node.type, node.format, node.offset);
+		JDefinedClass nested = paramClass(klass, node);
+		readParamFunction(nested, node);
 		getterMethod(klass, node.id, nested);
 		return nested;
 	}
 
-	JDefinedClass paramClass(JDefinedClass parent, Type type, String id)
+	JDefinedClass paramClass(JDefinedClass parent, ASTNode.Param node)
 	{
-		final JClass typeref = convertTypeToJClass(type);
+		final JClass typeref = convertTypeToJClass(node.type);
 		final JClass param_class = this.model.ref(jsignalml.codec.Param.class).narrow(typeref);
 		final JDefinedClass nested;
 		try {
-			nested = parent._class(makeParamClass(id));
+			nested = parent._class(makeParamClass(node.id));
 		} catch(JClassAlreadyExistsException e) {
-			throw new SyntaxError(format("duplicate name: '%s'", id));
+			throw new SyntaxError(format("duplicate name: '%s'", node.id));
 		}
 		nested._extends(param_class);
 
 		Metadata metadata = (Metadata) parent.metadata;
-		metadata.registerParam(id, JExpr._new(nested));
+		metadata.registerParam(node.id, JExpr._new(nested));
 
 		return nested;
 	}
 
 
-	public JMethod readParamFunction(JDefinedClass klass, ASTNode node,
-					 Type type, Expression format, Expression offset)
+	public JMethod readParamFunction(JDefinedClass klass, ASTNode.BinaryParam node)
 	{
 		assert klass != null;
 
-		final JMethod readfunc = readFunction(klass, node, type);
+		final JMethod readfunc = readFunction(klass, node, node.type);
 
 		final JavaGenVisitor javagen =
 			new JavaGenVisitor(this.model, createResolver(node));
-		final JClass javatype = convertTypeToJClass(type);
+		final JClass javatype = convertTypeToJClass(node.type);
 		final JMethod impl = klass.method(JMod.PROTECTED, javatype, "_get");
 
 		final JBlock body = impl.body();
 		final JVar format_ = body.decl(this.model.ref(TypeString.class), "format",
-					       format.accept(javagen));
+					       node.format.accept(javagen));
 		final JVar offset_ = body.decl(this.model.ref(TypeInt.class), "offset",
-					       offset.accept(javagen));
+					       node.offset.accept(javagen));
 		final JClass bitform_class = this.model.ref(BitForm.class);
 		final JVar theformat = body.decl(bitform_class, "theformat");
 		final JTryBlock tryblock = body._try();
@@ -296,15 +295,14 @@ public class JavaGen extends ASTVisitor<JDefinedClass> {
 		};
 	}
 
-	public JMethod exprFunction(JDefinedClass klass, ASTNode node,
-				    Type type, Expression expr)
+	public JMethod exprFunction(JDefinedClass klass, ASTNode.ExprParam node)
 	{
-		final JClass javatype = convertTypeToJClass(type);
+		final JClass javatype = convertTypeToJClass(node.type);
 		final JMethod impl = klass.method(JMod.PROTECTED, javatype, "_get");
 		final JavaGenVisitor javagen =
 			new JavaGenVisitor(this.model, createResolver(node));
-		JExpression value = expr.accept(javagen);
-		if (type != null)
+		JExpression value = node.expr.accept(javagen);
+		if (node.type != null)
 			value = JExpr._new(javatype).invoke("make").arg(value);
 		impl.body()._return(value);
 		return impl;
