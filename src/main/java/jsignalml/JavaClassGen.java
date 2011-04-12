@@ -29,8 +29,8 @@ import com.sun.codemodel.JClassAlreadyExistsException;
 import com.sun.codemodel.writer.SingleStreamCodeWriter;
 import com.sun.codemodel.writer.FileCodeWriter;
 
-public class JavaGen extends ASTVisitor<JDefinedClass> {
-	public static final Logger log = new Logger(JavaGen.class);
+public class JavaClassGen extends ASTVisitor<JDefinedClass> {
+	public static final Logger log = new Logger(JavaClassGen.class);
 
 	public static final String PREFIX = ""; //"_jsignalml_";
 	static String makeIdentifier(String name)
@@ -84,7 +84,7 @@ public class JavaGen extends ASTVisitor<JDefinedClass> {
 		Metadata(JDefinedClass klass, String method_name)
 		{
 			final JMethod register_params =
-				klass.method(JMod.PUBLIC, JavaGen.this.model.VOID, method_name);
+				klass.method(JMod.PUBLIC, JavaClassGen.this.model.VOID, method_name);
 			this.create_params = register_params.body();
 		}
 
@@ -119,7 +119,7 @@ public class JavaGen extends ASTVisitor<JDefinedClass> {
 		{
 			super(klass, "createIfParams");
 			final JMethod else_params =
-				klass.method(JMod.PUBLIC, JavaGen.this.model.VOID,
+				klass.method(JMod.PUBLIC, JavaClassGen.this.model.VOID,
 					     "createElseParams");
 			this.else_params = else_params.body();
 
@@ -254,8 +254,8 @@ public class JavaGen extends ASTVisitor<JDefinedClass> {
 
 		final JMethod readfunc = readFunction(klass, node, node.type);
 
-		final JavaGenVisitor javagen =
-			new JavaGenVisitor(this.model, createResolver(node));
+		final JavaExprGen javagen =
+			new JavaExprGen(this.model, createResolver(node));
 		final JClass javatype = convertTypeToJClass(node.type);
 		final JMethod impl = klass.method(JMod.PROTECTED, javatype, "_get");
 
@@ -277,15 +277,15 @@ public class JavaGen extends ASTVisitor<JDefinedClass> {
 		return impl;
 	}
 
-	public JavaGenVisitor.JavaNameResolver createResolver(final ASTNode start)
+	public JavaExprGen.JavaNameResolver createResolver(final ASTNode start)
 	{
-		return new JavaGenVisitor.JavaNameResolver() {
+		return new JavaExprGen.JavaNameResolver() {
 			@Override
 			public JInvocation lookup(String id)
 			{
 				final ASTNode target = start.find(id);
 				if (target instanceof ASTNode.BuiltinFunction) {
-					final JClass klass = JavaGen.this.model.ref(Builtins.class);
+					final JClass klass = JavaClassGen.this.model.ref(Builtins.class);
 					final JInvocation impl_inv = klass.staticInvoke(id);
 					return impl_inv;
 				} else {
@@ -299,8 +299,8 @@ public class JavaGen extends ASTVisitor<JDefinedClass> {
 	{
 		final JClass javatype = convertTypeToJClass(node.type);
 		final JMethod impl = klass.method(JMod.PROTECTED, javatype, "_get");
-		final JavaGenVisitor javagen =
-			new JavaGenVisitor(this.model, createResolver(node));
+		final JavaExprGen javagen =
+			new JavaExprGen(this.model, createResolver(node));
 		JExpression value = node.expr.accept(javagen);
 		if (node.type != null)
 			value = JExpr._new(javatype).invoke("make").arg(value);
@@ -446,8 +446,8 @@ public class JavaGen extends ASTVisitor<JDefinedClass> {
 	{
 		final JType list_type = this.model.ref(TypeList.class);
 		final JMethod sequence = klass.method(JMod.PROTECTED, list_type, "getSequence");
-		final JavaGenVisitor javagen =
-			new JavaGenVisitor(this.model, createResolver(node));
+		final JavaExprGen javagen =
+			new JavaExprGen(this.model, createResolver(node));
 		final JVar range = sequence.body().decl(list_type, "range",
 							node.sequence.accept(javagen));
 		sequence.body()._return(range);
@@ -517,8 +517,8 @@ public class JavaGen extends ASTVisitor<JDefinedClass> {
 	{
 		final JType type = this.model.ref(Type.class);
 		final JMethod condition = klass.method(JMod.PUBLIC, type, "getCondition");
-		final JavaGenVisitor javagen =
-			new JavaGenVisitor(this.model, createResolver(node));
+		final JavaExprGen javagen =
+			new JavaExprGen(this.model, createResolver(node));
 		final JVar test = condition.body().decl(type, "test",
 						       node.condition.accept(javagen));
 		condition.body()._return(test);
@@ -595,7 +595,7 @@ public class JavaGen extends ASTVisitor<JDefinedClass> {
 		final NameCheck check = new NameCheck();
 		signalml.accept(check, null);
 
-		final JavaGen gen = new JavaGen();
+		final JavaClassGen gen = new JavaClassGen();
 		signalml.accept(gen, null);
 		gen.write(System.out);
 		gen.write(outputdir);

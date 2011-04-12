@@ -325,7 +325,7 @@ public class CodecParser {
 		codec.accept(check, null);
 		log.info("-- name checking is done --");
 
-		final JavaGen gen = new JavaGen();
+		final JavaClassGen gen = new JavaClassGen();
 		codec.accept(gen, null);
 		log.info("-- java has been generated --");
 		gen.write(System.out);

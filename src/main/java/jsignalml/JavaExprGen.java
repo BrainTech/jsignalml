@@ -14,20 +14,20 @@ import com.sun.codemodel.JOp;
 /**
  * Create JExpression representations of Expressions.
  */
-public class JavaGenVisitor extends ExpressionVisitor<JExpression> {
+public class JavaExprGen extends ExpressionVisitor<JExpression> {
 
 	final JCodeModel codemodel;
 	final JavaNameResolver context;
 
-	JavaGenVisitor(JCodeModel codemodel, JavaNameResolver context)
+	JavaExprGen(JCodeModel codemodel, JavaNameResolver context)
 	{
 		this.codemodel = codemodel;
 		this.context = context;
 	}
 
-	JavaGenVisitor(ASTNode context)
+	JavaExprGen(ASTNode context)
 	{
-		this(new JCodeModel(), new JavaGen().createResolver(context));
+		this(new JCodeModel(), new JavaClassGen().createResolver(context));
 	}
 
 	public interface JavaNameResolver {
