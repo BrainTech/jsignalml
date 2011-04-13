@@ -55,7 +55,7 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 	@Override
 	public JDefinedClass visit(ASTNode.Signalml node, JDefinedClass dummy)
 	{
-		log.info("visit(%s, %s)", node, dummy);
+		log.info("visit((Signalml) %s, %s)", node, dummy);
 		assert dummy == null;
 
 		final JDefinedClass klass;
@@ -213,6 +213,7 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 	@Override
 	public JDefinedClass visit(ASTNode.ExprParam node, JDefinedClass klass)
 	{
+		log.info("visit((ExprParam) %s, %s)", node, klass);
 		assert klass != null;
 		final JDefinedClass nested = paramClass(klass, node);
 		exprFunction(nested, node);
@@ -223,6 +224,7 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 	@Override
 	public JDefinedClass visit(ASTNode.BinaryParam node, JDefinedClass klass)
 	{
+		log.info("visit((BinaryParam) %s, %s)", node, klass);
 		assert klass != null;
 		JDefinedClass nested = paramClass(klass, node);
 		readParamFunction(nested, node);
@@ -333,6 +335,7 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 	@Override
 	public JDefinedClass visit(ASTNode.FileHandle node, JDefinedClass parent)
 	{
+		log.info("visit((FileHandle) %s, %s)", node, parent);
 		final JDefinedClass klass = this.fileClass(node, parent);
 		getterMethod(parent, node.id, klass);
 		return klass;
@@ -395,6 +398,7 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 	@Override
 	public JDefinedClass visit(ASTNode.Itername node, JDefinedClass klass)
 	{
+		log.info("visit((Itername) %s, %s)", node, klass);
 		iternameGetter(node, klass);
 		return klass;
 	}
@@ -415,6 +419,7 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 	@Override
 	public JDefinedClass visit(ASTNode.ForLoop node, JDefinedClass parent)
 	{
+		log.info("visit((ForLoop) %s, %s)", node, parent);
 		final JDefinedClass outer = outerLoopClass(node, parent);
 		sequenceMethod(outer, node);
 		final JDefinedClass inner = loopClass(node, outer);
@@ -488,6 +493,7 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 	@Override
 	public JDefinedClass visit(ASTNode.Conditional node, JDefinedClass parent)
 	{
+		log.info("visit((Conditional) %s, %s)", node, parent);
 		final JDefinedClass klass = conditionalClass(node, parent);
 		conditionMethod(klass, node);
 		getterMethod(parent, node.id, klass);
@@ -529,6 +535,7 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 	@Override
 	public JDefinedClass visit(ASTNode.ElseBranch node, JDefinedClass parent)
 	{
+		log.info("visit((ElseBranch) %s, %s)", node, parent);
 		final JDefinedClass klass = elseBranchClass(node, parent);
 		return klass;
 	}
