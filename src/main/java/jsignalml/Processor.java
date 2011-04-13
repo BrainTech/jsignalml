@@ -149,9 +149,7 @@ public class Processor {
 
 			try {
 				final Type type = expr.accept(new TypeVisitor());
-				System.out.format("type: %s\n",
-						  type == null ? "unknown"
-						  : type.getClass().getSimpleName());
+				System.out.format("type: %s\n", Type.typename(type) );
 			} catch (ExpressionFault e) {
 				log.exception("type checking", e);
 			}

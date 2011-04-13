@@ -399,7 +399,7 @@ public abstract class ASTNode {
 		public String toString()
 		{
 			return format("ASTNode.Itername %s:%s",
-				      id, type.getClass().getSimpleName());
+				      id, Type.typename(type));
 		}
 
 		@Override

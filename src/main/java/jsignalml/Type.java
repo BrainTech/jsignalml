@@ -355,4 +355,9 @@ public abstract class Type implements Comparable<Type> {
 		registerType("list", new TypeList());
 		registerType("map", new TypeMap());
 	}
+
+	public static String typename(Type type) {
+		return type == null ? "unknown"
+			: type.getClass().getSimpleName();
+	}
 }
