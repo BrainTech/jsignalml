@@ -241,67 +241,67 @@ public class TestSequenceOps {
 	@Test public void n_eval_string() throws Exception
 	{
 		equal("'string'!='string'", 0);
-		equal("'abecdef'!='abecde'",1);
+		equal("'abecdef'!='abecde'", 1);
 	}
 	@Test public void eval_list() throws Exception
 	{
 		equal("[1,2,3,4,5]==[1,2,3,4,5]", 1);
-		equal("[1,2,3,4,5]==[1,2,3,4]",0);
+		equal("[1,2,3,4,5]==[1,2,3,4]", 0);
 	}
 
 	@Test public void n_eval_list() throws Exception
 	{
 		equal("[1,2,3]!=[1,2,3]", 0);
-		equal("[1,2,3]!=[1,2,3,4]",1);
+		equal("[1,2,3]!=[1,2,3,4]", 1);
 	}
 	@Test public void greater_string() throws Exception
 	{
 		equal("'string'>'strinG'", 1);
 		equal("'strin'>'strinG'", 0);
-		equal("'a'>'b'",0);
-		equal("'ą'>'a'",1);
+		equal("'a'>'b'", 0);
+		equal("'ą'>'a'", 1);
 	}
 	@Test(expected=java.lang.AssertionError.class)
 	public void greater_string_invalid() throws Exception
 	{
-		equal("'strin'>'strinG'",1);
+		equal("'strin'>'strinG'", 1);
 	}
 	@Test public void lesser_string() throws Exception
 	{
 		equal("'string'<'strinG'", 0);
 		equal("'strin'<'strinG'", 1);
-		equal("'a'<'b'",1);
-		equal("'ą'<'a'",0);
+		equal("'a'<'b'", 1);
+		equal("'ą'<'a'", 0);
 	}
 	@Test(expected=java.lang.AssertionError.class)
 	public void lesser_string_invalid() throws Exception
 	{
-		equal("'strin'<'strinG'",0);
+		equal("'strin'<'strinG'", 0);
 	}
 	@Test public void greater_equal_string() throws Exception
 	{
 		equal("'string'>='strinG'", 1);
 		equal("'strin'>='strinG'", 0);
-		equal("'a'>='b'",0);
-		equal("'ą'>='a'",1);
-		equal("'a'>='a'",1);
-		equal("'b'>='a'",1);
+		equal("'a'>='b'", 0);
+		equal("'ą'>='a'", 1);
+		equal("'a'>='a'", 1);
+		equal("'b'>='a'", 1);
 	}
 	@Test(expected=java.lang.AssertionError.class)
 	public void greater_equal_string_invalid() throws Exception
 	{
-		equal("'strin'>='strinG'",1);
-		equal("'a'>='ala'",1);
-		equal("'a'>='a'",0);
+		equal("'strin'>='strinG'", 1);
+		equal("'a'>='ala'", 1);
+		equal("'a'>='a'", 0);
 	}
 	@Test public void lesser_equal_string() throws Exception
 	{
 		equal("'string'<='strinG'", 0);
 		equal("'strin'<='strinG'", 1);
-		equal("'a'<='b'",1);
-		equal("'ą'<='a'",0);
-		equal("'a'<='a'",1);
-		equal("'b'<='a'",0);
+		equal("'a'<='b'", 1);
+		equal("'ą'<='a'", 0);
+		equal("'a'<='a'", 1);
+		equal("'b'<='a'", 0);
 	}
 	@Test(expected=java.lang.AssertionError.class)
 	public void lesser_equal_string_invalid() throws Exception
@@ -314,119 +314,119 @@ public class TestSequenceOps {
 	{
 		equal("[1,2,3,4,6]>[1,2,3,4,5]", 1);
 		equal("[1,2,3,4]>[1,2,3,4,5]", 0);
-		equal("[1]>[2]",0);
+		equal("[1]>[2]", 0);
 	}
 	@Test(expected=java.lang.AssertionError.class)
 	public void greater_list_invalid() throws Exception
 	{
-		equal("[1,2,3,4]>[1,2,3,4,5]",1);
+		equal("[1,2,3,4]>[1,2,3,4,5]", 1);
 	}
 	@Test public void lesser_list() throws Exception
 	{
 		equal("[1,2,3,4,6]<[1,2,3,4,5]", 0);
 		equal("[1,2,3,4]<[1,2,3,4,5]", 1);
-		equal("[1]<[2]",1);
+		equal("[1]<[2]", 1);
 	}
 	@Test(expected=java.lang.AssertionError.class)
 	public void lesser_list_invalid() throws Exception
 	{
-		equal("[1,2,3,4]<[1,2,3,4,5]",0);
+		equal("[1,2,3,4]<[1,2,3,4,5]", 0);
 	}
 	@Test public void greater_equal_list() throws Exception
 	{
 		equal("[1,2,3,4,6]>=[1,2,3,4,5]", 1);
 		equal("[1,2,3,4]>=[1,2,3,4,5]", 0);
-		equal("[1]>=[2]",0);
-		equal("[1]>=[1]",1);
-		equal("[2]>=[1]",1);
+		equal("[1]>=[2]", 0);
+		equal("[1]>=[1]", 1);
+		equal("[2]>=[1]", 1);
 	}
 	@Test(expected=java.lang.AssertionError.class)
 	public void greater_equal_list_invalid() throws Exception
 	{
-		equal("[1,2,3,4]>=[1,2,3,4,5]",1);
-		equal("[1]>=[1,2,3]",1);
-		equal("[1]>=[1]",0);
+		equal("[1,2,3,4]>=[1,2,3,4,5]", 1);
+		equal("[1]>=[1,2,3]", 1);
+		equal("[1]>=[1]", 0);
 	}
 	@Test public void lesser_equal_list() throws Exception
 	{
 		equal("[1,2,3,4,6]<=[1,2,3,4,5]", 0);
 		equal("[1,2,3,4]<=[1,2,3,4,5]", 1);
-		equal("[1]<=[2]",1);
-		equal("[1]<=[1]",1);
-		equal("[2]<=[1]",0);
+		equal("[1]<=[2]", 1);
+		equal("[1]<=[1]", 1);
+		equal("[2]<=[1]", 0);
 	}
 	@Test(expected=java.lang.AssertionError.class)
 	public void lesser_equal_list_invalid() throws Exception
 	{
-		equal("[1,2,3,4]<=[1,2,3,4,5]",0);
-		equal("[1]<=[1,2,3]",0);
+		equal("[1,2,3,4]<=[1,2,3,4,5]", 0);
+		equal("[1]<=[1,2,3]", 0);
 		equal("[1]<=[1]",0);
 	}
 	@Test public void multiplication_list() throws Exception
 	{
-		listEqual("[1,2]*3",1,2,1,2,1,2);
-		listEqual("[1]*4",1,1,1,1);
+		listEqual("[1,2]*3", 1,2,1,2,1,2);
+		listEqual("[1]*4", 1,1,1,1);
 	}
 	@Test public void multiplication_string() throws Exception
 	{
-		equal("'a'*5","'aaaaa'");
-		equal("'asia'*3","'asiaasiaasia'");
+		equal("'a'*5", "aaaaa");
+		equal("'asia'*3", "asiaasiaasia");
 	}
 	@Test public void multiplication_list_commutativity() throws Exception
 	{
-		listEqual("3*[1,2]",1,2,1,2);
-		listEqual("3*[3]",3,3,3);
+		listEqual("3*[1,2]", 1,2,1,2,1,2);
+		listEqual("3*[3]", 3,3,3);
 	}
 	@Test public void multiplication_string_commutativity() throws Exception
 	{
-		equal("3*'asia'","'asiaasiaasia'");
-		equal("5*'a'","'aaaaa'");
+		equal("3*'asia'", "asiaasiaasia");
+		equal("5*'a'", "aaaaa");
 	}
 	@Test public void addition_list() throws Exception
 	{
-		listEqual("[1,2,3]+[4,5]",1,2,3,4,5);
-		listEqual("[4,5]+[1,2,3]",4,5,1,2,3);
+		listEqual("[1,2,3]+[4,5]", 1,2,3,4,5);
+		listEqual("[4,5]+[1,2,3]", 4,5,1,2,3);
 	}
 	@Test public void addition_string() throws Exception
 	{
-		equal("'gugu'+'bubu'","'gugububu'");
-		equal("'bubu'+'gugu'","'bubugugu'");
+		equal("'gugu'+'bubu'", "gugububu");
+		equal("'bubu'+'gugu'", "bubugugu");
 	}
 	@Test public void and_string() throws Exception
 	{
-		equal("'gugu' and 'bubu'","'bubu'");
+		equal("'gugu' and 'bubu'", "bubu");
 	}
 	@Test public void and_string_1() throws Exception
 	{
-		equal("'' and ''","''");
+		equal("'' and ''", "");
 	}
 	@Test public void and_string_2() throws Exception
 	{
-		equal("'' and 'bubu'","''");
+		equal("'' and 'bubu'", "");
 	}
 	@Test public void and_string_3() throws Exception
 	{
-		equal("'bubu' and ''","''");
+		equal("'bubu' and ''", "");
 	}
 	@Test public void or_string() throws Exception
 	{
-		equal("'gugu' or 'bubu'","'gugu'");
+		equal("'gugu' or 'bubu'", "gugu");
 	}
 	@Test public void or_string_1() throws Exception
 	{
-		equal("'gugu' or ''","'gugu'");
+		equal("'gugu' or ''", "gugu");
 	}
 	@Test public void or_string_2() throws Exception
 	{
-		equal("'' or 'bubu'","'bubu'");
+		equal("'' or 'bubu'", "bubu");
 	}
 	@Test public void or_string_3() throws Exception
 	{
-		equal("'' or ' '","' '");
+		equal("'' or ' '", " ");
 	}
 	@Test public void or_string_4() throws Exception
 	{
-		equal("'' or ''","''");
+		equal("'' or ''", "");
 	}
 	@Test public void and_list() throws Exception
 	{
@@ -434,34 +434,34 @@ public class TestSequenceOps {
 	}
 	@Test public void and_list_1() throws Exception
 	{
-		equal("[] and []","[]");
+		listEqual("[] and []");
 	}
 	@Test public void and_list_2() throws Exception
 	{
-		equal("[] and [1,2,3]","[]");
+		listEqual("[] and [1,2,3]");
 	}
 	@Test public void and_list_3() throws Exception
 	{
-		equal("[1,2,3] and []","[]");
+		listEqual("[1,2,3] and []");
 	}
 	@Test public void or_list() throws Exception
 	{
-		equal("[1,2,3,4] or [5,6,7]","[1,2,3,4]");
+		listEqual("[1,2,3,4] or [5,6,7]", 1,2,3,4);
 	}
 	@Test public void or_list_1() throws Exception
 	{
-		equal("[1,2,3,4] or []","[1,2,3,4]");
+		listEqual("[1,2,3,4] or []", 1,2,3,4);
 	}
 	@Test public void or_list_2() throws Exception
 	{
-		listEqual("[] or [1,2,3]",1,2,3);
+		listEqual("[] or [1,2,3]", 1,2,3);
 	}
 	@Test public void or_list_3() throws Exception
 	{
-		equal("[] or []","[]");
+		listEqual("[] or []");
 	}
 	@Test public void or_list_4() throws Exception
 	{
-		equal("[] or [1]","[1]");
+		listEqual("[] or [1]", 1);
 	}
 }

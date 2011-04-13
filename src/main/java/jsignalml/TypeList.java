@@ -68,18 +68,6 @@ public class TypeList extends Type implements Iterable<Type> {
 	}
 
 	@Override
-	public Type binaryOp(BinaryOp op, TypeInt other)
-		throws ExpressionFault.TypeError
-	{
-		switch (op) {
-		case MUL:
-			// TODO
-		default:
-			throw new ExpressionFault.TypeError();
-		}
-	}
-
-	@Override
 	public Type binaryOp(BinaryOp op, TypeFloat other)
 		throws ExpressionFault.TypeError
 	{
