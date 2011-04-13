@@ -2,6 +2,7 @@ package jsignalml;
 
 import org.apache.commons.lang.StringUtils;
 import java.math.BigInteger;
+import java.util.List;
 
 public class Builtins extends ASTNode {
 	static final Logger log = new Logger(Builtins.class);
@@ -17,26 +18,52 @@ public class Builtins extends ASTNode {
 		super(null, "builtins");
 	}
 
-	public static TypeInt factorial(TypeInt x)
-	{
-		BigInteger val = x.getValue();
-		if(val.compareTo(BigInteger.ZERO) < 0)
-			throw new ExpressionFault.ValueError("argument cannot be negative");
+	public static class factorial extends TypeObject {
+		public static TypeInt call(TypeInt x)
+		{
+			BigInteger val = x.getValue();
+			if(val.compareTo(BigInteger.ZERO) < 0)
+				throw new ExpressionFault.ValueError("argument cannot be negative");
 
-		BigInteger ret = BigInteger.valueOf(1);
-		while(val.compareTo(BigInteger.ZERO) > 0) {
-			ret = ret.multiply(val);
-			val = val.subtract(BigInteger.ONE);
+			BigInteger ret = BigInteger.valueOf(1);
+			while(val.compareTo(BigInteger.ZERO) > 0) {
+				ret = ret.multiply(val);
+				val = val.subtract(BigInteger.ONE);
+			}
+
+			return new TypeInt(ret);
 		}
 
-		return new TypeInt(ret);
+		@Override
+		public TypeInt call(List<Type> args)
+		{
+			if(args.size() != 1)
+				throw new ExpressionFault.ArgMismatch(1, args.size());
+			return call((TypeInt)args.get(0));
+		}
 	}
 
-	public static TypeString strip(TypeString x)
-	{
-		String val = x.getValue();
-		return new TypeString(StringUtils.strip(val));
+	private static TypeObject _factorial = new factorial();
+	public static TypeObject factorial(){ return _factorial; }
+
+	public static class strip extends TypeObject {
+		public static TypeString call(TypeString x)
+		{
+			String val = x.getValue();
+			return new TypeString(StringUtils.strip(val));
+		}
+
+		@Override
+		public TypeString call(List<Type> args)
+		{
+			if(args.size() != 1)
+				throw new ExpressionFault.ArgMismatch(1, args.size());
+			return call((TypeString)args.get(0));
+		}
 	}
+
+	private static TypeObject _strip = new strip();
+	public static TypeObject strip(){ return _strip; }
 
 	public ASTNode.BuiltinFunction lookup(String name)
 	{
