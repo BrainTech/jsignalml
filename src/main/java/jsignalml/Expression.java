@@ -108,7 +108,7 @@ public abstract class Expression {
 		{
 			final String what;
 			if (this.what instanceof Ref)
-				what = ((Ref)this.what).toString();
+				what = this.what.toString();
 			else
 				what = "(" + this.what.toString() + ")";
 			return what + "(" + StringUtils.join(this.args, ", ") + ")";

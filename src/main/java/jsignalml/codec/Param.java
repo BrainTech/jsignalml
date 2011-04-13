@@ -1,9 +1,7 @@
 package jsignalml.codec;
 
 import jsignalml.Type;
-import jsignalml.SyntaxError;
 import jsignalml.ContextVisitor;
-import java.util.Map;
 
 public abstract class Param<T extends Type> extends Context {
 	T cache = null;
@@ -20,7 +18,6 @@ public abstract class Param<T extends Type> extends Context {
 	{
 		return v.visit(this, name, data);
 	}
-
 
 	@Override
 	public void createParams()

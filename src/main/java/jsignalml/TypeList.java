@@ -64,7 +64,7 @@ public class TypeList extends Type implements Iterable<Type> {
 
 	@Override
 	public boolean isTrue() {
-		return this.value.isEmpty();
+		return this.value.isEmpty(); // XXX: add test and fix
 	}
 
 	@Override
