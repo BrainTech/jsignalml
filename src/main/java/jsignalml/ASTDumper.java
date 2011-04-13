@@ -19,6 +19,12 @@ public class ASTDumper extends ASTVisitor<Integer> {
 		return level + 1;
 	}
 
+	private int attrib(int level, String name, Object object)
+	{
+		this.dumper.put(level + 1, "* %s=%s\n", name, object);
+		return level + 1;
+	}
+
 	public static String dump(ASTNode node)
 	{
 		final ASTDumper dumper = new ASTDumper();
@@ -48,22 +54,22 @@ public class ASTDumper extends ASTVisitor<Integer> {
 	public Integer visit(ASTNode.BinaryParam node, Integer parent)
 	{
 		this.header(parent, node, "param (read binary)", "");
-		this.dumper.put(parent + 1, "* format=%s\n", node.format);
-		return this.dumper.put(parent + 1, "* offset=%s\n", node.offset);
+		this.attrib(parent, "format", node.format);
+		return this.attrib(parent, "offset", node.offset);
 	}
 
 	@Override
 	public Integer visit(ASTNode.ExprParam node, Integer parent)
 	{
 		this.header(parent, node, "param (expression)", "");
-		return this.dumper.put(parent + 1, "* expression=%s\n", node.expr);
+		return this.attrib(parent, "expression", node.expr);
 	}
 
 	@Override
 	public Integer visit(ASTNode.Assert node, Integer parent)
 	{
 		this.header(parent, node, "assert", "");
-		return this.dumper.put(parent + 1, "* expression=%s\n", node.expr);
+		return this.attrib(parent, "expression", node.expr);
 	}
 
 	@Override
@@ -95,12 +101,13 @@ public class ASTDumper extends ASTVisitor<Integer> {
 	public Integer visit(ASTNode.DataHandle node, Integer parent)
 	{
 		this.header(parent, node, "data", "format=%s", node.format);
-		return this.dumper.put(parent + 1, "* mapping=%s\n", node.mapping);
+		return this.attrib(parent, "mapping", node.mapping);
 	}
 
 	@Override
 	public Integer visit(ASTNode.Positional node, Integer parent)
 	{
-		return this.header(parent, node, "arg", "type=%s", node.type.getClass());
+		return this.header(parent, node, "arg", "type=%s",
+				   node.type.getClass());
 	}
 }
