@@ -64,19 +64,7 @@ public class TypeList extends Type implements Iterable<Type> {
 
 	@Override
 	public boolean isTrue() {
-		return this.value.isEmpty(); // XXX: add test and fix
-	}
-
-	@Override
-	public Type binaryOp(BinaryOp op, TypeInt other)
-		throws ExpressionFault.TypeError
-	{
-		switch (op) {
-		case MUL:
-			// TODO
-		default:
-			throw new ExpressionFault.TypeError();
-		}
+		return !this.value.isEmpty();
 	}
 
 	@Override
@@ -258,8 +246,7 @@ public class TypeList extends Type implements Iterable<Type> {
 		List<Type> ans = util.newArrayList(newsize);
 		int i = -1; // value will not be ever used, I think
 		try {
-			int j;
-			for(i=start_, j=0; j<newsize; i+=step_, j++)
+			for(i=start_; step_>0 ? i<stop_ : i>stop_; i+=step_)
 				ans.add(this.value.get(i));
 		} catch (IndexOutOfBoundsException e) {
 			log.exception("this.value = %s, stop=%s, start=%s", e, this.value,
