@@ -111,6 +111,20 @@ public class ExpressionFault extends RuntimeException {
 	 * A wrong number of arguments was used.
 	 */
 	public static class ArgMismatch extends ExpressionFault {
+		final int expected, present;
+		@Deprecated public ArgMismatch() {
+			this(-1, -1);
+		}
+
+		public ArgMismatch(int expected, int present) {
+			this.expected = expected;
+			this.present = present;
+		}
+
+		public String getMessage() {
+			return format("wrong number of arguments, %d expected, %d actually present",
+				      expected, present);
+		}
 	}
 
 	/**

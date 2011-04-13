@@ -216,7 +216,10 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 		log.info("visit((ExprParam) %s, %s)", node, klass);
 		assert klass != null;
 		final JDefinedClass nested = paramClass(klass, node);
-		exprFunction(nested, node);
+		if(node.args.isEmpty())
+			getExprMethod(nested, node);
+		else
+			callExprMethod(nested, node);
 		getterMethod(klass, node.id, nested);
 		return nested;
 	}
@@ -235,7 +238,13 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 	JDefinedClass paramClass(JDefinedClass parent, ASTNode.Param node)
 	{
 		final JClass typeref = convertTypeToJClass(node.type);
-		final JClass param_class = this.model.ref(jsignalml.codec.Param.class).narrow(typeref);
+
+		final Class<? extends jsignalml.codec.Context> klass_type;
+		if(node.args.isEmpty())
+			klass_type = jsignalml.codec.Param.class;
+		else
+			klass_type = jsignalml.codec.FunctionParam.class;
+		final JClass param_class = this.model.ref(klass_type).narrow(typeref);
 		final JDefinedClass nested;
 		try {
 			nested = parent._class(makeParamClass(node.id));
@@ -250,7 +259,6 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 		return nested;
 	}
 
-
 	public JMethod readParamFunction(JDefinedClass klass, ASTNode.BinaryParam node)
 	{
 		assert klass != null;
@@ -258,7 +266,7 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 		final JMethod readfunc = readFunction(klass, node, node.type);
 
 		final JavaExprGen javagen =
-			new JavaExprGen(this.model, createResolver(node));
+			new JavaExprGen(this.model, createResolver(node, null));
 		final JClass javatype = convertTypeToJClass(node.type);
 		final JMethod impl = klass.method(JMod.PROTECTED, javatype, "_get");
 
@@ -280,17 +288,23 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 		return impl;
 	}
 
-	public JavaExprGen.JavaNameResolver createResolver(final ASTNode start)
+	public JavaExprGen.JavaNameResolver createResolver(final ASTNode start,
+							   final List<JVar> locals)
 	{
 		return new JavaExprGen.JavaNameResolver() {
 			@Override
-			public JInvocation lookup(String id)
+			public JExpression lookup(String id)
 			{
+				if(locals != null)
+					for(JVar var: locals)
+						if(id.equals(var.name()))
+						   return var;
+
 				final ASTNode target = start.find(id);
 				if (target instanceof ASTNode.BuiltinFunction) {
-					final JClass klass = JavaClassGen.this.model.ref(Builtins.class);
-					final JInvocation impl_inv = klass.staticInvoke(id);
-					return impl_inv;
+					final JClass builtins =
+						JavaClassGen.this.model.ref(Builtins.class);
+					return builtins.staticInvoke(id);
 				} else {
 					return JExpr.invoke(makeGetter(id));
 				}
@@ -298,13 +312,53 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 		};
 	}
 
-	public JMethod exprFunction(JDefinedClass klass, ASTNode.ExprParam node)
+	public JMethod getExprMethod(JDefinedClass klass, ASTNode.ExprParam node)
 	{
 		final JClass javatype = convertTypeToJClass(node.type);
 		final JMethod impl = klass.method(JMod.PROTECTED, javatype, "_get");
 		final JavaExprGen javagen =
-			new JavaExprGen(this.model, createResolver(node));
+			new JavaExprGen(this.model, createResolver(node, null));
 		JExpression value = node.expr.accept(javagen);
+		if (node.type != null)
+			value = JExpr._new(javatype).invoke("make").arg(value);
+		impl.body()._return(value);
+		return impl;
+	}
+
+	public JMethod callExprMethod(JDefinedClass klass, ASTNode.ExprParam node)
+	{
+		final JClass javatype = convertTypeToJClass(node.type);
+		final JMethod impl = klass.method(JMod.PUBLIC, javatype, "call");
+
+		List<JVar> locals = util.newLinkedList();
+		for (ASTNode.Positional arg: node.args) {
+			JVar var = impl.param(convertTypeToJClass(arg.type), arg.id);
+			locals.add(var);
+		}
+
+		final JClass type_list = this.model.ref(List.class).narrow(Type.class);
+		final JMethod cast = klass.method(JMod.PUBLIC, javatype, "call");
+		final JVar cast_args = cast.param(type_list, "args");
+		final JBlock cast_body = cast.body();
+		final JClass ef_am = this.model.ref(ExpressionFault.ArgMismatch.class);
+		cast_body._if(cast_args.invoke("size").ne(JExpr.lit(locals.size())))
+			._then()
+			._throw(JExpr._new(ef_am)
+				.arg(cast_args.invoke("size"))
+				.arg(JExpr.lit(locals.size())));
+
+		final JInvocation subcall = JExpr._this().invoke("call");
+		int i = 0;
+		for (JVar arg: locals) {
+			final JExpression arg_i = cast_args.invoke("get").arg(JExpr.lit(i++));
+			subcall.arg(JExpr.cast(arg.type(), arg_i));
+		}
+		cast_body._return(subcall);
+		
+		final JavaExprGen javagen =
+			new JavaExprGen(this.model, createResolver(node, locals));
+		JExpression value = node.expr.accept(javagen);
+
 		if (node.type != null)
 			value = JExpr._new(javatype).invoke("make").arg(value);
 		impl.body()._return(value);
@@ -453,7 +507,7 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 		final JType list_type = this.model.ref(TypeList.class);
 		final JMethod sequence = klass.method(JMod.PROTECTED, list_type, "getSequence");
 		final JavaExprGen javagen =
-			new JavaExprGen(this.model, createResolver(node));
+			new JavaExprGen(this.model, createResolver(node, null));
 		final JVar range = sequence.body().decl(list_type, "range",
 							node.sequence.accept(javagen));
 		sequence.body()._return(range);
@@ -525,7 +579,7 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 		final JType type = this.model.ref(Type.class);
 		final JMethod condition = klass.method(JMod.PUBLIC, type, "getCondition");
 		final JavaExprGen javagen =
-			new JavaExprGen(this.model, createResolver(node));
+			new JavaExprGen(this.model, createResolver(node, null));
 		final JVar test = condition.body().decl(type, "test",
 						       node.condition.accept(javagen));
 		condition.body()._return(test);

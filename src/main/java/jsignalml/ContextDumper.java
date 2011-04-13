@@ -1,15 +1,16 @@
 package jsignalml;
 import jsignalml.codec.Context;
 import jsignalml.codec.Signalml;
-import jsignalml.codec.Param;
 import jsignalml.codec.OuterLoopClass;
 import jsignalml.codec.ConditionalClass;
+import jsignalml.codec.Param;
+import jsignalml.codec.FunctionParam;
 
 /**
  * Produces a human readable representation of the Context tree.
  */
-public class ContextDumper extends ContextVisitor<Integer> {
-	TreeDumper dumper = new TreeDumper();
+public class ContextDumper implements ContextVisitor<Integer> {
+	final TreeDumper dumper = new TreeDumper();
 
 	@Override public Integer visit(Signalml node, String name, Integer level)
 	{
@@ -32,11 +33,6 @@ public class ContextDumper extends ContextVisitor<Integer> {
 		return dumper.put(level, "%s => %s\n", name, node);
 	}
 
-	@Override public Integer visit(Param node, String name, Integer level)
-	{
-		return dumper.put(level, "%s => %s\n", name, node.get().repr());
-	}
-
 	@Override public Integer visit(ConditionalClass node, String name, Integer level)
 	{
 		return dumper.put(level, "%s => Condition is %s\n", name,
@@ -48,6 +44,16 @@ public class ContextDumper extends ContextVisitor<Integer> {
 	{
 		// do nothing
 		return level;
+	}
+
+	@Override public Integer visit(Param node, String name, Integer level)
+	{
+		return dumper.put(level, "%s => %s\n", name, node.get().repr());
+	}
+
+	@Override public Integer visit(FunctionParam node, String name, Integer level)
+	{
+		return dumper.put(level, "%s => %s\n", name, node.get().repr());
 	}
 
 	public static String dump(Context node)

@@ -27,15 +27,16 @@ public class JavaExprGen extends ExpressionVisitor<JExpression> {
 
 	JavaExprGen(ASTNode context)
 	{
-		this(new JCodeModel(), new JavaClassGen().createResolver(context));
+		this(new JCodeModel(), new JavaClassGen().createResolver(context, null));
 	}
 
 	public interface JavaNameResolver {
 		/**
-		 * Return a JInvocation which can be used to call
-		 * item named id.
+		 * Return a JExpression which can be used to call item named
+		 * id. In case of functions, the JExpression shall be a
+		 * JInvocation, to which args can be added.
 		 */
-		JInvocation lookup(String id);
+		JExpression lookup(String id);
 	}
 
 	static class NullResolver implements JavaNameResolver {
@@ -97,7 +98,7 @@ public class JavaExprGen extends ExpressionVisitor<JExpression> {
 	@Override
 	public JExpression visit(Expression.Call fun, JExpression what, List<JExpression> args)
 	{
- 		final JInvocation inv = (JInvocation) what;
+ 		final JInvocation inv = what.invoke("call");
 		for (JExpression arg: args)
 			inv.arg(arg);
 		return inv;

@@ -25,4 +25,13 @@
   <param id='requires_builtin_strip'>
     <expr>strip('aaa ')</expr>
   </param>
+
+  <param id='wrap_builtin_strip'>
+    <arg name='s' type='str' />
+    <expr>strip(s)</expr>
+  </param>
+
+  <param id='call_wrap_builtin_strip'>
+    <expr>wrap_builtin_strip(' bbb ')</expr>
+  </param>
 </signalml>

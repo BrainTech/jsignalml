@@ -2,6 +2,7 @@ package jsignalml;
 
 import java.util.Map;
 import java.util.List;
+import java.util.Arrays;
 import java.util.Iterator;
 import static java.lang.String.format;
 
@@ -290,9 +291,11 @@ public abstract class Type implements Comparable<Type> {
 
 	public Type call(List<Type> args)
 	{
-		if(args.isEmpty())
-			return this;
 		throw new ExpressionFault.TypeError();
+	}
+	public Type call(Type... args)
+	{
+		return this.call(Arrays.asList(args));
 	}
 
 	public abstract boolean isTrue();
