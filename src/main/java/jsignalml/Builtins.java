@@ -62,6 +62,25 @@ public class Builtins extends ASTNode {
 		}
 	}
 
+	private static TypeObject _trim = new trim();
+	public static TypeObject trim(){ return _trim; }
+
+	public static class trim extends TypeObject {
+		public static TypeString call(TypeString x)
+		{
+			String val = x.getValue();
+			return new TypeString(StringUtils.trim(val));
+		}
+
+		@Override
+		public TypeString call(List<Type> args)
+		{
+			if(args.size() != 1)
+				throw new ExpressionFault.ArgMismatch(1, args.size());
+			return call((TypeString)args.get(0));
+		}
+	}
+
 	private static TypeObject _strip = new strip();
 	public static TypeObject strip(){ return _strip; }
 
@@ -78,6 +97,11 @@ public class Builtins extends ASTNode {
 			function.arg("n", new TypeInt());
 			return function;
 		} else if (name.equals("strip")) {
+			ASTNode.BuiltinFunction function =
+				new ASTNode.BuiltinFunction(owner, name, new TypeString());
+			function.arg("s", new TypeString());
+			return function;
+		} else if (name.equals("trim")) {
 			ASTNode.BuiltinFunction function =
 				new ASTNode.BuiltinFunction(owner, name, new TypeString());
 			function.arg("s", new TypeString());
