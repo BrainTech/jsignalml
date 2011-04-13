@@ -213,8 +213,7 @@ public class TypeString extends Type {
 		StringBuilder ans = new StringBuilder();
 		int i = -1; // value will not be ever used, I think
 		try {
-			int j;
-			for(i=start_, j=0; j<newsize; i+=step_, j++)
+			for(i=start_; step_>0 ? i<stop_ : i>stop_ ; i+=step_)
 				ans.append(this.value.charAt(i));
 		} catch (IndexOutOfBoundsException e) {
 			log.exception("this.value = %s, stop=%s, start=%s", e, this.value,
