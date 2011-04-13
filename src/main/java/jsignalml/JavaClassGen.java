@@ -55,6 +55,7 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 	@Override
 	public JDefinedClass visit(ASTNode.Signalml node, JDefinedClass dummy)
 	{
+		log.info("visit(%s, %s)", node, dummy);
 		assert dummy == null;
 
 		final JDefinedClass klass;

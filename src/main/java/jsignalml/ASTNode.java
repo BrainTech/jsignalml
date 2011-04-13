@@ -82,6 +82,12 @@ public abstract class ASTNode {
 			super(new Builtins(), name);
 		}
 
+		@Override
+		public String toString()
+		{
+			return format("ASTNode.Signalml %s", this.id);
+		}
+
 		/**
 		 * Contrary to normal behaviour, parent is visited here to give
 		 * it a chance to perform its duties.
@@ -99,9 +105,10 @@ public abstract class ASTNode {
 			super(parent, name);
 		}
 
+		@Override
 		public String toString()
 		{
-			return format("ChannelSet %s", this.id);
+			return format("ASTNode.ChannelSet %s", id);
 		}
 
 		@Override
@@ -118,9 +125,10 @@ public abstract class ASTNode {
 			super(parent, name);
 		}
 
+		@Override
 		public String toString()
 		{
-			return format("Channel %s", this.id);
+			return format("ASTNode.Channel %s", id);
 		}
 
 		@Override
@@ -171,10 +179,11 @@ public abstract class ASTNode {
 			// TODO: test file type
 		}
 
+		@Override
 		public String toString()
 		{
-			return format("BinaryParam %s on %s format=%s offset=%s",
-			              this.id, this.handle, this.format, this.offset);
+			return format("ASTNode.BinaryParam %s on %s format=%s offset=%s",
+			              id, handle, format, offset);
 		}
 
 		@Override
@@ -193,9 +202,10 @@ public abstract class ASTNode {
 			this.expr = expr;
 		}
 
+		@Override
 		public String toString()
 		{
-			return format("ExprParam %s expr=%s", this.id, this.expr);
+			return format("ExprParam %s expr=%s", id, expr);
 		}
 
 		@Override
@@ -222,6 +232,12 @@ public abstract class ASTNode {
 		{
 			return new ASTNode.Positional(this, "n", new TypeInt());
 		}
+
+		@Override
+		public String toString()
+		{
+			return format("ASTNode.BuiltinFunction builtin.%s", id);
+		}
 	}
 
 	public static class Assert extends ASTNode {
@@ -237,9 +253,10 @@ public abstract class ASTNode {
 			this.expr = expr;
 		}
 
+		@Override
 		public String toString()
 		{
-			return format("Assert %s expr=%s", this.id, this.expr);
+			return format("ASTNode.Assert %s expr=%s", id, expr);
 		}
 
 		@Override
@@ -287,9 +304,10 @@ public abstract class ASTNode {
 			this.datas.add(data);
 		}
 
+		@Override
 		public String toString()
 		{
-			return format("FileHandle %s filename=%s", id, filename);
+			return format("ASTNode.FileHandle %s filename=%s", id, filename);
 		}
 
 		@Override
@@ -321,9 +339,10 @@ public abstract class ASTNode {
 			handle.addData(this);
 		}
 
+		@Override
 		public String toString()
 		{
-			return format("DataHandle id mapping=%s format=%s",
+			return format("ASTNode.DataHandle id mapping=%s format=%s",
 				      id, mapping, format);
 		}
 
@@ -353,6 +372,13 @@ public abstract class ASTNode {
 		}
 
 		@Override
+		public String toString()
+		{
+			return format("ASTNode.Positional %s:%s",
+				      id, type.getClass().getSimpleName());
+		}
+
+		@Override
 		public <T> T _accept(ASTVisitor<T> v, T data)
 		{
 			return v.visit(this, data);
@@ -367,6 +393,13 @@ public abstract class ASTNode {
 			assert parent instanceof ASTNode.ForLoop;
 
 			this.type = type;
+		}
+
+		@Override
+		public String toString()
+		{
+			return format("ASTNode.Itername %s:%s",
+				      id, type.getClass().getSimpleName());
 		}
 
 		@Override
@@ -391,6 +424,12 @@ public abstract class ASTNode {
 		}
 
 		@Override
+		public String toString()
+		{
+			return format("ASTNode.ForLoop seqeunce=%s", id, sequence);
+		}
+
+		@Override
 		public <T> T _accept(ASTVisitor<T> v, T data)
 		{
 			return v.visit(this, data);
@@ -411,6 +450,12 @@ public abstract class ASTNode {
 		}
 
 		@Override
+		public String toString()
+		{
+			return format("ASTNode.Conditional test=%s", id, condition);
+		}
+
+		@Override
 		public <T> T _accept(ASTVisitor<T> v, T data)
 		{
 			return v.visit(this, data);
@@ -428,6 +473,12 @@ public abstract class ASTNode {
 			if (ifparent.elsebranch != null)
 				throw new SyntaxError("cannot have more than one <else>");
 			ifparent.elsebranch = this;
+		}
+
+		@Override
+		public String toString()
+		{
+			return format("ASTNode.ElseBranch %s", id);
 		}
 
 		@Override
