@@ -6,8 +6,26 @@ import static org.junit.Assert.*;
 import static jsignalml.TestNumberOps.eval;
 import static jsignalml.TestNumberOps.equal;
 import static jsignalml.TestNumberOps.listEqual;
+import static jsignalml.TestNumberOps.verifyIsTrue;
 
 public class TestSequenceOps {
+
+	@Test public void string_veracity() throws Exception
+	{
+		verifyIsTrue("'a'", true);
+		verifyIsTrue("''", false);
+	}
+
+	@Test public void list_veracity() throws Exception
+	{
+		verifyIsTrue("[1]", true);
+		verifyIsTrue("[]", false);
+	}
+
+	@Test public void empty_string_false() throws Exception
+	{
+		verifyIsTrue("''", false);
+	}
 
 	@Test public void eval_index_string() throws Exception
 	{
