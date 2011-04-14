@@ -1,0 +1,106 @@
+<?xml version="1.0"?>
+<!DOCTYPE signalml SYSTEM "SignalML_2_0.dtd">
+<signalml>
+  <header>
+      <text_info>PE-EASYS</text_info>
+  </header>
+
+  <file type='binary' id='main'><!-- extension='*.d' -->
+     <param id='datatype_width'>
+        <expr>4</expr>
+     </param>
+     <param id='mapping' type='int'>
+        <arg type='int' name='sample_number' />
+        <arg type='int' name='channel_number' />
+        <expr>(number_of_channels * sample_number + channel_number) *
+                  datatype_width + 16 * data_offset
+        </expr>
+     </param>
+
+     <param id='signature'>
+        <format>'|S15'</format>
+        <offset>0</offset>
+     </param>
+     <param id='magic'>
+	 <expr>signature[:3]</expr>
+     </param>
+     <assert id='magic_ok'>
+         <expr>magic == "EAS"</expr>
+     </assert>
+
+     <param id='file_type'>
+	 <!-- D or R -->
+         <format>'|S1'</format>
+         <offset>15</offset>
+     </param>
+     <assert id='file_type_ok'>
+         <expr>file_type == "D"</expr>
+     </assert>
+
+     <param id='number_of_channels'>
+         <format>'&gt;i1'</format>
+         <offset>16</offset>
+     </param>
+
+     <param id='number_of_auxiliary_channels'>
+         <format>'&gt;i1'</format>
+         <offset>17</offset>
+     </param>
+
+     <param id='sampling_frequency' type='float' units='Hz'>
+         <expr>_sampling_frequency/100</expr>
+     </param>
+     <param id='_sampling_frequency'>
+         <format>'&gt;i2'</format>
+         <offset>18</offset>
+     </param>
+
+     <param id='number_of_samples'>
+         <format>'&gt;i4'</format>
+         <offset>20</offset>
+     </param>
+
+     <param id='data_validation_field'>
+	 <!-- flags ... -->
+         <format>'|i1'</format>
+         <offset>24</offset>
+     </param>
+
+     <param id='data_cell_size'>
+	 <expr>2**(data_validation_field &amp; 3 - 1)</expr>
+     </param>
+     <assert id='data_cell_size_ok'>
+	 <expr>(file_type == 'D' and data_cell_size == 2)
+	     or (file_type == 'R' and data_cell_size == 4)
+	 </expr>
+     </assert>
+
+     <!-- more 'flags' should follow -->
+
+     <param id='calibration_gain' type='float' units='μV'>
+         <expr>_calibration_gain/100</expr>
+     </param>
+     <param id='_calibration_gain'>
+         <format>'&gt;i1'</format>
+         <offset>25</offset>
+     </param>
+
+     <param id='data_org'>
+	 <!-- data offset -->
+         <format>'&gt;i2'</format>
+         <offset>28</offset>
+     </param>
+     <param id='data_offset'>
+	 <expr>data_org * 16</expr>
+     </param>
+
+     <param id='xhdr_org'>
+	 <!-- data offset -->
+         <format>'&gt;i2'</format>
+         <offset>30</offset>
+     </param>
+     <param id='extended_header_offset'>
+	 <expr>xhdr_org * 16</expr>
+     </param>
+  </file>
+</signalml>
