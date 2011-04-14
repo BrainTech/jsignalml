@@ -254,23 +254,35 @@ public class TestSequenceOps {
 	@Test public void eval_string() throws Exception
 	{
 		equal("'string'=='string'", 1);
-		equal("'abecdef'", "abecdef");
+		equal("'abecdef'== 'abecdef'", 1);
+		equal("'' == ''", 1);
+		equal("'' == 'aga'", 0);
+		equal("'aga' == ''", 0);
 	}
 	@Test public void n_eval_string() throws Exception
 	{
 		equal("'string'!='string'", 0);
 		equal("'abecdef'!='abecde'", 1);
+		equal("'aga' != ''", 1);
+		equal("'' != 'aga'", 1);
+		equal("'' != ''", 0);
 	}
 	@Test public void eval_list() throws Exception
 	{
 		equal("[1,2,3,4,5]==[1,2,3,4,5]", 1);
 		equal("[1,2,3,4,5]==[1,2,3,4]", 0);
+		equal("[] == [1,2]", 0);
+		equal("[1,2] == []", 0);
+		equal("[] == []", 1);
 	}
 
 	@Test public void n_eval_list() throws Exception
 	{
 		equal("[1,2,3]!=[1,2,3]", 0);
 		equal("[1,2,3]!=[1,2,3,4]", 1);
+		equal("[] != [1,2]", 1);
+		equal("[1,2] != []", 1);
+		equal("[] != []", 0);
 	}
 	@Test public void greater_string() throws Exception
 	{
@@ -384,31 +396,37 @@ public class TestSequenceOps {
 	{
 		listEqual("[1,2]*3", 1,2,1,2,1,2);
 		listEqual("[1]*4", 1,1,1,1);
+		listEqual("[1]*1",1);
 	}
 	@Test public void multiplication_string() throws Exception
 	{
 		equal("'a'*5", "aaaaa");
 		equal("'asia'*3", "asiaasiaasia");
+		equal("'asia'*1","asia");
 	}
 	@Test public void multiplication_list_commutativity() throws Exception
 	{
 		listEqual("3*[1,2]", 1,2,1,2,1,2);
 		listEqual("3*[3]", 3,3,3);
+		listEqual("1*[3]", 3);
 	}
 	@Test public void multiplication_string_commutativity() throws Exception
 	{
 		equal("3*'asia'", "asiaasiaasia");
-		equal("5*'a'", "aaaaa");
+		equal("5*'a'", "aaaaa");		
+		equal("1*'a'", "a");
 	}
 	@Test public void addition_list() throws Exception
 	{
 		listEqual("[1,2,3]+[4,5]", 1,2,3,4,5);
 		listEqual("[4,5]+[1,2,3]", 4,5,1,2,3);
+		listEqual("[1,2]+[]",1,2);
 	}
 	@Test public void addition_string() throws Exception
 	{
-		equal("'gugu'+'bubu'", "gugububu");
-		equal("'bubu'+'gugu'", "bubugugu");
+		equal("'gugu' + 'bubu'", "gugububu");
+		equal("'bubu' + 'gugu'", "bubugugu");
+		equal("'' + 'bubu'", "bubu");
 	}
 	@Test public void and_string() throws Exception
 	{
@@ -481,5 +499,83 @@ public class TestSequenceOps {
 	@Test public void or_list_4() throws Exception
 	{
 		listEqual("[] or [1]", 1);
+	}
+	@Test public void len_list() throws Exception
+	{
+		equal("len([1,2,3,4])", 4);
+		equal("len([])", 0);
+	}
+	@Test public void len_string() throws Exception
+	{
+		equal("len('gugu')", 4);
+		equal("len('')", 0);
+	}
+	@Test public void bool_list() throws Exception
+	{
+		equal("bool([1,2,3])", 0);
+		equal("bool([])", 1);
+	}
+	@Test public void bool_string() throws Exception
+	{
+		equal("bool('gugu')", 0);
+		equal("bool('')", 1);
+	}
+	@Test(expected=ExpressionFault.TypeError.class)
+	public void eval_keyerror_list_div() throws Exception
+	{
+		eval("[1,2] / 1");
+		eval("[1,2] / [1]");
+	}
+
+	@Test(expected=ExpressionFault.TypeError.class)
+	public void eval_keyerror_list_bin_and() throws Exception
+	{
+		eval("[1,2] & [1]");		
+		eval("[1,2] & 1");
+	}	
+	@Test(expected=ExpressionFault.TypeError.class)
+	public void eval_keyerror_string_div() throws Exception
+	{
+		eval("'asia' / 'a'");
+		eval("'asia' / 1");
+	}
+
+	@Test(expected=ExpressionFault.TypeError.class)
+	public void eval_keyerror_string_bin_or() throws Exception
+	{
+		eval("'asia' | 'a'");		
+		eval("'asia' | 1");
+	}	
+	@Test(expected=ExpressionFault.TypeError.class)
+	public void eval_keyerror_list_pow() throws Exception
+	{
+		eval("[1,2] ** 1");
+		eval("[1,2] ** [1]");
+	}
+
+	@Test(expected=ExpressionFault.TypeError.class)
+	public void eval_keyerror_list_bin_or() throws Exception
+	{
+		eval("[1,2] | [1]");		
+		eval("[1,2] | 1");
+	}	
+	@Test(expected=ExpressionFault.TypeError.class)
+	public void eval_keyerror_string_pow() throws Exception
+	{
+		eval("'asia' ** 'a'");
+		eval("'asia' ** 1");
+	}
+		
+	@Test(expected=ExpressionFault.TypeError.class)
+	public void eval_keyerror_string_modulo() throws Exception
+	{
+		eval("'asia' % 'a'");		
+		eval("'asia' % 1");
+	}
+	@Test(expected=ExpressionFault.TypeError.class)
+	public void eval_keyerror_list_modulo() throws Exception
+	{
+		eval("[1,2,3] % [1]");		
+		eval("[1,2,3] % 1");
 	}
 }
