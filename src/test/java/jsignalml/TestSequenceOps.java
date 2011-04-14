@@ -512,13 +512,13 @@ public class TestSequenceOps {
 	}
 	@Test public void bool_list() throws Exception
 	{
-		equal("bool([1,2,3])", 0);
-		equal("bool([])", 1);
+		equal("bool([1,2,3])", 1);
+		equal("bool([])", 0);
 	}
 	@Test public void bool_string() throws Exception
 	{
-		equal("bool('gugu')", 0);
-		equal("bool('')", 1);
+		equal("bool('gugu')", 1);
+		equal("bool('')", 0);
 	}
 	@Test(expected=ExpressionFault.TypeError.class)
 	public void eval_keyerror_list_div() throws Exception

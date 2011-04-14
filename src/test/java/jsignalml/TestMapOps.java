@@ -98,14 +98,14 @@ public class TestMapOps {
 	}
 	@Test public void or_map() throws Exception
 	{
-		mapEqual("{1:2} or {3:4}", 3, 4);
+		mapEqual("{1:2} or {3:4}", 1, 2);
 		mapEqual("{} or {3:4}", 3, 4);
 		mapEqual("{3:4} or {}", 3, 4);
 		mapEqual("{}  or {}");
 	}
 	@Test public void and_map() throws Exception
 	{
-		mapEqual("{1:2} and {3:4}", 1, 2);
+		mapEqual("{1:2} and {3:4}", 3, 4);
 		mapEqual("{} and {3:4}");
 		mapEqual("{3:4} and {}");
 		mapEqual("{} and {}");
