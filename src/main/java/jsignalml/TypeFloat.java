@@ -191,10 +191,6 @@ public class TypeFloat extends Type {
 		throw new ExpressionFault.TypeError();
 	}
 
-	public TypeInt bool(){
-		return this.value == 0.0 ? TypeInt.False : TypeInt.True;
-	}
-
 	public TypeFloat pos() { return this; }
 	public TypeFloat neg() { return new TypeFloat(-this.value); }
 	public TypeInt bin_neg() {

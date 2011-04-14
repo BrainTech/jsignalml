@@ -218,10 +218,6 @@ public class TypeMap extends Type /* implements Map<Type, Type>  */ {
 		throw new ExpressionFault.TypeError();
 	}
 
-	public TypeInt bool(){
-		return this.isTrue() ? TypeInt.False : TypeInt.True;
-	}
-
 	public TypeInt pos() {
 		throw new ExpressionFault.TypeError();
 	}

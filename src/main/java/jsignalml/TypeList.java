@@ -256,10 +256,6 @@ public class TypeList extends Type implements Iterable<Type> {
 		return new TypeList(ans);
 	}
 
-	public TypeInt bool(){
-		return this.isTrue() ? TypeInt.False : TypeInt.True;
-	}
-
 	public TypeInt pos() {
 		throw new ExpressionFault.TypeError();
 	}
