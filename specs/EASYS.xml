@@ -102,5 +102,28 @@
      <param id='extended_header_offset'>
 	 <expr>xhdr_org * 16</expr>
      </param>
+
+     <for-each id='extended_header' var='index' sequence='[0,1,2,3,4,5]'>
+         <param id='offset' type='int'>
+	   <expr>index == 0 ? xhdr_org : extended_header[index-1].offset +
+	                                 extended_header[index-1].record_size + 4</expr>
+	 </param>
+         <param id='record_mnemonic' type='str'>
+           <format>'|S2'</format>
+	   <offset>offset</offset>
+	 </param>
+         <param id='record_size' type='int'>
+           <format>'&gt;i2'</format>
+	   <offset>offset + 2</offset>
+	 </param>
+     </for-each>
+
+     <param id='type_map_name'>
+         <expr>
+	   {'AU': 'Authentication_key',
+	    'FS': 'Frequency_of_Sampling',
+           }
+	 </expr>
+     </param>
   </file>
 </signalml>
