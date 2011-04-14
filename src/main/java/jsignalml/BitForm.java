@@ -2,6 +2,7 @@ package jsignalml;
 
 import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
+import java.nio.ByteOrder;
 
 public abstract class BitForm {
 	protected static final Logger log = new Logger(BitForm.class);
@@ -31,8 +32,23 @@ public abstract class BitForm {
 			return new Int.Unsigned16.LE();
 		if (description.equals("<u8"))
 			return new Int.Unsigned64.LE();
+
+		if (description.equals(">i2"))
+			return new Int.Int16.BE();
+		if (description.equals(">i4"))
+			return new Int.Int32.BE();
+		if (description.equals(">i8"))
+			return new Int.Int64.BE();
+		if (description.equals(">u2"))
+			return new Int.Unsigned16.BE();
+		if (description.equals(">u4"))
+			return new Int.Unsigned16.BE();
+		if (description.equals(">u8"))
+			return new Int.Unsigned64.BE();
+
 		if (description.equals("<f4"))
 			return new Float.Float32.LE();
+
 		if (description.startsWith("|S"))
 			return new String(Integer.parseInt(description.substring(2)));
 		throw new BadBitForm(description);
@@ -76,6 +92,23 @@ public abstract class BitForm {
 				public TypeInt read(ByteBuffer buffer, TypeInt offset) {
 					int offset_ = offset.safeIntValue();
 					int data;
+					buffer.order(ByteOrder.LITTLE_ENDIAN);
+					try {
+						data = buffer.getShort(offset_);
+					} catch (IndexOutOfBoundsException e) {
+						throw new ExpressionFault.IndexError(offset_, buffer.limit());
+					}
+					return new TypeInt(data);
+				}
+			}
+
+			public static class BE extends Int16 {
+				protected static final Logger log = new Logger(Int16.BE.class);
+				@Override
+				public TypeInt read(ByteBuffer buffer, TypeInt offset) {
+					int offset_ = offset.safeIntValue();
+					int data;
+					buffer.order(ByteOrder.BIG_ENDIAN);
 					try {
 						data = buffer.getShort(offset_);
 					} catch (IndexOutOfBoundsException e) {
@@ -93,6 +126,23 @@ public abstract class BitForm {
 				public TypeInt read(ByteBuffer buffer, TypeInt offset) {
 					int offset_ = offset.safeIntValue();
 					int data;
+					buffer.order(ByteOrder.LITTLE_ENDIAN);
+					try {
+						data = buffer.getInt(offset_);
+					} catch (IndexOutOfBoundsException e) {
+						throw new ExpressionFault.IndexError(offset_, buffer.limit());
+					}
+					return new TypeInt(data);
+				}
+			}
+
+			public static class BE extends Int32 {
+				protected static final Logger log = new Logger(Int32.BE.class);
+				@Override
+				public TypeInt read(ByteBuffer buffer, TypeInt offset) {
+					int offset_ = offset.safeIntValue();
+					int data;
+					buffer.order(ByteOrder.BIG_ENDIAN);
 					try {
 						data = buffer.getInt(offset_);
 					} catch (IndexOutOfBoundsException e) {
@@ -110,6 +160,23 @@ public abstract class BitForm {
 				public TypeInt read(ByteBuffer buffer, TypeInt offset) {
 					int offset_ = offset.safeIntValue();
 					long data;
+					buffer.order(ByteOrder.LITTLE_ENDIAN);
+					try {
+						data = buffer.getLong(offset_);
+					} catch (IndexOutOfBoundsException e) {
+						throw new ExpressionFault.IndexError(offset_, buffer.limit());
+					}
+					return new TypeInt(data);
+				}
+			}
+
+			public static class BE extends Int64 {
+				protected static final Logger log = new Logger(Int64.BE.class);
+				@Override
+				public TypeInt read(ByteBuffer buffer, TypeInt offset) {
+					int offset_ = offset.safeIntValue();
+					long data;
+					buffer.order(ByteOrder.BIG_ENDIAN);
 					try {
 						data = buffer.getLong(offset_);
 					} catch (IndexOutOfBoundsException e) {
@@ -128,6 +195,23 @@ public abstract class BitForm {
 				public TypeInt read(ByteBuffer buffer, TypeInt offset) {
 					int offset_ = offset.safeIntValue();
 					short data;
+					buffer.order(ByteOrder.LITTLE_ENDIAN);
+					try {
+						data = buffer.getShort(offset_);
+					} catch (IndexOutOfBoundsException e) {
+						throw new ExpressionFault.IndexError(offset_, buffer.limit());
+					}
+					return new TypeInt(data);
+				}
+			}
+
+			public static class BE extends Unsigned16 {
+				protected static final Logger log = new Logger(Unsigned16.BE.class);
+				@Override
+				public TypeInt read(ByteBuffer buffer, TypeInt offset) {
+					int offset_ = offset.safeIntValue();
+					short data;
+					buffer.order(ByteOrder.BIG_ENDIAN);
 					try {
 						data = buffer.getShort(offset_);
 					} catch (IndexOutOfBoundsException e) {
@@ -145,6 +229,23 @@ public abstract class BitForm {
 				public TypeInt read(ByteBuffer buffer, TypeInt offset) {
 					int offset_ = offset.safeIntValue();
 					int data;
+					buffer.order(ByteOrder.LITTLE_ENDIAN);
+					try {
+						data = buffer.getInt(offset_);
+					} catch (IndexOutOfBoundsException e) {
+						throw new ExpressionFault.IndexError(offset_, buffer.limit());
+					}
+					return new TypeInt(data);
+				}
+			}
+
+			public static class BE extends Unsigned32 {
+				protected static final Logger log = new Logger(Unsigned32.BE.class);
+				@Override
+				public TypeInt read(ByteBuffer buffer, TypeInt offset) {
+					int offset_ = offset.safeIntValue();
+					int data;
+					buffer.order(ByteOrder.BIG_ENDIAN);
 					try {
 						data = buffer.getInt(offset_);
 					} catch (IndexOutOfBoundsException e) {
@@ -162,6 +263,23 @@ public abstract class BitForm {
 				public TypeInt read(ByteBuffer buffer, TypeInt offset) {
 					int offset_ = offset.safeIntValue();
 					long data;
+					buffer.order(ByteOrder.LITTLE_ENDIAN);
+					try {
+						data = buffer.getLong(offset_);
+					} catch (IndexOutOfBoundsException e) {
+						throw new ExpressionFault.IndexError(offset_, buffer.limit());
+					}
+					return new TypeInt(data);
+				}
+			}
+
+			public static class BE extends Unsigned64 {
+				protected static final Logger log = new Logger(Unsigned64.BE.class);
+				@Override
+				public TypeInt read(ByteBuffer buffer, TypeInt offset) {
+					int offset_ = offset.safeIntValue();
+					long data;
+					buffer.order(ByteOrder.BIG_ENDIAN);
 					try {
 						data = buffer.getLong(offset_);
 					} catch (IndexOutOfBoundsException e) {
