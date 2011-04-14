@@ -200,6 +200,11 @@ public class Processor {
 	public static Expression parse(String line)
 		throws SyntaxError
 	{
-		return Processor.processLine(Processor.parseSingleexpr(line));
+		try {
+			return Processor.processLine(Processor.parseSingleexpr(line));
+		} catch(SyntaxError e) {
+			log.error("failed to parse '%s'", line);
+			throw e;
+		}
 	}
 }

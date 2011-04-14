@@ -278,14 +278,8 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 		final JExpression offset_int = JExpr._new(this.model.ref(TypeInt.class))
 			.invoke("make").arg(offset_);
 		final JClass bitform_class = this.model.ref(BitForm.class);
-		final JVar theformat = body.decl(bitform_class, "theformat");
-		final JTryBlock tryblock = body._try();
-		tryblock.body().assign(theformat,
-				       bitform_class.staticInvoke("get").arg(format_));
-		final JClass badbitform = this.model.ref(BitForm.BadBitForm.class);
-		final JClass expressionfault = this.model.ref(ExpressionFault.class);
-		tryblock._catch(badbitform).body()
-			._throw(JExpr._new(expressionfault).arg(JExpr.ref("_x")));
+		final JVar theformat = body.decl(bitform_class, "theformat",
+						 bitform_class.staticInvoke("get").arg(format_));
 		impl.body()._return(JExpr._this().invoke(readfunc).arg(theformat).arg(offset_int));
 		return impl;
 	}

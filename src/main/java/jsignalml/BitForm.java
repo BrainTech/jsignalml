@@ -55,9 +55,13 @@ public abstract class BitForm {
 	}
 
 	public static BitForm get(TypeString description)
-		throws BadBitForm
+		throws ExpressionFault.ValueError
 	{
-		return get(description.value);
+		try {
+			return get(description.value);
+		} catch(BadBitForm e) {
+			throw new ExpressionFault(e);
+		}
 	}
 
 	public abstract Type read(ByteBuffer buffer, TypeInt offset);
@@ -325,7 +329,11 @@ public abstract class BitForm {
 			log.info("BitForm.String.read: buffer=%s offset=%d",
 			         buffer, offset_);
 			buffer = buffer.asReadOnlyBuffer(); // XXX: don't use limit?
-			buffer.limit(offset_ + this.size).position(offset_);
+			try {
+				buffer.limit(offset_ + this.size).position(offset_);
+			} catch(IllegalArgumentException e) {
+				throw new ExpressionFault(e);
+			}
 
 			byte[] data = new byte[this.size];
 			buffer.get(data);
