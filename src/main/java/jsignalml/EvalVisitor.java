@@ -111,4 +111,12 @@ public class EvalVisitor extends ExpressionVisitor<Type> {
 		this.context.assign(op.id, value);
 		return null;
 	}
+
+
+	public static Type evaluate(Expression expr)
+	{
+		CallHelper builtins = new Frame(Builtins.instance);
+		EvalVisitor visitor = new EvalVisitor(builtins);
+		return expr.accept(visitor);
+	}
 }
