@@ -55,7 +55,7 @@ public class JavaExprGen extends ExpressionVisitor<JExpression> {
 				 JExpression left, JExpression right)
 	{
 		if (op.op.javaMethod == "cmp") {
-			JExpression cmp_res = left.invoke("cmp").arg(right);
+			JExpression cmp_res = left.invoke("compareTo").arg(right);
 			JExpression cond;
 			switch(op.op){
 			case EQ: cond = cmp_res.eq(JExpr.lit(0)); break;
@@ -188,7 +188,7 @@ public class JavaExprGen extends ExpressionVisitor<JExpression> {
 	@Override
 	public JExpression visit(Expression.Ternary op, JExpression cond)
 	{
-		return JOp.cond(cond, op.a.accept(this), op.b.accept(this));
+		return JOp.cond(cond.invoke("isTrue"), op.a.accept(this), op.b.accept(this));
 	}
 
 	@Override

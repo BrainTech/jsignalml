@@ -220,7 +220,7 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 			getExprMethod(nested, node);
 		else
 			callExprMethod(nested, node);
-		getterMethod(klass, node.id, nested);
+		getterMethod(klass, node.id, node.type, nested);
 		return nested;
 	}
 
@@ -231,7 +231,7 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 		assert klass != null;
 		JDefinedClass nested = paramClass(klass, node);
 		readParamFunction(nested, node);
-		getterMethod(klass, node.id, nested);
+		getterMethod(klass, node.id, node.type, nested);
 		return nested;
 	}
 
@@ -273,8 +273,10 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 		final JBlock body = impl.body();
 		final JVar format_ = body.decl(this.model.ref(TypeString.class), "format",
 					       node.format.accept(javagen));
-		final JVar offset_ = body.decl(this.model.ref(TypeInt.class), "offset",
+		final JVar offset_ = body.decl(this.model.ref(Type.class), "offset",
 					       node.offset.accept(javagen));
+		final JExpression offset_int = JExpr._new(this.model.ref(TypeInt.class))
+			.invoke("make").arg(offset_);
 		final JClass bitform_class = this.model.ref(BitForm.class);
 		final JVar theformat = body.decl(bitform_class, "theformat");
 		final JTryBlock tryblock = body._try();
@@ -284,7 +286,7 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 		final JClass expressionfault = this.model.ref(ExpressionFault.class);
 		tryblock._catch(badbitform).body()
 			._throw(JExpr._new(expressionfault).arg(JExpr.ref("_x")));
-		impl.body()._return(JExpr._this().invoke(readfunc).arg(theformat).arg(offset_));
+		impl.body()._return(JExpr._this().invoke(readfunc).arg(theformat).arg(offset_int));
 		return impl;
 	}
 
@@ -397,7 +399,7 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 	{
 		log.info("visit((FileHandle) %s, %s)", node, parent);
 		final JDefinedClass klass = this.fileClass(node, parent);
-		getterMethod(parent, node.id, klass);
+		getterMethod(parent, node.id, null, klass);
 		return klass;
 	}
 
@@ -444,14 +446,25 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 		return klass;
 	}
 
-	public JMethod getterMethod(JDefinedClass klass, String ident,
+	public JMethod getterMethod(JDefinedClass klass, String ident, Type type,
 				     JDefinedClass nested)
 	{
+		final JClass typeref = convertTypeToJClass(type);
 		final String prefixed = makeIdentifier(ident);
-		final JMethod getter = klass.method(JMod.PUBLIC, jsignalml.Type.class,
+		final JMethod getter = klass.method(JMod.PUBLIC, typeref,
 						    makeGetter(ident));
-		getter.body()._return(JExpr.invoke("access").arg(ident));
-
+		final JBlock body = getter.body();
+		final JVar value = body.decl(convertTypeToJClass(null), "value",
+					     JExpr.invoke("access").arg(ident));
+		if (type != null) {
+			// conversion cast requiered
+			final JVar var = body.decl(typeref, "var",
+						   JExpr._new(typeref).invoke("make").arg(value));
+			body._return(var);
+		} else {
+			// no need to cast
+			body._return(value);
+		}
 		return getter;
 	}
 
@@ -465,10 +478,10 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 
 	JMethod iternameGetter(ASTNode.Itername node, JDefinedClass klass)
 	{
-		JClass type = this.model.ref(jsignalml.codec.OuterLoopClass.LoopClass.IndexClass.class);
+		JClass type = this.model.ref(Type.class);
 		final JMethod getter = klass.method(JMod.PUBLIC, type,
 						    makeGetter(node.id));
-		getter.body()._return(JExpr._this().ref("index"));
+		getter.body()._return(JExpr._this().ref("index").invoke("get"));
 
 		Metadata metadata = (Metadata) klass.metadata;
 		metadata.registerParam(node.id, JExpr._this().ref("index"));
@@ -484,7 +497,7 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 		sequenceMethod(outer, node);
 		final JDefinedClass inner = loopClass(node, outer);
 		createLoopMethod(outer, node, inner);
-		getterMethod(parent, node.id, outer);
+		getterMethod(parent, node.id, null, outer);
 		return inner;
 	}
 
@@ -556,7 +569,7 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 		log.info("visit((Conditional) %s, %s)", node, parent);
 		final JDefinedClass klass = conditionalClass(node, parent);
 		conditionMethod(klass, node);
-		getterMethod(parent, node.id, klass);
+		getterMethod(parent, node.id, null, klass);
 		return klass;
 	}
 

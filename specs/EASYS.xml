@@ -94,7 +94,7 @@
 	 <expr>data_org * 16</expr>
      </param>
 
-     <param id='xhdr_org'>
+     <param id='xhdr_org' type='int'>
 	 <!-- data offset -->
          <format>'&gt;i2'</format>
          <offset>30</offset>
