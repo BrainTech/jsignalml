@@ -380,9 +380,15 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 			.arg(JExpr.ref(JExpr.invoke("buffer"), "source"))
 			.arg(offset_param);
 		final JVar input = body.decl(javatype2, "input", expr);
-		final JVar var = body.decl(javatype, "var",
-					   JExpr._new(javatype).invoke("make").arg(input));
-		body._return(var);
+		if (type != null) {
+			// conversion cast requiered
+			final JVar var = body.decl(javatype, "var",
+						   JExpr._new(javatype).invoke("make").arg(input));
+			body._return(var);
+		} else {
+			// no need to cast
+			body._return(input);
+		}
 		return impl;
 	}
 
