@@ -103,13 +103,28 @@ public class TypeMap extends Type /* implements Map<Type, Type>  */ {
 	public Type binaryOp(BinaryOp op, TypeMap other)
 		throws ExpressionFault.TypeError
 	{
+		final boolean value;
 		switch (op) {
-		case EQ: return new TypeInt(this.compareTo(other) == 0);
-		case NE: return new TypeInt(this.compareTo(other) != 0);
-		case LT: return new TypeInt(this.compareTo(other) < 0);
-		case GT: return new TypeInt(this.compareTo(other) > 0);
-		case LE: return new TypeInt(this.compareTo(other) <= 0);
-		case GE: return new TypeInt(this.compareTo(other) >= 0);
+		case EQ:
+			value = this.map.entrySet().equals(other.map.entrySet());
+			break;
+		case NE:
+			value = !this.map.entrySet().equals(other.map.entrySet());
+			break;
+		case LT:
+			value = other.map.entrySet().containsAll(this.map.entrySet())
+				&& !this.map.entrySet().containsAll(other.map.entrySet());
+			break;
+		case GT:
+			value = this.map.entrySet().containsAll(other.map.entrySet())
+				&& !other.map.entrySet().containsAll(this.map.entrySet());
+			break;
+		case LE:
+			value = other.map.entrySet().containsAll(this.map.entrySet());
+			break;
+		case GE:
+			value = this.map.entrySet().containsAll(other.map.entrySet());
+			break;
 
 		case LOG_AND:
 		case LOG_OR:
@@ -117,6 +132,8 @@ public class TypeMap extends Type /* implements Map<Type, Type>  */ {
 		default:
 			throw new ExpressionFault.TypeError(this.getClass(), other.getClass());
 		}
+
+		return new TypeInt(value);
 	}
 
 	public Iterator<Map.Entry<Type, Type>> iterator() {
@@ -128,8 +145,12 @@ public class TypeMap extends Type /* implements Map<Type, Type>  */ {
 			return this.compareTo((TypeMap)other);
 		throw new ExpressionFault.TypeError();
 	}
+
+	/* No strict ordering exists for Maps. Therefore operations are
+	 * performed directly in the binaryOp function.
+	 */
 	public int compareTo(TypeMap other){
-		throw new NotImplementedException();
+		throw new RuntimeException();
 	}
 
 	public Type index(Type key){
