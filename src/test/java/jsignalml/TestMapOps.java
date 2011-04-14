@@ -60,6 +60,7 @@ public class TestMapOps {
 	public void eval_keyerror_ops_add() throws Exception
 	{
 		eval("{1:2} + {}");
+		eval("{1:2} + {2:3}");
 	}
 
 	@Test(expected=ExpressionFault.TypeError.class)
@@ -84,5 +85,38 @@ public class TestMapOps {
 	public void eval_keyerror_ops_unary_pos() throws Exception
 	{
 		eval("+{1:2}");
+	}
+	@Test public void maps_bool() throws Exception
+	{
+		equal("bool({})", 0);
+		equal("bool({1:2})", 1);
+	}
+	@Test public void maps_len() throws Exception
+	{
+		equal("len({})", 0);
+		equal("len({1:2,3:4})", 2);
+	}
+	@Test public void or_map() throws Exception
+	{
+		mapEqual("{1:2} or {3:4}", 3, 4);
+		mapEqual("{} or {3:4}", 3, 4);
+		mapEqual("{3:4} or {}", 3, 4);
+		mapEqual("{}  or {}");
+	}
+	@Test public void and_map() throws Exception
+	{
+		mapEqual("{1:2} and {3:4}", 1, 2);
+		mapEqual("{} and {3:4}");
+		mapEqual("{3:4} and {}");
+		mapEqual("{} and {}");
+	}
+	@Test public void equal_map() throws Exception
+	{
+		equal("{1:2} == {2:3}", 0);
+		equal("{1:2} == {1:3}", 0);		
+		equal("{1:2} == {2:2}", 0);		
+		equal("{1:2} == {1:2}", 1);
+		equal("{1:2} == {}", 0);
+		equal("{} == {}", 1);
 	}
 }
