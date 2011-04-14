@@ -153,6 +153,10 @@ public class TypeMap extends Type /* implements Map<Type, Type>  */ {
 		throw new RuntimeException();
 	}
 
+	public TypeInt len() {
+		return new TypeInt(this.map.size());
+	}
+
 	public Type index(Type key){
 		Type ans = this.map.get(key);
 		if (ans == null)

@@ -160,6 +160,10 @@ public class TypeString extends Type {
 		return this.value.compareTo(other.value);
 	}
 
+	public TypeInt len() {
+		return new TypeInt(this.value.length());
+	}
+
 	public Type index(Type i){
 		if(i instanceof TypeInt)
 			return this.index((TypeInt)i);

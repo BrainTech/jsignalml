@@ -110,6 +110,7 @@ public abstract class Type implements Comparable<Type> {
 
 	public Type binaryOp(BinaryOp op, Type other)
 	{
+		assert other != null;
 		if (other instanceof TypeInt)
 			return this.binaryOp(op, (TypeInt) other);
 		if (other instanceof TypeFloat)
@@ -120,7 +121,7 @@ public abstract class Type implements Comparable<Type> {
 			return this.binaryOp(op, (TypeList) other);
 		if (other instanceof TypeMap)
 			return this.binaryOp(op, (TypeMap) other);
-		throw new RuntimeException("unknown type in expression");
+		throw new RuntimeException("unknown type in expression: " + other.getClass());
 	}
 
 	public Type binaryOp(BinaryOp op, TypeInt other)
@@ -347,6 +348,9 @@ public abstract class Type implements Comparable<Type> {
 	public abstract Type neg();
 	public abstract Type bin_neg();
 
+	public TypeInt len() {
+		throw new ExpressionFault.ValueError("not a sequence");
+	}
 
 	static {
 		registerType("int", new TypeInt());

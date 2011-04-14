@@ -62,8 +62,14 @@ public class Builtins extends ASTNode {
 		}
 	}
 
-	private static TypeObject _trim = new trim();
-	public static TypeObject trim(){ return _trim; }
+	private static TypeObject _strip = new strip();
+	public static TypeObject strip(){ return _strip; }
+
+	public Type visit(ASTNode.BuiltinFunction p, Type dummy) {
+		assert dummy == null;
+
+		throw new RuntimeException();
+	}
 
 	public static class trim extends TypeObject {
 		public static TypeString call(TypeString x)
@@ -81,8 +87,44 @@ public class Builtins extends ASTNode {
 		}
 	}
 
-	private static TypeObject _strip = new strip();
-	public static TypeObject strip(){ return _strip; }
+	private static TypeObject _trim = new trim();
+	public static TypeObject trim(){ return _trim; }
+
+	public static class bool extends TypeObject {
+		public static TypeInt call(Type x)
+		{
+			return new TypeInt(x.isTrue());
+		}
+
+		@Override
+		public TypeInt call(List<Type> args)
+		{
+			if(args.size() != 1)
+				throw new ExpressionFault.ArgMismatch(1, args.size());
+			return call(args.get(0));
+		}
+	}
+
+	private static TypeObject _bool = new bool();
+	public static TypeObject bool(){ return _bool; }
+
+	public static class len extends TypeObject {
+		public static TypeInt call(Type x)
+		{
+			return x.len();
+		}
+
+		@Override
+		public TypeInt call(List<Type> args)
+		{
+			if(args.size() != 1)
+				throw new ExpressionFault.ArgMismatch(1, args.size());
+			return call(args.get(0));
+		}
+	}
+
+	private static TypeObject _len = new len();
+	public static TypeObject len(){ return _len; }
 
 	public ASTNode.BuiltinFunction lookup(String name)
 	{
@@ -93,17 +135,27 @@ public class Builtins extends ASTNode {
 
 		if (name.equals("factorial")) {
 			ASTNode.BuiltinFunction function =
-				new ASTNode.BuiltinFunction(owner, name, new TypeInt());
+				new ASTNode.BuiltinFunction(owner, name, new TypeInt(), _bool);
 			function.arg("n", new TypeInt());
 			return function;
 		} else if (name.equals("strip")) {
 			ASTNode.BuiltinFunction function =
-				new ASTNode.BuiltinFunction(owner, name, new TypeString());
+				new ASTNode.BuiltinFunction(owner, name, new TypeString(), _strip);
 			function.arg("s", new TypeString());
 			return function;
 		} else if (name.equals("trim")) {
 			ASTNode.BuiltinFunction function =
-				new ASTNode.BuiltinFunction(owner, name, new TypeString());
+				new ASTNode.BuiltinFunction(owner, name, new TypeString(), _trim);
+			function.arg("s", new TypeString());
+			return function;
+		} else if (name.equals("bool")) {
+			ASTNode.BuiltinFunction function =
+				new ASTNode.BuiltinFunction(owner, name, new TypeString(), _bool);
+			function.arg("s", new TypeString());
+			return function;
+		} else if (name.equals("len")) {
+			ASTNode.BuiltinFunction function =
+				new ASTNode.BuiltinFunction(owner, name, new TypeString(), _len);
 			function.arg("s", new TypeString());
 			return function;
 		}
