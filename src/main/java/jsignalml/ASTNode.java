@@ -20,7 +20,7 @@ public abstract class ASTNode {
 	public static final Logger log = new Logger(ASTNode.class);
 
 	final ASTNode parent;
-	final String id;
+	final Expression id;
 	final List<ASTNode> children;
 
 	public <T> T accept(ASTVisitor<T> v, T data) {
@@ -40,12 +40,16 @@ public abstract class ASTNode {
 	 */
 	public abstract <T> T _accept(ASTVisitor<T> v, T data);
 
-	protected ASTNode(ASTNode parent, String id) {
+	protected ASTNode(ASTNode parent, Expression id) {
 		this.parent = parent;
 		this.id = id;
 		this.children = util.newLinkedList();
 		if (parent != null)
 			parent.children.add(this);
+	}
+
+	protected ASTNode(ASTNode parent, String id) {
+		this(parent, Expression.Const.make(id));
 	}
 
 	public ASTNode find(String id) {
@@ -100,9 +104,9 @@ public abstract class ASTNode {
 	}
 
 	public static class ChannelSet extends ASTNode {
-		public ChannelSet(ASTNode parent, String name)
+		public ChannelSet(ASTNode parent, Expression id)
 		{
-			super(parent, name);
+			super(parent, id);
 		}
 
 		@Override
@@ -120,9 +124,9 @@ public abstract class ASTNode {
 	}
 
 	public static class Channel extends ASTNode {
-		public Channel(ASTNode parent, String name)
+		public Channel(ASTNode parent, Expression id)
 		{
-			super(parent, name);
+			super(parent, id);
 		}
 
 		@Override
@@ -143,7 +147,7 @@ public abstract class ASTNode {
 		public final Type type;
 		public final List<Positional> args = util.newLinkedList();
 
-		public Param(ASTNode parent, String id, Type type)
+		public Param(ASTNode parent, Expression id, Type type)
 		{
 			super(parent, id);
 			if (parent==null)
@@ -155,7 +159,7 @@ public abstract class ASTNode {
 	public abstract static class ReadParam extends Param {
 		final FileHandle<? extends FileType> handle;
 
-		public ReadParam(ASTNode parent, String id, Type type)
+		public ReadParam(ASTNode parent, Expression id, Type type)
 		{
 			super(parent, id, type);
 
@@ -168,7 +172,7 @@ public abstract class ASTNode {
 	public static class BinaryParam extends ReadParam {
 		final Expression format, offset;
 
-		public BinaryParam(ASTNode parent, String id, Type type,
+		public BinaryParam(ASTNode parent, Expression id, Type type,
 		                   Expression format, Expression offset)
 			throws SyntaxError
 		{
@@ -196,7 +200,7 @@ public abstract class ASTNode {
 	public static class ExprParam extends Param {
 		final Expression expr;
 
-		public ExprParam(ASTNode parent, String id, Type type, Expression expr)
+		public ExprParam(ASTNode parent, Expression id, Type type, Expression expr)
 		{
 			super(parent, id, type);
 			this.expr = expr;
@@ -217,12 +221,17 @@ public abstract class ASTNode {
 
 	public static class BuiltinFunction extends Param {
 		final TypeObject function;
-		public BuiltinFunction(ASTNode parent, String id, Type type,
+		public BuiltinFunction(ASTNode parent, Expression id, Type type,
 				       TypeObject function) {
 			super(parent, id, type);
 			this.function = function;
 			log.info("created BuiltinFunction %s.%s -> %s",
 				 parent.id, this.id, type.getClass().getSimpleName());
+		}
+
+		public BuiltinFunction(ASTNode parent, String id, Type type,
+				       TypeObject function) {
+			this(parent, Expression.Const.make(id), type, function);
 		}
 
 		@Override
@@ -246,7 +255,7 @@ public abstract class ASTNode {
 	public static class Assert extends ASTNode {
 		final Expression expr;
 
-		public Assert(ASTNode parent, String id, Expression expr)
+		public Assert(ASTNode parent, Expression id, Expression expr)
 		{
 			super(parent, id);
 			if (parent==null)
@@ -281,7 +290,7 @@ public abstract class ASTNode {
 		public final Expression filename; // may be null
 		public final List<DataHandle> datas = util.newLinkedList();
 
-		public FileHandle(ASTNode parent, String id, Expression filename) {
+		public FileHandle(ASTNode parent, Expression id, Expression filename) {
 			super(parent, id);
 			if (parent==null)
 				throw new SyntaxError("<file> must have a parent");
@@ -293,7 +302,7 @@ public abstract class ASTNode {
 			return new FileHandle<V>(parent, null, filename);
 		}
 
-		public static FileHandle make(ASTNode parent, String id,
+		public static FileHandle make(ASTNode parent, Expression id,
 					      Expression filename, String type)
 		{
 			if (type.equals("binary"))
@@ -328,7 +337,8 @@ public abstract class ASTNode {
 	public static class DataHandle extends ASTNode {
 		public final Expression mapping, format;
 
-		public DataHandle(ASTNode parent, String id, Expression mapping, Expression format)
+		public DataHandle(ASTNode parent, Expression id,
+				  Expression mapping, Expression format)
 		{
 			super(parent, id);
 			if (parent==null)
@@ -416,7 +426,8 @@ public abstract class ASTNode {
 		public final Expression sequence;
 		public final Itername itername;
 
-		public ForLoop(ASTNode parent, String id, String itername, Expression sequence) {
+		public ForLoop(ASTNode parent, Expression id, String itername,
+			       Expression sequence) {
 			super(parent, id);
 			if (parent==null)
 				throw new SyntaxError("<for-each> must have a parent");
@@ -443,7 +454,7 @@ public abstract class ASTNode {
 		public final Expression condition;
 		public ElseBranch elsebranch = null;
 
-		public Conditional(ASTNode parent, String id, Expression condition) {
+		public Conditional(ASTNode parent, Expression id, Expression condition) {
 			super(parent, id);
 			if (parent==null)
 				throw new SyntaxError("<if> must have a parent");
@@ -466,7 +477,7 @@ public abstract class ASTNode {
 	}
 
 	public static class ElseBranch extends ASTNode {
-		public ElseBranch(ASTNode parent, String id) {
+		public ElseBranch(ASTNode parent, Expression id) {
 			super(parent, id);
 			if (parent==null)
 				throw new SyntaxError("<else> must have a parent");

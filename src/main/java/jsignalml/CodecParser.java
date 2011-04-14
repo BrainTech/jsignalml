@@ -115,7 +115,7 @@ public class CodecParser {
 	{
 		assert element.getNodeName().equals("param");
 
-		final String id = _identifier(element);
+		final Expression id = _identifier(element);
 		final String type_ = _attribute(element, "type");
 		final Type type = Type.getType(type_);
 
@@ -156,7 +156,7 @@ public class CodecParser {
         {
                 assert element.getNodeName().equals("arg");
 
-                final String name = _identifier(element);
+                final String name = _attribute(element, "name");
                 final String type_ = element.getAttribute("type");
 		final Type type = Type.getType(type_);
 
@@ -169,7 +169,7 @@ public class CodecParser {
 	{
 		assert element.getNodeName().equals("assert");
 
-		final String id = _identifier(element);
+		final Expression id = _identifier(element);
 		final Expression expr = _extract(element, "expr");
 		if (expr == null)
 			throw new SyntaxError("<assert> needs an <expr> child");
@@ -181,7 +181,7 @@ public class CodecParser {
 	{
 		assert element.getNodeName().equals("channelset");
 
-		final String id = _identifier(element);
+		final Expression id = _identifier(element);
 
 		final ASTNode.ChannelSet node = new ASTNode.ChannelSet(parent, id);
 		return node;
@@ -191,7 +191,7 @@ public class CodecParser {
 	{
 		assert element.getNodeName().equals("channel");
 
-		final String id = _identifier(element);
+		final Expression id = _identifier(element);
 
 		final ASTNode.Channel node = new ASTNode.Channel(parent, id);
 		return node;
@@ -201,7 +201,7 @@ public class CodecParser {
 	{
 		assert element.getNodeName().equals("file");
 
-		final String id = _identifier(element);
+		final Expression id = _identifier(element);
 		final String type = _attribute(element, "type");
 		final String filename_ = _attribute(element, "filename");
 		final Expression filename =
@@ -218,7 +218,7 @@ public class CodecParser {
 	{
 		assert element.getNodeName().equals("for-each");
 
-		final String id = _identifier(element);
+		final Expression id = _identifier(element);
 		final String var = _attribute(element, "var");
 		final String sequence = _attribute(element, "sequence");
 
@@ -231,7 +231,7 @@ public class CodecParser {
 	{
 		assert element.getNodeName().equals(elsebranch ? "else-if" : "if");
 
-		final String id = _identifier(element);
+		final Expression id = _identifier(element);
 		final String condition = _attribute(element, "test");
 
 		final Expression expr = _null_or_parse(condition);
@@ -242,7 +242,8 @@ public class CodecParser {
 	{
 		assert element.getNodeName().equals("else");
 
-		final String id = parent.id + "_else";
+		final Expression id = new Expression.BinaryOp(SExpressionParser.ADD, parent.id,
+							      Expression.Const.make("_else"));
 		return new ASTNode.ElseBranch(parent, id);
 	}
 
@@ -250,7 +251,7 @@ public class CodecParser {
 	{
 		assert element.getNodeName().equals("data");
 
-		final String id = _identifier(element);
+		final Expression id = _identifier(element);
 		final Expression mapping = _null_or_parse(_attribute(element, "mapping"));
 		final Expression format = _null_or_parse(_attribute(element, "format"));
 
@@ -301,16 +302,16 @@ public class CodecParser {
 			return value;
 	}
 
-	static String _identifier(Element element)
+	static Expression _identifier(Element element)
 	{
 		final String id = _attribute(element, "id");
 		final String name = _attribute(element, "name");
 		if (id != null && name != null)
 			throw new SyntaxError("both id and name set!");
 		if (id != null)
-			return id;
+			return Expression.Const.make(id);
 		else
-			return name;
+			return _null_or_parse(name);
 	}
 
 	public static void main(String...args) throws Exception
