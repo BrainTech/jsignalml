@@ -25,22 +25,6 @@ public class ASTEvalVisitor extends ASTVisitor<Type> {
 	public Type visit(ASTNode.BuiltinFunction p, Type dummy) {
 		assert dummy == null;
 
-		if (p.id.equals("factorial")) {
-			if(this.args.size() != 1)
-				throw new ExpressionFault.ArgMismatch();
-			Type arg = this.args.get(0);
-			if(!(arg instanceof TypeInt))
-				throw new ExpressionFault.TypeError();
-			return Builtins.factorial.call((TypeInt)arg);
-		} else if (p.id.equals("strip")) {
-			if(this.args.size() != 1)
-				throw new ExpressionFault.ArgMismatch();
-			Type arg = this.args.get(0);
-			if(!(arg instanceof TypeString))
-				throw new ExpressionFault.TypeError();
-			return Builtins.strip.call((TypeString)arg);
-		}
-
-		throw new RuntimeException("???");
+		return p.function.call(this.args);
 	}
 }

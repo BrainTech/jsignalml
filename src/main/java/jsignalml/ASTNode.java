@@ -216,8 +216,11 @@ public abstract class ASTNode {
 	}
 
 	public static class BuiltinFunction extends Param {
-		public BuiltinFunction(ASTNode parent, String id, Type type) {
+		final TypeObject function;
+		public BuiltinFunction(ASTNode parent, String id, Type type,
+				       TypeObject function) {
 			super(parent, id, type);
+			this.function = function;
 			log.info("created BuiltinFunction %s.%s -> %s",
 				 parent.id, this.id, type.getClass().getSimpleName());
 		}
