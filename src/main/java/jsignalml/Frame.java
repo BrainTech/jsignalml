@@ -68,7 +68,7 @@ public class Frame implements CallHelper {
 			ASTNode.Param param = (ASTNode.Param)node;
 			for (int i=0; i<param.args.size(); i++) {
 				ASTNode.Positional arg =  param.args.get(i);
-				locals.put(arg.id, args.get(i));
+				locals.put(arg.static_id, args.get(i));
 			}
 		}
 		return this.localize(node, locals);

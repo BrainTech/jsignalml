@@ -50,7 +50,30 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 		return PREFIX + "_param_" + name;
 	}
 
+	private int numbered_expression_number = 0;
+	private String makeGeneratedID(String part)
+	{
+		String ans = PREFIX + part + "_" + numbered_expression_number++;
+		log.info("generated id %s", ans);
+		return ans;
+	}
+
 	final JCodeModel model = new JCodeModel();
+
+	private String dynamicID(Expression id)
+	{
+		final Type ans;
+		try {
+			ans = EvalVisitor.evaluate(id);
+		} catch(ExpressionFault.NameError e) {
+			// expression cannot be evaluated statically
+			return this.makeGeneratedID("gen_id");
+		}
+
+		if(!(ans instanceof TypeString))
+			throw new ExpressionFault.TypeError();
+		return ((TypeString)ans).value;
+	}
 
 	@Override
 	public JDefinedClass visit(ASTNode.Signalml node, JDefinedClass dummy)
@@ -60,7 +83,7 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 
 		final JDefinedClass klass;
 		try {
-			klass = this.model._class(node.id);
+			klass = this.model._class(dynamicID(node.id));
 		} catch(JClassAlreadyExistsException e) {
 			throw new RuntimeException("WTF?");
 		}
@@ -220,7 +243,7 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 			getExprMethod(nested, node);
 		else
 			callExprMethod(nested, node);
-		getterMethod(klass, node.id, node.type, nested);
+		getterMethod(klass, dynamicID(node.id), node.type, nested);
 		return nested;
 	}
 
@@ -231,7 +254,7 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 		assert klass != null;
 		JDefinedClass nested = paramClass(klass, node);
 		readParamFunction(nested, node);
-		getterMethod(klass, node.id, node.type, nested);
+		getterMethod(klass, dynamicID(node.id), node.type, nested);
 		return nested;
 	}
 
@@ -246,15 +269,16 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 			klass_type = jsignalml.codec.FunctionParam.class;
 		final JClass param_class = this.model.ref(klass_type).narrow(typeref);
 		final JDefinedClass nested;
+		final String theid = dynamicID(node.id);
 		try {
-			nested = parent._class(makeParamClass(node.id));
+			nested = parent._class(makeParamClass(theid));
 		} catch(JClassAlreadyExistsException e) {
-			throw new SyntaxError(format("duplicate name: '%s'", node.id));
+			throw new SyntaxError(format("duplicate name: '%s'", theid));
 		}
 		nested._extends(param_class);
 
 		Metadata metadata = (Metadata) parent.metadata;
-		metadata.registerParam(node.id, JExpr._new(nested));
+		metadata.registerParam(theid, JExpr._new(nested));
 
 		return nested;
 	}
@@ -328,7 +352,8 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 
 		List<JVar> locals = util.newLinkedList();
 		for (ASTNode.Positional arg: node.args) {
-			JVar var = impl.param(convertTypeToJClass(arg.type), arg.id);
+			JVar var = impl.param(convertTypeToJClass(arg.type),
+					      dynamicID(arg.id));
 			locals.add(var);
 		}
 
@@ -392,16 +417,18 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 	public JDefinedClass visit(ASTNode.FileHandle node, JDefinedClass parent)
 	{
 		log.info("visit((FileHandle) %s, %s)", node, parent);
-		final JDefinedClass klass = this.fileClass(node, parent);
-		getterMethod(parent, node.id, null, klass);
+		final String theid = dynamicID(node.id);
+		final JDefinedClass klass = this.fileClass(node, theid, parent);
+		getterMethod(parent, theid, null, klass);
 		return klass;
 	}
 
-	public JDefinedClass fileClass(ASTNode.FileHandle node, JDefinedClass parent)
+	public JDefinedClass fileClass(ASTNode.FileHandle node, String id,
+				       JDefinedClass parent)
 	{
 		final JDefinedClass klass;
 		try {
-			klass = parent._class("File_" + node.id);
+			klass = parent._class("File_" + id);
 		} catch(JClassAlreadyExistsException e) {
 			throw new RuntimeException("WTF?");
 		}
@@ -435,7 +462,7 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 		log.info("%s.metadata has been set", klass);
 
 		Metadata metadata = (Metadata) parent.metadata;
-		metadata.registerContext(node.id, klass);
+		metadata.registerContext(id, klass);
 
 		return klass;
 	}
@@ -466,19 +493,19 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 	public JDefinedClass visit(ASTNode.Itername node, JDefinedClass klass)
 	{
 		log.info("visit((Itername) %s, %s)", node, klass);
-		iternameGetter(node, klass);
+		iternameGetter(dynamicID(node.id), klass);
 		return klass;
 	}
 
-	JMethod iternameGetter(ASTNode.Itername node, JDefinedClass klass)
+	JMethod iternameGetter(String id, JDefinedClass klass)
 	{
 		JClass type = this.model.ref(Type.class);
 		final JMethod getter = klass.method(JMod.PUBLIC, type,
-						    makeGetter(node.id));
+						    makeGetter(id));
 		getter.body()._return(JExpr._this().ref("index").invoke("get"));
 
 		Metadata metadata = (Metadata) klass.metadata;
-		metadata.registerParam(node.id, JExpr._this().ref("index"));
+		metadata.registerParam(id, JExpr._this().ref("index"));
 
 		return getter;
 	}
@@ -487,19 +514,20 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 	public JDefinedClass visit(ASTNode.ForLoop node, JDefinedClass parent)
 	{
 		log.info("visit((ForLoop) %s, %s)", node, parent);
-		final JDefinedClass outer = outerLoopClass(node, parent);
+		final String theid = dynamicID(node.id);
+		final JDefinedClass outer = outerLoopClass(theid, parent);
 		sequenceMethod(outer, node);
-		final JDefinedClass inner = loopClass(node, outer);
-		createLoopMethod(outer, node, inner);
-		getterMethod(parent, node.id, null, outer);
+		final JDefinedClass inner = loopClass(theid, outer);
+		createLoopMethod(outer, inner);
+		getterMethod(parent, theid, null, outer);
 		return inner;
 	}
 
-	public JDefinedClass outerLoopClass(ASTNode.ForLoop node, JDefinedClass parent)
+	public JDefinedClass outerLoopClass(String id, JDefinedClass parent)
 	{
 		final JDefinedClass klass;
 		try {
-			klass = parent._class("Loop_" + node.id);
+			klass = parent._class("Loop_" + id);
 		} catch(JClassAlreadyExistsException e) {
 			throw new RuntimeException("WTF?");
 		}
@@ -510,7 +538,7 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 		log.info("%s.metadata has been set", klass);
 
 		Metadata metadata = (Metadata) parent.metadata;
-		metadata.registerParam(node.id, JExpr._new(klass));
+		metadata.registerParam(id, JExpr._new(klass));
 
 		return klass;
 	}
@@ -527,20 +555,20 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 		return sequence;
 	}
 
-	public JMethod createLoopMethod(JDefinedClass klass, ASTNode.ForLoop node,
-					JDefinedClass child_class)
+	public JMethod createLoopMethod(JDefinedClass klass, JDefinedClass child_class)
 	{
-		final JMethod create_loop = klass.method(JMod.PROTECTED, child_class, "createLoop");
+		final JMethod create_loop = klass.method(JMod.PROTECTED, child_class,
+							 "createLoop");
 		final JVar index = create_loop.param(Type.class, "index");
 		create_loop.body()._return(JExpr._new(child_class).arg(index));
 		return create_loop;
 	}
 
-	public JDefinedClass loopClass(ASTNode.ForLoop node, JDefinedClass parent)
+	public JDefinedClass loopClass(String id, JDefinedClass parent)
 	{
 		final JDefinedClass klass;
 		try {
-			klass = parent._class("LoopItem_" + node.id);
+			klass = parent._class("LoopItem_" + id);
 		} catch(JClassAlreadyExistsException e) {
 			throw new RuntimeException("WTF?");
 		}
@@ -561,17 +589,18 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 	public JDefinedClass visit(ASTNode.Conditional node, JDefinedClass parent)
 	{
 		log.info("visit((Conditional) %s, %s)", node, parent);
-		final JDefinedClass klass = conditionalClass(node, parent);
+		String theid = dynamicID(node.id);
+		final JDefinedClass klass = conditionalClass(theid, parent);
 		conditionMethod(klass, node);
-		getterMethod(parent, node.id, null, klass);
+		getterMethod(parent, theid, null, klass);
 		return klass;
 	}
 
-	JDefinedClass conditionalClass(ASTNode.Conditional node, JDefinedClass parent)
+	JDefinedClass conditionalClass(String id, JDefinedClass parent)
 	{
 		final JDefinedClass klass;
 		try {
-			klass = parent._class("If_" + node.id);
+			klass = parent._class("If_" + id);
 		} catch(JClassAlreadyExistsException e) {
 			throw new RuntimeException("WTF?");
 		}
@@ -582,7 +611,7 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 		log.info("%s.metadata/if has been set", klass);
 
 		Metadata metadata = (Metadata) parent.metadata;
-		metadata.registerContext(node.id, klass);
+		metadata.registerContext(id, klass);
 
 		return klass;
 	}
@@ -603,15 +632,15 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 	public JDefinedClass visit(ASTNode.ElseBranch node, JDefinedClass parent)
 	{
 		log.info("visit((ElseBranch) %s, %s)", node, parent);
-		final JDefinedClass klass = elseBranchClass(node, parent);
+		final JDefinedClass klass = elseBranchClass(dynamicID(node.id), parent);
 		return klass;
 	}
 
-	public JDefinedClass elseBranchClass(ASTNode.ElseBranch node, JDefinedClass parent)
+	public JDefinedClass elseBranchClass(String id, JDefinedClass parent)
 	{
 		final JDefinedClass klass;
 		try {
-			klass = parent._class("Else_" + node.id);
+			klass = parent._class("Else_" + id);
 		} catch(JClassAlreadyExistsException e) {
 			throw new RuntimeException("WTF?");
 		}
@@ -622,7 +651,7 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 		log.info("%s.metadata has been set", klass);
 
 		MetadataIfBranch metadata = (MetadataIfBranch) parent.metadata;
-		metadata.registerElseParam(node.id, JExpr._new(klass));
+		metadata.registerElseParam(id, JExpr._new(klass));
 
 		return klass;
 	}
@@ -662,9 +691,9 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 
 		ASTNode.FileHandle thefile = new ASTNode.FileHandle(signalml, "thefile", null);
 
-		new ASTNode.BinaryParam(thefile, "readTest", new TypeInt(),
+		new ASTNode.BinaryParam(thefile, Processor.parse("'readTest'"), new TypeInt(),
 					Expression.Const.make("<i4"), Expression.Const.make(25));
-		new ASTNode.BinaryParam(thefile, "readTestConv", new TypeInt(),
+		new ASTNode.BinaryParam(thefile, Processor.parse("'readTestConv'"), new TypeInt(),
 					Expression.Const.make("|S8"), Expression.Const.make(0));
 
 		final NameCheck check = new NameCheck();

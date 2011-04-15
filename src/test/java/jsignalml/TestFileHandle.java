@@ -15,7 +15,8 @@ public class TestFileHandle {
 
 	@Test public void open_filetype() throws Exception {
 		ASTNode.FileHandle<? extends FileType> h =
-			ASTNode.FileHandle.make(codec, file1, file1expr, "binary");
+			ASTNode.FileHandle.make(codec, Expression.Const.make(file1),
+						file1expr, "binary");
 		// TODO: write eval visitor for ASTNodes
 		// FileType F = h.open(empty_state, null);
 		// assertThat(F, instanceOf(FileType.BinaryFile.class));

@@ -21,6 +21,7 @@ public abstract class ASTNode {
 
 	final ASTNode parent;
 	final Expression id;
+	final String static_id;
 	final List<ASTNode> children;
 
 	public <T> T accept(ASTVisitor<T> v, T data) {
@@ -46,6 +47,17 @@ public abstract class ASTNode {
 		this.children = util.newLinkedList();
 		if (parent != null)
 			parent.children.add(this);
+
+		this.static_id = _resolve_id(id);
+	}
+
+	private static String _resolve_id(Expression id) {
+		if (!(id instanceof Expression.Const))
+			return null;
+		final Type ans = ((Expression.Const)id).value;
+		if(!(ans instanceof TypeString))
+			throw new ExpressionFault.TypeError();
+		return ((TypeString)ans).value;
 	}
 
 	protected ASTNode(ASTNode parent, String id) {
@@ -53,7 +65,9 @@ public abstract class ASTNode {
 	}
 
 	public ASTNode find(String id) {
-		log.debug("[%s] looking for %s", this.id, id);
+		log.debug("[%s] looking for %s",
+			  this.static_id != null ? this.static_id : this.id,
+			  id);
 		ASTNode ans = this.lookup(id);
 		if (ans != null)
 			log.info("[%s] found %s here", this.id, id);
@@ -69,7 +83,7 @@ public abstract class ASTNode {
 	public ASTNode lookup(String id) {
 		for(ASTNode child: this.children)
 			// child.id might be null
-			if (id.equals(child.id))
+			if (id.equals(child.static_id))
 				return child;
 		return null;
 	}
@@ -205,6 +219,10 @@ public abstract class ASTNode {
 			super(parent, id, type);
 			this.expr = expr;
 		}
+		public ExprParam(ASTNode parent, String id, Type type, Expression expr)
+		{
+			this(parent, Expression.Const.make(id), type, expr);
+		}
 
 		@Override
 		public String toString()
@@ -296,10 +314,14 @@ public abstract class ASTNode {
 				throw new SyntaxError("<file> must have a parent");
 			this.filename = filename;
 		}
+		public FileHandle(ASTNode parent, String id, Expression filename)
+		{
+			this(parent, Expression.Const.make(id), filename);
+		}
 
 		public static <V extends FileType>
 		FileHandle<V> make(ASTNode parent, Expression filename) {
-			return new FileHandle<V>(parent, null, filename);
+			return new FileHandle<V>(parent, (Expression)null, filename);
 		}
 
 		public static FileHandle make(ASTNode parent, Expression id,
@@ -388,7 +410,7 @@ public abstract class ASTNode {
 		public String toString()
 		{
 			return format("ASTNode.Positional %s:%s",
-				      id, type.getClass().getSimpleName());
+				      static_id, type.getClass().getSimpleName());
 		}
 
 		@Override

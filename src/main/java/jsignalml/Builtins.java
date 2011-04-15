@@ -132,7 +132,6 @@ public class Builtins extends ASTNode {
 	{
 		log.debug("find: looking for %s", name);
 
-		assert this.children.size() == 1;
 		ASTNode owner = this.children.get(0);
 
 		if (name.equals("factorial")) {
