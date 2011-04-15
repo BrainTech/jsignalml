@@ -9,13 +9,6 @@ import java.util.Map;
 import java.util.TreeMap;
 
 public class TestBinaryParam {
-	static final Frame reader = new Frame(null);
-	/* parent=null means that no other parameters can be called,
-	   but this should be OK in this particuar case.
-	   If ever Frame is modified to actually require the parent,
-	   a NullPointerException should occur and this test corrected.
-	*/
-
 	static final String file1 = "target/test-classes/file1";
 	static final Expression file1expr = Expression.Const.make(file1);
 
@@ -32,6 +25,7 @@ public class TestBinaryParam {
 
 	@Test public void read_binary_file_param() throws Exception
 	{
+		assertNotNull(handle);
 		ASTNode.Param p = new ASTNode.BinaryParam(handle,
 							  Expression.Const.make("p"),
 							  new TypeInt(),

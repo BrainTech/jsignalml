@@ -42,7 +42,7 @@ public class TestCodecBuilding {
 	static void assert_arg_is(ASTNode.Positional arg, String name,
 				  Class<? extends Type> type)
 	{
-		assertEquals(name, arg.id);
+		assertEquals(name, arg.static_id);
 		assertEquals(type, arg.type.getClass());
 	}
 
@@ -97,7 +97,7 @@ public class TestCodecBuilding {
 
 		ASTNode.Param p = (ASTNode.Param) root.find("file").find("only");
 
-		assertEquals("only", p.id);
+		assertEquals("only", p.static_id);
 		assertThat( p.type, instanceOf(TypeInt.class) );
 		assertEquals(4, p.args.size());
 		assertThat( p, instanceOf(ASTNode.ExprParam.class) );

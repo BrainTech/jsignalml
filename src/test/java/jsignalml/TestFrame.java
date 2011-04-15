@@ -49,8 +49,7 @@ public class TestFrame {
 
 	@Test public void test_parent_call() throws Exception
 	{
-		List<Type> noargs = util.newLinkedList();
-		assertEquals(map1.get("c"), state1.lookup("c").call(noargs));
+		assertEquals(map1.get("c"), state1.lookup("c"));
 	}
 
 	@Test(expected=ExpressionFault.TypeError.class)
@@ -60,4 +59,10 @@ public class TestFrame {
 		state1.lookup("c").call(args);
 	}
 
+	@Test(expected=ExpressionFault.TypeError.class)
+	public void test_parent_call_without_args() throws Exception
+	{
+		List<Type> noargs = util.newLinkedList();
+		state1.lookup("c").call(noargs);
+	}
 }

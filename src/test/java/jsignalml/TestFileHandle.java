@@ -7,8 +7,6 @@ import static org.hamcrest.core.IsInstanceOf.instanceOf;
 import java.util.TreeMap;
 
 public class TestFileHandle {
-	static final Frame empty_state = new Frame(null);
-
 	static final String file1 = "target/test-classes/file1";
 	static final Expression file1expr = Expression.Const.make(file1);
 	final ASTNode.Signalml codec = new ASTNode.Signalml("Test");
