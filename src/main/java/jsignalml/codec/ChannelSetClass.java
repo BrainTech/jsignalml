@@ -1,0 +1,119 @@
+package jsignalml.codec;
+
+import jsignalml.util;
+import jsignalml.Channel;
+import jsignalml.ContextVisitor;
+import jsignalml.ExpressionFault;
+import jsignalml.TypeInt;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+
+public abstract class ChannelSetClass
+	extends Context implements jsignalml.ChannelSet {
+
+	final ArrayList<Channel> channel_list = util.newArrayList();
+
+	@Override
+	public <T> T _accept(ContextVisitor<T> v, String name, T data)
+	{
+		return v.visit(this, name, data);
+	}
+
+	protected void register_channel(Channel channel) {
+		this.channel_list.add(channel);
+	}
+
+	public long get_number_of_channels() throws ExpressionFault {
+		return this.channel_list.size();
+	}
+
+	public Channel get_channel(TypeInt channel) {
+		return this.channel_list.get(channel.getValue().intValue());
+	}
+
+	/*
+	 * Return the sampling frequency, if it is the same in all channels.
+	 *
+	 * @throws ExpressionFault if has_uniform_sampling_frequency() is false
+	 */
+	public double get_sampling_frequency() throws ExpressionFault
+	{
+		assert !this.channel_list.isEmpty();
+
+		double ans = 0.0; // value will not be used
+		int i = 0;
+		for(Channel channel: this.channel_list) {
+			double ans2 = channel.get_sampling_frequency();
+			if(i++ == 0)
+				ans = ans2;
+			else
+				if (ans2 != ans)
+					throw new ExpressionFault.ValueError
+						("non-uniform sampling frequency");
+		}
+		return ans;
+	}
+
+	public boolean has_uniform_sampling_frequency() throws ExpressionFault
+	{
+		assert !this.channel_list.isEmpty();
+
+		double ans = 0.0; // value will not be used
+		int i = 0;
+		for(Channel channel: this.channel_list) {
+			double ans2 = channel.get_sampling_frequency();
+			if(i++ == 0)
+				ans = ans2;
+			else
+				if (ans2 != ans)
+					return false;
+		}
+		return true;
+	}
+
+	/*
+	 * Return the number of samples, if it is the same in all channels.
+	 *
+	 * @throws ExpressionFault if has_uniform_sampling_frequency() is false
+	 */
+	public long get_number_of_samples() throws ExpressionFault
+	{
+		assert !this.channel_list.isEmpty();
+
+		long ans = 0; // value will not be used
+		int i = 0;
+		for(Channel channel: this.channel_list) {
+			long ans2 = channel.get_number_of_samples();
+			if(i++ == 0)
+				ans = ans2;
+			else
+				if (ans2 != ans)
+					throw new ExpressionFault.ValueError
+						("non-uniform number of samples");
+		}
+		return ans;
+	}
+
+
+	public boolean has_calibration() throws ExpressionFault { return true; };
+
+	/*
+	 * Return values across channels for a single time offset.
+	 */
+	public float[] getSample(long sample)
+	{
+		float ans[] = new float[this.channel_list.size()];
+
+		int i = 0;
+		for(Channel channel: this.channel_list)
+			ans[i++] = channel.getSample(sample);
+
+		return ans;
+	}
+
+	public Iterator<Channel> iterator()
+	{
+		return channel_list.iterator();
+	}
+}

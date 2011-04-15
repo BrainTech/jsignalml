@@ -21,7 +21,7 @@ public abstract class Context extends TypeObject {
 		return this.param_map.get(name).get();
 	}
 
-	Map<String, Context> param_map = jsignalml.util.newHashMap();
+	final Map<String, Context> param_map = jsignalml.util.newHashMap();
 
 	public Type get() {
 		return this;

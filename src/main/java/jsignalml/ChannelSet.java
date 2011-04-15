@@ -5,7 +5,7 @@ package jsignalml;
  */
 public interface ChannelSet extends Iterable<Channel> {
 	long get_number_of_channels() throws ExpressionFault;
-	Channel get_channel(TypeInt channel);
+	Channel get_channel(int channel);
 
 	/*
 	 * Return the sampling frequency, if it is the same in all channels.
@@ -30,7 +30,7 @@ public interface ChannelSet extends Iterable<Channel> {
 	/*
 	 * Return values across channels for a single time offset.
 	 */
-	float[] getSample(TypeInt sample);
+	float[] getSample(long sample);
 
 	/* Fill dst with samples. Will be implemented in the abstract
 	 * base class by calling lower level methods.

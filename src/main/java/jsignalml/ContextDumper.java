@@ -5,6 +5,8 @@ import jsignalml.codec.OuterLoopClass;
 import jsignalml.codec.ConditionalClass;
 import jsignalml.codec.Param;
 import jsignalml.codec.FunctionParam;
+import jsignalml.codec.ChannelSetClass;
+import jsignalml.codec.ChannelClass;
 
 /**
  * Produces a human readable representation of the Context tree.
@@ -49,6 +51,16 @@ public class ContextDumper implements ContextVisitor<Integer> {
 	@Override public Integer visit(Param node, String name, Integer level)
 	{
 		return dumper.put(level, "%s => %s\n", name, node.get().repr());
+	}
+
+	@Override public Integer visit(ChannelSetClass node, String name, Integer level)
+	{
+		return dumper.put(level, "Channelset %s\n", name);
+	}
+
+	@Override public Integer visit(ChannelClass node, String name, Integer level)
+	{
+		return dumper.put(level, "Channel %s\n", name);
 	}
 
 	@Override public Integer visit(FunctionParam node, String name, Integer level)
