@@ -115,7 +115,7 @@ public class EvalVisitor extends ExpressionVisitor<Type> {
 
 	public static Type evaluate(Expression expr)
 	{
-		CallHelper builtins = new Frame(Builtins.instance);
+		CallHelper builtins = new Frame(Builtins.instance());
 		EvalVisitor visitor = new EvalVisitor(builtins);
 		return expr.accept(visitor);
 	}

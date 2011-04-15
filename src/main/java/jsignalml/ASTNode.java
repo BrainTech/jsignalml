@@ -97,7 +97,7 @@ public abstract class ASTNode {
 	public static class Signalml extends ASTNode {
 		public Signalml(String name)
 		{
-			super(Builtins.instance, name);
+			super(Builtins.instance(), name);
 		}
 
 		@Override

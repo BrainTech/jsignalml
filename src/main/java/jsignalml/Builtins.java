@@ -18,7 +18,12 @@ public class Builtins extends ASTNode {
 		super(null, "builtins");
 	}
 
-	public static final Builtins instance = new Builtins();
+	private static Builtins instance;
+	public static Builtins instance() {
+		if (instance==null)
+			instance = new Builtins();
+		return instance;
+	}
 
 	public static class factorial extends TypeObject {
 		public static TypeInt call(TypeInt x)
