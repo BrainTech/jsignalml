@@ -41,6 +41,7 @@ public class CodecParser {
 
 	public ASTNode dispatch(ASTNode parent, Element element)
 	{
+		log.debug("dispatch: %s id='%s'", element, element.getAttribute("id"));
 		final String name = element.getNodeName();
 		if (name.equals("signalml"))
 			return this.do_signalml(parent, element);
@@ -132,8 +133,8 @@ public class CodecParser {
 		ASTNode.Param p = null;
 
 		if (expr != null) {
-			if (format == null || offset == null || pattern == null ||
-			                line == null || xpath == null)
+			if (format == null && offset == null && pattern == null &&
+			                line == null && xpath == null)
 				p = new ASTNode.ExprParam(parent, id, type, expr);
 		} else if (format != null && offset != null) {
 			if (expr == null && pattern == null && line == null && xpath == null)
@@ -143,11 +144,11 @@ public class CodecParser {
 		} else if (xpath != null) {
 			throw new UnsupportedOperationException();
 		} else {
-			throw new IllegalArgumentException("not enough attributes");
+			throw new SyntaxError("not enough attributes: " + element);
 		}
 
 		if (p == null)
-			throw new IllegalArgumentException("too many attributes");
+			throw new SyntaxError("too many attributes: " + element);
 
 		return p;
 	}
