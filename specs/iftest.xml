@@ -34,4 +34,16 @@
   <param id='call_wrap_builtin_strip'>
     <expr>wrap_builtin_strip(' bbb ')</expr>
   </param>
+
+  <param id='test_range_1'>
+    <expr>range(30)</expr>
+  </param>
+
+  <param id='test_range_2'>
+    <expr>range(3, 30)</expr>
+  </param>
+
+  <param id='test_range_3'>
+    <expr>range(2, 30, 5)</expr>
+  </param>
 </signalml>

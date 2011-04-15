@@ -3,6 +3,7 @@ package jsignalml;
 import org.apache.commons.lang.StringUtils;
 import java.math.BigInteger;
 import java.util.List;
+import java.util.ArrayList;
 
 public class Builtins extends ASTNode {
 	static final Logger log = new Logger(Builtins.class);
@@ -133,6 +134,35 @@ public class Builtins extends ASTNode {
 	private static TypeObject _len = new len();
 	public static TypeObject len(){ return _len; }
 
+	public static class range extends TypeObject {
+		public static TypeList call(TypeInt start, TypeInt stop, TypeInt step)
+		{
+			ArrayList<TypeInt> list = util.newArrayList();
+			while(start.compareTo(stop) < 0) {
+				list.add(start);
+				start = start.add(step);
+			}
+			return new TypeList(list);
+		}
+
+		@Override
+		public TypeList call(List<Type> args)
+		{
+			if(args.size() == 1)
+				return call(new TypeInt(0), (TypeInt)args.get(0), new TypeInt(1));
+			else if(args.size() == 2)
+				return call((TypeInt)args.get(0), (TypeInt)args.get(1), new TypeInt(1));
+			else if(args.size() == 3)
+				return call((TypeInt)args.get(0), (TypeInt)args.get(1), (TypeInt)args.get(2));
+			else
+				throw new ExpressionFault.ArgMismatch(3, args.size());
+		}
+	}
+
+	private static TypeObject _range = new range();
+	public static TypeObject range(){ return _range; }
+
+
 	public ASTNode.BuiltinFunction lookup(String name)
 	{
 		log.debug("find: looking for %s", name);
@@ -156,13 +186,20 @@ public class Builtins extends ASTNode {
 			return function;
 		} else if (name.equals("bool")) {
 			ASTNode.BuiltinFunction function =
-				new ASTNode.BuiltinFunction(owner, name, new TypeString(), _bool);
-			function.arg("s", new TypeString());
+				new ASTNode.BuiltinFunction(owner, name, new TypeInt(), _bool);
+			function.arg("s", null);
 			return function;
 		} else if (name.equals("len")) {
 			ASTNode.BuiltinFunction function =
-				new ASTNode.BuiltinFunction(owner, name, new TypeString(), _len);
-			function.arg("s", new TypeString());
+				new ASTNode.BuiltinFunction(owner, name, new TypeInt(), _len);
+			function.arg("sequence", null);
+			return function;
+		} else if (name.equals("range")) {
+			ASTNode.BuiltinFunction function =
+				new ASTNode.BuiltinFunction(owner, name, new TypeList(), _range);
+			function.arg("start", new TypeInt());
+			function.arg("stop", new TypeInt());
+			function.arg("step", new TypeInt());
 			return function;
 		}
 
