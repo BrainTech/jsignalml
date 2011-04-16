@@ -118,6 +118,19 @@
 	 </param>
      </for-each>
 
+     <channelset id='data'>
+       <for-each id='channels' var='index' sequence='range(number_of_channels)'>
+	 <channel mapping='mapping'>
+	   <format>'&lt;i2'</format>
+	 </channel>
+
+	 <param id='mapping' type='int'>
+	   <arg type='int' name='sample' />
+	   <expr>data_offset + (sample * number_of_samples + index) * data_cell_size</expr>
+	 </param>
+       </for-each>
+     </channelset>
+
      <param id='type_map_name'>
          <expr>
 	   {'AU': 'Authentication_key',

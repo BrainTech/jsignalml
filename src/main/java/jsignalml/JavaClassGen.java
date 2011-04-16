@@ -547,9 +547,9 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 		final JMethod sequence = klass.method(JMod.PROTECTED, list_type, "getSequence");
 		final JavaExprGen javagen =
 			new JavaExprGen(this.model, createResolver(node, null));
-		final JVar range = sequence.body().decl(list_type, "range",
+		final JVar range = sequence.body().decl(this.model.ref(Type.class), "range",
 							node.sequence.accept(javagen));
-		sequence.body()._return(range);
+		make_or_return(sequence.body(), new TypeList(), range);
 		return sequence;
 	}
 
