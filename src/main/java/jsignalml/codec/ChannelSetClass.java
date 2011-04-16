@@ -5,12 +5,13 @@ import jsignalml.Channel;
 import jsignalml.ContextVisitor;
 import jsignalml.ExpressionFault;
 import jsignalml.TypeInt;
+import jsignalml.Logger;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 
-public abstract class ChannelSetClass
-	extends Context implements jsignalml.ChannelSet {
+public abstract class ChannelSetClass extends Context implements jsignalml.ChannelSet {
+	static final Logger log = new Logger(ChannelSetClass.class);
 
 	final ArrayList<Channel> channel_list = util.newArrayList();
 
@@ -20,8 +21,11 @@ public abstract class ChannelSetClass
 		return v.visit(this, name, data);
 	}
 
-	protected void registerChannel(Channel channel) {
+	protected void registerChannel(Channel channel)
+	{
 		this.channel_list.add(channel);
+		log.info("registered channel %s (total %d)", channel,
+			 this.getNumberOfChannels());
 	}
 
 	public int getNumberOfChannels() throws ExpressionFault {

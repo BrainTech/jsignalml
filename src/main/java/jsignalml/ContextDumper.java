@@ -12,6 +12,8 @@ import jsignalml.codec.ChannelClass;
  * Produces a human readable representation of the Context tree.
  */
 public class ContextDumper implements ContextVisitor<Integer> {
+	static final Logger log = new Logger(ContextDumper.class);
+
 	final TreeDumper dumper = new TreeDumper();
 
 	@Override public Integer visit(Signalml node, String name, Integer level)

@@ -60,6 +60,7 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 	}
 
 	final JCodeModel model = new JCodeModel();
+	JFieldVar log_var = null; // this should be set when Signalml class is created.
 
 	private String dynamicID(Expression id)
 	{
@@ -97,6 +98,12 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 		}
 		klass._extends(jsignalml.codec.Signalml.class);
 
+		{
+			final JClass logger_class = this.model.ref(Logger.class);
+			this.log_var = klass.field(JMod.STATIC|JMod.FINAL, logger_class, "log",
+					   JExpr._new(logger_class).arg(klass.dotclass()));
+		}
+
 		klass.metadata = new Metadata(klass);
 		log.info("%s.metadata has been set", klass);
 
@@ -118,6 +125,8 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 			final JMethod register_params =
 				klass.method(JMod.PUBLIC, JavaClassGen.this.model.VOID, method_name);
 			this.create_params = register_params.body();
+			this.create_params.add(JavaClassGen.this.log_var.invoke("debug")
+					       .arg(klass.name() + ".createParams()"));
 		}
 
 		Metadata(JDefinedClass klass)
