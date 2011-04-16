@@ -339,9 +339,7 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 		final JavaExprGen javagen =
 			new JavaExprGen(this.model, createResolver(node, null));
 		JExpression value = node.expr.accept(javagen);
-		if (node.type != null)
-			value = JExpr._new(javatype).invoke("make").arg(value);
-		impl.body()._return(value);
+		make_or_return(impl.body(), node.type, value);
 		return impl;
 	}
 
@@ -379,10 +377,7 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 		final JavaExprGen javagen =
 			new JavaExprGen(this.model, createResolver(node, locals));
 		JExpression value = node.expr.accept(javagen);
-
-		if (node.type != null)
-			value = JExpr._new(javatype).invoke("make").arg(value);
-		impl.body()._return(value);
+		make_or_return(impl.body(), node.type, value);
 		return impl;
 	}
 
@@ -401,15 +396,7 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 			.arg(JExpr.ref(JExpr.invoke("buffer"), "source"))
 			.arg(offset_param);
 		final JVar input = body.decl(javatype2, "input", expr);
-		if (type != null) {
-			// conversion cast requiered
-			final JVar var = body.decl(javatype, "var",
-						   JExpr._new(javatype).invoke("make").arg(input));
-			body._return(var);
-		} else {
-			// no need to cast
-			body._return(input);
-		}
+		make_or_return(body, type, input);
 		return impl;
 	}
 
@@ -467,6 +454,25 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 		return klass;
 	}
 
+	/**
+	 * If type is not null, make sure that value is of this type, by
+	 * invoking type.make(value). Otherwise just make body return value.
+	 */
+	public void make_or_return(JBlock body, Type type, JExpression value)
+	{
+		final JClass javatype = convertTypeToJClass(type);
+		if (type != null) {
+			// conversion cast requiered
+			final JVar var =
+				body.decl(javatype, "var",
+					  JExpr._new(javatype).invoke("make").arg(value));
+			body._return(var);
+		} else {
+			// no need to cast
+			body._return(value);
+		}
+	}
+
 	public JMethod getterMethod(JDefinedClass klass, String ident, Type type,
 				     JDefinedClass nested)
 	{
@@ -477,15 +483,7 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 		final JBlock body = getter.body();
 		final JVar value = body.decl(convertTypeToJClass(null), "value",
 					     JExpr.invoke("access").arg(ident));
-		if (type != null) {
-			// conversion cast requiered
-			final JVar var = body.decl(typeref, "var",
-						   JExpr._new(typeref).invoke("make").arg(value));
-			body._return(var);
-		} else {
-			// no need to cast
-			body._return(value);
-		}
+		make_or_return(body, type, value);
 		return getter;
 	}
 
