@@ -24,12 +24,12 @@ public abstract class ChannelSetClass
 		this.channel_list.add(channel);
 	}
 
-	public long get_number_of_channels() throws ExpressionFault {
+	public int getNumberOfChannels() throws ExpressionFault {
 		return this.channel_list.size();
 	}
 
-	public Channel get_channel(TypeInt channel) {
-		return this.channel_list.get(channel.getValue().intValue());
+	public Channel getChannel(int channel) {
+		return this.channel_list.get(channel);
 	}
 
 	/*
@@ -77,7 +77,7 @@ public abstract class ChannelSetClass
 	 *
 	 * @throws ExpressionFault if has_uniform_sampling_frequency() is false
 	 */
-	public long get_number_of_samples() throws ExpressionFault
+	public long getNumberOfSamples() throws ExpressionFault
 	{
 		assert !this.channel_list.isEmpty();
 

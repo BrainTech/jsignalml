@@ -654,6 +654,33 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 		return klass;
 	}
 
+	@Override
+	public JDefinedClass visit(ASTNode.ChannelSet node, JDefinedClass parent)
+	{
+		log.info("visit((ChannelSet) %s, %s)", node, parent);
+		final JDefinedClass klass = channelSetClass(dynamicID(node.id), parent);
+		return klass;
+	}
+
+	public JDefinedClass channelSetClass(String id, JDefinedClass parent)
+	{
+		final JDefinedClass klass;
+		try {
+			klass = parent._class("ChannelSet_" + id);
+		} catch(JClassAlreadyExistsException e) {
+			throw new RuntimeException("WTF?");
+		}
+
+		klass._extends(jsignalml.codec.ChannelSetClass.class);
+
+		klass.metadata = new Metadata(klass);
+		log.info("%s.metadata has been set", klass);
+
+		Metadata metadata = (Metadata) parent.metadata;
+		metadata.registerContext(id, klass);
+
+		return klass;
+	}
 
 	////////////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////////////

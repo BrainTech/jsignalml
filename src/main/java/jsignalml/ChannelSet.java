@@ -4,8 +4,8 @@ package jsignalml;
  * introduction of this concept now will make things easier later on.
  */
 public interface ChannelSet extends Iterable<Channel> {
-	long get_number_of_channels() throws ExpressionFault;
-	Channel get_channel(int channel);
+	int getNumberOfChannels() throws ExpressionFault;
+	Channel getChannel(int channel);
 
 	/*
 	 * Return the sampling frequency, if it is the same in all channels.
@@ -22,7 +22,7 @@ public interface ChannelSet extends Iterable<Channel> {
 	 *
 	 * @throws ExpressionFault if has_uniform_sampling_frequency() is false
 	 */
-	long get_number_of_samples()
+	long getNumberOfSamples()
 		throws ExpressionFault;
 
 	boolean has_calibration() throws ExpressionFault;

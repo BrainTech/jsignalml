@@ -7,7 +7,6 @@ import jsignalml.codec.ConditionalClass;
 import jsignalml.codec.ConditionalClass.ElseBranchClass;
 import jsignalml.codec.Param;
 import jsignalml.codec.FunctionParam;
-import jsignalml.codec.ChannelSetClass;
 import jsignalml.codec.ChannelClass;
 
 public interface ContextVisitor<T> {
@@ -19,6 +18,6 @@ public interface ContextVisitor<T> {
 	T visit(ElseBranchClass node, String name, T parent);
 	T visit(Param node, String name, T parent);
 	T visit(FunctionParam node, String name, T parent);
-	T visit(ChannelSetClass node, String name, T parent);
+	T visit(ChannelSet node, String name, T parent);
 	T visit(ChannelClass node, String name, T parent);
 }
