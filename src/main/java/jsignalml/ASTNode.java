@@ -138,15 +138,38 @@ public abstract class ASTNode {
 	}
 
 	public static class Channel extends ASTNode {
-		public Channel(ASTNode parent, Expression id)
+		public final Expression mapping, format;
+
+		public Channel(ASTNode parent, Expression id, 
+			       Expression mapping, Expression format)
 		{
 			super(parent, id);
+
+			this.mapping = mapping;
+			this.format = format;
+
+			if (mapping == null)
+				throw new SyntaxError("<channel> must have mapping attribute");
+			if (format == null)
+				throw new SyntaxError("<channel> must have format attribute");
+
+			final FileHandle<? extends FileType> handle = parent.lookupFile();
+			if (handle == null)
+				throw new SyntaxError("<channel> must live inside <file>");
+
+			boolean found_channelset = false;
+			for(ASTNode node = parent; node!=null; node=node.parent)
+				if(node instanceof ChannelSet)
+					found_channelset = true;
+			if(!found_channelset)
+				throw new SyntaxError("<channel> must live inside <file>");
 		}
 
 		@Override
 		public String toString()
 		{
-			return format("ASTNode.Channel %s", id);
+			return format("ASTNode.Channel %s mapping=%s format=%s", id,
+				      mapping, format);
 		}
 
 		@Override
@@ -306,7 +329,6 @@ public abstract class ASTNode {
 	public static class FileHandle<T extends FileType> extends ASTNode
 	{
 		public final Expression filename; // may be null
-		public final List<DataHandle> datas = util.newLinkedList();
 
 		public FileHandle(ASTNode parent, Expression id, Expression filename) {
 			super(parent, id);
@@ -333,11 +355,6 @@ public abstract class ASTNode {
 			throw new IllegalArgumentException(format("unkown file type '%s'", type));
 		}
 
-		void addData(DataHandle data)
-		{
-			this.datas.add(data);
-		}
-
 		@Override
 		public String toString()
 		{
@@ -353,38 +370,6 @@ public abstract class ASTNode {
 		@Override
 		public FileHandle<? extends FileType> lookupFile() {
 			return this;
-		}
-	}
-
-	public static class DataHandle extends ASTNode {
-		public final Expression mapping, format;
-
-		public DataHandle(ASTNode parent, Expression id,
-				  Expression mapping, Expression format)
-		{
-			super(parent, id);
-			if (parent==null)
-				throw new SyntaxError("<data> must have a parent");
-			this.mapping = mapping;
-			this.format = format;
-
-			final FileHandle<? extends FileType> handle = parent.lookupFile();
-			if (handle == null)
-				throw new SyntaxError("<data> must live inside <file>");
-			handle.addData(this);
-		}
-
-		@Override
-		public String toString()
-		{
-			return format("ASTNode.DataHandle id mapping=%s format=%s",
-				      id, mapping, format);
-		}
-
-		@Override
-		public <T> T _accept(ASTVisitor<T> v, T data)
-		{
-			return v.visit(this, data);
 		}
 	}
 

@@ -65,8 +65,6 @@ public class CodecParser {
 			return this.do_conditional(parent, element, true);
 		if (name.equals("file"))
 			return this.do_file(parent, element);
-		if (name.equals("data"))
-			return this.do_data(parent, element);
 		if (name.equals("expr") || name.equals("format") || name.equals("offset")
 		    || name.equals("pattern") || name.equals("line") || name.equals("xpath"))
 			return null; /* handled directly */
@@ -193,8 +191,10 @@ public class CodecParser {
 		assert element.getNodeName().equals("channel");
 
 		final Expression id = _identifier(element);
+		final Expression mapping = _null_or_parse(_attribute(element, "mapping"));
+		final Expression format = _null_or_parse(_attribute(element, "format"));
 
-		final ASTNode.Channel node = new ASTNode.Channel(parent, id);
+		final ASTNode.Channel node = new ASTNode.Channel(parent, id, mapping, format);
 		return node;
 	}
 
@@ -246,17 +246,6 @@ public class CodecParser {
 		final Expression id = new Expression.BinaryOp(SExpressionParser.ADD, parent.id,
 							      Expression.Const.make("_else"));
 		return new ASTNode.ElseBranch(parent, id);
-	}
-
-	public ASTNode.DataHandle do_data(ASTNode parent, Element element)
-	{
-		assert element.getNodeName().equals("data");
-
-		final Expression id = _identifier(element);
-		final Expression mapping = _null_or_parse(_attribute(element, "mapping"));
-		final Expression format = _null_or_parse(_attribute(element, "format"));
-
-		return new ASTNode.DataHandle(parent, id, mapping, format);
 	}
 
 	////////////////////////////////////////////////////////////////////////

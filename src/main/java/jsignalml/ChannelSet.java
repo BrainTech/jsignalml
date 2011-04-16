@@ -12,9 +12,9 @@ public interface ChannelSet extends Iterable<Channel> {
 	 *
 	 * @throws ExpressionFault if has_uniform_sampling_frequency() is false
 	 */
-	double get_sampling_frequency()
+	double getSamplingFrequency()
 		throws ExpressionFault;
-	boolean has_uniform_sampling_frequency()
+	boolean hasUniformSamplingFrequency()
 		throws ExpressionFault;
 
 	/*

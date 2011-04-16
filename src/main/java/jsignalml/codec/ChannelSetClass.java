@@ -20,7 +20,7 @@ public abstract class ChannelSetClass
 		return v.visit(this, name, data);
 	}
 
-	protected void register_channel(Channel channel) {
+	protected void registerChannel(Channel channel) {
 		this.channel_list.add(channel);
 	}
 
@@ -37,14 +37,14 @@ public abstract class ChannelSetClass
 	 *
 	 * @throws ExpressionFault if has_uniform_sampling_frequency() is false
 	 */
-	public double get_sampling_frequency() throws ExpressionFault
+	public double getSamplingFrequency() throws ExpressionFault
 	{
 		assert !this.channel_list.isEmpty();
 
 		double ans = 0.0; // value will not be used
 		int i = 0;
 		for(Channel channel: this.channel_list) {
-			double ans2 = channel.get_sampling_frequency();
+			double ans2 = channel.getSamplingFrequency();
 			if(i++ == 0)
 				ans = ans2;
 			else
@@ -55,14 +55,14 @@ public abstract class ChannelSetClass
 		return ans;
 	}
 
-	public boolean has_uniform_sampling_frequency() throws ExpressionFault
+	public boolean hasUniformSamplingFrequency() throws ExpressionFault
 	{
 		assert !this.channel_list.isEmpty();
 
 		double ans = 0.0; // value will not be used
 		int i = 0;
 		for(Channel channel: this.channel_list) {
-			double ans2 = channel.get_sampling_frequency();
+			double ans2 = channel.getSamplingFrequency();
 			if(i++ == 0)
 				ans = ans2;
 			else
@@ -84,7 +84,7 @@ public abstract class ChannelSetClass
 		long ans = 0; // value will not be used
 		int i = 0;
 		for(Channel channel: this.channel_list) {
-			long ans2 = channel.get_number_of_samples();
+			long ans2 = channel.getNumberOfSamples();
 			if(i++ == 0)
 				ans = ans2;
 			else

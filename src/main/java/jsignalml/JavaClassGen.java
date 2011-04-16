@@ -4,6 +4,7 @@ import static java.lang.String.format;
 import java.util.List;
 import java.util.Map;
 import java.util.HashMap;
+import java.util.Arrays;
 import java.io.File;
 import java.io.OutputStream;
 import org.apache.log4j.BasicConfigurator;
@@ -687,6 +688,109 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 		metadata.registerContext(id, klass);
 
 		return klass;
+	}
+
+	@Override
+	public JDefinedClass visit(ASTNode.Channel node, JDefinedClass parent)
+	{
+		log.info("visit((Channel) %s, %s)", node, parent);
+		final JDefinedClass klass = channelClass(dynamicID(node.id), parent);
+		registerChannelConstructor(klass);
+		underBufferMethod(klass);
+		sampleFormatMethod(klass, node);
+		mapSampleMethod(klass, node);
+		getSamplingFrequencyMethod(klass, node);
+		getNumberOfSamplesMethod(klass, node);
+		getChannelNameMethod(klass, node);
+		return klass;
+	}
+
+	public JMethod registerChannelConstructor(JDefinedClass klass)
+	{
+		JMethod constructor = klass.constructor(JMod.NONE);
+		constructor.body().add(JExpr.invoke("registerChannel").arg(JExpr._this()));
+		return constructor;
+	}
+
+	public JDefinedClass channelClass(String id, JDefinedClass parent)
+	{
+		final JDefinedClass klass;
+		try {
+			klass = parent._class("Channel_" + id);
+		} catch(JClassAlreadyExistsException e) {
+			throw new RuntimeException("WTF?");
+		}
+
+		klass._extends(jsignalml.codec.ChannelClass.class);
+
+		klass.metadata = new Metadata(klass);
+		log.info("%s.metadata has been set", klass);
+
+		Metadata metadata = (Metadata) parent.metadata;
+		metadata.registerContext(id, klass);
+
+		return klass;
+	}
+
+	public JMethod underBufferMethod(JDefinedClass klass)
+	{
+		final JClass buffer = this.model.ref(MyBuffer.class);
+		final JMethod method = klass.method(JMod.PROTECTED, buffer, "_buffer");
+		method.body()._return(JExpr.invoke("buffer"));
+		return method;
+	}
+
+	public JMethod sampleFormatMethod(JDefinedClass klass, ASTNode.Channel node)
+	{
+		final JType string_type = this.model.ref(TypeString.class);
+		final JMethod method = klass.method(JMod.PROTECTED, string_type,
+						    "getSampleFormat");
+		final JavaExprGen javagen =
+			new JavaExprGen(this.model, createResolver(node, null));
+		final JVar value = method.body().decl(this.model.ref(Type.class), "value",
+						      node.format.accept(javagen));
+		make_or_return(method.body(), new TypeString(), value);
+		return method;
+	}
+
+	public JMethod mapSampleMethod(JDefinedClass klass, ASTNode.Channel node)
+	{
+		final JType int_type = this.model.ref(TypeInt.class);
+		final JMethod method = klass.method(JMod.PROTECTED, int_type,
+						    "mapSample");
+		final JVar sample = method.param(this.model.LONG, "sample");
+
+		final List<JVar> locals = Arrays.asList(sample);
+		final JavaExprGen javagen =
+			new JavaExprGen(this.model, createResolver(node, locals));
+		final JVar value = method.body().decl(this.model.ref(Type.class), "value",
+						      node.mapping.accept(javagen));
+		make_or_return(method.body(), new TypeInt(), value);
+		return method;
+	}
+
+	public JMethod getSamplingFrequencyMethod(JDefinedClass klass, ASTNode.Channel node)
+	{
+		final JMethod method = klass.method(JMod.PUBLIC, this.model.DOUBLE,
+						    "getSamplingFrequency");
+		method.body()._return(JExpr.lit(0.0));
+		return method;
+	}
+
+	public JMethod getNumberOfSamplesMethod(JDefinedClass klass, ASTNode.Channel node)
+	{
+		final JMethod method = klass.method(JMod.PUBLIC, this.model.LONG,
+						    "getNumberOfSamples");
+		method.body()._return(JExpr.lit(100));
+		return method;
+	}
+
+	public JMethod getChannelNameMethod(JDefinedClass klass, ASTNode.Channel node)
+	{
+		final JMethod method = klass.method(JMod.PUBLIC, this.model.ref(String.class),
+						    "getChannelName");
+		method.body()._return(JExpr.lit("unknown"));
+		return method;
 	}
 
 	////////////////////////////////////////////////////////////////////////

@@ -120,9 +120,7 @@
 
      <channelset id='data'>
        <for-each id='channels' var='index' sequence='range(number_of_channels)'>
-	 <channel mapping='mapping'>
-	   <format>'&lt;i2'</format>
-	 </channel>
+	 <channel mapping='mapping' format='"&lt;i2"' />
 
 	 <param id='mapping' type='int'>
 	   <arg type='int' name='sample' />

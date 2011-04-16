@@ -47,7 +47,8 @@ public class ASTDumper extends ASTVisitor<Integer> {
 	@Override
 	public Integer visit(ASTNode.Channel node, Integer parent)
 	{
-		return this.header(parent, node, "channel", "");
+		return this.header(parent, node, "data", "format=%s mapping=%s",
+				   node.format, node.mapping);
 	}
 
 	@Override
@@ -95,13 +96,6 @@ public class ASTDumper extends ASTVisitor<Integer> {
 	public Integer visit(ASTNode.ElseBranch node, Integer parent)
 	{
 		return this.header(parent, node, "else", "");
-	}
-
-	@Override
-	public Integer visit(ASTNode.DataHandle node, Integer parent)
-	{
-		this.header(parent, node, "data", "format=%s", node.format);
-		return this.attrib(parent, "mapping", node.mapping);
 	}
 
 	@Override

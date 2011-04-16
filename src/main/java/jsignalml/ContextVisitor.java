@@ -19,5 +19,5 @@ public interface ContextVisitor<T> {
 	T visit(Param node, String name, T parent);
 	T visit(FunctionParam node, String name, T parent);
 	T visit(ChannelSet node, String name, T parent);
-	T visit(ChannelClass node, String name, T parent);
+	T visit(Channel node, String name, T parent);
 }

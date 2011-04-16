@@ -21,8 +21,7 @@ public interface Channel {
 	void getSamples(FloatBuffer dst, long sample) throws BufferUnderflowException;
 	/* void getSamples(DoubleBuffer dst, long sample); */
 
-	double get_sampling_frequency();
-
-	long get_number_of_samples() throws ExpressionFault;
-	String get_channel_name() throws ExpressionFault;
+	double getSamplingFrequency() throws ExpressionFault;
+	long getNumberOfSamples() throws ExpressionFault;
+	String getChannelName() throws ExpressionFault;
 }
