@@ -62,17 +62,24 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 
 	private String dynamicID(Expression id)
 	{
-		final Type ans;
-		try {
-			ans = EvalVisitor.evaluate(id);
-		} catch(ExpressionFault.NameError e) {
-			// expression cannot be evaluated statically
-			return this.makeGeneratedID("gen_id");
+		if (id != null) {
+			Type ans = null;
+			try {
+				ans = EvalVisitor.evaluate(id);
+				assert ans != null;
+			} catch(ExpressionFault.NameError e) {
+				// pass
+			}
+
+			if (ans != null) {
+				if(!(ans instanceof TypeString))
+					throw new ExpressionFault.TypeError();
+				return ((TypeString)ans).value;
+			}
 		}
 
-		if(!(ans instanceof TypeString))
-			throw new ExpressionFault.TypeError();
-		return ((TypeString)ans).value;
+		// expression cannot be evaluated statically
+		return this.makeGeneratedID("gen_id");
 	}
 
 	@Override
