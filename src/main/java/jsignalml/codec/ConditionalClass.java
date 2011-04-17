@@ -50,7 +50,7 @@ public abstract class ConditionalClass extends Context {
 	public abstract void createChannelsElse();
 
 	public abstract class ElseBranchClass extends Context {
-		//@Override
+		@Override
 		public void register(String name, Context child) {
 			ConditionalClass.this.register(name, child);
 		}

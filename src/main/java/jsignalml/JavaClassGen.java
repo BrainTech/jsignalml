@@ -195,25 +195,11 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 	 * Metadata which adds parameters to createIfParams function, for use with an if.
 	 */
 	class MetadataIfBranch extends Metadata {
-		final JBlock else_params;
-		final JBlock else_channels;
-
+		final Metadata elseBranch;
 		MetadataIfBranch(JDefinedClass klass)
 		{
 			super(klass, "If");
-
-			this.else_params = klass.method(JMod.PUBLIC,
-							JavaClassGen.this.model.VOID,
-							"createParamsElse").body();
-			this.else_channels = klass.method(JMod.PUBLIC,
-							  JavaClassGen.this.model.VOID,
-							  "createChannelsElse").body();
-		}
-
-		void registerElseParam(String name, JExpression param_obj)
-		{
-			log.info("register for else %s", name);
-			this.else_params.add(JExpr.invoke("register").arg(name).arg(param_obj));
+			this.elseBranch = new Metadata(this.klass, "Else");
 		}
 	}
 
@@ -758,7 +744,7 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 		log.info("%s.metadata has been set", klass);
 
 		MetadataIfBranch metadata = (MetadataIfBranch) parent.metadata;
-		metadata.registerElseParam(id, JExpr._new(klass));
+		metadata.elseBranch.registerContext(id, klass, JExpr._new(klass));
 
 		return klass;
 	}
