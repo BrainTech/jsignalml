@@ -351,15 +351,17 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 		final JMethod impl = klass.method(JMod.PROTECTED, javatype, "_get");
 
 		final JBlock body = impl.body();
-		final JVar format_ = body.decl(this.model.ref(TypeString.class), "format",
+		final JVar format_ = body.decl(this.model.ref(Type.class), "format",
 					       node.format.accept(javagen));
+		final JExpression format_str = JExpr._new(this.model.ref(TypeString.class))
+			.invoke("make").arg(format_);
 		final JVar offset_ = body.decl(this.model.ref(Type.class), "offset",
 					       node.offset.accept(javagen));
 		final JExpression offset_int = JExpr._new(this.model.ref(TypeInt.class))
 			.invoke("make").arg(offset_);
 		final JClass bitform_class = this.model.ref(BitForm.class);
 		final JVar theformat = body.decl(bitform_class, "theformat",
-						 bitform_class.staticInvoke("get").arg(format_));
+						 bitform_class.staticInvoke("get").arg(format_str));
 		impl.body()._return(JExpr._this().invoke(readfunc).arg(theformat).arg(offset_int));
 		return impl;
 	}

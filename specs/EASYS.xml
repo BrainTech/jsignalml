@@ -118,6 +118,11 @@
            <format>'&lt;i2'</format>
 	   <offset>offset + 2</offset>
 	 </param>
+
+	 <param id='data'>
+	   <format>'|S' + str(record_size)</format>
+	   <offset>offset + 4</offset>
+	 </param>
      </for-each>
 
      <channelset id='data'>

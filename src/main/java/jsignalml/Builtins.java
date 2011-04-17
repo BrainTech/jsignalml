@@ -116,6 +116,24 @@ public class Builtins extends ASTNode {
 	private static TypeObject _bool = new bool();
 	public static TypeObject bool(){ return _bool; }
 
+	public static class str extends TypeObject {
+		public static TypeString call(Type x)
+		{
+			return new TypeString().make(x);
+		}
+
+		@Override
+		public TypeString call(List<Type> args)
+		{
+			if(args.size() != 1)
+				throw new ExpressionFault.ArgMismatch(1, args.size());
+			return call(args.get(0));
+		}
+	}
+
+	private static TypeObject _str = new str();
+	public static TypeObject str(){ return _str; }
+
 	public static class len extends TypeObject {
 		public static TypeInt call(Type x)
 		{
@@ -188,6 +206,11 @@ public class Builtins extends ASTNode {
 			ASTNode.BuiltinFunction function =
 				new ASTNode.BuiltinFunction(owner, name, new TypeInt(), _bool);
 			function.arg("s", null);
+			return function;
+		} else if (name.equals("str")) {
+			ASTNode.BuiltinFunction function =
+				new ASTNode.BuiltinFunction(owner, name, new TypeString(), _str);
+			function.arg("x", null);
 			return function;
 		} else if (name.equals("len")) {
 			ASTNode.BuiltinFunction function =
