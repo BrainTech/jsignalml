@@ -7,7 +7,8 @@ public abstract class Param<T extends Type> extends Context {
 	T cache = null;
 
 	abstract protected T _get();
-	public T get() {
+	public T get()
+	{
 		if (this.cache == null)
 			this.cache = this._get();
 		return this.cache;

@@ -180,6 +180,30 @@ public class Builtins extends ASTNode {
 	private static TypeObject _range = new range();
 	public static TypeObject range(){ return _range; }
 
+	public static class get extends TypeObject {
+		public static Type call(TypeMap map, Type key, Type default_)
+		{
+			if (default_ == null)
+				return map.index(key);
+			else
+				return map.index(key, default_);
+		}
+
+		@Override
+		public Type call(List<Type> args)
+		{
+			if(args.size() == 2)
+				return call((TypeMap)args.get(0), args.get(1), null);
+			else if(args.size() == 3)
+				return call((TypeMap)args.get(0), args.get(1), args.get(2));
+			else
+				throw new ExpressionFault.ArgMismatch(3, args.size());
+		}
+	}
+
+	private static TypeObject _get = new get();
+	public static TypeObject get(){ return _get; }
+
 
 	public ASTNode.BuiltinFunction lookup(String name)
 	{
@@ -223,6 +247,13 @@ public class Builtins extends ASTNode {
 			function.arg("start", new TypeInt());
 			function.arg("stop", new TypeInt());
 			function.arg("step", new TypeInt());
+			return function;
+		} else if (name.equals("get")) {
+			ASTNode.BuiltinFunction function =
+				new ASTNode.BuiltinFunction(owner, name, null, _get);
+			function.arg("map", new TypeMap());
+			function.arg("key", null);
+			function.arg("default", null);
 			return function;
 		}
 

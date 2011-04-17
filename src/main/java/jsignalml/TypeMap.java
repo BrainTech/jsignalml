@@ -164,6 +164,11 @@ public class TypeMap extends Type /* implements Map<Type, Type>  */ {
 		return ans;
 	}
 
+	public Type index(Type key, Type default_){
+		Type ans = this.map.get(key);
+		return ans != null ? ans : default_;
+	}
+
 	@Override
 	public Type _binaryOpType(BinaryOp op, TypeInt other)
 	{
