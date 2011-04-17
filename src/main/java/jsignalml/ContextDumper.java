@@ -1,4 +1,7 @@
 package jsignalml;
+import java.util.List;
+import org.apache.commons.lang.StringUtils;
+
 import jsignalml.codec.Context;
 import jsignalml.codec.Signalml;
 import jsignalml.codec.OuterLoopClass;
@@ -64,8 +67,15 @@ public class ContextDumper implements ContextVisitor<Integer> {
 
 	@Override public Integer visit(ChannelClass node, String name, Integer level)
 	{
-		return dumper.put(level, "Channel %s name=%s length=%d\n", name,
-				  node.getChannelName(), node.getNumberOfSamples());
+		long count = node.getNumberOfSamples();
+		int ans = dumper.put(level, "Channel %s name=%s length=%d\n", name,
+				     node.getChannelName(), count);
+
+		List<String> array = util.newLinkedList();
+		for(long i: new long[]{0, 1, 2, 3, -1, count-3, count-1, count-1})
+			array.add(i!=-1 ? "" + node.getSample(i) : "...");
+		dumper.put(level+1, "[%s]\n", StringUtils.join(array, ", "));
+		return ans;
 	}
 
 	@Override public Integer visit(FunctionParam node, String name, Integer level)

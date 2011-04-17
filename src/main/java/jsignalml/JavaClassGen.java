@@ -288,11 +288,13 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 		final String theid = dynamicID(node.id);
 		final JDefinedClass nested = paramClass(klass, theid, node);
 		idMethod(nested, node, theid);
-		if(node.args.isEmpty())
+		if(node.args.isEmpty()) {
 			getExprMethod(nested, node);
-		else
+			getterMethod(klass, theid, node.type, nested);
+		} else {
 			callExprMethod(nested, node);
-		getterMethod(klass, theid, node.type, nested);
+			getterMethod(klass, theid, null, nested);
+		}
 		return nested;
 	}
 
@@ -553,7 +555,7 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 		final JMethod getter = klass.method(JMod.PUBLIC, typeref,
 						    makeGetter(ident));
 		final JBlock body = getter.body();
-		final JVar value = body.decl(convertTypeToJClass(null), "value",
+		final JVar value = body.decl(this.model.ref(Type.class), "value",
 					     JExpr.invoke("access").arg(ident));
 		make_or_return(body, type, value);
 		return getter;
@@ -848,12 +850,12 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 						    "mapSample");
 		final JVar sample = method.param(this.model.LONG, "sample");
 
-		final List<JVar> locals = Arrays.asList(sample);
 		final JavaExprGen javagen =
-			new JavaExprGen(this.model, createResolver(node, locals));
+			new JavaExprGen(this.model, createResolver(node, null));
 		final JVar value = method.body().decl(this.model.ref(Type.class), "value",
 						      node.mapping.accept(javagen));
-		make_or_return(method.body(), new TypeInt(), value);
+		make_or_return(method.body(), new TypeInt(),
+			       value.invoke("call").arg(JExpr._new(int_type).arg(sample)));
 		return method;
 	}
 
