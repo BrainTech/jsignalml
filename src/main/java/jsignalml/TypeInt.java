@@ -104,6 +104,16 @@ public class TypeInt extends Type {
 						.multiply(BigInteger.valueOf(-2))));
 	}
 
+	static TypeInt makeFromUnsignedReadAsSigned(byte value) {
+		TypeInt ivalue = new TypeInt(value);
+		log.info("converting byte %s", value);
+		if (ivalue.compareTo(ZERO) >= 0)
+			return ivalue;
+		// TODO: add tests!!!
+		return new TypeInt(ivalue.value.add(BigInteger.valueOf(Byte.MIN_VALUE)
+						.multiply(BigInteger.valueOf(-2))));
+	}
+
 	@Override
 	public BigInteger getValue() {
 		return this.value;

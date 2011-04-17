@@ -33,6 +33,10 @@ public abstract class BitForm {
 		if (description.equals("<u8"))
 			return new Int.Unsigned64.LE();
 
+		if (description.equals("<u1") ||
+		                description.equals(">u1") ||
+		                description.equals("|u1"))
+			return new Int.Unsigned8();
 		if (description.equals(">i2"))
 			return new Int.Int16.BE();
 		if (description.equals(">i4"))
@@ -192,6 +196,21 @@ public abstract class BitForm {
 		}
 
 
+		public static class Unsigned8 extends Int {
+			protected static final Logger log = new Logger(Unsigned8.class);
+			//@Override
+			public TypeInt read(ByteBuffer buffer, TypeInt offset) {
+				int offset_ = offset.safeIntValue();
+				byte data;
+				try {
+					data = buffer.get(offset_);
+				} catch (IndexOutOfBoundsException e) {
+					throw new ExpressionFault.IndexError(offset_, buffer.limit());
+				}
+				return TypeInt.makeFromUnsignedReadAsSigned(data);
+			}
+		}
+
 		public static abstract class Unsigned16 extends Int {
 			public static class LE extends Unsigned16 {
 				protected static final Logger log = new Logger(Unsigned16.LE.class);
@@ -205,7 +224,7 @@ public abstract class BitForm {
 					} catch (IndexOutOfBoundsException e) {
 						throw new ExpressionFault.IndexError(offset_, buffer.limit());
 					}
-					return new TypeInt(data);
+					return TypeInt.makeFromUnsignedReadAsSigned(data);
 				}
 			}
 
@@ -221,7 +240,7 @@ public abstract class BitForm {
 					} catch (IndexOutOfBoundsException e) {
 						throw new ExpressionFault.IndexError(offset_, buffer.limit());
 					}
-					return new TypeInt(data);
+					return TypeInt.makeFromUnsignedReadAsSigned(data);
 				}
 			}
 		}
@@ -239,7 +258,7 @@ public abstract class BitForm {
 					} catch (IndexOutOfBoundsException e) {
 						throw new ExpressionFault.IndexError(offset_, buffer.limit());
 					}
-					return new TypeInt(data);
+					return TypeInt.makeFromUnsignedReadAsSigned(data);
 				}
 			}
 
@@ -255,7 +274,7 @@ public abstract class BitForm {
 					} catch (IndexOutOfBoundsException e) {
 						throw new ExpressionFault.IndexError(offset_, buffer.limit());
 					}
-					return new TypeInt(data);
+					return TypeInt.makeFromUnsignedReadAsSigned(data);
 				}
 			}
 		}
@@ -273,7 +292,7 @@ public abstract class BitForm {
 					} catch (IndexOutOfBoundsException e) {
 						throw new ExpressionFault.IndexError(offset_, buffer.limit());
 					}
-					return new TypeInt(data);
+					return TypeInt.makeFromUnsignedReadAsSigned(data);
 				}
 			}
 
@@ -289,7 +308,7 @@ public abstract class BitForm {
 					} catch (IndexOutOfBoundsException e) {
 						throw new ExpressionFault.IndexError(offset_, buffer.limit());
 					}
-					return new TypeInt(data);
+					return TypeInt.makeFromUnsignedReadAsSigned(data);
 				}
 			}
 		}

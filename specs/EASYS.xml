@@ -38,25 +38,22 @@
      </assert>
 
      <param id='number_of_channels'>
-         <format>'&gt;i1'</format>
+         <format>'|u1'</format>
          <offset>16</offset>
      </param>
 
      <param id='number_of_auxiliary_channels'>
-         <format>'&gt;i1'</format>
+         <format>'|u1'</format>
          <offset>17</offset>
      </param>
 
      <param id='sampling_frequency' type='float' units='Hz'>
-         <expr>_sampling_frequency/100</expr>
-     </param>
-     <param id='_sampling_frequency'>
-         <format>'&gt;i2'</format>
+         <format>'&lt;u2'</format>
          <offset>18</offset>
      </param>
 
      <param id='number_of_samples'>
-         <format>'&gt;i4'</format>
+         <format>'&lt;i4'</format>
          <offset>20</offset>
      </param>
 
@@ -78,16 +75,21 @@
      <!-- more 'flags' should follow -->
 
      <param id='calibration_gain' type='float' units='μV'>
-         <expr>_calibration_gain/100</expr>
+         <expr>1/_calibration_unit</expr>
      </param>
-     <param id='_calibration_gain'>
-         <format>'&gt;i1'</format>
+     <param id='_calibration_unit'>
+         <format>'|u1'</format>
          <offset>25</offset>
+     </param>
+
+     <param id='calibration_offset'>
+         <format>'&lt;i2'</format>
+         <offset>26</offset>
      </param>
 
      <param id='data_org'>
 	 <!-- data offset -->
-         <format>'&gt;i2'</format>
+         <format>'&lt;u2'</format>
          <offset>28</offset>
      </param>
      <param id='data_offset'>
@@ -96,7 +98,7 @@
 
      <param id='xhdr_org' type='int'>
 	 <!-- data offset -->
-         <format>'&gt;i2'</format>
+         <format>'&lt;u2'</format>
          <offset>30</offset>
      </param>
      <param id='extended_header_offset'>
@@ -105,7 +107,7 @@
 
      <for-each id='extended_header' var='index' sequence='[0,1,2,3,4,5]'>
          <param id='offset' type='int'>
-	   <expr>index == 0 ? xhdr_org : extended_header[index-1].offset +
+	   <expr>index == 0 ? extended_header_offset : extended_header[index-1].offset +
 	                                 extended_header[index-1].record_size + 4</expr>
 	 </param>
          <param id='record_mnemonic' type='str'>
@@ -113,7 +115,7 @@
 	   <offset>offset</offset>
 	 </param>
          <param id='record_size' type='int'>
-           <format>'&gt;i2'</format>
+           <format>'&lt;i2'</format>
 	   <offset>offset + 2</offset>
 	 </param>
      </for-each>
