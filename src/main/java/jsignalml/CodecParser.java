@@ -243,8 +243,7 @@ public class CodecParser {
 	{
 		assert element.getNodeName().equals("else");
 
-		final Expression id = new Expression.BinaryOp(SExpressionParser.ADD, parent.id,
-							      Expression.Const.make("_else"));
+		final Expression id = _identifier(element);
 		return new ASTNode.ElseBranch(parent, id);
 	}
 

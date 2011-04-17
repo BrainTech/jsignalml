@@ -6,14 +6,11 @@
   </header>
 
   <file type='binary' id='main'><!-- extension='*.d' -->
-     <param id='datatype_width'>
-        <expr>4</expr>
-     </param>
      <param id='mapping' type='int'>
         <arg type='int' name='sample_number' />
         <arg type='int' name='channel_number' />
         <expr>(number_of_channels * sample_number + channel_number) *
-                  datatype_width + 16 * data_offset
+                  data_cell_size + data_offset
         </expr>
      </param>
 
@@ -37,9 +34,15 @@
          <expr>file_type == "D"</expr>
      </assert>
 
-     <param id='number_of_channels'>
+     <param id='_number_of_channels'>
          <format>'|u1'</format>
          <offset>16</offset>
+     </param>
+     <param id='number_of_channels'>
+	 <expr>_number_of_channels - 1</expr>
+	 <!-- my testfile inb02.d says _number_of_channels=28, but
+	      size == data_offset + (_number_of_channels-1)*2*number_of_samples
+	 -->
      </param>
 
      <param id='number_of_auxiliary_channels'>
@@ -131,14 +134,36 @@
 		 <offset>offset</offset>
 	     </param>
 	     <param id='record_size' type='int'>
-		 <format>'&lt;i2'</format>
+		 <format>'&lt;u2'</format>
 		 <offset>offset + 2</offset>
 	     </param>
 
-	     <param name='get(record_name_map, record_mnemonic, record_mnemonic)'>
-		 <format>'|S' + str(record_size)</format>
-		 <offset>offset + 4</offset>
-	     </param>
+	     <if test='record_mnemonic == "TT"'>
+		 <param id='def_len'>
+		     <format>'&lt;u2'</format>
+		     <offset>offset + 4</offset>
+		 </param>
+		 <param id='list_len'>
+		     <format>'&lt;u2'</format>
+		     <offset>offset + 6</offset>
+		 </param>
+		 <param id='def_off'>
+		     <format>'&lt;u4'</format>
+		     <offset>offset + 8</offset>
+		 </param>
+		 <param id='list_off'>
+		     <format>'&lt;u4'</format>
+		     <offset>offset + 12</offset>
+		 </param>
+
+		 <else>
+		     <param name='get(record_name_map, record_mnemonic, record_mnemonic)'>
+			 <format>'|S' + str(record_size)</format>
+			 <offset>offset + 4</offset>
+		     </param>
+		 </else>
+	     </if>
+
 	     <else>
 		 <param id='record_size' type='int'>
 		     <expr>0</expr>
@@ -153,7 +178,7 @@
 
 	 <param id='mapping' type='int'>
 	   <arg type='int' name='sample' />
-	   <expr>data_offset + (sample * number_of_samples + index) * data_cell_size</expr>
+	   <expr>data_offset + (sample * number_of_channels + index) * data_cell_size</expr>
 	 </param>
        </for-each>
      </channelset>
