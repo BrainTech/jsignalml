@@ -34,15 +34,9 @@
          <expr>file_type == "D"</expr>
      </assert>
 
-     <param id='_number_of_channels'>
+     <param id='number_of_channels'>
          <format>'|u1'</format>
          <offset>16</offset>
-     </param>
-     <param id='number_of_channels'>
-	 <expr>_number_of_channels - 1</expr>
-	 <!-- my testfile inb02.d says _number_of_channels=28, but
-	      size == data_offset + (_number_of_channels-1)*2*number_of_samples
-	 -->
      </param>
 
      <param id='number_of_auxiliary_channels'>
@@ -157,11 +151,24 @@
 		 </param>
 
 		 <else>
+		     <if id='names' test='record_mnemonic == "CN"'>
+			 <for-each id='channels' var='index'
+				   sequence='range(number_of_channels)'>
+			     <param id='name' type='str'>
+				 <format>'|S4'</format>
+				 <offset>offset + 4 + index * 4</offset>
+			     </param>
+			 </for-each>
+
+		     <else>
 		     <param name='get(record_name_map, record_mnemonic, record_mnemonic)'>
 			 <format>'|S' + str(record_size)</format>
 			 <offset>offset + 4</offset>
 		     </param>
+		     </else>
+		     </if>
 		 </else>
+
 	     </if>
 
 	     <else>
