@@ -71,13 +71,20 @@ public class ExpressionFault extends RuntimeException {
 	 * Attribute with a given name was not found.
 	 */
 	public static class AttributeError extends ExpressionFault {
-		public final String name;
-		public AttributeError(java.lang.String name) {
+		public final String object, name;
+		public AttributeError(String object, String name) {
+			this.object = object;
 			this.name = name;
+		}
+		public AttributeError(String name) {
+			this(null, name);
 		}
 
 		public String getMessage() {
-			return format("attribute '%s' not found", name);
+			if (object != null)
+				return format("%s has no param %s", object, name);
+			else
+				return format("attribute '%s' not found", name);
 		}
 	}
 

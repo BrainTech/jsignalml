@@ -4,6 +4,7 @@ import java.util.Map;
 import jsignalml.ContextVisitor;
 import jsignalml.Logger;
 import jsignalml.SyntaxError;
+import jsignalml.ExpressionFault;
 import jsignalml.Type;
 import jsignalml.TypeObject;
 
@@ -18,7 +19,11 @@ public abstract class Context extends TypeObject {
 	}
 
 	public Type access(String name) {
-		return this.param_map.get(name).get();
+		Context cont = this.param_map.get(name);
+		if (cont == null) {
+			throw new ExpressionFault.AttributeError(this.id(), name);
+		}
+		return cont.get();
 	}
 
 	final Map<String, Context> param_map = jsignalml.util.newLinkedHashMap();
