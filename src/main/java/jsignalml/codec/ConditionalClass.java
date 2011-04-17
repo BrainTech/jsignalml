@@ -17,20 +17,20 @@ public abstract class ConditionalClass extends Context {
 
 	public void createParams() {
 		if(this.getCondition().isTrue())
-			this.createIfParams();
+			this.createParamsIf();
 		else
-			this.createElseParams();
+			this.createParamsElse();
 	}
 
 	/**
 	 * Create params defined in the 'if' branch of this conditional.
 	 */
-	public abstract void createIfParams();
+	public abstract void createParamsIf();
 
 	/**
 	 * Create params defined in the 'else' branch of this conditional.
 	 */
-	public abstract void createElseParams();
+	public abstract void createParamsElse();
 
 	public abstract class ElseBranchClass extends Context {
 		//@Override

@@ -56,4 +56,9 @@ public abstract class Context extends TypeObject {
 	 */
 	public abstract void createParams();
 
+	/**
+	 * Register channels in this namespace. After this function executes, all
+	 * channels in this namespace should be available.
+	 */
+	public abstract void createChannels();
 }

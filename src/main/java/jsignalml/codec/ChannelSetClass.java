@@ -120,4 +120,6 @@ public abstract class ChannelSetClass extends Context implements jsignalml.Chann
 	{
 		return channel_list.iterator();
 	}
+
+	public abstract void createChannels();
 }

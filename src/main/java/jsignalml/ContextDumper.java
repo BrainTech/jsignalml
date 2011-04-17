@@ -55,13 +55,14 @@ public class ContextDumper implements ContextVisitor<Integer> {
 		return dumper.put(level, "%s => %s\n", name, node.get().repr());
 	}
 
-	@Override public Integer visit(ChannelSet node, String name, Integer level)
+	@Override public Integer visit(ChannelSetClass node, String name, Integer level)
 	{
+		node.createChannels();
 		return dumper.put(level, "ChannelSet %s number_of_channels=%d\n",
 				  name, node.getNumberOfChannels());
 	}
 
-	@Override public Integer visit(Channel node, String name, Integer level)
+	@Override public Integer visit(ChannelClass node, String name, Integer level)
 	{
 		return dumper.put(level, "Channel %s name=%s length=%d\n", name,
 				  node.getChannelName(), node.getNumberOfSamples());

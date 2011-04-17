@@ -119,19 +119,37 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 
 	class Metadata {
 		final JBlock create_params;
+		final JBlock create_channels;
+		final JDefinedClass klass;
 
-		Metadata(JDefinedClass klass, String method_name)
+		Metadata(JDefinedClass klass, String method_suffix)
 		{
-			final JMethod register_params =
-				klass.method(JMod.PUBLIC, JavaClassGen.this.model.VOID, method_name);
-			this.create_params = register_params.body();
-			this.create_params.add(JavaClassGen.this.log_var.invoke("debug")
-					       .arg(klass.name() + ".createParams()"));
+			this.klass = klass;
+
+			{
+				final JMethod method =
+					klass.method(JMod.PUBLIC, JavaClassGen.this.model.VOID,
+						     "createParams" + method_suffix);
+				this.create_params = method.body();
+				final String msg = format("%s.%s()", klass.name(), method.name());
+				this.create_params.add(JavaClassGen.this.log_var
+						       .invoke("debug").arg(msg));
+			}
+
+			{
+				final JMethod method =
+					klass.method(JMod.PUBLIC, JavaClassGen.this.model.VOID,
+						     "createChannels" + method_suffix);
+				this.create_channels = method.body();
+				final String msg = format("%s.%s()", klass.name(), method.name());
+				this.create_channels.add(JavaClassGen.this.log_var
+							 .invoke("debug").arg(msg));
+			}
 		}
 
 		Metadata(JDefinedClass klass)
 		{
-			this(klass, "createParams");
+			this(klass, "");
 		}
 
 		void registerParam(String name, JExpression param_obj)
@@ -140,13 +158,31 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 			this.create_params.add(JExpr.invoke("register").arg(name).arg(param_obj));
 		}
 
-		void registerContext(String name, JDefinedClass context_class)
+		void registerContext(String name, JDefinedClass context_class, JExpression get)
 		{
 			log.info("register context %s=>%s", name, context_class);
-			final JVar obj = this.create_params.decl(context_class, "obj",
-								 JExpr._new(context_class));
-			registerParam(name, obj);
-			this.create_params.add(obj.invoke("createParams"));
+			{
+				final JBlock block = this.create_params.block();
+				final JVar obj = block.decl(context_class, "obj", get);
+				block.add(JExpr.invoke("register").arg(name).arg(obj));
+				block.add(obj.invoke("createParams"));
+			}
+			{
+				final JBlock block = this.create_channels.block();
+				final JVar obj = block.decl(context_class, "obj", get);
+				block.add(obj.invoke("createChannels"));
+
+				JClass outerloop_class = JavaClassGen.this.model
+					.ref(jsignalml.codec.OuterLoopClass.class);
+				if(context_class._extends().equals(outerloop_class))
+					block.add(obj.invoke("createLoopChannels"));
+			}
+		}
+
+		void registerChannel(String name, JExpression channel)
+		{
+			log.info("register channel %s", name);
+			this.create_channels.add(JExpr.invoke("registerChannel").arg(channel));
 		}
 	}
 
@@ -155,15 +191,18 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 	 */
 	class MetadataIfBranch extends Metadata {
 		final JBlock else_params;
+		final JBlock else_channels;
 
 		MetadataIfBranch(JDefinedClass klass)
 		{
-			super(klass, "createIfParams");
-			final JMethod else_params =
-				klass.method(JMod.PUBLIC, JavaClassGen.this.model.VOID,
-					     "createElseParams");
-			this.else_params = else_params.body();
+			super(klass, "If");
 
+			this.else_params = klass.method(JMod.PUBLIC,
+							JavaClassGen.this.model.VOID,
+							"createParamsElse").body();
+			this.else_channels = klass.method(JMod.PUBLIC,
+							  JavaClassGen.this.model.VOID,
+							  "createChannelsElse").body();
 		}
 
 		void registerElseParam(String name, JExpression param_obj)
@@ -390,7 +429,7 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 			subcall.arg(JExpr.cast(arg.type(), arg_i));
 		}
 		cast_body._return(subcall);
-		
+
 		final JavaExprGen javagen =
 			new JavaExprGen(this.model, createResolver(node, locals));
 		JExpression value = node.expr.accept(javagen);
@@ -465,8 +504,10 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 		klass.metadata = new Metadata(klass);
 		log.info("%s.metadata has been set", klass);
 
+		final JMethod getter = classCacheMethod(parent, klass);
+
 		Metadata metadata = (Metadata) parent.metadata;
-		metadata.registerContext(id, klass);
+		metadata.registerContext(id, klass, JExpr.invoke(getter));
 
 		return klass;
 	}
@@ -503,6 +544,19 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 		make_or_return(body, type, value);
 		return getter;
 	}
+
+        public JMethod classCacheMethod(JDefinedClass parent, JDefinedClass klass)
+        {
+		final String methodname = makeGetter(klass.name());
+                final JFieldVar stor = parent.field(JMod.NONE, klass, methodname,
+						    JExpr._null());
+                final JMethod getter = parent.method(JMod.PUBLIC, klass, methodname);
+                getter.body()
+			._if(stor.eq(JExpr._null()))
+			._then().assign(stor, JExpr._new(klass));
+                getter.body()._return(stor);
+                return getter;
+        }
 
 	@Override
 	public JDefinedClass visit(ASTNode.Itername node, JDefinedClass klass)
@@ -552,8 +606,10 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 		klass.metadata = new Metadata(klass);
 		log.info("%s.metadata has been set", klass);
 
+		final JMethod getter = classCacheMethod(parent, klass);
+
 		Metadata metadata = (Metadata) parent.metadata;
-		metadata.registerParam(id, JExpr._new(klass));
+		metadata.registerContext(id, klass, JExpr.invoke(getter));
 
 		return klass;
 	}
@@ -625,8 +681,10 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 		klass.metadata = new MetadataIfBranch(klass);
 		log.info("%s.metadata/if has been set", klass);
 
+		final JMethod getter = classCacheMethod(parent, klass);
+
 		Metadata metadata = (Metadata) parent.metadata;
-		metadata.registerContext(id, klass);
+		metadata.registerContext(id, klass, JExpr.invoke(getter));
 
 		return klass;
 	}
@@ -693,8 +751,10 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 		klass.metadata = new Metadata(klass);
 		log.info("%s.metadata has been set", klass);
 
+		final JMethod getter = classCacheMethod(parent, klass);
+
 		Metadata metadata = (Metadata) parent.metadata;
-		metadata.registerContext(id, klass);
+		metadata.registerContext(id, klass, JExpr.invoke(getter));
 
 		return klass;
 	}
@@ -704,7 +764,6 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 	{
 		log.info("visit((Channel) %s, %s)", node, parent);
 		final JDefinedClass klass = channelClass(dynamicID(node.id), parent);
-		registerChannelConstructor(klass);
 		underBufferMethod(klass);
 		sampleFormatMethod(klass, node);
 		mapSampleMethod(klass, node);
@@ -712,13 +771,6 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 		getNumberOfSamplesMethod(klass, node);
 		getChannelNameMethod(klass, node);
 		return klass;
-	}
-
-	public JMethod registerChannelConstructor(JDefinedClass klass)
-	{
-		JMethod constructor = klass.constructor(JMod.NONE);
-		constructor.body().add(JExpr.invoke("registerChannel").arg(JExpr._this()));
-		return constructor;
 	}
 
 	public JDefinedClass channelClass(String id, JDefinedClass parent)
@@ -735,8 +787,11 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 		klass.metadata = new Metadata(klass);
 		log.info("%s.metadata has been set", klass);
 
+		final JMethod getter = classCacheMethod(parent, klass);
+
 		Metadata metadata = (Metadata) parent.metadata;
-		metadata.registerContext(id, klass);
+		metadata.registerContext(id, klass, JExpr.invoke(getter));
+		metadata.registerChannel(id, JExpr.invoke(getter));
 
 		return klass;
 	}
