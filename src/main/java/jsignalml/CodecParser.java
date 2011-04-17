@@ -193,8 +193,9 @@ public class CodecParser {
 		final Expression id = _identifier(element);
 		final Expression mapping = _null_or_parse(_attribute(element, "mapping"));
 		final Expression format = _null_or_parse(_attribute(element, "format"));
+		final Expression length = _null_or_parse(_attribute(element, "length"));
 
-		final ASTNode.Channel node = new ASTNode.Channel(parent, id, mapping, format);
+		final ASTNode.Channel node = new ASTNode.Channel(parent, id, mapping, format, length);
 		return node;
 	}
 

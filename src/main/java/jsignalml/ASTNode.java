@@ -138,20 +138,23 @@ public abstract class ASTNode {
 	}
 
 	public static class Channel extends ASTNode {
-		public final Expression mapping, format;
+		public final Expression mapping, format, length;
 
 		public Channel(ASTNode parent, Expression id, 
-			       Expression mapping, Expression format)
+			       Expression mapping, Expression format, Expression length)
 		{
 			super(parent, id);
 
 			this.mapping = mapping;
 			this.format = format;
+			this.length = length;
 
 			if (mapping == null)
 				throw new SyntaxError("<channel> must have mapping attribute");
 			if (format == null)
 				throw new SyntaxError("<channel> must have format attribute");
+			if (length == null)
+				throw new SyntaxError("<channel> must have length attribute");
 
 			final FileHandle<? extends FileType> handle = parent.lookupFile();
 			if (handle == null)

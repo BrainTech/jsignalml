@@ -370,4 +370,12 @@ public class TypeInt extends Type {
 				("cannot cast to int without changing value.");
 		return this.value.intValue();
 	}
+
+	public long safeLongValue() {
+		if (this.value.compareTo(BigInteger.valueOf(Long.MIN_VALUE)) < 0
+		    || this.value.compareTo(BigInteger.valueOf(Long.MAX_VALUE)) > 0)
+			throw new ExpressionFault.ValueError
+				("cannot cast to long without changing value.");
+		return this.value.longValue();
+	}
 }

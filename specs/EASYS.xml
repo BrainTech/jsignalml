@@ -174,7 +174,7 @@
 
      <channelset id='data'>
        <for-each id='channels' var='index' sequence='range(number_of_channels)'>
-	 <channel mapping='mapping' format='"&lt;i2"' />
+	 <channel mapping='mapping' format='"&lt;i2"' length='number_of_samples' />
 
 	 <param id='mapping' type='int'>
 	   <arg type='int' name='sample' />

@@ -869,7 +869,14 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 	{
 		final JMethod method = klass.method(JMod.PUBLIC, this.model.LONG,
 						    "getNumberOfSamples");
-		method.body()._return(JExpr.lit(100));
+		final JavaExprGen javagen =
+			new JavaExprGen(this.model, createResolver(node, null));
+		final JVar value = method.body().decl(this.model.ref(Type.class), "value",
+						      node.length.accept(javagen));
+		final JClass type_int = this.model.ref(TypeInt.class);
+		final JVar cast = method.body().decl(type_int, "cast",
+					     JExpr._new(type_int).invoke("make").arg(value));
+		method.body()._return(cast.invoke("safeLongValue"));
 		return method;
 	}
 
