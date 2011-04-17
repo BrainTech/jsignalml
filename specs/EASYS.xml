@@ -149,5 +149,38 @@
            }
 	 </expr>
      </param>
+
+     <if test='xhdr_org'> <!-- 0 means no extended header! -->
+	 <for-each id='extended_header' var='index' sequence='range(10)'>
+	     <param id='offset' type='int'>
+		 <expr>index == 0 ? extended_header_offset : extended_header[index-1].offset +
+		 extended_header[index-1].record_size + 4</expr>
+	     </param>
+	     <param id='record_mnemonic' type='str'>
+		 <format>'|S2'</format>
+		 <offset>offset</offset>
+	     </param>
+	     <param id='record_size' type='int'>
+		 <format>'&lt;i2'</format>
+		 <offset>offset + 2</offset>
+	     </param>
+
+	     <param name='get(record_name_map, record_mnemonic, record_mnemonic)'>
+		 <format>'|S' + str(record_size)</format>
+		 <offset>offset + 4</offset>
+	     </param>
+	 </for-each>
+     </if>
+
+     <channelset id='data'>
+       <for-each id='channels' var='index' sequence='range(number_of_channels)'>
+	 <channel mapping='mapping' format='"&lt;i2"' />
+
+	 <param id='mapping' type='int'>
+	   <arg type='int' name='sample' />
+	   <expr>data_offset + (sample * number_of_samples + index) * data_cell_size</expr>
+	 </param>
+       </for-each>
+     </channelset>
   </file>
 </signalml>

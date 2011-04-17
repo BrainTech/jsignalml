@@ -22,6 +22,13 @@ public abstract class ConditionalClass extends Context {
 			this.createParamsElse();
 	}
 
+	public void createChannels() {
+		if(this.getCondition().isTrue())
+			this.createChannelsIf();
+		else
+			this.createChannelsElse();
+	}
+
 	/**
 	 * Create params defined in the 'if' branch of this conditional.
 	 */
@@ -31,6 +38,16 @@ public abstract class ConditionalClass extends Context {
 	 * Create params defined in the 'else' branch of this conditional.
 	 */
 	public abstract void createParamsElse();
+
+	/**
+	 * Create channels defined in the 'if' branch of this conditional.
+	 */
+	public abstract void createChannelsIf();
+
+	/**
+	 * Create channels defined in the 'else' branch of this conditional.
+	 */
+	public abstract void createChannelsElse();
 
 	public abstract class ElseBranchClass extends Context {
 		//@Override

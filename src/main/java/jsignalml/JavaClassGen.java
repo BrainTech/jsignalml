@@ -693,6 +693,7 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 		log.info("visit((Conditional) %s, %s)", node, parent);
 		String theid = dynamicID(node.id);
 		final JDefinedClass klass = conditionalClass(theid, parent);
+		idMethod(klass, node, theid);
 		conditionMethod(klass, node);
 		getterMethod(parent, theid, null, klass);
 		return klass;
@@ -736,7 +737,9 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 	public JDefinedClass visit(ASTNode.ElseBranch node, JDefinedClass parent)
 	{
 		log.info("visit((ElseBranch) %s, %s)", node, parent);
-		final JDefinedClass klass = elseBranchClass(dynamicID(node.id), parent);
+		final String theid = dynamicID(node.id);
+		final JDefinedClass klass = elseBranchClass(theid, parent);
+		idMethod(klass, node, theid);
 		return klass;
 	}
 
