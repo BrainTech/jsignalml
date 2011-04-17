@@ -21,6 +21,7 @@ Exception in thread "main" java.lang.IllegalArgumentException: unkown type 'bool
 + fix context passing between Frame, EvalVisitor, ASTEvalVisitor;
 - display backtraces;
 - implement cache;
+- fix generated code to not evalutate left side twice in logical operations
 
 output filename in parsing exception:
 Fatal Error] :157:7: The element type "for-each" must be terminated by the matching end-tag "</for-each>".

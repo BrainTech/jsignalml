@@ -81,9 +81,9 @@ public class JavaExprGen extends ExpressionVisitor<JExpression> {
 		JExpression right = op.right.accept(this);
 		switch (op.op) {
 		case LOG_AND:
-			return JOp.cond(left, right, left);
+			return JOp.cond(left.invoke("isTrue"), right, left);
 		case LOG_OR:
-			return JOp.cond(left, left, right);
+			return JOp.cond(left.invoke("isTrue"), left, right);
 		default:
 			throw new RuntimeException();
 		}
