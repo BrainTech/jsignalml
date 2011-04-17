@@ -267,7 +267,7 @@ public abstract class ASTNode {
 			super(parent, id, type);
 			this.function = function;
 			log.info("created BuiltinFunction %s.%s -> %s",
-				 parent.id, this.id, type.getClass().getSimpleName());
+				 parent.id, this.id, Type.typename(type));
 		}
 
 		public BuiltinFunction(ASTNode parent, String id, Type type,

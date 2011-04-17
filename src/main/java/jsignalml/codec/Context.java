@@ -27,6 +27,8 @@ public abstract class Context extends TypeObject {
 		return this;
 	}
 
+	public abstract String id();
+
 	/**
 	 * Visitor pattern implementation.
 	 *

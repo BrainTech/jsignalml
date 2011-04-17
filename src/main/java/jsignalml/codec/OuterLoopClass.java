@@ -25,6 +25,16 @@ public abstract class OuterLoopClass extends Param<TypeList> {
 		for(Type var: range) {
 			LoopClass item = this.createLoop(var);
 			value.add(item);
+
+			/* A parameter inside loop can refer to the loop (or some stuff inside).
+			 * This will cause a deadlock, so
+			 * - we require the calls to only go to earlier loop iterations
+			 * - set the variable temporarily
+			 * It would be better to make OuterLoopClass not a Param
+			 * wrapping a list, but have it deliver loop iterations directly.
+			 */
+			this.cache = new TypeList(value);
+
 			item.createParams();
 		}
 		return new TypeList(value);
@@ -77,6 +87,11 @@ public abstract class OuterLoopClass extends Param<TypeList> {
 			public <T> T _accept(ContextVisitor<T> v, String name, T data)
 			{
 				return v.visit(this, name, data);
+			}
+
+			public String id()
+			{
+				return "index"; // XXX: is this always the right answer??
 			}
 		}
 	}

@@ -91,8 +91,9 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 		assert dummy == null;
 
 		final JDefinedClass klass;
+		final String theid = dynamicID(node.id);
 		try {
-			klass = this.model._class(dynamicID(node.id));
+			klass = this.model._class(theid);
 		} catch(JClassAlreadyExistsException e) {
 			throw new RuntimeException("WTF?");
 		}
@@ -107,6 +108,7 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 		klass.metadata = new Metadata(klass);
 		log.info("%s.metadata has been set", klass);
 
+		idMethod(klass, node, theid);
 		this.mainMethod(klass);
 		this.getSetMethod(klass);
 		this.getCurrentFilenameMethod(klass);
@@ -152,10 +154,13 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 			this(klass, "");
 		}
 
-		void registerParam(String name, JExpression param_obj)
+		void registerParam(String name, JClass klass, JExpression param_inv)
 		{
 			log.info("register %s", name);
-			this.create_params.add(JExpr.invoke("register").arg(name).arg(param_obj));
+			final JBlock block = this.create_params.block();
+			final JVar obj = block.decl(klass, "obj", param_inv);
+			block.add(JExpr.invoke("register")
+				  .arg(obj.invoke("id")).arg(obj));
 		}
 
 		void registerContext(String name, JDefinedClass context_class, JExpression get)
@@ -294,12 +299,14 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 	{
 		log.info("visit((ExprParam) %s, %s)", node, klass);
 		assert klass != null;
-		final JDefinedClass nested = paramClass(klass, node);
+		final String theid = dynamicID(node.id);
+		final JDefinedClass nested = paramClass(klass, theid, node);
+		idMethod(nested, node, theid);
 		if(node.args.isEmpty())
 			getExprMethod(nested, node);
 		else
 			callExprMethod(nested, node);
-		getterMethod(klass, dynamicID(node.id), node.type, nested);
+		getterMethod(klass, theid, node.type, nested);
 		return nested;
 	}
 
@@ -308,13 +315,15 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 	{
 		log.info("visit((BinaryParam) %s, %s)", node, klass);
 		assert klass != null;
-		JDefinedClass nested = paramClass(klass, node);
+		final String theid = dynamicID(node.id);
+		JDefinedClass nested = paramClass(klass, theid, node);
+		idMethod(nested, node, theid);
 		readParamFunction(nested, node);
-		getterMethod(klass, dynamicID(node.id), node.type, nested);
+		getterMethod(klass, theid, node.type, nested);
 		return nested;
 	}
 
-	JDefinedClass paramClass(JDefinedClass parent, ASTNode.Param node)
+	JDefinedClass paramClass(JDefinedClass parent, String theid, ASTNode.Param node)
 	{
 		final JClass typeref = convertTypeToJClass(node.type);
 
@@ -325,7 +334,6 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 			klass_type = jsignalml.codec.FunctionParam.class;
 		final JClass param_class = this.model.ref(klass_type).narrow(typeref);
 		final JDefinedClass nested;
-		final String theid = dynamicID(node.id);
 		try {
 			nested = parent._class(makeParamClass(theid));
 		} catch(JClassAlreadyExistsException e) {
@@ -334,9 +342,26 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 		nested._extends(param_class);
 
 		Metadata metadata = (Metadata) parent.metadata;
-		metadata.registerParam(theid, JExpr._new(nested));
+		metadata.registerParam(theid, nested, JExpr._new(nested));
 
 		return nested;
+	}
+
+	JMethod idMethod(JDefinedClass klass, ASTNode node, String theid)
+	{
+		final JClass java_string = this.model.ref(String.class);
+		final JMethod method = klass.method(JMod.PUBLIC, java_string, "id");
+		final JavaExprGen javagen =
+			new JavaExprGen(this.model, createResolver(node, null));
+		if (node.id != null) {
+			final JExpression value = node.id.accept(javagen);
+			JExpression cast = JExpr._new(this.model.ref(TypeString.class))
+				.invoke("make").arg(value).invoke("getValue");
+			method.body()._return(cast);
+		} else {
+			method.body()._return(JExpr.lit(theid));
+		}
+		return method;
 	}
 
 	public JMethod readParamFunction(JDefinedClass klass, ASTNode.BinaryParam node)
@@ -464,6 +489,7 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 		log.info("visit((FileHandle) %s, %s)", node, parent);
 		final String theid = dynamicID(node.id);
 		final JDefinedClass klass = this.fileClass(node, theid, parent);
+		idMethod(klass, node, theid);
 		getterMethod(parent, theid, null, klass);
 		return klass;
 	}
@@ -576,8 +602,9 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 		getter.body()._return(JExpr._this().ref("index").invoke("get"));
 
 		Metadata metadata = (Metadata) klass.metadata;
-		metadata.registerParam(id, JExpr._this().ref("index"));
-
+		metadata.registerParam(id,
+				       this.model.ref(jsignalml.codec.OuterLoopClass.LoopClass.IndexClass.class),
+				       JExpr._this().ref("index"));
 		return getter;
 	}
 
@@ -587,8 +614,10 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 		log.info("visit((ForLoop) %s, %s)", node, parent);
 		final String theid = dynamicID(node.id);
 		final JDefinedClass outer = outerLoopClass(theid, parent);
+		idMethod(outer, node, theid);
 		sequenceMethod(outer, node);
-		final JDefinedClass inner = loopClass(theid, outer);
+		final JDefinedClass inner = loopClass(theid + "_inner", outer);
+		idMethod(inner, node, theid + "_inner");
 		createLoopMethod(outer, inner);
 		getterMethod(parent, theid, null, outer);
 		return inner;
@@ -641,7 +670,7 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 	{
 		final JDefinedClass klass;
 		try {
-			klass = parent._class("LoopItem_" + id);
+			klass = parent._class(id);
 		} catch(JClassAlreadyExistsException e) {
 			throw new RuntimeException("WTF?");
 		}
@@ -735,7 +764,9 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 	public JDefinedClass visit(ASTNode.ChannelSet node, JDefinedClass parent)
 	{
 		log.info("visit((ChannelSet) %s, %s)", node, parent);
-		final JDefinedClass klass = channelSetClass(dynamicID(node.id), parent);
+		final String theid = dynamicID(node.id);
+		final JDefinedClass klass = channelSetClass(theid, parent);
+		idMethod(klass, node, theid);
 		return klass;
 	}
 
@@ -765,7 +796,9 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 	public JDefinedClass visit(ASTNode.Channel node, JDefinedClass parent)
 	{
 		log.info("visit((Channel) %s, %s)", node, parent);
-		final JDefinedClass klass = channelClass(dynamicID(node.id), parent);
+		String theid = dynamicID(node.id);
+		final JDefinedClass klass = channelClass(theid, parent);
+		idMethod(klass, node, theid);
 		underBufferMethod(klass);
 		sampleFormatMethod(klass, node);
 		mapSampleMethod(klass, node);
