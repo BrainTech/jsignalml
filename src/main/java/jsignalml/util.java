@@ -3,6 +3,7 @@ package jsignalml;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.TreeMap;
 import java.util.TreeSet;
 import java.io.File;
@@ -24,6 +25,10 @@ public abstract class util {
 
 	public static <K,V> HashMap<K,V> newHashMap() {
 		return new HashMap<K,V>();
+	}
+
+	public static <K,V> LinkedHashMap<K,V> newLinkedHashMap() {
+		return new LinkedHashMap<K,V>();
 	}
 
 	public static <K,V> TreeMap<K,V> newTreeMap() {
