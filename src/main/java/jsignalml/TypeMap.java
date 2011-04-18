@@ -9,6 +9,8 @@ import java.util.HashMap;
 import org.apache.commons.lang.NotImplementedException;
 
 public class TypeMap extends Type /* implements Map<Type, Type>  */ {
+	public static final TypeMap I = new TypeMap();
+
 	public final HashMap<Type, Type> map;
 
 	public TypeMap(Map<? extends Type, ? extends Type> map) {

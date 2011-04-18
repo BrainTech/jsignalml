@@ -60,6 +60,38 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 	}
 
 	final JCodeModel model = new JCodeModel();
+	final JClass Type_t = this.model.ref(Type.class);
+	final JClass TypeInt_t = this.model.ref(TypeInt.class);
+	final JClass TypeFloat_t = this.model.ref(TypeFloat.class);
+	final JClass TypeString_t = this.model.ref(TypeString.class);
+	final JClass TypeList_t = this.model.ref(TypeList.class);
+	final JClass TypeMap_t = this.model.ref(TypeMap.class);
+	final JClass List_of_Type_t = this.model.ref(List.class).narrow(Type.class);
+
+	final JFieldRef TypeInt_I = TypeInt_t.staticRef("I");
+	final JFieldRef TypeFloat_I = TypeFloat_t.staticRef("I");
+	final JFieldRef TypeString_I = TypeString_t.staticRef("I");
+	final JFieldRef TypeList_I = TypeList_t.staticRef("I");
+	final JFieldRef TypeMap_I = TypeMap_t.staticRef("I");
+
+	final JClass ArgMismatch_t = this.model.ref(ExpressionFault.ArgMismatch.class);
+	final JClass ContextDumper_t = this.model.ref(ContextDumper.class);
+	final JClass ChannelSet_t = this.model.ref(ChannelSet.class);
+	final JClass Channel_t = this.model.ref(Channel.class);
+	final JClass MyBuffer_t = this.model.ref(MyBuffer.class);
+	final JClass BitForm_t = this.model.ref(BitForm.class);
+	final JClass Builtins_t = this.model.ref(Builtins.class);
+	final JClass Param_t = this.model.ref(jsignalml.codec.Param.class);
+	final JClass FunctionParam_t = this.model.ref(jsignalml.codec.FunctionParam.class);
+	final JClass IndexClass_t =
+		this.model.ref(jsignalml.codec.OuterLoopClass.LoopClass.IndexClass.class);
+
+	final JClass BasicConfigurator_t = this.model.ref(BasicConfigurator.class);
+	final JClass File_t = this.model.ref(File.class);
+	final JClass String_t = this.model.ref(String.class);
+	final JClass Logger_t = this.model.ref(Logger.class);
+	final JClass System_t = this.model.ref(System.class);
+
 	JFieldVar log_var = null; // this should be set when Signalml class is created.
 
 	private String dynamicID(Expression id)
@@ -99,11 +131,8 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 		}
 		klass._extends(jsignalml.codec.Signalml.class);
 
-		{
-			final JClass logger_class = this.model.ref(Logger.class);
-			this.log_var = klass.field(JMod.STATIC|JMod.FINAL, logger_class, "log",
-					   JExpr._new(logger_class).arg(klass.dotclass()));
-		}
+		this.log_var = klass.field(JMod.STATIC|JMod.FINAL, Logger_t, "log",
+					   JExpr._new(Logger_t).arg(klass.dotclass()));
 
 		klass.metadata = new Metadata(klass);
 		log.info("%s.metadata has been set", klass);
@@ -211,19 +240,17 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 
 		final JBlock body = main.body();
 
-		body.add(this.model.ref(BasicConfigurator.class).staticInvoke("configure"));
+		body.add(BasicConfigurator_t.staticInvoke("configure"));
 
 		final JVar reader = body.decl(klass, "reader", JExpr._new(klass));
-		final JExpression file = JExpr._new(this.model.ref(File.class))
-			.arg(args.component(JExpr.lit(0)));
+		final JExpression file = JExpr._new(File_t).arg(args.component(JExpr.lit(0)));
 		body.add(reader.invoke("open").arg(file));
 
 		body.add(reader.invoke("createParams"));
 
-		final JExpression dumper_dump = this.model.ref(jsignalml.ContextDumper.class)
-			.staticInvoke("dump").arg(reader);
-		body.add(this.model.ref(System.class).staticRef("out")
-			 .invoke("print").arg(dumper_dump));
+		final JExpression dumper_dump =
+			ContextDumper_t.staticInvoke("dump").arg(reader);
+		body.add(System_t.staticRef("out").invoke("print").arg(dumper_dump));
 
 		return main;
 	}
@@ -238,17 +265,14 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 
 	public JMethod getSetMethod(JDefinedClass klass)
 	{
-		final JMethod method = klass.method(JMod.PUBLIC,
-						    this.model.ref(ChannelSet.class),
-						    "get_set");
+		final JMethod method = klass.method(JMod.PUBLIC, ChannelSet_t, "get_set");
 		method.body()._return(JExpr._null());
 		return method;
 	}
 
 	public JMethod getCurrentFilenameMethod(JDefinedClass klass)
 	{
-		final JMethod method = klass.method(JMod.PUBLIC,
-						    this.model.ref(File.class),
+		final JMethod method = klass.method(JMod.PUBLIC, File_t,
 						    "getCurrentFilename");
 		method.body()._return(JExpr._null());
 		return method;
@@ -256,8 +280,7 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 
 	public JMethod getFormatDescriptionMethod(JDefinedClass klass)
 	{
-		final JMethod method = klass.method(JMod.PUBLIC,
-						    this.model.ref(String.class),
+		final JMethod method = klass.method(JMod.PUBLIC, String_t,
 						    "getFormatDescription");
 		method.body()._return(JExpr._null());
 		return method;
@@ -265,8 +288,7 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 
 	public JMethod getFormatIDMethod(JDefinedClass klass)
 	{
-		final JMethod method = klass.method(JMod.PUBLIC,
-						    this.model.ref(String.class),
+		final JMethod method = klass.method(JMod.PUBLIC, String_t,
 						    "getFormatID");
 		method.body()._return(JExpr._null());
 		return method;
@@ -274,8 +296,7 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 
 	public JMethod closeMethod(JDefinedClass klass)
 	{
-		final JMethod method = klass.method(JMod.PUBLIC,
-						    this.model.VOID,
+		final JMethod method = klass.method(JMod.PUBLIC, this.model.VOID,
 						    "close");
 		return method;
 	}
@@ -315,12 +336,8 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 	{
 		final JClass typeref = convertTypeToJClass(node.type);
 
-		final Class<? extends jsignalml.codec.Context> klass_type;
-		if(node.args.isEmpty())
-			klass_type = jsignalml.codec.Param.class;
-		else
-			klass_type = jsignalml.codec.FunctionParam.class;
-		final JClass param_class = this.model.ref(klass_type).narrow(typeref);
+		final JClass klass_type = node.args.isEmpty() ? Param_t : FunctionParam_t;
+		final JClass param_class = klass_type.narrow(typeref);
 		final JDefinedClass nested;
 		try {
 			nested = parent._class(makeParamClass(theid));
@@ -337,15 +354,13 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 
 	JMethod idMethod(JDefinedClass klass, ASTNode node, String theid)
 	{
-		final JClass java_string = this.model.ref(String.class);
-		final JMethod method = klass.method(JMod.PUBLIC, java_string, "id");
+		final JMethod method = klass.method(JMod.PUBLIC, String_t, "id");
 		final JavaExprGen javagen =
 			new JavaExprGen(this.model, createResolver(node, null));
 		if (node.id != null) {
 			final JExpression value = node.id.accept(javagen);
-			JExpression cast = JExpr._new(this.model.ref(TypeString.class))
-				.invoke("make").arg(value).invoke("getValue");
-			method.body()._return(cast);
+			JExpression cast = TypeString_I.invoke("make").arg(value);
+			method.body()._return(cast.invoke("getValue"));
 		} else {
 			method.body()._return(JExpr.lit(theid));
 		}
@@ -364,17 +379,14 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 		final JMethod impl = klass.method(JMod.PROTECTED, javatype, "_get");
 
 		final JBlock body = impl.body();
-		final JVar format_ = body.decl(this.model.ref(Type.class), "format",
+		final JVar format_ = body.decl(Type_t, "format",
 					       node.format.accept(javagen));
-		final JExpression format_str = JExpr._new(this.model.ref(TypeString.class))
-			.invoke("make").arg(format_);
-		final JVar offset_ = body.decl(this.model.ref(Type.class), "offset",
+		final JExpression format_str = TypeString_I.invoke("make").arg(format_);
+		final JVar offset_ = body.decl(Type_t, "offset",
 					       node.offset.accept(javagen));
-		final JExpression offset_int = JExpr._new(this.model.ref(TypeInt.class))
-			.invoke("make").arg(offset_);
-		final JClass bitform_class = this.model.ref(BitForm.class);
-		final JVar theformat = body.decl(bitform_class, "theformat",
-						 bitform_class.staticInvoke("get").arg(format_str));
+		final JExpression offset_int = TypeInt_I.invoke("make").arg(offset_);
+		final JVar theformat = body.decl(BitForm_t, "theformat",
+						 BitForm_t.staticInvoke("get").arg(format_str));
 		impl.body()._return(JExpr._this().invoke(readfunc).arg(theformat).arg(offset_int));
 		return impl;
 	}
@@ -392,13 +404,10 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 						   return var;
 
 				final ASTNode target = start.find(id);
-				if (target instanceof ASTNode.BuiltinFunction) {
-					final JClass builtins =
-						JavaClassGen.this.model.ref(Builtins.class);
-					return builtins.staticInvoke(id);
-				} else {
+				if (target instanceof ASTNode.BuiltinFunction)
+					return JavaClassGen.this.Builtins_t.staticInvoke(id);
+				else
 					return JExpr.invoke(makeGetter(id));
-				}
 			}
 		};
 	}
@@ -426,16 +435,13 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 			locals.add(var);
 		}
 
-		final JClass type_list = this.model.ref(List.class).narrow(Type.class);
 		final JMethod cast = klass.method(JMod.PUBLIC, javatype, "call");
-		final JVar cast_args = cast.param(type_list, "args");
+		final JVar cast_args = cast.param(List_of_Type_t, "args");
 		final JBlock cast_body = cast.body();
-		final JClass ef_am = this.model.ref(ExpressionFault.ArgMismatch.class);
 		cast_body._if(cast_args.invoke("size").ne(JExpr.lit(locals.size())))
-			._then()
-			._throw(JExpr._new(ef_am)
-				.arg(cast_args.invoke("size"))
-				.arg(JExpr.lit(locals.size())));
+			._then()._throw(JExpr._new(ArgMismatch_t)
+					.arg(cast_args.invoke("size"))
+					.arg(JExpr.lit(locals.size())));
 
 		final JInvocation subcall = JExpr._this().invoke("call");
 		int i = 0;
@@ -462,11 +468,10 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 		final JBlock body = impl.body();
 		body.directStatement(format("// type=%s", type));
 
-		final JClass javatype2 = this.model.ref(Type.class);
 		final JExpression expr = bitform_param.invoke("read")
 			.arg(JExpr.ref(JExpr.invoke("buffer"), "source"))
 			.arg(offset_param);
-		final JVar input = body.decl(javatype2, "input", expr);
+		final JVar input = body.decl(Type_t, "input", expr);
 		make_or_return(body, type, input);
 		return impl;
 	}
@@ -555,7 +560,7 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 		final JMethod getter = klass.method(JMod.PUBLIC, typeref,
 						    makeGetter(ident));
 		final JBlock body = getter.body();
-		final JVar value = body.decl(this.model.ref(Type.class), "value",
+		final JVar value = body.decl(Type_t, "value",
 					     JExpr.invoke("access").arg(ident));
 		make_or_return(body, type, value);
 		return getter;
@@ -584,15 +589,11 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 
 	JMethod iternameGetter(String id, JDefinedClass klass)
 	{
-		JClass type = this.model.ref(Type.class);
-		final JMethod getter = klass.method(JMod.PUBLIC, type,
-						    makeGetter(id));
-		getter.body()._return(JExpr._this().ref("index").invoke("get"));
+		final JMethod getter = klass.method(JMod.PUBLIC, Type_t, makeGetter(id));
+		getter.body()._return(JExpr.refthis("index").invoke("get"));
 
 		Metadata metadata = (Metadata) klass.metadata;
-		metadata.registerParam(id,
-				       this.model.ref(jsignalml.codec.OuterLoopClass.LoopClass.IndexClass.class),
-				       JExpr._this().ref("index"));
+		metadata.registerParam(id, IndexClass_t, JExpr.refthis("index"));
 		return getter;
 	}
 
@@ -635,11 +636,11 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 
 	public JMethod sequenceMethod(JDefinedClass klass, ASTNode.ForLoop node)
 	{
-		final JType list_type = this.model.ref(TypeList.class);
-		final JMethod sequence = klass.method(JMod.PROTECTED, list_type, "getSequence");
+		final JMethod sequence = klass.method(JMod.PROTECTED, TypeList_t,
+						      "getSequence");
 		final JavaExprGen javagen =
 			new JavaExprGen(this.model, createResolver(node, null));
-		final JVar range = sequence.body().decl(this.model.ref(Type.class), "range",
+		final JVar range = sequence.body().decl(Type_t, "range",
 							node.sequence.accept(javagen));
 		make_or_return(sequence.body(), new TypeList(), range);
 		return sequence;
@@ -711,11 +712,10 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 
 	public JMethod conditionMethod(JDefinedClass klass, ASTNode.Conditional node)
 	{
-		final JType type = this.model.ref(Type.class);
-		final JMethod condition = klass.method(JMod.PUBLIC, type, "getCondition");
+		final JMethod condition = klass.method(JMod.PUBLIC, Type_t, "getCondition");
 		final JavaExprGen javagen =
 			new JavaExprGen(this.model, createResolver(node, null));
-		final JVar test = condition.body().decl(type, "test",
+		final JVar test = condition.body().decl(Type_t, "test",
 						       node.condition.accept(javagen));
 		condition.body()._return(test);
 		return condition;
@@ -824,38 +824,34 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 
 	public JMethod underBufferMethod(JDefinedClass klass)
 	{
-		final JClass buffer = this.model.ref(MyBuffer.class);
-		final JMethod method = klass.method(JMod.PROTECTED, buffer, "_buffer");
+		final JMethod method = klass.method(JMod.PROTECTED, MyBuffer_t, "_buffer");
 		method.body()._return(JExpr.invoke("buffer"));
 		return method;
 	}
 
 	public JMethod sampleFormatMethod(JDefinedClass klass, ASTNode.Channel node)
 	{
-		final JType string_type = this.model.ref(TypeString.class);
-		final JMethod method = klass.method(JMod.PUBLIC, string_type,
+		final JMethod method = klass.method(JMod.PUBLIC, TypeString_t,
 						    "getSampleFormat");
 		final JavaExprGen javagen =
 			new JavaExprGen(this.model, createResolver(node, null));
-		final JVar value = method.body().decl(this.model.ref(Type.class), "value",
+		final JVar value = method.body().decl(Type_t, "value",
 						      node.format.accept(javagen));
-		make_or_return(method.body(), new TypeString(), value);
+		make_or_return(method.body(), TypeString.I, value);
 		return method;
 	}
 
 	public JMethod mapSampleMethod(JDefinedClass klass, ASTNode.Channel node)
 	{
-		final JType int_type = this.model.ref(TypeInt.class);
-		final JMethod method = klass.method(JMod.PUBLIC, int_type,
-						    "mapSample");
+		final JMethod method = klass.method(JMod.PUBLIC, TypeInt_t, "mapSample");
 		final JVar sample = method.param(this.model.LONG, "sample");
 
 		final JavaExprGen javagen =
 			new JavaExprGen(this.model, createResolver(node, null));
-		final JVar value = method.body().decl(this.model.ref(Type.class), "value",
+		final JVar value = method.body().decl(Type_t, "value",
 						      node.mapping.accept(javagen));
-		make_or_return(method.body(), new TypeInt(),
-			       value.invoke("call").arg(JExpr._new(int_type).arg(sample)));
+		make_or_return(method.body(), TypeInt.I,
+			       value.invoke("call").arg(JExpr._new(TypeInt_t).arg(sample)));
 		return method;
 	}
 
@@ -873,19 +869,17 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 						    "getNumberOfSamples");
 		final JavaExprGen javagen =
 			new JavaExprGen(this.model, createResolver(node, null));
-		final JVar value = method.body().decl(this.model.ref(Type.class), "value",
+		final JVar value = method.body().decl(Type_t, "value",
 						      node.length.accept(javagen));
-		final JClass type_int = this.model.ref(TypeInt.class);
-		final JVar cast = method.body().decl(type_int, "cast",
-					     JExpr._new(type_int).invoke("make").arg(value));
+		final JVar cast = method.body().decl(TypeInt_t, "cast",
+						     TypeInt_I.invoke("make").arg(value));
 		method.body()._return(cast.invoke("safeLongValue"));
 		return method;
 	}
 
 	public JMethod getChannelNameMethod(JDefinedClass klass, ASTNode.Channel node)
 	{
-		final JMethod method = klass.method(JMod.PUBLIC, this.model.ref(String.class),
-						    "getChannelName");
+		final JMethod method = klass.method(JMod.PUBLIC, String_t, "getChannelName");
 		method.body()._return(JExpr.lit("unknown"));
 		return method;
 	}

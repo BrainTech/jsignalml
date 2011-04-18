@@ -12,6 +12,8 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.NotImplementedException;
 
 public class TypeList extends Type implements Iterable<Type> {
+	public static final TypeList I = new TypeList();
+
 	public final java.util.List<Type> value;
 
 	public TypeList(java.util.List<? extends Type> value) {

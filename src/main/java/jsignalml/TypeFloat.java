@@ -15,6 +15,7 @@ import static java.lang.String.format;
 import org.apache.commons.lang.StringUtils;
 
 public class TypeFloat extends Type {
+	public static final TypeFloat I = new TypeFloat();
 
 	public final double value;
 	public TypeFloat(double value) {

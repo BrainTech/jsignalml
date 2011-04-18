@@ -15,6 +15,7 @@ import static java.lang.String.format;
 import org.apache.commons.lang.StringUtils;
 
 public class TypeInt extends Type {
+	public static final TypeInt I = new TypeInt();
 	public static final TypeInt ZERO = new TypeInt(BigInteger.ZERO);
 
 	public final BigInteger value;

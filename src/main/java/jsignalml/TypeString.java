@@ -4,6 +4,8 @@ import java.util.regex.Pattern;
 import java.util.Map;
 
 public class TypeString extends Type {
+	public static final TypeString I = new TypeString();
+
 	public final java.lang.String value;
 	public TypeString(java.lang.String value) {
 		this.value = value;
