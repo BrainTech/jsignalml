@@ -26,8 +26,8 @@ public abstract class ChannelClass extends Context implements jsignalml.Channel 
 	}
 
         protected abstract MyBuffer _buffer();
-        protected abstract TypeInt mapSample(long sample);
-        protected abstract TypeString getSampleFormat();
+        public abstract TypeInt mapSample(long sample);
+        public abstract TypeString getSampleFormat();
 
 	public void getSamples(FloatBuffer dst, long sample) throws BufferUnderflowException
 	{

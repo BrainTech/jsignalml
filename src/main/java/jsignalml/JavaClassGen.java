@@ -833,7 +833,7 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 	public JMethod sampleFormatMethod(JDefinedClass klass, ASTNode.Channel node)
 	{
 		final JType string_type = this.model.ref(TypeString.class);
-		final JMethod method = klass.method(JMod.PROTECTED, string_type,
+		final JMethod method = klass.method(JMod.PUBLIC, string_type,
 						    "getSampleFormat");
 		final JavaExprGen javagen =
 			new JavaExprGen(this.model, createResolver(node, null));
@@ -846,7 +846,7 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 	public JMethod mapSampleMethod(JDefinedClass klass, ASTNode.Channel node)
 	{
 		final JType int_type = this.model.ref(TypeInt.class);
-		final JMethod method = klass.method(JMod.PROTECTED, int_type,
+		final JMethod method = klass.method(JMod.PUBLIC, int_type,
 						    "mapSample");
 		final JVar sample = method.param(this.model.LONG, "sample");
 

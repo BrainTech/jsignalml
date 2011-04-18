@@ -11,6 +11,8 @@ import jsignalml.codec.FunctionParam;
 import jsignalml.codec.ChannelSetClass;
 import jsignalml.codec.ChannelClass;
 
+import java.nio.FloatBuffer;
+
 /**
  * Produces a human readable representation of the Context tree.
  */
@@ -75,6 +77,11 @@ public class ContextDumper implements ContextVisitor<Integer> {
 		for(long i: new long[]{0, 1, 2, 3, -1, count-3, count-1, count-1})
 			array.add(i!=-1 ? "" + node.getSample(i) : "...");
 		dumper.put(level+1, "[%s]\n", StringUtils.join(array, ", "));
+		dumper.put(level+1, "samples 0..%d @ %d..%d\n", count-1,
+			   node.mapSample(0).safeIntValue(),
+			   node.mapSample(count-1).safeIntValue());
+		FloatBuffer buffer = FloatBuffer.allocate((int)count);
+		node.getSamples(buffer, 0);
 		return ans;
 	}
 
