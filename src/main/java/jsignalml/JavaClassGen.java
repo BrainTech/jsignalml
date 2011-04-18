@@ -7,6 +7,8 @@ import java.util.HashMap;
 import java.util.Arrays;
 import java.io.File;
 import java.io.OutputStream;
+import java.nio.ByteBuffer;
+import java.nio.FloatBuffer;
 import org.apache.log4j.BasicConfigurator;
 
 import com.sun.codemodel.JClass;
@@ -91,6 +93,8 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 	final JClass String_t = this.model.ref(String.class);
 	final JClass Logger_t = this.model.ref(Logger.class);
 	final JClass System_t = this.model.ref(System.class);
+	final JClass FloatBuffer_t = this.model.ref(FloatBuffer.class);
+	final JClass ByteBuffer_t = this.model.ref(ByteBuffer.class);
 
 	JFieldVar log_var = null; // this should be set when Signalml class is created.
 
@@ -793,6 +797,7 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 		underBufferMethod(klass);
 		sampleFormatMethod(klass, node);
 		mapSampleMethod(klass, node);
+		getSamplesMethod(klass, node);
 		getSamplingFrequencyMethod(klass, node);
 		getNumberOfSamplesMethod(klass, node);
 		getChannelNameMethod(klass, node);
@@ -852,6 +857,35 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 						      node.mapping.accept(javagen));
 		make_or_return(method.body(), TypeInt.I,
 			       value.invoke("call").arg(JExpr._new(TypeInt_t).arg(sample)));
+		return method;
+	}
+
+	public JMethod getSamplesMethod(JDefinedClass klass, ASTNode.Channel node)
+	{
+		final JMethod method = klass.method(JMod.PUBLIC, this.model.VOID, "getSamples");
+		final JVar dst = method.param(FloatBuffer_t, "dst");
+		final JVar sample = method.param(this.model.LONG, "sample");
+
+		final JavaExprGen javagen =
+			new JavaExprGen(this.model, createResolver(node, null));
+		final JBlock body = method.body();
+		final JVar mapping = body.decl(Type_t, "mapping",
+					       node.mapping.accept(javagen));
+		final JVar format_ = body.decl(TypeString_t, "format_",
+					       JExpr._this().invoke("getSampleFormat"));
+		final JVar format = body.decl(BitForm_t, "format",
+					      BitForm_t.staticInvoke("get").arg(format_));
+		final JVar buffer = body.decl(ByteBuffer_t, "buffer",
+					      JExpr.invoke("_buffer").ref("source"));
+		final JBlock _while = body._while(JExpr.invoke(dst, "hasRemaining")).body();
+		final JExpression mapping_call = mapping.invoke("call")
+			.arg(JExpr._new(TypeInt_t).arg(sample));
+		final JVar input = _while.decl(Type_t, "input",
+					       format.invoke("read").arg(buffer)
+					       .arg(JExpr.cast(TypeInt_t, mapping_call)));
+		final JExpression conv = TypeFloat_I.invoke("make").arg(input);
+		_while.add(dst.invoke("put")
+			   .arg(JExpr.cast(this.model.FLOAT, conv.ref("value"))));
 		return method;
 	}
 
