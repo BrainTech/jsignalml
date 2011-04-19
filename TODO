@@ -2,6 +2,24 @@ Priority:
 1. data reading;
 2. text file reading;
 
+Tasks:
+1. Generated code has get_set() which returns null. Fix it to take an identifier
+   and return a ChannelSet based on this identifier. The main and only
+   channelset should be called "main" by convention to simplify things.
+
+2. Class generation methods in JavaClassGen.java are very similar. Factor
+   out common class/metadata creation code into a separate routine.
+
+3. Modify ConditionalClass to not create a namespace, i.e. to register names
+   in the parent Context. ElseBranchClass alread does something like that...
+   The same thing should possibly be done for other types of classes.
+
+4.[low priority] Convert tests to testng -- to have generated tests, and adapt
+   current testcases for expression evaluation as a source of tests for java
+   expression generation, compilation and evaluation.
+
+
+
 Exception in thread "main" java.lang.IllegalArgumentException: unkown type 'bool'
         at jsignalml.Type.getType(Type.java:32)
         at jsignalml.CodecParser.do_param(CodecParser.java:100)
