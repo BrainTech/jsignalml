@@ -1,11 +1,11 @@
 package jsignalml;
 
-import java.io.RandomAccessFile;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.channels.FileChannel;
 import java.nio.channels.FileChannel.MapMode;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
@@ -21,10 +21,11 @@ public class MyBuffer {
 		throws java.io.FileNotFoundException, java.io.IOException
 	{
 		log.info("opening binary file %s", name);
-		RandomAccessFile file = new RandomAccessFile(name, "r");
-		FileChannel channel = file.getChannel();
-		source = channel.map(MapMode.READ_ONLY, 0, channel.size());
 		this.filename = name;
+
+		FileInputStream file = new FileInputStream(name);
+		FileChannel channel = file.getChannel();
+		this.source = channel.map(MapMode.READ_ONLY, 0, channel.size());
 
 		log.info("setting byteorder %s", this.byteorder);
 		source.order(byteorder);
