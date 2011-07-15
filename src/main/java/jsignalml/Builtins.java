@@ -207,7 +207,7 @@ public class Builtins extends ASTNode {
 
 	public ASTNode.BuiltinFunction lookup(String name)
 	{
-		log.debug("find: looking for %s", name);
+		log.debug("looking for %s", name);
 
 		ASTNode owner = this.children.get(0);
 

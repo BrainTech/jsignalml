@@ -269,8 +269,10 @@ public abstract class ASTNode {
 				       TypeObject function) {
 			super(parent, id, type);
 			this.function = function;
+			assert this.static_id != null;
+
 			log.info("created BuiltinFunction %s.%s -> %s",
-				 parent.id, this.id, Type.typename(type));
+				 parent.id, this.static_id, Type.typename(type));
 		}
 
 		public BuiltinFunction(ASTNode parent, String id, Type type,
@@ -292,7 +294,7 @@ public abstract class ASTNode {
 		@Override
 		public String toString()
 		{
-			return format("ASTNode.BuiltinFunction builtin.%s", id);
+			return format("ASTNode.BuiltinFunction builtin.%s", static_id);
 		}
 	}
 
@@ -385,6 +387,8 @@ public abstract class ASTNode {
 				throw new SyntaxError("<arg> must have a parent");
 			if (!(parent instanceof ASTNode.Param))
 				throw new SyntaxError("<arg> must live inside <param>");
+			if (this.static_id == null)
+				throw new SyntaxError("<arg> must have a static string id");
 
 			this.type = type;
 			((Param)parent).args.add(this);
