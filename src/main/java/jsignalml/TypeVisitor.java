@@ -4,6 +4,13 @@ import java.util.List;
 import java.util.Map;
 
 public class TypeVisitor extends ExpressionVisitor<Type> {
+	final CallHelper context;
+
+	public TypeVisitor(CallHelper context)
+	{
+		this.context = context;
+	}
+
 	@Override
 	public Type visit(Expression.BinaryOp op, Type left, Type right)
 	{
@@ -26,22 +33,19 @@ public class TypeVisitor extends ExpressionVisitor<Type> {
 	@Override
 	public Type visit(Expression.Call call, Type what, List<Type> args)
 	{
-		// TODO
-		return null;
+		return what.callType(args);
 	}
 
 	@Override
 	public Type visit(Expression.Ref ref)
 	{
-		// TODO
-		return null;
+		return this.context.lookup(ref.name);
 	}
 
 	@Override
 	public Type visit(Expression.Access accessor, Type struct)
 	{
-		// TODO
-		return null;
+		return struct.access(accessor.item);
 	}
 
 	@Override
@@ -129,7 +133,6 @@ public class TypeVisitor extends ExpressionVisitor<Type> {
 	@Override
 	public Type visit(Expression.Assign op)
 	{
-		// XXX: add a marker for "no type"
-		return null;
+		return op.value.accept(this);
 	}
 }

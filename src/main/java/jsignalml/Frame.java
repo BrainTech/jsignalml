@@ -88,6 +88,14 @@ public class Frame implements CallHelper {
 			return this.node.accept(visitor, null);
 		}
 
+		public Type callType(List<Type> args)
+		{
+			if(!(this.node instanceof ASTNode.Param))
+				throw new ExpressionFault.TypeError();
+			return ((ASTNode.Param)this.node).type;
+			// TODO: actually look at args
+		}
+
 		@Override
 		public java.lang.String toString() {
 			return format("Function[%s] in %s", node, frame);

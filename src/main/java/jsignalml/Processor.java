@@ -148,7 +148,7 @@ public class Processor {
 				new ASTNode.ExprParam(frame.node, "expr", null, expr);
 
 			try {
-				final Type type = expr.accept(new TypeVisitor());
+				final Type type = expr.accept(new TypeVisitor(frame));
 				System.out.format("type: %s\n", Type.typename(type) );
 			} catch (ExpressionFault e) {
 				log.exception("type checking", e);

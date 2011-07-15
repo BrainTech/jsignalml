@@ -275,6 +275,11 @@ public abstract class Type implements Comparable<Type> {
 		}
 	}
 
+	public Type callType(List<Type> args)
+	{
+		throw new ExpressionFault.TypeError();
+	}
+
 	public Type index(Type sub)
 	{
 		throw new ExpressionFault.TypeError();
