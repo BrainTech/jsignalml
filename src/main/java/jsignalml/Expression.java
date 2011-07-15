@@ -22,6 +22,14 @@ public abstract class Expression {
 	 */
 	public abstract <T> T accept(ExpressionVisitor<T> v);
 
+	/**
+	 * Type of the result of expression evaluation. As usual, null
+	 * specifies any/unknown type, and Type instances specify type.
+	 * Of course, the type of the expression is dependent on the context,
+	 * but for now let's store this informatio here.
+	 */
+	Type type = null;
+
 	public static class BinaryOp extends Expression {
 		final Expression left, right;
 		final Type.BinaryOp op;
