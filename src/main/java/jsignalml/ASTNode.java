@@ -402,7 +402,7 @@ public abstract class ASTNode {
 		public String toString()
 		{
 			return format("ASTNode.Positional %s:%s",
-				      static_id, type.getClass().getSimpleName());
+				      static_id, Type.typename(type));
 		}
 
 		@Override

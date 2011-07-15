@@ -1,5 +1,7 @@
 package jsignalml;
 
+import static java.lang.String.format;
+
 import java.util.List;
 import java.util.Map;
 import java.io.InputStream;
@@ -156,8 +158,13 @@ public class CodecParser {
                 assert element.getNodeName().equals("arg");
 
                 final String name = _attribute(element, "name");
-                final String type_ = element.getAttribute("type");
-		final Type type = Type.getType(type_);
+                final String type_ = _attribute(element, "type");
+		final Type type;
+		try {
+			type = Type.getType(type_);
+		} catch(IllegalArgumentException e){
+			throw new SyntaxError(format("%s: unkown type='%s'", element, type_));
+		}
 
                 final ASTNode.Positional arg = new ASTNode.Positional(parent, name, type);
 
