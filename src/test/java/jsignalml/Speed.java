@@ -6,6 +6,7 @@ import java.io.RandomAccessFile;
 import java.nio.channels.FileChannel;
 import java.nio.ByteBuffer;
 import java.nio.MappedByteBuffer;
+import java.nio.ByteOrder;
 
 
 public class Speed {
@@ -244,7 +245,8 @@ public class Speed {
 			MappedByteBuffer mb = ch.map( FileChannel.MapMode.READ_ONLY,
 						      0L, ch.size( ) );
 			long checkSum = 0L;
-			while ( mb.hasRemaining( ) )
+			long size = ch.size();
+			for(long i=0; i<size; i++)
 				checkSum += char2int(mb.get( ));
 			return checkSum;
 		}
@@ -271,6 +273,44 @@ public class Speed {
 	}
 
 	public class Reader12b implements Reader {
+		public long checksum() throws java.io.IOException {
+			FileInputStream f = new FileInputStream( name );
+			FileChannel ch = f.getChannel( );
+			ByteBuffer mb = ch.map( FileChannel.MapMode.READ_ONLY,
+						      0L, ch.size( ) );
+			mb.order(ByteOrder.LITTLE_ENDIAN);
+
+			long checkSum = 0L;
+			long size = ch.size();
+			for(long i=0; i<size; i++)
+				checkSum += char2int(mb.get((int)i));
+			return checkSum;
+		}
+		public String title() {
+			return "MappedByteBuffer absolute LE";
+		}
+	}
+
+	public class Reader12c implements Reader {
+		public long checksum() throws java.io.IOException {
+			FileInputStream f = new FileInputStream( name );
+			FileChannel ch = f.getChannel( );
+			ByteBuffer mb = ch.map( FileChannel.MapMode.READ_ONLY,
+						      0L, ch.size( ) );
+			mb.order(ByteOrder.BIG_ENDIAN);
+
+			long checkSum = 0L;
+			long size = ch.size();
+			for(long i=0; i<size; i++)
+				checkSum += char2int(mb.get((int)i));
+			return checkSum;
+		}
+		public String title() {
+			return "MappedByteBuffer absolute BE";
+		}
+	}
+
+	public class Reader12d implements Reader {
 		public long checksum() throws java.io.IOException {
 			FileInputStream f = new FileInputStream( name );
 			FileChannel ch = f.getChannel( );
@@ -332,6 +372,8 @@ public class Speed {
 				    new Reader12(),
 				    new Reader12a(),
 				    new Reader12b(),
+				    new Reader12c(),
+				    new Reader12d(),
 				    new Reader13(),
 				    };
 		for(Reader reader:readers){
@@ -354,6 +396,6 @@ public class Speed {
 
 	public static void main(String...argv) throws java.io.IOException
 	{
-		new Speed("/tmp/data", 1024*16).printSpeeds();
+		new Speed(argv[0], 1024*16).printSpeeds();
 	}
 }
