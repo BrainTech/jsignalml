@@ -375,24 +375,62 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 	{
 		assert klass != null;
 
-		final JMethod readfunc = readFunction(klass, node, node.type);
-
 		final JavaExprGen javagen =
 			new JavaExprGen(this.model, createResolver(node, null));
-		final JClass javatype = convertTypeToJClass(node.type);
-		final JMethod impl = klass.method(JMod.PROTECTED, javatype, "_get");
+		final JClass wanted_t = convertTypeToJClass(node.type);
+		final JMethod impl = klass.method(JMod.PROTECTED, wanted_t, "_get");
 
 		final JBlock body = impl.body();
-		final JVar format_ = body.decl(Type_t, "format",
-					       node.format.accept(javagen));
-		final JExpression format_str = TypeString_I.invoke("make").arg(format_);
+		body.directStatement(format("// type=%s", node.type));
+		body.directStatement(format("// format=%s", node.format));
+		body.directStatement(format("// offset=%s", node.offset));
 		final JVar offset_ = body.decl(Type_t, "offset",
 					       node.offset.accept(javagen));
 		final JExpression offset_int = TypeInt_I.invoke("make").arg(offset_);
-		final JVar theformat = body.decl(BitForm_t, "theformat",
-						 BitForm_t.staticInvoke("get").arg(format_str));
-		impl.body()._return(JExpr._this().invoke(readfunc).arg(theformat).arg(offset_int));
+
+		final JVar theformat;
+
+		final BitForm form = staticBitform(node.format);
+		final JClass expected_t;
+		if(form != null){
+			Type expectedtype = form.readType();
+			expected_t = convertTypeToJClass(expectedtype);
+			JClass form_t = this.model.ref(form.getClass());
+			theformat = body.decl(form_t, "theformat", JExpr._new(form_t));
+		} else {
+			JVar format_ = body.decl(Type_t, "format",
+						       node.format.accept(javagen));
+			JExpression format_str = TypeString_I.invoke("make").arg(format_);
+			theformat = body.decl(BitForm_t, "theformat",
+					      BitForm_t.staticInvoke("get").arg(format_str));
+			expected_t = null;
+		}
+
+		final JExpression expr = theformat.invoke("read")
+			.arg(JExpr.ref(JExpr.invoke("buffer"), "source"))
+			.arg(offset_int);
+		final JVar input = body.decl(expected_t, "input", expr);
+		body._return(input);
 		return impl;
+	}
+
+	BitForm staticBitform(Expression format)
+	{
+		assert format.type == null || (format.type instanceof TypeString);
+
+		if (!(format instanceof Expression.Const))
+			return null;
+		final Type ans = ((Expression.Const)format).value;
+		if(!(ans instanceof TypeString))
+			throw new ExpressionFault.TypeError();
+		final BitForm form;
+		String value = ((TypeString)ans).value;
+		try {
+			form = BitForm.get(value);
+		} catch(BitForm.BadBitForm e) {
+			throw new ExpressionFault.ValueError("bad bitform: " + value);
+		}
+		return form;
 	}
 
 	public JavaExprGen.JavaNameResolver createResolver(final ASTNode start,
@@ -423,7 +461,7 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 		final JavaExprGen javagen =
 			new JavaExprGen(this.model, createResolver(node, null));
 		JExpression value = node.expr.accept(javagen);
-		make_or_return(impl.body(), node.type, value);
+		make_or_return(impl.body(), node.type, value, node.expr.type);
 		return impl;
 	}
 
@@ -458,25 +496,7 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 		final JavaExprGen javagen =
 			new JavaExprGen(this.model, createResolver(node, locals));
 		JExpression value = node.expr.accept(javagen);
-		make_or_return(impl.body(), node.type, value);
-		return impl;
-	}
-
-	public JMethod readFunction(JDefinedClass klass, ASTNode node, Type type)
-	{
-		final JClass javatype = this.convertTypeToJClass(type);
-
-		final JMethod impl = klass.method(JMod.NONE, javatype, "_get_impl");
-		final JVar bitform_param = impl.param(BitForm.class, "bitform");
-		final JVar offset_param = impl.param(TypeInt.class, "offset");
-		final JBlock body = impl.body();
-		body.directStatement(format("// type=%s", type));
-
-		final JExpression expr = bitform_param.invoke("read")
-			.arg(JExpr.ref(JExpr.invoke("buffer"), "source"))
-			.arg(offset_param);
-		final JVar input = body.decl(Type_t, "input", expr);
-		make_or_return(body, type, input);
+		make_or_return(impl.body(), node.type, value, node.expr.type);
 		return impl;
 	}
 
@@ -538,21 +558,32 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 	}
 
 	/**
-	 * If type is not null, make sure that value is of this type, by
+	 * If wanted is not null, make sure that value is of this type, by
 	 * invoking type.make(value). Otherwise just make body return value.
+	 * expected is a result of type analysis and must be the superset of
+	 * possible types of expression.
 	 */
-	public void make_or_return(JBlock body, Type type, JExpression value)
+	public void make_or_return(JBlock body, Type wanted, JExpression value, Type expected)
 	{
-		final JClass javatype = convertTypeToJClass(type);
-		if (type != null) {
+		body._return(make_or_pass(wanted, value, expected));
+	}
+
+	/**
+	 * If wanted is not null, make sure that value is of this type, by
+	 * invoking type.make(value). Return the expression holding the value
+	 * after cast. expected is a result of type analysis and must be the
+	 * superset of possible types of expression.
+	 */
+	public JExpression make_or_pass(Type wanted, JExpression value, Type expected)
+	{
+		final JClass wanted_t = convertTypeToJClass(wanted);
+		if (wanted != null && (expected == null ||
+				       !wanted.getClass().isAssignableFrom(expected.getClass()))) {
 			// conversion cast requiered
-			final JVar var =
-				body.decl(javatype, "var",
-					  JExpr._new(javatype).invoke("make").arg(value));
-			body._return(var);
+			return JExpr._new(wanted_t).invoke("make").arg(value);
 		} else {
 			// no need to cast
-			body._return(value);
+			return value;
 		}
 	}
 
@@ -566,7 +597,7 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 		final JBlock body = getter.body();
 		final JVar value = body.decl(Type_t, "value",
 					     JExpr.invoke("access").arg(ident));
-		make_or_return(body, type, value);
+		make_or_return(body, type, value, null);
 		return getter;
 	}
 
@@ -646,7 +677,8 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 			new JavaExprGen(this.model, createResolver(node, null));
 		final JVar range = sequence.body().decl(Type_t, "range",
 							node.sequence.accept(javagen));
-		make_or_return(sequence.body(), new TypeList(), range);
+		make_or_return(sequence.body(), new TypeList(), range,
+			       node.sequence.type);
 		return sequence;
 	}
 
@@ -842,7 +874,7 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 			new JavaExprGen(this.model, createResolver(node, null));
 		final JVar value = method.body().decl(Type_t, "value",
 						      node.format.accept(javagen));
-		make_or_return(method.body(), TypeString.I, value);
+		make_or_return(method.body(), TypeString.I, value, node.format.type);
 		return method;
 	}
 
@@ -856,7 +888,8 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 		final JVar value = method.body().decl(Type_t, "value",
 						      node.mapping.accept(javagen));
 		make_or_return(method.body(), TypeInt.I,
-			       value.invoke("call").arg(JExpr._new(TypeInt_t).arg(sample)));
+			       value.invoke("call").arg(JExpr._new(TypeInt_t).arg(sample)),
+			       null);
 		return method;
 	}
 

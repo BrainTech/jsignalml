@@ -69,6 +69,9 @@ public abstract class BitForm {
 	}
 
 	public abstract Type read(ByteBuffer buffer, TypeInt offset);
+
+	public abstract Type readType();
+
 	public java.lang.String toString()
 	{
 		return this.getClass().getName().replace("$", ".") + "()";
@@ -77,6 +80,11 @@ public abstract class BitForm {
 	public static abstract class Int extends BitForm {
 		@Override
 		public abstract TypeInt read(ByteBuffer buffer, TypeInt offset);
+
+		public TypeInt readType()
+		{
+			return TypeInt.I;
+		}
 
 		public static class Int8 extends Int {
 			protected static final Logger log = new Logger(Int8.class);
@@ -316,6 +324,11 @@ public abstract class BitForm {
 	}
 
 	public static abstract class Float extends BitForm {
+		public TypeFloat readType()
+		{
+			return TypeFloat.I;
+		}
+
 		public abstract static class Float32 extends Float {
 			public static class LE extends Float32 {
 				protected static final Logger log = new Logger(Float32.LE.class);
@@ -336,6 +349,11 @@ public abstract class BitForm {
 
 	public static class String extends BitForm {
 		protected static final Logger log = new Logger(String.class);
+
+		public TypeString readType()
+		{
+			return TypeString.I;
+		}
 
 		final int size;
 		public String(int size) {
