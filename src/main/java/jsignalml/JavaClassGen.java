@@ -196,9 +196,7 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 			final JBlock block = this.create_params.block();
 			comment(block, "%s", new Throwable().getStackTrace()[1]);
 			comment(block, "%s", new Throwable().getStackTrace()[0]);
-			final JVar obj = block.decl(klass, "obj", param_inv);
-			block.add(JExpr.invoke("register")
-				  .arg(obj.invoke("id")).arg(obj));
+			block.add(JExpr.invoke("register").arg(name).arg(param_inv));
 		}
 
 		void registerContext(String name, JDefinedClass context_class, JExpression get)
@@ -331,10 +329,8 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 		idMethod(nested, node, theid);
 		if(node.args.isEmpty()) {
 			getExprMethod(nested, node);
-			getterMethod(klass, theid, node.type, nested);
 		} else {
 			callExprMethod(nested, node);
-			getterMethod(klass, theid, null, nested);
 		}
 		return nested;
 	}
@@ -348,7 +344,6 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 		JDefinedClass nested = paramClass(klass, theid, node);
 		idMethod(nested, node, theid);
 		readParamFunction(nested, node);
-		getterMethod(klass, theid, node.type, nested);
 		return nested;
 	}
 
@@ -367,8 +362,10 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 		nested._extends(param_class);
 		comment(nested, "%s", new Throwable().getStackTrace());
 
+		final JMethod getter = classCacheMethod(parent, theid, nested);
+
 		Metadata metadata = (Metadata) parent.metadata;
-		metadata.registerParam(theid, nested, JExpr._new(nested));
+		metadata.registerParam(theid, nested, JExpr.invoke(getter));
 
 		return nested;
 	}
@@ -529,7 +526,6 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 		final String theid = dynamicID(node.id);
 		final JDefinedClass klass = this.fileClass(node, theid, parent);
 		idMethod(klass, node, theid);
-		getterMethod(parent, theid, null, klass);
 		return klass;
 	}
 
@@ -572,7 +568,7 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 		klass.metadata = new Metadata(klass);
 		log.info("%s.metadata has been set", klass);
 
-		final JMethod getter = classCacheMethod(parent, klass);
+		final JMethod getter = classCacheMethod(parent, id, klass);
 
 		Metadata metadata = (Metadata) parent.metadata;
 		metadata.registerContext(id, klass, JExpr.invoke(getter));
@@ -610,25 +606,9 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 		}
 	}
 
-	public JMethod getterMethod(JDefinedClass klass, String ident, Type type,
-				     JDefinedClass nested)
-	{
-		final JClass typeref = convertTypeToJClass(type);
-		final String prefixed = makeIdentifier(ident);
-		final JMethod getter = klass.method(JMod.PUBLIC, typeref,
-						    makeGetter(ident));
-		final JBlock body = getter.body();
-		comment(body, "%s", new Throwable().getStackTrace());
-
-		final JVar value = body.decl(Type_t, "value",
-					     JExpr.invoke("access").arg(ident));
-		make_or_return(body, type, value, null);
-		return getter;
-	}
-
-        public JMethod classCacheMethod(JDefinedClass parent, JDefinedClass klass)
+        public JMethod classCacheMethod(JDefinedClass parent, String id, JDefinedClass klass)
         {
-		final String methodname = makeGetter(klass.name());
+		final String methodname = makeGetter(id);
                 final JFieldVar stor = parent.field(JMod.NONE, klass, methodname,
 						    JExpr._null());
                 final JMethod getter = parent.method(JMod.PUBLIC, klass, methodname);
@@ -675,7 +655,6 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 		comment(inner, "%s", new Throwable().getStackTrace());
 		idMethod(inner, node, theid + "_inner");
 		createLoopMethod(outer, inner);
-		getterMethod(parent, theid, null, outer);
 		return inner;
 	}
 
@@ -693,7 +672,7 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 		klass.metadata = new Metadata(klass);
 		log.info("%s.metadata has been set", klass);
 
-		final JMethod getter = classCacheMethod(parent, klass);
+		final JMethod getter = classCacheMethod(parent, id, klass);
 		comment(getter.body(), "%s", new Throwable().getStackTrace());
 
 		Metadata metadata = (Metadata) parent.metadata;
@@ -759,7 +738,6 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 		comment(klass, "%s", new Throwable().getStackTrace());
 		idMethod(klass, node, theid);
 		conditionMethod(klass, node);
-		getterMethod(parent, theid, null, klass);
 		return klass;
 	}
 
@@ -777,8 +755,7 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 		klass.metadata = new MetadataIfBranch(klass);
 		log.info("%s.metadata/if has been set", klass);
 
-		final JMethod getter = classCacheMethod(parent, klass);
-		comment(getter.body(), "%s", new Throwable().getStackTrace());
+		final JMethod getter = classCacheMethod(parent, id, klass);
 
 		Metadata metadata = (Metadata) parent.metadata;
 		metadata.registerContext(id, klass, JExpr.invoke(getter));
@@ -854,7 +831,7 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 		klass.metadata = new Metadata(klass);
 		log.info("%s.metadata has been set", klass);
 
-		final JMethod getter = classCacheMethod(parent, klass);
+		final JMethod getter = classCacheMethod(parent, id, klass);
 
 		Metadata metadata = (Metadata) parent.metadata;
 		metadata.registerContext(id, klass, JExpr.invoke(getter));
@@ -896,7 +873,7 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 		klass.metadata = new Metadata(klass);
 		log.info("%s.metadata has been set", klass);
 
-		final JMethod getter = classCacheMethod(parent, klass);
+		final JMethod getter = classCacheMethod(parent, id, klass);
 
 		Metadata metadata = (Metadata) parent.metadata;
 		metadata.registerContext(id, klass, JExpr.invoke(getter));
