@@ -194,7 +194,8 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 		{
 			log.info("register %s", name);
 			final JBlock block = this.create_params.block();
-			comment(block, "%s", new Throwable().getStackTrace());
+			comment(block, "%s", new Throwable().getStackTrace()[1]);
+			comment(block, "%s", new Throwable().getStackTrace()[0]);
 			final JVar obj = block.decl(klass, "obj", param_inv);
 			block.add(JExpr.invoke("register")
 				  .arg(obj.invoke("id")).arg(obj));
@@ -205,14 +206,16 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 			log.info("register context %s=>%s", name, context_class);
 			{
 				final JBlock block = this.create_params.block();
-				comment(block, "%s", new Throwable().getStackTrace());
+				comment(block, "%s", new Throwable().getStackTrace()[1]);
+				comment(block, "%s", new Throwable().getStackTrace()[0]);
 				final JVar obj = block.decl(context_class, "obj", get);
 				block.add(JExpr.invoke("register").arg(name).arg(obj));
 				block.add(obj.invoke("createParams"));
 			}
 			{
 				final JBlock block = this.create_channels.block();
-				comment(block, "%s", new Throwable().getStackTrace());
+				comment(block, "%s", new Throwable().getStackTrace()[1]);
+				comment(block, "%s", new Throwable().getStackTrace()[0]);
 				final JVar obj = block.decl(context_class, "obj", get);
 				block.add(obj.invoke("createChannels"));
 
@@ -629,7 +632,8 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
                 final JFieldVar stor = parent.field(JMod.NONE, klass, methodname,
 						    JExpr._null());
                 final JMethod getter = parent.method(JMod.PUBLIC, klass, methodname);
-		comment(getter.body(), "%s", new Throwable().getStackTrace());
+		comment(getter.body(), "%s", new Throwable().getStackTrace()[1]);
+		comment(getter.body(), "%s", new Throwable().getStackTrace()[0]);
 
                 getter.body()
 			._if(stor.eq(JExpr._null()))
