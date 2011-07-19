@@ -330,6 +330,7 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 		if(node.args.isEmpty()) {
 			getExprMethod(nested, node);
 		} else {
+			getThisMethod(nested, node);
 			callExprMethod(nested, node);
 		}
 		return nested;
@@ -465,7 +466,7 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 				if (target instanceof ASTNode.BuiltinFunction)
 					return JavaClassGen.this.Builtins_t.staticInvoke(id);
 				else
-					return JExpr.invoke(makeGetter(id));
+					return JExpr.invoke(makeGetter(id)).invoke("get");
 			}
 		};
 	}
@@ -480,6 +481,19 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 		JExpression value = node.expr.accept(javagen);
 		make_or_return(impl.body(), node.type, value, node.expr.type);
 		return impl;
+	}
+
+	/**
+	 * Create a getter returning "this". This method is useful because it
+	 * narrows the returned type to exact implementation class. The java
+	 * compiler then knows what are the types returned by call().
+	 */
+	public JMethod getThisMethod(JDefinedClass klass, ASTNode.ExprParam node)
+	{
+		final JMethod getter = klass.method(JMod.PUBLIC, klass, "get");
+		comment(getter.body(), "%s", new Throwable().getStackTrace());
+		getter.body()._return(JExpr._this());
+		return getter;
 	}
 
 	public JMethod callExprMethod(JDefinedClass klass, ASTNode.ExprParam node)
