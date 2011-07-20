@@ -98,23 +98,12 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 
 	JFieldVar log_var = null; // this should be set when Signalml class is created.
 
-	private String dynamicID(Expression id)
+	private String dynamicID(ASTNode start, Expression id)
 	{
-		if (id != null) {
-			Type ans = null;
-			try {
-				ans = EvalVisitor.evaluate(id);
-				assert ans != null;
-			} catch(ExpressionFault.NameError e) {
-				// pass
-			}
-
-			if (ans != null) {
-				if(!(ans instanceof TypeString))
-					throw new ExpressionFault.TypeError();
-				return ((TypeString)ans).value;
-			}
-		}
+		final EvalVisitor valuator = EvalVisitor.create(start);
+		Type ans = valuator.quickEval(TypeString.I, id);
+		if (ans != null)
+			return ((TypeString)ans).value;
 
 		// expression cannot be evaluated statically
 		return this.makeGeneratedID("gen_id");
@@ -127,7 +116,7 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 		assert dummy == null;
 
 		final JDefinedClass klass;
-		final String theid = dynamicID(node.id);
+		final String theid = dynamicID(node, node.id);
 		try {
 			klass = this.model._class(theid);
 		} catch(JClassAlreadyExistsException e) {
@@ -324,7 +313,7 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 	{
 		log.info("visit((ExprParam) %s, %s)", node, klass);
 		assert klass != null;
-		final String theid = dynamicID(node.id);
+		final String theid = dynamicID(node, node.id);
 		final JDefinedClass nested = paramClass(klass, theid, node);
 		idMethod(nested, node, theid);
 		if(node.args.isEmpty()) {
@@ -341,7 +330,7 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 	{
 		log.info("visit((BinaryParam) %s, %s)", node, klass);
 		assert klass != null;
-		final String theid = dynamicID(node.id);
+		final String theid = dynamicID(node, node.id);
 		JDefinedClass nested = paramClass(klass, theid, node);
 		idMethod(nested, node, theid);
 		readParamFunction(nested, node);
@@ -404,7 +393,7 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 					       node.offset.accept(javagen));
 		final JExpression offset_int = TypeInt_I.invoke("make").arg(offset_);
 
-		final BitForm form = staticBitform(node.format);
+		final BitForm form = staticBitform(node, node.format);
 		final JVar theformat;
 		final Type expectedtype;
 		if(form != null){
@@ -428,23 +417,18 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 		return impl;
 	}
 
-	BitForm staticBitform(Expression format)
+	BitForm staticBitform(ASTNode start, Expression format)
 	{
-		assert format.type == null || (format.type instanceof TypeString);
-
-		if (!(format instanceof Expression.Const))
+		EvalVisitor valuator = EvalVisitor.create(start);
+		Type ans = valuator.quickEval(TypeString.I, format);
+		if (ans == null)
 			return null;
-		final Type ans = ((Expression.Const)format).value;
-		if(!(ans instanceof TypeString))
-			throw new ExpressionFault.TypeError();
-		final BitForm form;
 		String value = ((TypeString)ans).value;
 		try {
-			form = BitForm.get(value);
+			return BitForm.get(value);
 		} catch(BitForm.BadBitForm e) {
 			throw new ExpressionFault.ValueError("bad bitform: " + value);
 		}
-		return form;
 	}
 
 	public JavaExprGen.JavaNameResolver createResolver(final ASTNode start,
@@ -506,7 +490,7 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 		List<JVar> locals = util.newLinkedList();
 		for (ASTNode.Positional arg: node.args) {
 			JVar var = impl.param(convertTypeToJClass(arg.type),
-					      dynamicID(arg.id));
+					      dynamicID(node, arg.id));
 			locals.add(var);
 		}
 
@@ -537,7 +521,7 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 	public JDefinedClass visit(ASTNode.FileHandle node, JDefinedClass parent)
 	{
 		log.info("visit((FileHandle) %s, %s)", node, parent);
-		final String theid = dynamicID(node.id);
+		final String theid = dynamicID(node, node.id);
 		final JDefinedClass klass = this.fileClass(node, theid, parent);
 		idMethod(klass, node, theid);
 		return klass;
@@ -640,7 +624,7 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 	public JDefinedClass visit(ASTNode.Itername node, JDefinedClass klass)
 	{
 		log.info("visit((Itername) %s, %s)", node, klass);
-		iternameGetter(dynamicID(node.id), klass);
+		iternameGetter(dynamicID(node, node.id), klass);
 		return klass;
 	}
 
@@ -659,7 +643,7 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 	public JDefinedClass visit(ASTNode.ForLoop node, JDefinedClass parent)
 	{
 		log.info("visit((ForLoop) %s, %s)", node, parent);
-		final String theid = dynamicID(node.id);
+		final String theid = dynamicID(node, node.id);
 		final JDefinedClass outer = outerLoopClass(theid, parent);
 		comment(outer, "%s", new Throwable().getStackTrace());
 		idMethod(outer, node, theid);
@@ -746,7 +730,7 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 	public JDefinedClass visit(ASTNode.Conditional node, JDefinedClass parent)
 	{
 		log.info("visit((Conditional) %s, %s)", node, parent);
-		String theid = dynamicID(node.id);
+		String theid = dynamicID(node, node.id);
 		final JDefinedClass klass = conditionalClass(theid, parent);
 		comment(klass, "%s", new Throwable().getStackTrace());
 		idMethod(klass, node, theid);
@@ -791,7 +775,7 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 	public JDefinedClass visit(ASTNode.ElseBranch node, JDefinedClass parent)
 	{
 		log.info("visit((ElseBranch) %s, %s)", node, parent);
-		final String theid = dynamicID(node.id);
+		final String theid = dynamicID(node, node.id);
 		final JDefinedClass klass = elseBranchClass(theid, parent);
 		comment(klass, "%s", new Throwable().getStackTrace());
 		idMethod(klass, node, theid);
@@ -822,7 +806,7 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 	public JDefinedClass visit(ASTNode.ChannelSet node, JDefinedClass parent)
 	{
 		log.info("visit((ChannelSet) %s, %s)", node, parent);
-		final String theid = dynamicID(node.id);
+		final String theid = dynamicID(node, node.id);
 		final JDefinedClass klass = channelSetClass(theid, parent);
 		comment(klass, "%s", new Throwable().getStackTrace());
 		idMethod(klass, node, theid);
@@ -855,7 +839,7 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 	public JDefinedClass visit(ASTNode.Channel node, JDefinedClass parent)
 	{
 		log.info("visit((Channel) %s, %s)", node, parent);
-		String theid = dynamicID(node.id);
+		String theid = dynamicID(node, node.id);
 		final JDefinedClass klass = channelClass(theid, parent);
 		comment(klass, "%s", new Throwable().getStackTrace());
 

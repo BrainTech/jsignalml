@@ -13,6 +13,11 @@ public class EvalVisitor extends ExpressionVisitor<Type> {
 		this.context = context;
 	}
 
+	public static EvalVisitor create(ASTNode start)
+	{
+		return new EvalVisitor(new Frame(start));
+	}
+
 	@Override
 	public Type visit(Expression.BinaryOp op, Type left, Type right)
 	{
@@ -118,5 +123,39 @@ public class EvalVisitor extends ExpressionVisitor<Type> {
 		CallHelper builtins = new Frame(Builtins.instance());
 		EvalVisitor visitor = new EvalVisitor(builtins);
 		return expr.accept(visitor);
+	}
+
+	/**
+	 * Try to evaluate an expression. NameErrors in the expression
+	 * are assumed to be a result of an incomplete context, not an error in
+	 * the expression: a null is returned, not an exception.
+	 *
+	 * If expr is null, null is returned.
+	 *
+	 * If expr can be evaluted, the return value is check to be of type
+	 * expected. If not, a TypeError is thrown.
+	 */
+	public Type quickEval(Type expected, Expression expr)
+	{
+		if (expr == null)
+			return null;
+
+		if(expr.type != null && expected != null
+		   && !expected.getClass().isAssignableFrom(expr.type.getClass()))
+			throw new ExpressionFault.TypeError();
+
+		Type ans = null;
+		try {
+			ans = EvalVisitor.evaluate(expr);
+			assert ans != null;
+		} catch(ExpressionFault.NameError e) {
+			// pass
+		}
+
+		if (ans != null && expected != null
+		    && !expected.getClass().isAssignableFrom(ans.getClass()))
+			throw new ExpressionFault.TypeError();
+
+		return ans;
 	}
 }
