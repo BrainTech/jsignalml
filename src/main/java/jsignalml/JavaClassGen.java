@@ -377,8 +377,7 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 		final JMethod method = klass.method(JMod.PUBLIC, String_t, "id");
 		comment(method.body(), "%s", new Throwable().getStackTrace());
 		if (node.id != null) {
-			final JavaExprGen javagen =
-				new JavaExprGen(this.model, createResolver(node, null));
+			final JavaExprGen javagen = createExprGen(node, null);
 			final JExpression value = node.id.accept(javagen);
 			JExpression cast = TypeString_I.invoke("make").arg(value);
 			method.body()._return(cast.invoke("getValue"));
@@ -392,8 +391,7 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 	{
 		assert klass != null;
 
-		final JavaExprGen javagen =
-			new JavaExprGen(this.model, createResolver(node, null));
+		final JavaExprGen javagen = createExprGen(node, null);
 		final JClass wanted_t = convertTypeToJClass(node.type);
 		final JMethod impl = klass.method(JMod.PROTECTED, wanted_t, "_get");
 		final JBlock body = impl.body();
@@ -470,13 +468,17 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 		};
 	}
 
+	JavaExprGen createExprGen(final ASTNode start, final List<JVar> locals)
+	{
+		return new JavaExprGen(this.model, createResolver(start, locals));
+	}
+
 	public JMethod getExprMethod(JDefinedClass klass, ASTNode.ExprParam node)
 	{
 		final JClass javatype = convertTypeToJClass(node.type);
 		final JMethod impl = klass.method(JMod.PROTECTED, javatype, "_get");
 		comment(impl.body(), "%s", new Throwable().getStackTrace());
-		final JavaExprGen javagen =
-			new JavaExprGen(this.model, createResolver(node, null));
+		final JavaExprGen javagen = createExprGen(node, null);
 		JExpression value = node.expr.accept(javagen);
 		make_or_return(impl.body(), node.type, value, node.expr.type);
 		return impl;
@@ -525,8 +527,7 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 		}
 		cast_body._return(subcall);
 
-		final JavaExprGen javagen =
-			new JavaExprGen(this.model, createResolver(node, locals));
+		final JavaExprGen javagen = createExprGen(node, locals);
 		JExpression value = node.expr.accept(javagen);
 		make_or_return(impl.body(), node.type, value, node.expr.type);
 		return impl;
@@ -700,8 +701,7 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 						      "getSequence");
 		comment(sequence.body(), "%s", new Throwable().getStackTrace());
 
-		final JavaExprGen javagen =
-			new JavaExprGen(this.model, createResolver(node, null));
+		final JavaExprGen javagen = createExprGen(node, null);
 		final JVar range = sequence.body().decl(Type_t, "range",
 							node.sequence.accept(javagen));
 		make_or_return(sequence.body(), new TypeList(), range,
@@ -780,8 +780,7 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 	{
 		final JMethod condition = klass.method(JMod.PUBLIC, Type_t, "getCondition");
 		comment(condition.body(), "%s", new Throwable().getStackTrace());
-		final JavaExprGen javagen =
-			new JavaExprGen(this.model, createResolver(node, null));
+		final JavaExprGen javagen = createExprGen(node, null);
 		final JVar test = condition.body().decl(Type_t, "test",
 						       node.condition.accept(javagen));
 		condition.body()._return(test);
@@ -908,8 +907,7 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 		final JMethod method = klass.method(JMod.PUBLIC, TypeString_t,
 						    "getSampleFormat");
 		comment(method.body(), "%s", new Throwable().getStackTrace());
-		final JavaExprGen javagen =
-			new JavaExprGen(this.model, createResolver(node, null));
+		final JavaExprGen javagen = createExprGen(node, null);
 		final JVar value = method.body().decl(Type_t, "value",
 						      node.format.accept(javagen));
 		make_or_return(method.body(), TypeString.I, value, node.format.type);
@@ -922,8 +920,7 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 		comment(method.body(), "%s", new Throwable().getStackTrace());
 		final JVar sample = method.param(this.model.LONG, "sample");
 
-		final JavaExprGen javagen =
-			new JavaExprGen(this.model, createResolver(node, null));
+		final JavaExprGen javagen = createExprGen(node, null);
 		final JVar value = method.body().decl(Type_t, "value",
 						      node.mapping.accept(javagen));
 		make_or_return(method.body(), TypeInt.I,
@@ -939,8 +936,7 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 		final JVar dst = method.param(FloatBuffer_t, "dst");
 		final JVar sample = method.param(this.model.LONG, "sample");
 
-		final JavaExprGen javagen =
-			new JavaExprGen(this.model, createResolver(node, null));
+		final JavaExprGen javagen = createExprGen(node, null);
 		final JBlock body = method.body();
 		final JVar mapping = body.decl(Type_t, "mapping",
 					       node.mapping.accept(javagen));
@@ -976,8 +972,7 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 		final JMethod method = klass.method(JMod.PUBLIC, this.model.LONG,
 						    "getNumberOfSamples");
 		comment(method.body(), "%s", new Throwable().getStackTrace());
-		final JavaExprGen javagen =
-			new JavaExprGen(this.model, createResolver(node, null));
+		final JavaExprGen javagen = createExprGen(node, null);
 		final JVar value = method.body().decl(Type_t, "value",
 						      node.length.accept(javagen));
 		final JVar cast = method.body().decl(TypeInt_t, "cast",
