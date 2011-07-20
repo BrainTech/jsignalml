@@ -51,3 +51,7 @@ Exception in thread "main" org.xml.sax.SAXParseException: The element type "for-
         at jsignalml.CodecParser.makeCodec(CodecParser.java:36)
         at jsignalml.CodecParser.makeCodec(CodecParser.java:30)
         at jsignalml.CodecParser.main(CodecParser.java:299)
+
+Use synchronized in singleton initializers.
+
+Remove illegal characters from codec name.

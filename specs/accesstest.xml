@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+<!DOCTYPE signalml SYSTEM "SignalML_2_0.dtd">
+<signalml>
+
+  <header>
+    <text_info>testfile for access()</text_info>
+    <url>http://wheredoyouwantogotoday.to</url>
+  </header>
+
+  <param id='p1' type='int'>
+    <expr>333</expr>
+  </param>
+
+  <param id='p2' type='int'>
+    <expr>p1 * 3</expr>
+  </param>
+
+  <param id='func' type='str'>
+    <arg name='count' />
+    <expr>count * 'a'</expr>
+  </param>
+
+  <param id='p3' type='str'>
+    <expr>func(3)</expr>
+  </param>
+
+  <file id='data' type='binary'>
+    <param id='r1' type='int'>
+      <format>'&lt;i2'</format>
+      <offset>0</offset>
+    </param>
+  </file>
+</signalml>

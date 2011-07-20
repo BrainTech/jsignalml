@@ -1,0 +1,1 @@
+while(dst.hasRemaining()) --> while(count-->0)             2.035 --> 1.955
