@@ -101,9 +101,9 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 	private String dynamicID(ASTNode start, Expression id)
 	{
 		final EvalVisitor valuator = EvalVisitor.create(start);
-		Type ans = valuator.quickEval(TypeString.I, id);
-		if (ans != null)
-			return ((TypeString)ans).value;
+		String value = valuator.quickEval(TypeString.I, id);
+		if (value != null)
+			return value;
 
 		// expression cannot be evaluated statically
 		return this.makeGeneratedID("gen_id");
@@ -365,14 +365,22 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 	{
 		final JMethod method = klass.method(JMod.PUBLIC, String_t, "id");
 		comment(method.body(), "%s", new Throwable().getStackTrace());
+		final JExpression ret;
 		if (node.id != null) {
-			final JavaExprGen javagen = createExprGen(node, null);
-			final JExpression value = node.id.accept(javagen);
-			JExpression cast = TypeString_I.invoke("make").arg(value);
-			method.body()._return(cast.invoke("getValue"));
+			final EvalVisitor valuator = EvalVisitor.create(node);
+			String value = valuator.quickEval(TypeString.I, node.id);
+			if (value != null) {
+				ret = JExpr.lit(value);
+			} else {
+				JavaExprGen javagen = createExprGen(node, null);
+				JExpression jvalue = node.id.accept(javagen);
+				JExpression jcast = TypeString_I.invoke("make").arg(jvalue);
+				ret = jcast.invoke("getValue");
+			}
 		} else {
-			method.body()._return(JExpr.lit(theid));
+			ret = JExpr.lit(theid);
 		}
+		method.body()._return(ret);
 		return method;
 	}
 
@@ -420,10 +428,9 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 	BitForm staticBitform(ASTNode start, Expression format)
 	{
 		EvalVisitor valuator = EvalVisitor.create(start);
-		Type ans = valuator.quickEval(TypeString.I, format);
-		if (ans == null)
+		String value = valuator.quickEval(TypeString.I, format);
+		if (value == null)
 			return null;
-		String value = ((TypeString)ans).value;
 		try {
 			return BitForm.get(value);
 		} catch(BitForm.BadBitForm e) {

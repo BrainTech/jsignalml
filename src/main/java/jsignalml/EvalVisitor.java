@@ -135,7 +135,7 @@ public class EvalVisitor extends ExpressionVisitor<Type> {
 	 * If expr can be evaluted, the return value is check to be of type
 	 * expected. If not, a TypeError is thrown.
 	 */
-	public Type quickEval(Type expected, Expression expr)
+	public <T> T quickEval(Type expected, Expression expr)
 	{
 		if (expr == null)
 			return null;
@@ -152,10 +152,13 @@ public class EvalVisitor extends ExpressionVisitor<Type> {
 			// pass
 		}
 
-		if (ans != null && expected != null
+		if (ans == null)
+			return null;
+
+		if (expected != null
 		    && !expected.getClass().isAssignableFrom(ans.getClass()))
 			throw new ExpressionFault.TypeError();
 
-		return ans;
+		return (T) ans.getValue();
 	}
 }
