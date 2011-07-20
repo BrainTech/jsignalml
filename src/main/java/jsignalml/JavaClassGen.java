@@ -361,7 +361,8 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 			throw new SyntaxError(format("duplicate name: '%s'", theid));
 		}
 		nested._extends(param_class);
-		comment(nested, "%s", new Throwable().getStackTrace());
+		comment(nested, "%s\n", new Throwable().getStackTrace()[1]);
+		comment(nested, "%s", new Throwable().getStackTrace()[0]);
 
 		final JMethod getter = classCacheMethod(parent, theid, nested);
 
