@@ -376,7 +376,7 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 	{
 		final JMethod method = klass.method(JMod.PUBLIC, String_t, "id");
 		comment(method.body(), "%s", new Throwable().getStackTrace());
-		if (theid == null) {
+		if (node.id != null) {
 			final JavaExprGen javagen =
 				new JavaExprGen(this.model, createResolver(node, null));
 			final JExpression value = node.id.accept(javagen);
