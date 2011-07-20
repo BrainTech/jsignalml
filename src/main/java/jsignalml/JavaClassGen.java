@@ -406,24 +406,22 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 					       node.offset.accept(javagen));
 		final JExpression offset_int = TypeInt_I.invoke("make").arg(offset_);
 
-		final JVar theformat;
-
 		final BitForm form = staticBitform(node.format);
-		final JClass expected_t;
+		final JVar theformat;
+		final Type expectedtype;
 		if(form != null){
-			Type expectedtype = form.readType();
-			expected_t = convertTypeToJClass(expectedtype);
+			expectedtype = form.readType();
 			JClass form_t = this.model.ref(form.getClass());
 			theformat = body.decl(form_t, "theformat", JExpr._new(form_t));
 		} else {
+			expectedtype = null;
 			JVar format_ = body.decl(Type_t, "format",
-						       node.format.accept(javagen));
+						 node.format.accept(javagen));
 			JExpression format_str = TypeString_I.invoke("make").arg(format_);
 			theformat = body.decl(BitForm_t, "theformat",
 					      BitForm_t.staticInvoke("get").arg(format_str));
-			expected_t = null;
 		}
-
+		final JClass expected_t = convertTypeToJClass(expectedtype);
 		final JExpression expr = theformat.invoke("read")
 			.arg(JExpr.ref(JExpr.invoke("buffer"), "source"))
 			.arg(offset_int);
