@@ -164,7 +164,8 @@ public class Processor {
 
 			final PrintWriter pw = new PrintWriter(System.out);
 			final JFormatter code = new JFormatter( pw );
-			final JavaExprGen javagen = new JavaExprGen(param);
+			final DynamicJavaNameResolver res = new DynamicJavaNameResolver(frame);
+			final JavaExprGen javagen = res.createExprGen();
 			try {
 				code.p("code: ").g(expr.accept(javagen)).nl();
 				pw.flush();
