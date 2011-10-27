@@ -10,6 +10,7 @@
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <main>Processor</main>
   </properties>
 
   <dependencies>
@@ -99,7 +100,7 @@
 	  </execution>
 	</executions>
 	<configuration>
-	  <mainClass>jsignalml.Processor</mainClass>
+	  <mainClass>jsignalml.${main}</mainClass>
 	</configuration>
       </plugin>
 
