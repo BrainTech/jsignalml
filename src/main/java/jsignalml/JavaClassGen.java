@@ -407,7 +407,7 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 		if(form != null){
 			expectedtype = form.readType();
 			JClass form_t = this.model.ref(form.getClass());
-			theformat = body.decl(form_t, "theformat", JExpr._new(form_t));
+			theformat = body.decl(form_t, "theformat", JExpr.direct("new " + form));
 		} else {
 			expectedtype = null;
 			JVar format_ = body.decl(Type_t, "format",
