@@ -403,25 +403,26 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 
 		final BitForm form = staticBitform(node, node.format);
 		final JVar theformat;
-		final Type expectedtype;
+		final Type expected;
 		if(form != null){
-			expectedtype = form.readType();
+			expected = form.readType();
 			JClass form_t = this.model.ref(form.getClass());
 			theformat = body.decl(form_t, "theformat", JExpr.direct("new " + form));
 		} else {
-			expectedtype = null;
+			expected = null;
 			JVar format_ = body.decl(Type_t, "format",
 						 node.format.accept(javagen));
 			JExpression format_str = TypeString_I.invoke("make").arg(format_);
 			theformat = body.decl(BitForm_t, "theformat",
 					      BitForm_t.staticInvoke("get").arg(format_str));
 		}
-		final JClass expected_t = convertTypeToJClass(expectedtype);
+		final JClass expected_t = convertTypeToJClass(expected);
 		final JExpression expr = theformat.invoke("read")
 			.arg(JExpr.ref(JExpr.invoke("buffer"), "source"))
 			.arg(offset_int);
+
 		final JVar input = body.decl(expected_t, "input", expr);
-		body._return(input);
+		body._return(make_or_pass(node.type, input, expected));
 		return impl;
 	}
 
@@ -470,8 +471,8 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 		final JMethod impl = klass.method(JMod.PROTECTED, javatype, "_get");
 		comment(impl.body(), "%s", new Throwable().getStackTrace());
 		final JavaExprGen javagen = createExprGen(node, null);
-		JExpression value = node.expr.accept(javagen);
-		make_or_return(impl.body(), node.type, value, node.expr.type);
+		final JExpression value = node.expr.accept(javagen);
+		impl.body()._return(cast_or_pass(node.type, value, null));
 		return impl;
 	}
 
@@ -595,16 +596,35 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 	/**
 	 * If wanted is not null, make sure that value is of this type, by
 	 * invoking type.make(value). Return the expression holding the value
-	 * after cast. expected is a result of type analysis and must be the
-	 * superset of possible types of expression.
+	 * after conversion. expected is a result of type analysis and must be
+	 * the superset of possible types of expression.
 	 */
 	public JExpression make_or_pass(Type wanted, JExpression value, Type expected)
 	{
 		final JClass wanted_t = convertTypeToJClass(wanted);
 		if (wanted != null && (expected == null ||
 				       !wanted.getClass().isAssignableFrom(expected.getClass()))) {
-			// conversion cast requiered
-			return JExpr._new(wanted_t).invoke("make").arg(value);
+			// conversion requiered
+			return wanted_t.staticRef("I").invoke("make").arg(value);
+		} else {
+			// no need to convert
+			return value;
+		}
+	}
+
+	/**
+	 * If wanted is not null, make sure that value is of this type, by
+	 * invoking a cast to value. Return the expression holding the value
+	 * after cast. expected is a result of type analysis and must be the
+	 * superset of possible types of expression.
+	 */
+	public JExpression cast_or_pass(Type wanted, JExpression value, Type expected)
+	{
+		final JClass wanted_t = convertTypeToJClass(wanted);
+		if (wanted != null && (expected == null ||
+				       !wanted.getClass().isAssignableFrom(expected.getClass()))) {
+			// cast requiered
+			return JExpr.cast(wanted_t, value);
 		} else {
 			// no need to cast
 			return value;
