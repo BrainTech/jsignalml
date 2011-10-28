@@ -27,6 +27,10 @@ public abstract class Type implements Comparable<Type> {
 		throw new IllegalArgumentException(format("unkown type '%s'", type));
 	}
 
+	public Type get() {
+		return this;
+	}
+
 	/* This goes here, and not within BinaryOp because of initialization
 	   order: enum instances are initialized before static variables of
 	   the enum class. This is a result of the order or declarations
