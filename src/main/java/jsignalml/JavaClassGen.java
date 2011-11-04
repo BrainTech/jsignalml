@@ -19,6 +19,7 @@ import com.sun.codemodel.JExpression;
 import com.sun.codemodel.JExpr;
 import com.sun.codemodel.JInvocation;
 import com.sun.codemodel.JConditional;
+import com.sun.codemodel.JGenerable;
 import com.sun.codemodel.JType;
 import com.sun.codemodel.JBlock;
 import com.sun.codemodel.JFieldVar;
@@ -123,7 +124,7 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 			throw new RuntimeException("WTF?");
 		}
 		klass._extends(jsignalml.codec.Signalml.class);
-		comment(klass, "%s", new Throwable().getStackTrace());
+		comment_stamp(klass);
 
 		this.log_var = klass.field(JMod.STATIC|JMod.FINAL, Logger_t, "log",
 					   JExpr._new(Logger_t).arg(klass.dotclass()));
@@ -155,7 +156,7 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 				final JMethod method =
 					klass.method(JMod.PUBLIC, JavaClassGen.this.model.VOID,
 						     "createParams" + method_suffix);
-				comment(method.body(), "%s", new Throwable().getStackTrace());
+				comment_stamp(method.body());
 				this.create_params = method.body();
 				final String msg = format("%s.%s()", klass.name(), method.name());
 				this.create_params.add(JavaClassGen.this.log_var
@@ -166,7 +167,7 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 				final JMethod method =
 					klass.method(JMod.PUBLIC, JavaClassGen.this.model.VOID,
 						     "createChannels" + method_suffix);
-				comment(method.body(), "%s", new Throwable().getStackTrace());
+				comment_stamp(method.body());
 				this.create_channels = method.body();
 				final String msg = format("%s.%s()", klass.name(), method.name());
 				this.create_channels.add(JavaClassGen.this.log_var
@@ -183,8 +184,7 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 		{
 			log.info("register %s", name);
 			final JBlock block = this.create_params.block();
-			comment(block, "%s", new Throwable().getStackTrace()[1]);
-			comment(block, "%s", new Throwable().getStackTrace()[0]);
+			comment_stamp(block);
 			block.add(JExpr.invoke("register").arg(name).arg(param_inv));
 		}
 
@@ -193,16 +193,14 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 			log.info("register context %s=>%s", name, context_class);
 			{
 				final JBlock block = this.create_params.block();
-				comment(block, "%s", new Throwable().getStackTrace()[1]);
-				comment(block, "%s", new Throwable().getStackTrace()[0]);
+				comment_stamp(block);
 				final JVar obj = block.decl(context_class, "obj", get);
 				block.add(JExpr.invoke("register").arg(name).arg(obj));
 				block.add(obj.invoke("createParams"));
 			}
 			{
 				final JBlock block = this.create_channels.block();
-				comment(block, "%s", new Throwable().getStackTrace()[1]);
-				comment(block, "%s", new Throwable().getStackTrace()[0]);
+				comment_stamp(block);
 				final JVar obj = block.decl(context_class, "obj", get);
 				block.add(obj.invoke("createChannels"));
 
@@ -236,7 +234,7 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 	{
 		final JMethod main = klass.method(JMod.STATIC | JMod.PUBLIC,
 						  this.model.VOID, "main");
-		comment(main.body(), "%s", new Throwable().getStackTrace());
+		comment_stamp(main.body());
 		final JVar args = main.varParam(String.class, "args");
 
 		final JBlock body = main.body();
@@ -259,7 +257,7 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 	public JMethod codecOpenMethod(JDefinedClass klass)
 	{
 		final JMethod open = klass.method(JMod.PUBLIC, this.model.VOID, "open");
-		comment(open.body(), "%s", new Throwable().getStackTrace());
+		comment_stamp(open.body());
 		final JVar arg = open.param(File.class, "filename");
 		open.body().assign(JExpr._this().ref("default_filename"), arg);
 		return open;
@@ -268,7 +266,7 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 	public JMethod getSetMethod(JDefinedClass klass)
 	{
 		final JMethod method = klass.method(JMod.PUBLIC, ChannelSet_t, "get_set");
-		comment(method.body(), "%s", new Throwable().getStackTrace());
+		comment_stamp(method.body());
 		method.body()._return(JExpr._null());
 		return method;
 	}
@@ -277,7 +275,7 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 	{
 		final JMethod method = klass.method(JMod.PUBLIC, File_t,
 						    "getCurrentFilename");
-		comment(method.body(), "%s", new Throwable().getStackTrace());
+		comment_stamp(method.body());
 		method.body()._return(JExpr._null());
 		return method;
 	}
@@ -286,7 +284,7 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 	{
 		final JMethod method = klass.method(JMod.PUBLIC, String_t,
 						    "getFormatDescription");
-		comment(method.body(), "%s", new Throwable().getStackTrace());
+		comment_stamp(method.body());
 		method.body()._return(JExpr._null());
 		return method;
 	}
@@ -295,7 +293,7 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 	{
 		final JMethod method = klass.method(JMod.PUBLIC, String_t,
 						    "getFormatID");
-		comment(method.body(), "%s", new Throwable().getStackTrace());
+		comment_stamp(method.body());
 		method.body()._return(JExpr._null());
 		return method;
 	}
@@ -304,7 +302,7 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 	{
 		final JMethod method = klass.method(JMod.PUBLIC, this.model.VOID,
 						    "close");
-		comment(method.body(), "%s", new Throwable().getStackTrace());
+		comment_stamp(method.body());
 		return method;
 	}
 
@@ -350,8 +348,7 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 			throw new SyntaxError(format("duplicate name: '%s'", theid));
 		}
 		nested._extends(param_class);
-		comment(nested, "%s\n", new Throwable().getStackTrace()[1]);
-		comment(nested, "%s", new Throwable().getStackTrace()[0]);
+		comment_stamp(nested);
 
 		final JMethod getter = classCacheMethod(parent, theid, nested);
 
@@ -364,7 +361,7 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 	JMethod idMethod(JDefinedClass klass, ASTNode node, String theid)
 	{
 		final JMethod method = klass.method(JMod.PUBLIC, String_t, "id");
-		comment(method.body(), "%s", new Throwable().getStackTrace());
+		comment_stamp(method.body());
 		final JExpression ret;
 		if (node.id != null) {
 			final EvalVisitor valuator = EvalVisitor.create(node);
@@ -392,7 +389,7 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 		final JClass wanted_t = convertTypeToJClass(node.type);
 		final JMethod impl = klass.method(JMod.PROTECTED, wanted_t, "_get");
 		final JBlock body = impl.body();
-		comment(body, "%s", new Throwable().getStackTrace());
+		comment_stamp(body);
 
 		comment(body, "type=%s", node.type);
 		comment(body, "format=%s", node.format);
@@ -469,7 +466,8 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 	{
 		final JClass javatype = convertTypeToJClass(node.type);
 		final JMethod impl = klass.method(JMod.PROTECTED, javatype, "_get");
-		comment(impl.body(), "%s", new Throwable().getStackTrace());
+		comment(impl.body(), "type=%s", node.type);
+		comment_stamp(impl.body());
 		final JavaExprGen javagen = createExprGen(node, null);
 		final JExpression value = node.expr.accept(javagen);
 		impl.body()._return(cast_or_pass(node.type, value, null));
@@ -484,7 +482,7 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 	public JMethod getThisMethod(JDefinedClass klass, ASTNode.ExprParam node)
 	{
 		final JMethod getter = klass.method(JMod.PUBLIC, klass, "get");
-		comment(getter.body(), "%s", new Throwable().getStackTrace());
+		comment_stamp(getter.body());
 		getter.body()._return(JExpr._this());
 		return getter;
 	}
@@ -493,7 +491,7 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 	{
 		final JClass javatype = convertTypeToJClass(node.type);
 		final JMethod impl = klass.method(JMod.PUBLIC, javatype, "call");
-		comment(impl.body(), "%s", new Throwable().getStackTrace());
+		comment_stamp(impl.body());
 
 		List<JVar> locals = util.newLinkedList();
 		for (ASTNode.Positional arg: node.args) {
@@ -503,7 +501,7 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 		}
 
 		final JMethod cast = klass.method(JMod.PUBLIC, javatype, "call");
-		comment(cast.body(), "%s", new Throwable().getStackTrace());
+		comment_stamp(cast.body());
 		final JVar cast_args = cast.param(List_of_Type_t, "args");
 		final JBlock cast_body = cast.body();
 		cast_body._if(cast_args.invoke("size").ne(JExpr.lit(locals.size())))
@@ -545,7 +543,7 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 			throw new RuntimeException("WTF?");
 		}
 		klass._extends(jsignalml.codec.Signalml.FileClass.class);
-		comment(klass, "%s", new Throwable().getStackTrace());
+		comment_stamp(klass);
 
 		/* add methods
 		   - T access(String name) { return super.access(name); }
@@ -556,7 +554,7 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 		{
 			final JMethod get_child =
 				klass.method(JMod.PUBLIC, jsignalml.Type.class, "access");
-			comment(get_child.body(), "%s", new Throwable().getStackTrace());
+			comment_stamp(get_child.body());
 			final JVar name = get_child.param(String.class, "name");
 			get_child.body()._return(JExpr._super().invoke("access").arg(name));
 		}
@@ -564,7 +562,7 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 		{
 			final JMethod register =
 				klass.method(JMod.PUBLIC, this.model.VOID, "register");
-			comment(register.body(), "%s", new Throwable().getStackTrace());
+			comment_stamp(register.body());
 			final JVar name = register.param(String.class, "name");
 			final JVar object = register.param(jsignalml.codec.Context.class, "child");
 			register.body().add(JExpr._super()
@@ -637,8 +635,7 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
                 final JFieldVar stor = parent.field(JMod.NONE, klass, methodname,
 						    JExpr._null());
                 final JMethod getter = parent.method(JMod.PUBLIC, klass, methodname);
-		comment(getter.body(), "%s", new Throwable().getStackTrace()[1]);
-		comment(getter.body(), "%s", new Throwable().getStackTrace()[0]);
+		comment_stamp(getter.body());
 
                 getter.body()
 			._if(stor.eq(JExpr._null()))
@@ -658,7 +655,7 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 	JMethod iternameGetter(String id, JDefinedClass klass)
 	{
 		final JMethod getter = klass.method(JMod.PUBLIC, Type_t, makeGetter(id));
-		comment(getter.body(), "%s", new Throwable().getStackTrace());
+		comment_stamp(getter.body());
 		getter.body()._return(JExpr.refthis("index").invoke("get"));
 
 		Metadata metadata = (Metadata) klass.metadata;
@@ -672,12 +669,12 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 		log.info("visit((ForLoop) %s, %s)", node, parent);
 		final String theid = dynamicID(node, node.id);
 		final JDefinedClass outer = outerLoopClass(theid, parent);
-		comment(outer, "%s", new Throwable().getStackTrace());
+		comment_stamp(outer);
 		idMethod(outer, node, theid);
 		sequenceMethod(outer, node);
 
 		final JDefinedClass inner = loopClass(theid + "_inner", outer);
-		comment(inner, "%s", new Throwable().getStackTrace());
+		comment_stamp(inner);
 		idMethod(inner, node, theid + "_inner");
 		createLoopMethod(outer, inner);
 		return inner;
@@ -692,13 +689,13 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 			throw new RuntimeException("WTF?");
 		}
 		klass._extends(jsignalml.codec.OuterLoopClass.class);
-		comment(klass, "%s", new Throwable().getStackTrace());
+		comment_stamp(klass);
 
 		klass.metadata = new Metadata(klass);
 		log.info("%s.metadata has been set", klass);
 
 		final JMethod getter = classCacheMethod(parent, id, klass);
-		comment(getter.body(), "%s", new Throwable().getStackTrace());
+		comment_stamp(getter.body());
 
 		Metadata metadata = (Metadata) parent.metadata;
 		metadata.registerContext(id, klass, JExpr.invoke(getter));
@@ -710,7 +707,7 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 	{
 		final JMethod sequence = klass.method(JMod.PROTECTED, TypeList_t,
 						      "getSequence");
-		comment(sequence.body(), "%s", new Throwable().getStackTrace());
+		comment_stamp(sequence.body());
 
 		final JavaExprGen javagen = createExprGen(node, null);
 		final JVar range = sequence.body().decl(Type_t, "range",
@@ -724,7 +721,7 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 	{
 		final JMethod create_loop = klass.method(JMod.PROTECTED, child_class,
 							 "createLoop");
-		comment(create_loop.body(), "%s", new Throwable().getStackTrace());
+		comment_stamp(create_loop.body());
 
 		final JVar index = create_loop.param(Type.class, "index");
 		create_loop.body()._return(JExpr._new(child_class).arg(index));
@@ -740,11 +737,11 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 			throw new RuntimeException("WTF?");
 		}
 		klass._extends(jsignalml.codec.OuterLoopClass.LoopClass.class);
-		comment(klass, "%s", new Throwable().getStackTrace());
+		comment_stamp(klass);
 
 		JMethod constructor = klass.constructor(JMod.NONE);
 		JVar index = constructor.param(Type.class, "index");
-		comment(constructor.body(), "%s", new Throwable().getStackTrace());
+		comment_stamp(constructor.body());
 		constructor.body().add(JExpr.invoke("super").arg(index));
 
 		klass.metadata = new Metadata(klass);
@@ -759,7 +756,7 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 		log.info("visit((Conditional) %s, %s)", node, parent);
 		String theid = dynamicID(node, node.id);
 		final JDefinedClass klass = conditionalClass(theid, parent);
-		comment(klass, "%s", new Throwable().getStackTrace());
+		comment_stamp(klass);
 		idMethod(klass, node, theid);
 		conditionMethod(klass, node);
 		return klass;
@@ -774,7 +771,7 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 			throw new RuntimeException("WTF?");
 		}
 		klass._extends(jsignalml.codec.ConditionalClass.class);
-		comment(klass, "%s", new Throwable().getStackTrace());
+		comment_stamp(klass);
 
 		klass.metadata = new MetadataIfBranch(klass);
 		log.info("%s.metadata/if has been set", klass);
@@ -790,7 +787,7 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 	public JMethod conditionMethod(JDefinedClass klass, ASTNode.Conditional node)
 	{
 		final JMethod condition = klass.method(JMod.PUBLIC, Type_t, "getCondition");
-		comment(condition.body(), "%s", new Throwable().getStackTrace());
+		comment_stamp(condition.body());
 		final JavaExprGen javagen = createExprGen(node, null);
 		final JVar test = condition.body().decl(Type_t, "test",
 						       node.condition.accept(javagen));
@@ -804,7 +801,7 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 		log.info("visit((ElseBranch) %s, %s)", node, parent);
 		final String theid = dynamicID(node, node.id);
 		final JDefinedClass klass = elseBranchClass(theid, parent);
-		comment(klass, "%s", new Throwable().getStackTrace());
+		comment_stamp(klass);
 		idMethod(klass, node, theid);
 		return klass;
 	}
@@ -818,7 +815,7 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 			throw new RuntimeException("WTF?");
 		}
 		klass._extends(jsignalml.codec.ConditionalClass.ElseBranchClass.class);
-		comment(klass, "%s", new Throwable().getStackTrace());
+		comment_stamp(klass);
 
 		klass.metadata = new Metadata(klass);
 		log.info("%s.metadata has been set", klass);
@@ -835,7 +832,7 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 		log.info("visit((ChannelSet) %s, %s)", node, parent);
 		final String theid = dynamicID(node, node.id);
 		final JDefinedClass klass = channelSetClass(theid, parent);
-		comment(klass, "%s", new Throwable().getStackTrace());
+		comment_stamp(klass);
 		idMethod(klass, node, theid);
 		return klass;
 	}
@@ -849,7 +846,7 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 			throw new RuntimeException("WTF?");
 		}
 		klass._extends(jsignalml.codec.ChannelSetClass.class);
-		comment(klass, "%s", new Throwable().getStackTrace());
+		comment_stamp(klass);
 
 		klass.metadata = new Metadata(klass);
 		log.info("%s.metadata has been set", klass);
@@ -868,7 +865,7 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 		log.info("visit((Channel) %s, %s)", node, parent);
 		String theid = dynamicID(node, node.id);
 		final JDefinedClass klass = channelClass(theid, parent);
-		comment(klass, "%s", new Throwable().getStackTrace());
+		comment_stamp(klass);
 
 		idMethod(klass, node, theid);
 		underBufferMethod(klass);
@@ -891,7 +888,7 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 			throw new RuntimeException("WTF?");
 		}
 		klass._extends(jsignalml.codec.ChannelClass.class);
-		comment(klass, "%s", new Throwable().getStackTrace());
+		comment_stamp(klass);
 
 		klass.metadata = new Metadata(klass);
 		log.info("%s.metadata has been set", klass);
@@ -908,7 +905,7 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 	public JMethod underBufferMethod(JDefinedClass klass)
 	{
 		final JMethod method = klass.method(JMod.PROTECTED, MyBuffer_t, "_buffer");
-		comment(method.body(), "%s", new Throwable().getStackTrace());
+		comment_stamp(method.body());
 		method.body()._return(JExpr.invoke("buffer"));
 		return method;
 	}
@@ -917,7 +914,7 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 	{
 		final JMethod method = klass.method(JMod.PUBLIC, TypeString_t,
 						    "getSampleFormat");
-		comment(method.body(), "%s", new Throwable().getStackTrace());
+		comment_stamp(method.body());
 		final JavaExprGen javagen = createExprGen(node, null);
 		final JVar value = method.body().decl(Type_t, "value",
 						      node.format.accept(javagen));
@@ -928,7 +925,7 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 	public JMethod mapSampleMethod(JDefinedClass klass, ASTNode.Channel node)
 	{
 		final JMethod method = klass.method(JMod.PUBLIC, TypeInt_t, "mapSample");
-		comment(method.body(), "%s", new Throwable().getStackTrace());
+		comment_stamp(method.body());
 		final JVar sample = method.param(this.model.LONG, "sample");
 
 		final JavaExprGen javagen = createExprGen(node, null);
@@ -943,7 +940,7 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 	public JMethod getSamplesMethod(JDefinedClass klass, ASTNode.Channel node)
 	{
 		final JMethod method = klass.method(JMod.PUBLIC, this.model.VOID, "getSamples");
-		comment(method.body(), "%s", new Throwable().getStackTrace());
+		comment_stamp(method.body());
 		final JVar dst = method.param(FloatBuffer_t, "dst");
 		final JVar sample = method.param(this.model.LONG, "sample");
 
@@ -973,7 +970,7 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 	{
 		final JMethod method = klass.method(JMod.PUBLIC, this.model.DOUBLE,
 						    "getSamplingFrequency");
-		comment(method.body(), "%s", new Throwable().getStackTrace());
+		comment_stamp(method.body());
 		method.body()._return(JExpr.lit(0.0));
 		return method;
 	}
@@ -982,7 +979,7 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 	{
 		final JMethod method = klass.method(JMod.PUBLIC, this.model.LONG,
 						    "getNumberOfSamples");
-		comment(method.body(), "%s", new Throwable().getStackTrace());
+		comment_stamp(method.body());
 		final JavaExprGen javagen = createExprGen(node, null);
 		final JVar value = method.body().decl(Type_t, "value",
 						      node.length.accept(javagen));
@@ -995,7 +992,7 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 	public JMethod getChannelNameMethod(JDefinedClass klass, ASTNode.Channel node)
 	{
 		final JMethod method = klass.method(JMod.PUBLIC, String_t, "getChannelName");
-		comment(method.body(), "%s", new Throwable().getStackTrace());
+		comment_stamp(method.body());
 		method.body()._return(JExpr.lit("unknown"));
 		return method;
 	}
@@ -1060,12 +1057,33 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 		return this.model.ref(type != null ? type.getClass() : Type.class);
 	}
 
-	private static void comment(JBlock body, String fmt, Object...args)
+	private static void comment(JGenerable where, String fmt, Object...args)
 	{
-		body.directStatement(format("// " + fmt, args));
+		if (where instanceof JBlock) {
+			JBlock body = (JBlock) where;
+			body.directStatement(format("// " + fmt, args));
+		} else if (where instanceof JDefinedClass) {
+			JDefinedClass klass = (JDefinedClass) where;
+			klass.direct(format("// " + fmt + "\n", args));
+		} else {
+			assert false;
+		}
 	}
-	private static void comment(JDefinedClass klass, String fmt, Object...args)
+
+	/**
+	 * Print a stack trace of generating method in generating code.
+	 * The stacktrace is snipped to include JavaClassGen methods
+	 * plus one before.
+	 */
+	private static void comment_stamp(JGenerable where)
 	{
-		klass.direct(format("// " + fmt, args));
+		final StackTraceElement[] trace = new Throwable().getStackTrace();
+		final String trigger = JavaClassGen.class.getName();
+		boolean flag = false;
+		for(int i=trace.length-1; i>=1; i--) {
+			flag |= trace[i-1].getClassName().startsWith(trigger);
+			if (flag || i==1) // print at least one
+				comment(where, "%s", trace[i]);
+		}
 	}
 }
