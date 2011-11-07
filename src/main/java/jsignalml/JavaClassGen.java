@@ -1059,15 +1059,16 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 
 	private static void comment(JGenerable where, String fmt, Object...args)
 	{
-		final JBlock body;
+		final String out = format(fmt, args);
 		if (where instanceof JBlock) {
-			body = (JBlock) where;
+			final JBlock body = (JBlock) where;
+			body.directStatement("// " + out);
 		} else if (where instanceof JDefinedClass) {
-			body = ((JDefinedClass) where).init();
+			final JDefinedClass klass = (JDefinedClass) where;
+			klass.javadoc().append("\n" + out);
 		} else {
 			throw new RuntimeException("wtf?");
 		}
-		body.directStatement(format("// " + fmt, args));
 	}
 
 	/**
