@@ -134,7 +134,6 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 
 		idMethod(klass, node, theid);
 		this.mainMethod(klass);
-		this.getSetMethod(klass);
 		this.getCurrentFilenameMethod(klass);
 		this.getFormatDescriptionMethod(klass);
 		this.getFormatIDMethod(klass);
@@ -146,6 +145,7 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 	class Metadata {
 		final JBlock create_params;
 		final JBlock create_channels;
+		final JBlock create_channel_sets;
 		final JDefinedClass klass;
 
 		Metadata(JDefinedClass klass, String method_suffix)
@@ -172,6 +172,17 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 				final String msg = format("%s.%s()", klass.name(), method.name());
 				this.create_channels.add(JavaClassGen.this.log_var
 							 .invoke("debug").arg(msg));
+			}
+
+			{
+				final JMethod method =
+					klass.method(JMod.PUBLIC, JavaClassGen.this.model.VOID,
+						     "createChannelSets" + method_suffix);
+				comment_stamp(method.body());
+				this.create_channel_sets = method.body();
+				final String msg = format("%s.%s()", klass.name(), method.name());
+				this.create_channel_sets.add(JavaClassGen.this.log_var
+							     .invoke("debug").arg(msg));
 			}
 		}
 
@@ -204,10 +215,15 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 				final JVar obj = block.decl(context_class, "obj", get);
 				block.add(obj.invoke("createChannels"));
 
-				JClass outerloop_class = JavaClassGen.this.model
+				final JClass outerloop_class = JavaClassGen.this.model
 					.ref(jsignalml.codec.OuterLoopClass.class);
 				if(context_class._extends().equals(outerloop_class))
 					block.add(obj.invoke("createLoopChannels"));
+
+				final JClass signalml_class = JavaClassGen.this.model
+					.ref(jsignalml.codec.Signalml.class);
+				if(context_class._extends().equals(signalml_class))
+					block.add(obj.invoke("createChannelSets"));
 			}
 		}
 
@@ -215,6 +231,12 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 		{
 			log.info("register channel %s", name);
 			this.create_channels.add(JExpr.invoke("registerChannel").arg(channel));
+		}
+
+		void registerChannelSet(String name, JExpression set)
+		{
+			log.info("register channel set %s", name);
+			this.create_channel_sets.add(JExpr.invoke("registerChannelSet").arg(set));
 		}
 	}
 
@@ -261,14 +283,6 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 		final JVar arg = open.param(File.class, "filename");
 		open.body().assign(JExpr._this().ref("default_filename"), arg);
 		return open;
-	}
-
-	public JMethod getSetMethod(JDefinedClass klass)
-	{
-		final JMethod method = klass.method(JMod.PUBLIC, ChannelSet_t, "get_set");
-		comment_stamp(method.body());
-		method.body()._return(JExpr._null());
-		return method;
 	}
 
 	public JMethod getCurrentFilenameMethod(JDefinedClass klass)
@@ -855,6 +869,7 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 
 		Metadata metadata = (Metadata) parent.metadata;
 		metadata.registerContext(id, klass, JExpr.invoke(getter));
+		metadata.registerChannelSet(id, JExpr.invoke(getter));
 
 		return klass;
 	}
