@@ -27,6 +27,7 @@ import com.sun.codemodel.JFieldRef;
 import com.sun.codemodel.JTryBlock;
 import com.sun.codemodel.JCatchBlock;
 import com.sun.codemodel.JForEach;
+import com.sun.codemodel.JForLoop;
 import com.sun.codemodel.JVar;
 import com.sun.codemodel.JMod;
 import com.sun.codemodel.JClassAlreadyExistsException;
@@ -63,6 +64,7 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 	}
 
 	final JCodeModel model = new JCodeModel();
+	final JClass Integer_t = this.model.ref(Integer.class);
 	final JClass Type_t = this.model.ref(Type.class);
 	final JClass TypeInt_t = this.model.ref(TypeInt.class);
 	final JClass TypeFloat_t = this.model.ref(TypeFloat.class);
@@ -272,6 +274,27 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 		final JExpression dumper_dump =
 			ContextDumper_t.staticInvoke("dump").arg(reader);
 		body.add(System_t.staticRef("out").invoke("print").arg(dumper_dump));
+
+		{
+			final JForLoop for_ =  body._for();
+			final JVar i = for_.init(this.model.INT, "i", JExpr.lit(1));
+			for_.test(i.lt(args.ref("length")));
+			for_.update(i.incr());
+			final JBlock forbody = for_.body();
+			final JVar count = forbody.decl(this.model.LONG, "count",
+							reader.invoke("get_set")
+							      .invoke("getNumberOfSamples"));
+			final JInvocation buffer_init = FloatBuffer_t
+				.staticInvoke("allocate")
+				.arg(JExpr.cast(this.model.INT, count));
+			final JVar buffer = forbody.decl(FloatBuffer_t, "buffer", buffer_init);
+			final JInvocation channel_num =
+				Integer_t.staticInvoke("decode").arg(args.component(i));
+			forbody.add(reader
+				    .invoke("get_set")
+				    .invoke("getChannel").arg(channel_num)
+				    .invoke("getSamples").arg(buffer).arg(JExpr.lit(0)));
+		}
 
 		return main;
 	}
