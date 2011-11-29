@@ -37,6 +37,8 @@ import com.sun.codemodel.writer.FileCodeWriter;
 public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 	public static final Logger log = new Logger(JavaClassGen.class);
 
+	public String toString(){ return "JavaClassGen"; }
+
 	public static final String PREFIX = ""; //"_jsignalml_";
 	static String makeIdentifier(String name)
 	{
