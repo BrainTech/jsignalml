@@ -26,9 +26,17 @@ public abstract class Expression {
 	 * Type of the result of expression evaluation. As usual, null
 	 * specifies any/unknown type, and Type instances specify type.
 	 * Of course, the type of the expression is dependent on the context,
-	 * but for now let's store this informatio here.
+	 * but for now let's store this information here.
 	 */
-	Type type = null;
+	private Type type = null;
+
+	Type setType(Type type) {
+		this.type = type;
+		return this.type;
+	}
+	Type getType() {
+		return this.type;
+	}
 
 	public static class BinaryOp extends Expression {
 		final Expression left, right;

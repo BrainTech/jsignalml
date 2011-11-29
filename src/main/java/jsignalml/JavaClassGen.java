@@ -542,7 +542,7 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 
 		final JavaExprGen javagen = createExprGen(node, locals);
 		JExpression value = node.expr.accept(javagen);
-		make_or_return(impl.body(), node.type, value, node.expr.type);
+		make_or_return(impl.body(), node.type, value, node.expr.getType());
 		return impl;
 	}
 
@@ -736,7 +736,7 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 		final JVar range = sequence.body().decl(Type_t, "range",
 							node.sequence.accept(javagen));
 		make_or_return(sequence.body(), new TypeList(), range,
-			       node.sequence.type);
+			       node.sequence.getType());
 		return sequence;
 	}
 
@@ -942,7 +942,7 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 		final JavaExprGen javagen = createExprGen(node, null);
 		final JVar value = method.body().decl(Type_t, "value",
 						      node.format.accept(javagen));
-		make_or_return(method.body(), TypeString.I, value, node.format.type);
+		make_or_return(method.body(), TypeString.I, value, node.format.getType());
 		return method;
 	}
 

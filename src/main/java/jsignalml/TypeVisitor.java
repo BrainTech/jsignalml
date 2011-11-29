@@ -15,9 +15,9 @@ public class TypeVisitor extends ExpressionVisitor<Type> {
 	public Type visit(Expression.BinaryOp op, Type left, Type right)
 	{
 		if(left != null)
-			return op.type = left.binaryOpType(op.op, right);
+			return op.setType(left.binaryOpType(op.op, right));
 		else
-			return op.type = null;
+			return op.setType(null);
 	}
 
 	@Override
@@ -25,39 +25,39 @@ public class TypeVisitor extends ExpressionVisitor<Type> {
 	{
 		Type right = op.right.accept(this);
 		if(left != null)
-			return op.type = left.binaryOpType(op.op, right);
+			return op.setType(left.binaryOpType(op.op, right));
 		else
-			return op.type = null;
+			return op.setType(null);
 	}
 
 	@Override
 	public Type visit(Expression.UnaryOp op, Type sub)
 	{
-		return op.type = sub != null ? sub.unaryOpType(op.op) : null;
+		return op.setType(sub != null ? sub.unaryOpType(op.op) : null);
 	}
 
 	@Override
 	public Type visit(Expression.Call call, Type what, List<Type> args)
 	{
-		return call.type = what.callType(args);
+		return call.setType(what.callType(args));
 	}
 
 	@Override
 	public Type visit(Expression.Ref ref)
 	{
-		return ref.type = this.context.lookup(ref.name);
+		return ref.setType(this.context.lookup(ref.name));
 	}
 
 	@Override
 	public Type visit(Expression.Access accessor, Type struct)
 	{
-		return accessor.type = struct.access(accessor.item);
+		return accessor.setType(struct.access(accessor.item));
 	}
 
 	@Override
 	public Type visit(Expression.List_ list, List<? extends Type> args)
 	{
-		return list.type = new TypeList();
+		return list.setType(TypeList.I);
 	}
 
 	/**
@@ -68,18 +68,18 @@ public class TypeVisitor extends ExpressionVisitor<Type> {
 		for (Expression el: list.args) {
 			Type t = el.accept(this);
 			if (t == null)
-				return list.type = null;
-			if (list.type != null && !t.getClass().equals(list.type.getClass()))
-				return list.type = null;
-			list.type = t;
+				return list.setType(null);
+			if (list.getType() != null && !t.getClass().equals(list.getType().getClass()))
+				return list.setType(null);
+			list.setType(t);
 		}
-		return list.type;
+		return list.getType();
 	}
 
 	@Override
 	public Type visit(Expression.Map_ map, List<Map.Entry<Type,Type>> args)
 	{
-		return map.type = new TypeMap();
+		return map.setType(TypeMap.I);
 	}
 
 	@Override
@@ -92,13 +92,13 @@ public class TypeVisitor extends ExpressionVisitor<Type> {
 			throw new ExpressionFault.TypeError();
 
 		if (op.item instanceof Expression.List_)
-			op.type = this.elementType((Expression.List_)op.item);
+			op.setType(this.elementType((Expression.List_)op.item));
 		else if (seq instanceof TypeString)
-			op.type = seq;
+			op.setType(seq);
 		else
-			op.type = null;
+			op.setType(null);
 
-		return op.type;
+		return op.getType();
 	}
 
 	@Override
@@ -115,20 +115,20 @@ public class TypeVisitor extends ExpressionVisitor<Type> {
 			throw new ExpressionFault.TypeError();
 
 		if (op.item instanceof Expression.List_)
-			op.type = this.elementType((Expression.List_)op.item);
+			op.setType(this.elementType((Expression.List_)op.item));
 			// XXX: is this correct?
 		else if (seq instanceof TypeString)
-			op.type = seq;
+			op.setType(seq);
 		else
-			op.type = null;
+			op.setType(null);
 
-		return op.type;
+		return op.getType();
 	}
 
 	@Override
 	public Type visit(Expression.Const val)
 	{
-		return val.type = val.value;
+		return val.setType(val.value);
 	}
 
 	@Override
@@ -137,14 +137,14 @@ public class TypeVisitor extends ExpressionVisitor<Type> {
 		Type a = op.a.accept(this);
 		Type b = op.b.accept(this);
 		if (a.getClass().equals(b.getClass())) // XXX: what if a or b is null?
-			return op.type = a;
+			return op.setType(a);
 		else
-			return op.type = null;
+			return op.setType(null);
 	}
 
 	@Override
 	public Type visit(Expression.Assign op)
 	{
-		return op.type = op.value.accept(this);
+		return op.setType(op.value.accept(this));
 	}
 }

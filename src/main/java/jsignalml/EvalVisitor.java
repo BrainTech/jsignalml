@@ -140,8 +140,9 @@ public class EvalVisitor extends ExpressionVisitor<Type> {
 		if (expr == null)
 			return null;
 
-		if(expr.type != null && expected != null
-		   && !expected.getClass().isAssignableFrom(expr.type.getClass()))
+		final Type expr_type = expr.getType();
+		if(expr_type != null && expected != null
+		   && !expected.getClass().isAssignableFrom(expr_type.getClass()))
 			throw new ExpressionFault.TypeError();
 
 		Type ans = null;
