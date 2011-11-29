@@ -28,9 +28,12 @@ public abstract class Expression {
 	 * Of course, the type of the expression is dependent on the context,
 	 * but for now let's store this information here.
 	 */
-	private Type type = null;
+	protected Type type = null;
 
 	Type setType(Type type) {
+		assert(this.type == null ||
+		       (type != null &&
+			this.type.getClass().isAssignableFrom(type.getClass())));
 		this.type = type;
 		return this.type;
 	}
@@ -176,6 +179,13 @@ public abstract class Expression {
 		}
 
 		@Override
+		Type setType(Type type) {
+			// skip the check
+			this.type = type;
+			return type;
+		}
+
+		@Override
 		public <T> T accept(ExpressionVisitor<T> v)
 		{
 			List<T> vals = util.newLinkedList();
@@ -210,6 +220,13 @@ public abstract class Expression {
 			}
 			repr.append("}");
 			return repr.toString();
+		}
+
+		@Override
+		Type setType(Type type) {
+			// skip the check
+			this.type = type;
+			return type;
 		}
 
 		@Override
