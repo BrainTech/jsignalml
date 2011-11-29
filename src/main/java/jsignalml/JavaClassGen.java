@@ -147,7 +147,6 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 	class Metadata {
 		final JBlock create_params;
 		final JBlock create_channels;
-		final JBlock create_channel_sets;
 		final JDefinedClass klass;
 
 		Metadata(JDefinedClass klass, String method_suffix)
@@ -174,17 +173,6 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 				final String msg = format("%s.%s()", klass.name(), method.name());
 				this.create_channels.add(JavaClassGen.this.log_var
 							 .invoke("debug").arg(msg));
-			}
-
-			{
-				final JMethod method =
-					klass.method(JMod.PUBLIC, JavaClassGen.this.model.VOID,
-						     "createChannelSets" + method_suffix);
-				comment_stamp(method.body());
-				this.create_channel_sets = method.body();
-				final String msg = format("%s.%s()", klass.name(), method.name());
-				this.create_channel_sets.add(JavaClassGen.this.log_var
-							     .invoke("debug").arg(msg));
 			}
 		}
 
@@ -221,11 +209,6 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 					.ref(jsignalml.codec.OuterLoopClass.class);
 				if(context_class._extends().equals(outerloop_class))
 					block.add(obj.invoke("createLoopChannels"));
-
-				final JClass signalml_class = JavaClassGen.this.model
-					.ref(jsignalml.codec.Signalml.class);
-				if(context_class._extends().equals(signalml_class))
-					block.add(obj.invoke("createChannelSets"));
 			}
 		}
 
@@ -238,7 +221,7 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 		void registerChannelSet(String name, JExpression set)
 		{
 			log.info("register channel set %s", name);
-			this.create_channel_sets.add(JExpr.invoke("registerChannelSet").arg(set));
+			this.create_channels.add(JExpr.invoke("registerChannelSet").arg(set));
 		}
 	}
 
@@ -270,6 +253,7 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 		body.add(reader.invoke("open").arg(file));
 
 		body.add(reader.invoke("createParams"));
+		body.add(reader.invoke("createChannels"));
 
 		final JExpression dumper_dump =
 			ContextDumper_t.staticInvoke("dump").arg(reader);
