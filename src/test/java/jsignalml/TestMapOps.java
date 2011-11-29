@@ -1,4 +1,3 @@
-
 package jsignalml;
 
 import org.junit.Test;
@@ -114,8 +113,8 @@ public class TestMapOps {
 	@Test public void equal_map() throws Exception
 	{
 		equal("{1:2} == {2:3}", 0);
-		equal("{1:2} == {1:3}", 0);		
-		equal("{1:2} == {2:2}", 0);		
+		equal("{1:2} == {1:3}", 0);
+		equal("{1:2} == {2:2}", 0);
 		equal("{1:2} == {1:2}", 1);
 		equal("{1:2} == {}", 0);
 		equal("{} == {}", 1);
@@ -123,8 +122,8 @@ public class TestMapOps {
 	@Test public void not_equal_map() throws Exception
 	{
 		equal("{1:2} != {2:3}", 1);
-		equal("{1:2} != {1:3}", 1);		
-		equal("{1:2} != {2:2}", 1);		
+		equal("{1:2} != {1:3}", 1);
+		equal("{1:2} != {2:2}", 1);
 		equal("{1:2} != {1:2}", 0);
 		equal("{1:2} != {}", 1);
 		equal("{} != {}", 0);
@@ -132,8 +131,8 @@ public class TestMapOps {
 	@Test public void lesser_map() throws Exception
 	{
 		equal("{1:2} < {2:3}", 1);
-		equal("{1:2} < {1:3}", 1);		
-		equal("{1:2} < {2:2}", 1);		
+		equal("{1:2} < {1:3}", 1);
+		equal("{1:2} < {2:2}", 1);
 		equal("{1:2} < {1:2}", 0);
 		equal("{2:3} < {1:2}", 0);
 		equal("{1:3} < {1:2}", 0);
@@ -144,8 +143,8 @@ public class TestMapOps {
 	@Test public void greater_map() throws Exception
 	{
 		equal("{1:2} > {2:3}", 0);
-		equal("{1:2} > {1:3}", 0);		
-		equal("{1:2} > {2:2}", 0);		
+		equal("{1:2} > {1:3}", 0);
+		equal("{1:2} > {2:2}", 0);
 		equal("{1:2} > {1:2}", 0);
 		equal("{2:3} > {1:2}", 1);
 		equal("{1:3} > {1:2}", 1);
@@ -156,8 +155,8 @@ public class TestMapOps {
 	@Test public void lesser_equal_map() throws Exception
 	{
 		equal("{1:2} <= {2:3}", 1);
-		equal("{1:2} <= {1:3}", 1);		
-		equal("{1:2} <= {2:2}", 1);		
+		equal("{1:2} <= {1:3}", 1);
+		equal("{1:2} <= {2:2}", 1);
 		equal("{1:2} <= {1:2}", 1);
 		equal("{2:3} <= {1:2}", 0);
 		equal("{1:3} <= {1:2}", 0);
@@ -168,8 +167,8 @@ public class TestMapOps {
 	@Test public void greater_equal_map() throws Exception
 	{
 		equal("{1:2} >= {2:3}", 0);
-		equal("{1:2} >= {1:3}", 0);		
-		equal("{1:2} >= {2:2}", 0);		
+		equal("{1:2} >= {1:3}", 0);
+		equal("{1:2} >= {2:2}", 0);
 		equal("{1:2} >= {1:2}", 1);
 		equal("{2:3} >= {1:2}", 1);
 		equal("{1:3} >= {1:2}", 1);
