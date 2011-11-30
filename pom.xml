@@ -112,12 +112,12 @@
 	    <id>compile</id>
 	    <phase>compile</phase>
 	    <configuration>
-	      <tasks>
+	      <target>
 		<property name="runtime_classpath" refid="maven.runtime.classpath"/>
 		<echo message="runtime: CLASSPATH=${runtime_classpath}"/>
 		<property name="test_classpath" refid="maven.test.classpath"/>
 		<echo message="testing: CLASSPATH=${test_classpath}"/>
-	      </tasks>
+	      </target>
 	    </configuration>
 	    <goals>
 	      <goal>run</goal>
