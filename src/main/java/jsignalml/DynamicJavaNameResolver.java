@@ -20,7 +20,7 @@ public class DynamicJavaNameResolver implements JavaExprGen.JavaNameResolver {
 	@Override
 	public JExpression lookup(String id)
 	{
-		final Type val = this.frame.env.get(id);
+		final Type val = this.frame.locals.get(id);
 		final List<JVar> locals = util.newLinkedList();
 		if (val != null) {
 			JDefinedClass klass = gen.model.anonymousClass(Object.class);

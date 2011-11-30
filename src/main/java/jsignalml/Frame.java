@@ -15,14 +15,14 @@ public class Frame implements CallHelper {
 
 	// final Frame parent; // may be null
 	final ASTNode node;
-	final Map<String, Type> env;
+	final Map<String, Type> locals;
 
 	public Frame(ASTNode node, Map<String, Type> locals)
 	{
 		//		this.parent = parent;
 		assert node != null;
 		this.node = node;
-		this.env = locals;
+		this.locals = locals;
 	}
 
 	public Frame(ASTNode node) {
@@ -33,7 +33,7 @@ public class Frame implements CallHelper {
 	public void assign(String id, Type val)
 	{
 		log.info("%s = %s", id, val);
-		this.env.put(id, val);
+		this.locals.put(id, val);
 	}
 
 	@Override
@@ -41,7 +41,7 @@ public class Frame implements CallHelper {
 	{
 		log.info("lookup =%s=", name);
 
-		Type val = this.env.get(name);
+		Type val = this.locals.get(name);
 		if (val != null)
 			return val;
 
