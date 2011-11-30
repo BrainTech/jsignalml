@@ -5,6 +5,9 @@ import java.util.List;
 import java.util.LinkedList;
 import java.util.Map;
 
+/**
+ * Evalutes expressions. CallHelper context is used resolve variables.
+ */
 public class EvalVisitor extends ExpressionVisitor<Type> {
 	final CallHelper context;
 
@@ -132,8 +135,8 @@ public class EvalVisitor extends ExpressionVisitor<Type> {
 	 *
 	 * If expr is null, null is returned.
 	 *
-	 * If expr can be evaluted, the return value is check to be of type
-	 * expected. If not, a TypeError is thrown.
+	 * If expr can be evaluted, the return value is checked to be of the
+	 * type expected. If not, a TypeError is thrown.
 	 */
 	public <T> T quickEval(Type expected, Expression expr)
 	{

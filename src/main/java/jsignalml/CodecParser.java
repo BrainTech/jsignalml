@@ -323,6 +323,10 @@ public class CodecParser {
 		codec.accept(check, null);
 		log.info("-- name checking is done --");
 
+		final ASTTypeVisitor typer = new ASTTypeVisitor();
+		codec.accept(typer, null);
+		log.info("-- type checking is done --");
+
 		final JavaClassGen gen = new JavaClassGen();
 		codec.accept(gen, null);
 		log.info("-- java has been generated --");

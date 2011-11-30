@@ -3,12 +3,24 @@ package jsignalml;
 import java.util.List;
 import java.util.Map;
 
+/*
+ * Walks the expression tree and tries to set the expression type, i.e. the type
+ * of the value of the expression after evaluation in specific context, given by
+ * the CallHelper parameter.
+ *
+ * type is set to null if not known.
+ */
 public class TypeVisitor extends ExpressionVisitor<Type> {
 	final CallHelper context;
 
 	public TypeVisitor(CallHelper context)
 	{
 		this.context = context;
+	}
+
+	public static TypeVisitor create(ASTNode start)
+	{
+		return new TypeVisitor(new Frame(start));
 	}
 
 	@Override
