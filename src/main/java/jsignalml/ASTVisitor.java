@@ -15,4 +15,6 @@ public abstract class ASTVisitor<T> {
 	public T visit(ASTNode.Conditional node, T parent){ return parent; }
 	public T visit(ASTNode.ElseBranch node, T parent){ return parent; }
 	public T visit(Builtins node, T parent){ return parent; }
+
+	public String toString(){ return getClass().getSimpleName(); }
 }

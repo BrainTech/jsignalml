@@ -9,8 +9,6 @@ public class NameCheck extends ASTVisitor<NullType> {
 	// All Expression fields defined in subclasses of ASTNode should be
 	// checked.
 
-	public String toString(){ return "NameCheck"; }
-
 	@Override
 	public NullType visit(ASTNode.ExprParam node, NullType parent)
 	{
