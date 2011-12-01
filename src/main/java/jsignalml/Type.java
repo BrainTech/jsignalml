@@ -40,34 +40,37 @@ public abstract class Type implements Comparable<Type> {
 	static final Map<Integer, BinaryOp> binOpTable = util.newTreeMap();
 
 	public enum BinaryOp {
-		ADD("+", "add", SExpressionParser.ADD),
-		SUB("-", "sub", SExpressionParser.SUBTRACT),
-		MUL("*", "mul", SExpressionParser.MULTIPLY),
-		DIV("/", "div", SExpressionParser.TRUEDIV),
-		FLOORDIV("//", "floordiv", SExpressionParser.FLOORDIV),
-		MOD("%", "mod", SExpressionParser.MODULO),
-		BIN_AND("&", "bin_and", SExpressionParser.BINARY_AND),
-		BIN_OR("|", "bin_or", SExpressionParser.BINARY_OR),
-		BIN_XOR("^", "bin_xor", SExpressionParser.BINARY_XOR),
-		POW("**", "pow", SExpressionParser.POWER),
-		EQ("==", "cmp", SExpressionParser.EQUALS),
-		NE("!=", "cmp", SExpressionParser.NOTEQUALS),
-		LT("<", "cmp", SExpressionParser.LESSTHAN),
-		GT(">", "cmp", SExpressionParser.MORETHAN),
-		LE("<=", "cmp", SExpressionParser.LESSEQUALS),
-		GE(">=", "cmp", SExpressionParser.MOREEQUALS),
+		ADD("+", "add", SExpressionParser.ADD, 5),
+		SUB("-", "sub", SExpressionParser.SUBTRACT, 5),
+		MUL("*", "mul", SExpressionParser.MULTIPLY, 4),
+		DIV("/", "div", SExpressionParser.TRUEDIV, 4),
+		FLOORDIV("//", "floordiv", SExpressionParser.FLOORDIV, 4),
+		MOD("%", "mod", SExpressionParser.MODULO, 4),
+		BIN_AND("&", "bin_and", SExpressionParser.BINARY_AND, 3),
+		BIN_OR("|", "bin_or", SExpressionParser.BINARY_OR, 3),
+		BIN_XOR("^", "bin_xor", SExpressionParser.BINARY_XOR, 3),
+		POW("**", "pow", SExpressionParser.POWER, 2),
+		EQ("==", "cmp", SExpressionParser.EQUALS, 6),
+		NE("!=", "cmp", SExpressionParser.NOTEQUALS, 6),
+		LT("<", "cmp", SExpressionParser.LESSTHAN, 6),
+		GT(">", "cmp", SExpressionParser.MORETHAN, 6),
+		LE("<=", "cmp", SExpressionParser.LESSEQUALS, 6),
+		GE(">=", "cmp", SExpressionParser.MOREEQUALS, 6),
 
-		LOG_AND("and", "and", SExpressionParser.LOGICAL_AND),
-		LOG_OR("or", "or", SExpressionParser.LOGICAL_OR);
+		LOG_AND("and", "and", SExpressionParser.LOGICAL_AND, 7),
+		LOG_OR("or", "or", SExpressionParser.LOGICAL_OR, 7);
 
 		public final java.lang.String rep;
 		public final java.lang.String javaMethod;
+		public final int priority;
 
-		BinaryOp(java.lang.String rep, java.lang.String javaMethod, int opcode) {
+		BinaryOp(java.lang.String rep, java.lang.String javaMethod, int opcode, int priority) {
 			this.rep = rep;
 			this.javaMethod = javaMethod;
+			this.priority = priority;
 			binOpTable.put(opcode, this);
-			log.info("BinaryOp registered: %s opcode=%d", rep, opcode);
+			log.info("BinaryOp registered: %s opcode=%d priority=%d",
+				 rep, opcode, priority);
 		}
 
 		public static BinaryOp get(int opcode)

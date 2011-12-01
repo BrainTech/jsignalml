@@ -30,6 +30,18 @@ public abstract class Expression {
 	 */
 	protected Type type = null;
 
+
+	/**
+	 * Relative priority of the operation.
+	 *
+	 * 0 = no parenthesis needed
+	 * ...
+	 * 4 = *, /, //
+	 * 5 = +, -
+	 * ...
+	 */
+	public int getPriority() { return 0; }
+
 	Type setType(Type type) {
 		assert(this.type == null ||
 		       (type != null &&
@@ -52,6 +64,8 @@ public abstract class Expression {
 			this.right = right;
 		}
 
+		public int getPriority() { return this.op.priority; }
+
 		@Override
 		public <T> T accept(ExpressionVisitor<T> v){
 			T left = this.left.accept(v);
@@ -62,7 +76,9 @@ public abstract class Expression {
 		@Override
 		public String toString()
 		{
-			return format("%s %s %s", left, op.rep, right);
+			String l = this.getPriority() >= left.getPriority() ? "%s" : "(%s)",
+			       r = this.getPriority() >= right.getPriority() ? "%s" : "(%s)";
+			return format(l + " %s " + r, left, op.rep, right);
 		}
 	}
 
