@@ -16,9 +16,11 @@ public class ASTTypeVisitor extends ASTVisitor<Type> {
 			log.trace("got cached %s -> %s", node,
 				  cached == _null_repl ? "unknown" : Type.typename(cached));
 			return cached;
+		} else {
+			this._nestedness++;
+			log.debug("checking[%d] %s %x", this._nestedness, node, node.hashCode());
+			return null;
 		}
-		this._nestedness++;
-		return null;
 	}
 
 	Type putCached(ASTNode node, Type value) {
@@ -43,7 +45,6 @@ public class ASTTypeVisitor extends ASTVisitor<Type> {
 		if (cached != null)
 			return cached == _null_repl ? null : cached;
 
-		log.debug("checking[%d] %s", this._nestedness, node);
 		assert node.expr != null;
 		cached = node.expr.accept(_typeVisitor(node));
 		log.info("%s expr.type=%s", node, Type.typename(cached));
@@ -57,7 +58,6 @@ public class ASTTypeVisitor extends ASTVisitor<Type> {
 		if (cached != null)
 			return cached == _null_repl ? null : cached;
 
-		log.debug("checking[%d] %s", this._nestedness, node);
 		TypeVisitor checker = _typeVisitor(node);
 		assert node.format != null;
 		assert node.offset != null;
@@ -77,8 +77,6 @@ public class ASTTypeVisitor extends ASTVisitor<Type> {
 		if (cached != null)
 			return cached == _null_repl ? null : cached;
 
-		log.debug("checking[%d] %s", this._nestedness, node);
-
 		return putCached(node, node.type);
 	}
 
@@ -88,8 +86,6 @@ public class ASTTypeVisitor extends ASTVisitor<Type> {
 		Type cached = this.getCached(node);
 		if (cached != null)
 			return cached == _null_repl ? null : cached;
-
-		log.debug("checking[%d] %s %x", this._nestedness, node, node.hashCode());
 
 		return putCached(node, node.type);
 	}
@@ -103,8 +99,6 @@ public class ASTTypeVisitor extends ASTVisitor<Type> {
 		if (cached != null)
 			return cached == _null_repl ? null : cached;
 
-		log.debug("checking[%d] %s", this._nestedness, node);
-
 		return putCached(node, node.type);
 	}
 
@@ -114,8 +108,6 @@ public class ASTTypeVisitor extends ASTVisitor<Type> {
 		Type cached = this.getCached(node);
 		if (cached != null)
 			return cached == _null_repl ? null : cached;
-
-		log.debug("checking[%d] %s", this._nestedness, node);
 
 		assert node.expr != null;
 		Type t1 = node.expr.accept(_typeVisitor(node));
@@ -131,8 +123,6 @@ public class ASTTypeVisitor extends ASTVisitor<Type> {
 		if (cached != null)
 			return cached == _null_repl ? null : cached;
 
-		log.debug("checking[%d] %s %x", this._nestedness, node, node.hashCode());
-
 		assert node.condition != null;
 		Type t1 = node.condition.accept(_typeVisitor(node));
 		log.info("%s condition.type=%s", node, Type.typename(t1));
@@ -147,8 +137,6 @@ public class ASTTypeVisitor extends ASTVisitor<Type> {
 		if (cached != null)
 			return cached == _null_repl ? null : cached;
 
-		log.debug("checking[%d] %s", this._nestedness, node);
-
 		if (node.filename != null)
 			node.filename.accept(_typeVisitor(node));
 
@@ -161,8 +149,6 @@ public class ASTTypeVisitor extends ASTVisitor<Type> {
 		Type cached = this.getCached(node);
 		if (cached != null)
 			return cached == _null_repl ? null : cached;
-
-		log.debug("checking[%d] %s %x", this._nestedness, node, node.hashCode());
 
 		assert node.sequence != null;
 		Type t1 = node.sequence.accept(_typeVisitor(node));
