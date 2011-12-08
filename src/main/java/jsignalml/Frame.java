@@ -13,20 +13,28 @@ import static java.lang.String.format;
 public class Frame implements CallHelper {
 	static Logger log = new Logger(Frame.class);
 
-	// final Frame parent; // may be null
+	final ASTVisitor<? extends Object> visitor; // may be null
 	final ASTNode node;
 	final Map<String, Type> locals;
 
-	public Frame(ASTNode node, Map<String, Type> locals)
+	final private Throwable _trace = new Throwable();
+
+	public Frame(ASTVisitor<? extends Object> visitor, ASTNode node, Map<String, Type> locals)
 	{
-		//		this.parent = parent;
 		assert node != null;
+		assert locals != null;
+		this.visitor = visitor;
 		this.node = node;
 		this.locals = locals;
 	}
 
+	public Frame(ASTVisitor<? extends Object> visitor, ASTNode node)
+	{
+		this(visitor, node, new TreeMap<String, Type>());
+	}
+
 	public Frame(ASTNode node) {
-		this(node, new TreeMap<String, Type>());
+		this(null, node);
 	}
 
 	@Override
@@ -39,14 +47,23 @@ public class Frame implements CallHelper {
 	@Override
 	public Type lookup(String name)
 	{
-		log.info("lookup =%s=", name);
+		log.info("lookup %s?", name);
 
-		Type val = this.locals.get(name);
+		final Type val = this.locals.get(name);
 		if (val != null)
 			return val;
 
-		ASTNode where = this.node.find(name);
-		return new TypeFunction(where, this);
+		final ASTNode where = this.node.find(name);
+		if (where.isAFunction()) {
+			return new TypeFunction(where, this);
+		} else {
+			if (this.visitor == null) {
+				log.exception("null visitor", this._trace);
+				throw new RuntimeException(
+					"cannot lookup variables because the outer visitor is null");
+			}
+			return (Type) where.accept(this.visitor, null);
+		}
 	}
 
 	// @Override
@@ -57,7 +74,7 @@ public class Frame implements CallHelper {
 	// }
 
 	public Frame localize(ASTNode node, Map<String,Type> locals) {
-		return new Frame(node, locals);
+		return new Frame(this.visitor, this.node, locals);
 	}
 
 	public Frame localize(ASTNode node, List<Type> args)
@@ -90,8 +107,6 @@ public class Frame implements CallHelper {
 
 		public Type callType(List<Type> args)
 		{
-			if(!(this.node instanceof ASTNode.Param))
-				throw new ExpressionFault.TypeError();
 			return ((ASTNode.Param)this.node).type;
 			// TODO: actually look at args
 		}
@@ -99,6 +114,26 @@ public class Frame implements CallHelper {
 		@Override
 		public java.lang.String toString() {
 			return format("Function[%s] in %s", node, frame);
+		}
+	}
+
+	public static class TypeVariable extends TypeObject {
+		final ASTNode node;
+		final Frame frame;
+
+		TypeVariable(ASTNode node, Frame frame) {
+			this.node = node;
+			this.frame = frame;
+		}
+
+		@Override public Object getValue(){
+			ASTEvalVisitor visitor = new ASTEvalVisitor(this.frame);
+			return this.node.accept(visitor, null);
+		}
+
+		@Override
+		public java.lang.String toString() {
+			return format("Variable[%s]", node);
 		}
 	}
 }

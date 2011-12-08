@@ -19,7 +19,7 @@ public class TestASTNode {
 	}
 
 	static final ASTNode.Signalml signalml = new ASTNode.Signalml("root");
-	Frame state = new Frame(signalml, map);
+	Frame state = new Frame(null, signalml, map);
 	//XXX there should be a test for nested namespaces (thus state1/map1)
 	Frame state1 = state.localize(signalml, map1);
 

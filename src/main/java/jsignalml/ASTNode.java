@@ -95,6 +95,10 @@ public abstract class ASTNode {
 		return null;
 	}
 
+	boolean isAFunction() {
+		return false;
+	}
+
 	public FileHandle<? extends FileType> lookupFile() {
 		if(parent != null)
 			return parent.lookupFile();
@@ -200,6 +204,11 @@ public abstract class ASTNode {
 			if (parent==null)
 				throw new SyntaxError("<param> must have a parent");
 			this.type = type;
+		}
+
+		@Override
+		boolean isAFunction() {
+			return !this.args.isEmpty();
 		}
 	}
 
