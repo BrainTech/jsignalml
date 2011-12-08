@@ -13,6 +13,8 @@ import static java.util.Collections.unmodifiableList;
 import org.apache.commons.lang.StringUtils;
 
 public abstract class Expression {
+	public static final Logger log = new Logger(Expression.class);
+
 	/**
 	 * Visitor pattern implementation.
 	 *
@@ -43,6 +45,9 @@ public abstract class Expression {
 	public int getPriority() { return 0; }
 
 	Type setType(Type type) {
+		log.debug("expr %s type=%s%s", this, Type.typename(type),
+			  this.type != null ? " was " + this.type : "");
+
 		assert(this.type == null ||
 		       (type != null &&
 			this.type.getClass().isAssignableFrom(type.getClass())));

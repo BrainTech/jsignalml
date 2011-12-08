@@ -9,6 +9,9 @@ public class Logger {
 		this.log = org.apache.log4j.Logger.getLogger(T);
 	}
 
+	public void trace(String message, Object...args) {
+		this.log.trace(format(message, args));
+	}
 	public void debug(String message, Object...args) {
 		this.log.debug(format(message, args));
 	}

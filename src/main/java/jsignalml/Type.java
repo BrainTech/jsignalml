@@ -238,7 +238,7 @@ public abstract class Type implements Comparable<Type> {
 			return this._binaryOpType(op, (TypeList) other);
 		if (other instanceof TypeMap)
 			return this._binaryOpType(op, (TypeMap) other);
-		throw new RuntimeException("unknown type in expression");
+		throw new RuntimeException("unknown type in expression: " + other);
 	}
 
 	public abstract Type _binaryOpType(BinaryOp op, TypeInt other);

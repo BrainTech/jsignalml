@@ -11,6 +11,8 @@ import java.util.Map;
  * type is set to null if not known.
  */
 public class TypeVisitor extends ExpressionVisitor<Type> {
+	public static final Logger log = new Logger(TypeVisitor.class);
+
 	final CallHelper context;
 
 	public TypeVisitor(CallHelper context)
@@ -18,15 +20,13 @@ public class TypeVisitor extends ExpressionVisitor<Type> {
 		this.context = context;
 	}
 
-	public static TypeVisitor create(ASTNode start)
-	{
-		return new TypeVisitor(new Frame(start));
-	}
-
 	@Override
 	public Type visit(Expression.BinaryOp op, Type left, Type right)
 	{
-		if(left != null)
+		log.debug("checking binary op %s: %s, %s", op,
+			  Type.typename(left), Type.typename(right));
+
+		if (left != null)
 			return op.setType(left.binaryOpType(op.op, right));
 		else
 			return op.setType(null);
@@ -35,8 +35,15 @@ public class TypeVisitor extends ExpressionVisitor<Type> {
 	@Override
 	public Type visit(Expression.LogicalBinaryOp op, Type left)
 	{
+		log.debug("LogicalBinaryOp %s: %s, ?", op,
+			  left.getClass().getSimpleName());
+
 		Type right = op.right.accept(this);
-		if(left != null)
+
+		log.debug("checking logical binary op %s: %s, %s", op,
+			  Type.typename(left), Type.typename(right));
+
+		if (left != null)
 			return op.setType(left.binaryOpType(op.op, right));
 		else
 			return op.setType(null);
@@ -45,30 +52,43 @@ public class TypeVisitor extends ExpressionVisitor<Type> {
 	@Override
 	public Type visit(Expression.UnaryOp op, Type sub)
 	{
+		log.debug("checking unary op %s: %s", op,
+			  Type.typename(sub));
+
 		return op.setType(sub != null ? sub.unaryOpType(op.op) : null);
 	}
 
 	@Override
 	public Type visit(Expression.Call call, Type what, List<Type> args)
 	{
+		log.debug("checking call %s: %s", call,
+			  Type.typename(what));
+
 		return call.setType(what.callType(args));
 	}
 
 	@Override
 	public Type visit(Expression.Ref ref)
 	{
-		return ref.setType(this.context.lookup(ref.name));
+		Type type = this.context.lookup(ref.name);
+		log.debug("checking ref %s -> %s", ref, Type.typename(type));
+
+		return ref.setType(type);
 	}
 
 	@Override
 	public Type visit(Expression.Access accessor, Type struct)
 	{
+		log.debug("checking access %s: %s", accessor,
+			  Type.typename(struct));
+
 		return accessor.setType(struct.access(accessor.item));
 	}
 
 	@Override
 	public Type visit(Expression.List_ list, List<? extends Type> args)
 	{
+		log.debug("List");
 		return list.setType(TypeList.I);
 	}
 
@@ -91,12 +111,16 @@ public class TypeVisitor extends ExpressionVisitor<Type> {
 	@Override
 	public Type visit(Expression.Map_ map, List<Map.Entry<Type,Type>> args)
 	{
+		log.debug("Map");
 		return map.setType(TypeMap.I);
 	}
 
 	@Override
 	public Type visit(Expression.Index op, Type seq, Type index)
 	{
+		log.debug("Index %s[%s]",
+			  seq.getClass().getSimpleName(),
+			  index.getClass().getSimpleName());
 		if (index != null && !(index instanceof TypeInt))
 			throw new ExpressionFault.TypeError();
 
@@ -116,6 +140,11 @@ public class TypeVisitor extends ExpressionVisitor<Type> {
 	@Override
 	public Type visit(Expression.Slice op, Type seq, Type start, Type stop, Type step)
 	{
+		log.debug("Index %s[%s:%s:%s]",
+			  seq.getClass().getSimpleName(),
+			  start.getClass().getSimpleName(),
+			  stop.getClass().getSimpleName(),
+			  step.getClass().getSimpleName());
 		if (start != null && !(start instanceof TypeInt))
 			throw new ExpressionFault.TypeError();
 		if (stop != null && !(stop instanceof TypeInt))
@@ -140,12 +169,15 @@ public class TypeVisitor extends ExpressionVisitor<Type> {
 	@Override
 	public Type visit(Expression.Const val)
 	{
+		log.debug("Const %s", val.getClass().getSimpleName());
 		return val.setType(val.value);
 	}
 
 	@Override
 	public Type visit(Expression.Ternary op, Type cond)
 	{
+		log.debug("Ternary %s ? ...", cond.getClass().getSimpleName());
+
 		Type a = op.a.accept(this);
 		Type b = op.b.accept(this);
 		if (a.getClass().equals(b.getClass())) // XXX: what if a or b is null?
@@ -157,6 +189,8 @@ public class TypeVisitor extends ExpressionVisitor<Type> {
 	@Override
 	public Type visit(Expression.Assign op)
 	{
+		log.debug("Assign");
+
 		return op.setType(op.value.accept(this));
 	}
 }

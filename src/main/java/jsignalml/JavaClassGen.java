@@ -540,6 +540,10 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 
 		final JavaExprGen javagen = createExprGen(node, locals);
 		JExpression value = node.expr.accept(javagen);
+
+		comment(impl.body(), "type=%s", node.type);
+		comment(impl.body(), "node.expr.type=%s", node.expr.getType());
+
 		make_or_return(impl.body(), node.type, value, node.expr.getType());
 		return impl;
 	}

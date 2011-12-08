@@ -29,8 +29,11 @@ public abstract class ASTNode {
 		T newdata = this._accept(v, data);
 
 		// use a copy of the children list in case it changes
-		for(ASTNode child: new LinkedList<ASTNode>(this.children))
+		for(ASTNode child: new LinkedList<ASTNode>(this.children)) {
+			log.trace("recursing into child: %s ~> %s", this, child);
 			child.accept(v, newdata);
+		}
+		log.trace("recursion done: %s -> %s", this, newdata);
 		return newdata;
 	}
 
@@ -253,7 +256,7 @@ public abstract class ASTNode {
 		@Override
 		public String toString()
 		{
-			return format("ExprParam %s expr=%s", id, expr);
+			return format("ExprParam %s expr=(%s)", id, expr);
 		}
 
 		@Override
@@ -314,7 +317,7 @@ public abstract class ASTNode {
 		@Override
 		public String toString()
 		{
-			return format("ASTNode.Assert %s expr=%s", id, expr);
+			return format("ASTNode.Assert %s expr=(%s)", id, expr);
 		}
 
 		@Override
@@ -454,7 +457,7 @@ public abstract class ASTNode {
 		@Override
 		public String toString()
 		{
-			return format("ASTNode.ForLoop seqeunce=%s", id, sequence);
+			return format("ASTNode.ForLoop seqeunce=(%s)", id, sequence);
 		}
 
 		@Override
@@ -480,7 +483,7 @@ public abstract class ASTNode {
 		@Override
 		public String toString()
 		{
-			return format("ASTNode.Conditional test=%s", id, condition);
+			return format("ASTNode.Conditional %s test=(%s)", id, condition);
 		}
 
 		@Override
