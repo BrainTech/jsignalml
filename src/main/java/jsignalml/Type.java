@@ -262,7 +262,7 @@ public abstract class Type implements Comparable<Type> {
 
 	public Type unaryOp(UnaryOp op)
 	{
-		throw new ExpressionFault.TypeError();
+		return unsupported("unary " + op);
 	}
 
 	public Type unaryOpType(UnaryOp op)
@@ -276,39 +276,44 @@ public abstract class Type implements Comparable<Type> {
 			    this.getClass().equals(TypeFloat.class))
 				return this;
 			else
-				throw new ExpressionFault.TypeError();
+				return unsupported("unary " + op);
 		default:
 			throw new RuntimeException();
 		}
 	}
 
+	Type unsupported(String operation)
+	{
+		throw new ExpressionFault.Unsupported(this.getClass(), operation);
+	}
+
 	public Type callType(List<Type> args)
 	{
-		throw new ExpressionFault.TypeError();
+		return unsupported("call");
 	}
-
-	public Type index(Type sub)
-	{
-		throw new ExpressionFault.TypeError();
-	}
-
-	public Type slice(Type start, Type stop, Type step)
-	{
-		throw new ExpressionFault.TypeError();
-	}
-
-	public Type access(String item)
-	{
-		throw new ExpressionFault.AttributeError(item);
-	}
-
 	public Type call(List<Type> args)
 	{
-		throw new ExpressionFault.TypeError();
+		return unsupported("call");
 	}
 	public Type call(Type... args)
 	{
 		return this.call(Arrays.asList(args));
+	}
+
+
+	public Type index(Type sub)
+	{
+		return unsupported("indexing");
+	}
+
+	public Type slice(Type start, Type stop, Type step)
+	{
+		return unsupported("slicing");
+	}
+
+	public Type access(String item)
+	{
+		return unsupported("access");
 	}
 
 	public abstract boolean isTrue();

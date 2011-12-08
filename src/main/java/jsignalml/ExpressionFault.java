@@ -52,6 +52,23 @@ public class ExpressionFault extends RuntimeException {
 		}
 	}
 
+	/**
+	 * An object of wrong type was passed.
+	 */
+	public static class Unsupported extends ExpressionFault {
+		public final Class<? extends Type> type;
+		public final String operation;
+
+		public Unsupported(Class<? extends Type> type, String operation) {
+			this.type = type;
+			this.operation = operation;
+		}
+
+		public String toString() {
+			return format("Type %s does't support %s",
+				      type, operation);
+		}
+	}
 
 	/**
 	 * Param with a given name was not found.
