@@ -161,7 +161,7 @@ public class TypeVisitor extends ExpressionVisitor<Type> {
 	@Override
 	public Type visit(Expression.Const val)
 	{
-		log.debug("Const %s", val.getClass().getSimpleName());
+		log.debug("Const %s", val);
 		return val.setType(val.value);
 	}
 

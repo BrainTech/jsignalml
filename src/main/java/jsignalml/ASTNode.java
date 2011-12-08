@@ -30,7 +30,7 @@ public abstract class ASTNode {
 
 		// use a copy of the children list in case it changes
 		for(ASTNode child: new LinkedList<ASTNode>(this.children)) {
-			log.trace("recursing into child: %s ~> %s", this, child);
+			log.trace("recursing into child: %s >> %s", this, child);
 			child.accept(v, newdata);
 		}
 		log.trace("recursion done: %s -> %s", this, newdata);
@@ -63,17 +63,21 @@ public abstract class ASTNode {
 		return ((TypeString)ans).value;
 	}
 
+	protected void _debug(String msg, Object...args) {
+		String fmt = "[" + this.getClass().getSimpleName() + " " +
+			(this.static_id != null ? this.static_id : this.id) + "] " + msg;
+		log.debug(fmt, args);
+	}
+
 	protected ASTNode(ASTNode parent, String id) {
 		this(parent, Expression.Const.make(id));
 	}
 
 	public ASTNode find(String id) {
-		log.debug("[%s] looking for %s",
-			  this.static_id != null ? this.static_id : this.id,
-			  id);
+		_debug("looking for %s", id);
 		ASTNode ans = this.lookup(id);
 		if (ans != null)
-			log.info("[%s] found %s here", this.id, id);
+			_debug("found %s here", id);
 		if (ans == null && this.parent != null)
 			ans = this.parent.find(id);
 		if (ans == null)

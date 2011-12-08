@@ -12,6 +12,8 @@ import static java.util.Collections.unmodifiableList;
 
 import org.apache.commons.lang.StringUtils;
 
+import static jsignalml.Type.typename;
+
 public abstract class Expression {
 	public static final Logger log = new Logger(Expression.class);
 
@@ -45,8 +47,8 @@ public abstract class Expression {
 	public int getPriority() { return 0; }
 
 	Type setType(Type type) {
-		log.debug("expr %s type=%s%s", this, Type.typename(type),
-			  this.type != null ? " was " + this.type : "");
+		log.debug("expr (%s) type=%s%s", this, typename(type),
+			  this.type != null ? " was " + typename(this.type) : "");
 
 		assert(this.type == null ||
 		       (type != null &&
