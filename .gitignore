@@ -6,3 +6,6 @@
 
 #maven output
 target/
+generated/
+
+/jrat.*

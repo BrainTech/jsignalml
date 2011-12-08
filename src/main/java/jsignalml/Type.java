@@ -338,9 +338,9 @@ public abstract class Type implements Comparable<Type> {
 
 	public Type logical_not() {
 		if (this.isTrue())
-			return new TypeInt(0);
+			return TypeInt.False;
 		else
-			return new TypeInt(1);
+			return TypeInt.True;
 	}
 
 	public abstract Type add(Type b);
