@@ -2,6 +2,7 @@ package jsignalml;
 
 import java.util.List;
 import java.util.Map;
+import static jsignalml.Type.typename;
 
 /*
  * Walks the expression tree and tries to set the expression type, i.e. the type
@@ -24,7 +25,7 @@ public class TypeVisitor extends ExpressionVisitor<Type> {
 	public Type visit(Expression.BinaryOp op, Type left, Type right)
 	{
 		log.debug("checking binary op %s: %s, %s", op,
-			  Type.typename(left), Type.typename(right));
+			  typename(left), typename(right));
 
 		if (left != null)
 			return op.setType(left.binaryOpType(op.op, right));
@@ -35,13 +36,10 @@ public class TypeVisitor extends ExpressionVisitor<Type> {
 	@Override
 	public Type visit(Expression.LogicalBinaryOp op, Type left)
 	{
-		log.debug("LogicalBinaryOp %s: %s, ?", op,
-			  left.getClass().getSimpleName());
-
 		Type right = op.right.accept(this);
 
 		log.debug("checking logical binary op %s: %s, %s", op,
-			  Type.typename(left), Type.typename(right));
+			  typename(left), typename(right));
 
 		if (left != null)
 			return op.setType(left.binaryOpType(op.op, right));
@@ -52,8 +50,7 @@ public class TypeVisitor extends ExpressionVisitor<Type> {
 	@Override
 	public Type visit(Expression.UnaryOp op, Type sub)
 	{
-		log.debug("checking unary op %s: %s", op,
-			  Type.typename(sub));
+		log.debug("checking unary op %s: %s", op, typename(sub));
 
 		return op.setType(sub != null ? sub.unaryOpType(op.op) : null);
 	}
@@ -61,8 +58,7 @@ public class TypeVisitor extends ExpressionVisitor<Type> {
 	@Override
 	public Type visit(Expression.Call call, Type what, List<Type> args)
 	{
-		log.debug("checking call %s: %s", call,
-			  Type.typename(what));
+		log.debug("checking call %s: %s", call, typename(what));
 
 		return call.setType(what.callType(args));
 	}
@@ -71,7 +67,7 @@ public class TypeVisitor extends ExpressionVisitor<Type> {
 	public Type visit(Expression.Ref ref)
 	{
 		Type type = this.context.lookup(ref.name);
-		log.debug("checking ref %s -> %s", ref, Type.typename(type));
+		log.debug("checking ref %s -> %s", ref, typename(type));
 
 		return ref.setType(type);
 	}
@@ -79,8 +75,7 @@ public class TypeVisitor extends ExpressionVisitor<Type> {
 	@Override
 	public Type visit(Expression.Access accessor, Type struct)
 	{
-		log.debug("checking access %s: %s", accessor,
-			  Type.typename(struct));
+		log.debug("checking access %s: %s", accessor, typename(struct));
 
 		return accessor.setType(struct.access(accessor.item));
 	}
@@ -140,11 +135,8 @@ public class TypeVisitor extends ExpressionVisitor<Type> {
 	@Override
 	public Type visit(Expression.Slice op, Type seq, Type start, Type stop, Type step)
 	{
-		log.debug("Index %s[%s:%s:%s]",
-			  seq.getClass().getSimpleName(),
-			  start.getClass().getSimpleName(),
-			  stop.getClass().getSimpleName(),
-			  step.getClass().getSimpleName());
+		log.debug("Index %s[%s:%s:%s]", typename(seq),
+			  typename(start), typename(stop), typename(step));
 		if (start != null && !(start instanceof TypeInt))
 			throw new ExpressionFault.TypeError();
 		if (stop != null && !(stop instanceof TypeInt))
