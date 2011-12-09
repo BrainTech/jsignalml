@@ -13,7 +13,7 @@ public abstract class Type implements Comparable<Type> {
 
 	private static void registerType(java.lang.String type, Type theClass) {
 		Type oldClass = typeNames.put(type, theClass);
-		log.info("type registered: %s->%s", type, theClass.getClass().getName());
+		log.trace("type registered: %s->%s", type, theClass.getClass().getName());
 		assert oldClass == null;
 	}
 	public static Type getType(java.lang.String type) {

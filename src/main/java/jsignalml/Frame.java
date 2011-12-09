@@ -47,7 +47,7 @@ public class Frame implements CallHelper {
 	@Override
 	public Type lookup(String name)
 	{
-		log.info("lookup %s?", name);
+		log.debug("lookup %s?", name);
 
 		final Type val = this.locals.get(name);
 		if (val != null)

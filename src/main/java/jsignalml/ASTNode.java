@@ -25,7 +25,7 @@ public abstract class ASTNode {
 	final List<ASTNode> children;
 
 	public <T> T accept(ASTVisitor<T> v, T data) {
-		log.info("%s on %s, %s", v, this, data);
+		log.debug("%s on %s, %s", v, this, data);
 		T newdata = this._accept(v, data);
 
 		// use a copy of the children list in case it changes
