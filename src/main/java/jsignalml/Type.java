@@ -39,6 +39,8 @@ public abstract class Type implements Comparable<Type> {
 	*/
 	static final Map<Integer, BinaryOp> binOpTable = util.newTreeMap();
 
+	public static final int COMPARISON = 6;
+
 	public enum BinaryOp {
 		ADD("+", "add", SExpressionParser.ADD, 5),
 		SUB("-", "sub", SExpressionParser.SUBTRACT, 5),
@@ -50,12 +52,12 @@ public abstract class Type implements Comparable<Type> {
 		BIN_OR("|", "bin_or", SExpressionParser.BINARY_OR, 3),
 		BIN_XOR("^", "bin_xor", SExpressionParser.BINARY_XOR, 3),
 		POW("**", "pow", SExpressionParser.POWER, 2),
-		EQ("==", "cmp", SExpressionParser.EQUALS, 6),
-		NE("!=", "cmp", SExpressionParser.NOTEQUALS, 6),
-		LT("<", "cmp", SExpressionParser.LESSTHAN, 6),
-		GT(">", "cmp", SExpressionParser.MORETHAN, 6),
-		LE("<=", "cmp", SExpressionParser.LESSEQUALS, 6),
-		GE(">=", "cmp", SExpressionParser.MOREEQUALS, 6),
+		EQ("==", "cmp", SExpressionParser.EQUALS, COMPARISON),
+		NE("!=", "cmp", SExpressionParser.NOTEQUALS, COMPARISON),
+		LT("<", "cmp", SExpressionParser.LESSTHAN, COMPARISON),
+		GT(">", "cmp", SExpressionParser.MORETHAN, COMPARISON),
+		LE("<=", "cmp", SExpressionParser.LESSEQUALS, COMPARISON),
+		GE(">=", "cmp", SExpressionParser.MOREEQUALS, COMPARISON),
 
 		LOG_AND("and", "and", SExpressionParser.LOGICAL_AND, 7),
 		LOG_OR("or", "or", SExpressionParser.LOGICAL_OR, 7);
@@ -219,6 +221,8 @@ public abstract class Type implements Comparable<Type> {
 	 */
 	public Type binaryOpType(BinaryOp op, Type other)
 	{
+		if (op.priority == COMPARISON)
+			return TypeInt.I;
 		if (other == null)
 			return null;
 		if (op == BinaryOp.LOG_AND || op == BinaryOp.LOG_OR){

@@ -56,4 +56,4 @@ Use synchronized in singleton initializers.
 
 Remove illegal characters from codec name.
 
-types of ==,!= etc. are always boolean
+Add tests for TypeVisitor.
