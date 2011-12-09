@@ -63,16 +63,36 @@ public class ASTTypeVisitor extends ASTVisitor<Type> {
 		if (cached != null)
 			return cached == _null_repl ? null : cached;
 
-		TypeVisitor checker = _typeVisitor(node);
-		assert node.format != null;
-		assert node.offset != null;
+		final TypeVisitor checker = _typeVisitor(node);
 
-		Type t1 = node.format.accept(checker);
-		log.info("%s format.type=%s", node, Type.typename(t1));
-		Type t2 = node.offset.accept(checker);
-		log.info("%s offset.type=%s", node, Type.typename(t1));
+		{
+			assert node.format != null;
+			final Type t1 = node.format.accept(checker);
+			log.info("%s format.type=%s", node, Type.typename(t1));
+			assert_type(t1, TypeString.I);
+		}
 
-		return putCached(node, node.type);
+		{
+			assert node.offset != null;
+			final Type t2 = node.offset.accept(checker);
+			log.info("%s offset.type=%s", node, Type.typename(t2));
+			assert_type(t2, TypeInt.I);
+		}
+
+		// XXX: change the visitor to use outer context
+		// this will only work for very simple expressions
+		final EvalVisitor valuator = EvalVisitor.create(node);
+		final Type value = node.format.accept(valuator);
+		assert_type(value, TypeString.I);
+		final Type readtype;
+		if (value != null)
+			readtype = BitForm.get(((TypeString)value)).readType();
+		else
+			readtype = null;
+
+		Type type = node.type != null ? node.type : readtype;
+
+		return putCached(node, type);
 	}
 
 	@Override
@@ -160,5 +180,13 @@ public class ASTTypeVisitor extends ASTVisitor<Type> {
 		log.info("%s sequence.type=%s", node, Type.typename(t1));
 
 		return putCached(node, null);
+	}
+
+	void assert_type(Type var, Type type)
+	{
+		assert type != null;
+		if (var != null &&
+		    ! type.getClass().isAssignableFrom(var.getClass()))
+			throw new ExpressionFault.TypeError(var.getClass(), type.getClass());
 	}
 }
