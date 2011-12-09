@@ -245,6 +245,18 @@ public abstract class Type implements Comparable<Type> {
 		throw new RuntimeException("unknown type in expression: " + other);
 	}
 
+	/*
+	 * Return the superset type of the possible results of expression. The
+	 * type is "encoded" in the same way as in binaryOpType(). This function
+	 * will only be called if left is null.
+	 */
+	public Type binaryOpTypeRight(BinaryOp op)
+	{
+		if (op.priority == COMPARISON)
+			return TypeInt.I;
+		return null;
+	}
+
 	public abstract Type _binaryOpType(BinaryOp op, TypeInt other);
 	public Type _binaryOpType(BinaryOp op, TypeFloat other)
 	{

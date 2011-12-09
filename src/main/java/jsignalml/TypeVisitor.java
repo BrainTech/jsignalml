@@ -29,6 +29,8 @@ public class TypeVisitor extends ExpressionVisitor<Type> {
 
 		if (left != null)
 			return op.setType(left.binaryOpType(op.op, right));
+		else if (right != null)
+			return op.setType(right.binaryOpTypeRight(op.op));
 		else
 			return op.setType(null);
 	}
