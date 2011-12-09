@@ -66,8 +66,8 @@ public class TypeVisitor extends ExpressionVisitor<Type> {
 	@Override
 	public Type visit(Expression.Ref ref)
 	{
+		log.debug("checking ref %s", ref);
 		Type type = this.context.lookup(ref.name);
-		log.debug("checking ref %s -> %s", ref, typename(type));
 
 		return ref.setType(type);
 	}
@@ -77,7 +77,8 @@ public class TypeVisitor extends ExpressionVisitor<Type> {
 	{
 		log.debug("checking access %s: %s", accessor, typename(struct));
 
-		return accessor.setType(struct.access(accessor.item));
+		return accessor.setType(struct == null ? null :
+					struct.access(accessor.item) );
 	}
 
 	@Override
@@ -113,9 +114,7 @@ public class TypeVisitor extends ExpressionVisitor<Type> {
 	@Override
 	public Type visit(Expression.Index op, Type seq, Type index)
 	{
-		log.debug("Index %s[%s]",
-			  seq.getClass().getSimpleName(),
-			  index.getClass().getSimpleName());
+		log.debug("Index %s[%s]", typename(seq), typename(index));
 		if (index != null && !(index instanceof TypeInt))
 			throw new ExpressionFault.TypeError();
 
@@ -168,14 +167,20 @@ public class TypeVisitor extends ExpressionVisitor<Type> {
 	@Override
 	public Type visit(Expression.Ternary op, Type cond)
 	{
-		log.debug("Ternary %s ? ...", cond.getClass().getSimpleName());
+		log.debug("Ternary %s ? ...", typename(cond));
 
-		Type a = op.a.accept(this);
-		Type b = op.b.accept(this);
-		if (a.getClass().equals(b.getClass())) // XXX: what if a or b is null?
-			return op.setType(a);
+		final Type a = op.a.accept(this);
+		final Type b = op.b.accept(this);
+		final Type type;
+		if (a == null || b == null)
+			type = null;
+		else if (a.getClass().isAssignableFrom(b.getClass()))
+			type = a;
+		else if (b.getClass().isAssignableFrom(a.getClass()))
+			type = b;
 		else
-			return op.setType(null);
+			type = null;
+		return op.setType(type);
 	}
 
 	@Override
