@@ -113,11 +113,18 @@ public class ASTTypeVisitor extends ASTVisitor<Type> {
 	@Override
 	public Type visit(ASTNode.Itername node, Type parent)
 	{
-		Type cached = this.getCached(node);
+		final Type cached = this.getCached(node);
 		if (cached != null)
 			return cached == _null_repl ? null : cached;
 
-		return putCached(node, node.type);
+		final ASTNode.ForLoop loop = (ASTNode.ForLoop) node.parent;
+		final Expression index = new
+			Expression.Index(loop.sequence, Expression.Const.make(-1));
+		final Type calculated = index.accept(_typeVisitor(loop));
+
+		final Type type = node.type != null ? node.type : calculated;
+
+		return putCached(node, type);
 	}
 
 	/**
