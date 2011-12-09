@@ -8,7 +8,10 @@ public class ASTTypeVisitor extends ASTVisitor<Type> {
 	Map<ASTNode, Type> _cache = util.newHashMap();
 	int _nestedness = 0;
 
-	static Type _null_repl = (new TypeObject() {});
+	static class _ShouldNotLeak extends TypeObject {
+		public String toString() { return getClass().getSimpleName(); };
+	}
+	static Type _null_repl = new _ShouldNotLeak();
 
 	Type getCached(ASTNode node) {
 		final Type cached = this._cache.get(node);
@@ -19,6 +22,7 @@ public class ASTTypeVisitor extends ASTVisitor<Type> {
 		} else {
 			this._nestedness++;
 			log.debug("checking[%d] %s %x", this._nestedness, node, node.hashCode());
+			this._cache.put(node, _null_repl);
 			return null;
 		}
 	}
@@ -27,7 +31,8 @@ public class ASTTypeVisitor extends ASTVisitor<Type> {
 		this._nestedness--;
 		log.trace("caching %s -> %s", node, Type.typename(value));
 
-		return this._cache.put(node, value == null ? _null_repl : value);
+		this._cache.put(node, value == null ? _null_repl : value);
+		return value;
 	}
 
 	// All Expression fields defined in subclasses of ASTNode should be
