@@ -58,8 +58,9 @@ public class Frame implements CallHelper {
 			return new TypeFunction(where, this);
 		} else {
 			if (this.visitor == null) {
-				log.exception("null visitor", this._trace);
-				throw new RuntimeException(
+				log.exception("null visitor while trying to lookup '%s'",
+					      this._trace, name);
+				throw new CannotEvaluate(
 					"cannot lookup variables because the outer visitor is null");
 			}
 			return (Type) where.accept(this.visitor, null);
@@ -134,6 +135,13 @@ public class Frame implements CallHelper {
 		@Override
 		public java.lang.String toString() {
 			return format("Variable[%s]", node);
+		}
+	}
+
+	public static class CannotEvaluate extends RuntimeException {
+		public CannotEvaluate(String reason)
+		{
+			super(reason);
 		}
 	}
 }

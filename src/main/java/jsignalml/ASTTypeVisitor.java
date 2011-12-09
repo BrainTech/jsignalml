@@ -82,7 +82,12 @@ public class ASTTypeVisitor extends ASTVisitor<Type> {
 		// XXX: change the visitor to use outer context
 		// this will only work for very simple expressions
 		final EvalVisitor valuator = EvalVisitor.create(node);
-		final Type value = node.format.accept(valuator);
+		Type value;
+		try{
+			value = node.format.accept(valuator);
+		} catch(Frame.CannotEvaluate e) {
+			value = null;
+		}
 		assert_type(value, TypeString.I);
 		final Type readtype;
 		if (value != null)
