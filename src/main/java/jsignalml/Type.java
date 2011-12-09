@@ -39,7 +39,10 @@ public abstract class Type implements Comparable<Type> {
 	*/
 	static final Map<Integer, BinaryOp> binOpTable = util.newTreeMap();
 
+	public static final int ATOMIC = 0;
 	public static final int COMPARISON = 6;
+	public static final int LOGICAL = 7;
+	public static final int TERNARY = 8;
 
 	public enum BinaryOp {
 		ADD("+", "add", SExpressionParser.ADD, 5),
@@ -59,8 +62,8 @@ public abstract class Type implements Comparable<Type> {
 		LE("<=", "cmp", SExpressionParser.LESSEQUALS, COMPARISON),
 		GE(">=", "cmp", SExpressionParser.MOREEQUALS, COMPARISON),
 
-		LOG_AND("and", "and", SExpressionParser.LOGICAL_AND, 7),
-		LOG_OR("or", "or", SExpressionParser.LOGICAL_OR, 7);
+		LOG_AND("and", "and", SExpressionParser.LOGICAL_AND, LOGICAL),
+		LOG_OR("or", "or", SExpressionParser.LOGICAL_OR, LOGICAL);
 
 		public final java.lang.String rep;
 		public final java.lang.String javaMethod;

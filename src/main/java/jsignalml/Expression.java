@@ -44,7 +44,7 @@ public abstract class Expression {
 	 * 5 = +, -
 	 * ...
 	 */
-	public int getPriority() { return 0; }
+	public int getPriority() { return Type.ATOMIC; }
 
 	Type setType(Type type) {
 		log.debug("expr (%s) type=%s%s", this, typename(type),
@@ -71,6 +71,7 @@ public abstract class Expression {
 			this.right = right;
 		}
 
+		@Override
 		public int getPriority() { return this.op.priority; }
 
 		@Override
@@ -279,7 +280,10 @@ public abstract class Expression {
 		@Override
 		public String toString()
 		{
-			return format("%s[%s]", item, index);
+			boolean paren = item.getPriority() > Type.ATOMIC;
+			return format("%s%s%s[%s]",
+				      paren ? "(" : "", item, paren ? ")" : "",
+				      index);
 		}
 
 		@Override
@@ -305,7 +309,9 @@ public abstract class Expression {
 		@Override
 		public String toString()
 		{
-			return format("%s[%s:%s%s%s]", item,
+			boolean paren = item.getPriority() > Type.ATOMIC;
+			return format("%s%s%s[%s:%s%s%s]",
+				      paren ? "(" : "", item, paren ? ")" : "",
 				      start != null ? start : "",
 				      stop != null ? stop : "",
 				      step != null ? ":" : "",
@@ -391,6 +397,9 @@ public abstract class Expression {
 		{
 			return format("if %s then %s else %s", q, a, b);
 		}
+
+		@Override
+		public int getPriority() { return Type.TERNARY; }
 
 		@Override
 		public <T> T accept(ExpressionVisitor<T> v)
