@@ -28,12 +28,6 @@ public abstract class Context extends TypeObject {
 
 	final Map<String, Context> param_map = jsignalml.util.newLinkedHashMap();
 
-	@Override
-	public Type get() {
-		// the same impl. as in super?
-		return this;
-	}
-
 	public abstract String id();
 
 	/**
