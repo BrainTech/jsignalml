@@ -10,10 +10,10 @@ public class ASTTypeVisitor extends ASTVisitor<Type> {
 	Map<ASTNode, Type> _cache = util.newHashMap();
 	int _nestedness = 0;
 
-	static class _ShouldNotLeak extends TypeObject {
+	static private class _ShouldNotLeak extends TypeObject {
 		public String toString() { return getClass().getSimpleName(); };
 	}
-	static Type _null_repl = new _ShouldNotLeak();
+	static private Type _null_repl = new _ShouldNotLeak();
 
 	Type getCached(ASTNode node) {
 		final Type cached = this._cache.get(node);
