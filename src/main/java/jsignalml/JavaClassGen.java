@@ -444,7 +444,7 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 			.arg(offset_int);
 
 		final JVar input = body.decl(expected_t, "input", expr);
-		body._return(make_or_pass(node.type, input, expected));
+		body._return(make_or_cast(node.type, input, expected));
 		return impl;
 	}
 
@@ -495,7 +495,7 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 		comment_stamp(impl.body());
 		final JavaExprGen javagen = createExprGen(node, null);
 		final JExpression value = node.expr.accept(javagen);
-		impl.body()._return(cast_or_pass(node.type, value, null));
+		impl.body()._return(do_cast(node.type, value, null));
 		return impl;
 	}
 
@@ -549,7 +549,7 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 		comment(impl.body(), "node.expr.type=%s",
 			typename(node.expr.getType()));
 
-		make_or_return(impl.body(), node.type, value, node.expr.getType());
+		return_make_or_cast(impl.body(), node.type, value, node.expr.getType());
 		return impl;
 	}
 
@@ -616,9 +616,10 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 	 * expected is a result of type analysis and must be the superset of
 	 * possible types of expression.
 	 */
-	public void make_or_return(JBlock body, Type wanted, JExpression value, Type expected)
+	public void return_make_or_cast(JBlock body, Type wanted,
+					JExpression value, Type expected)
 	{
-		body._return(make_or_pass(wanted, value, expected));
+		body._return(make_or_cast(wanted, value, expected));
 	}
 
 	/**
@@ -627,7 +628,7 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 	 * after conversion. expected is a result of type analysis and must be
 	 * the superset of possible types of expression.
 	 */
-	public JExpression make_or_pass(Type wanted, JExpression value, Type expected)
+	public JExpression make_or_cast(Type wanted, JExpression value, Type expected)
 	{
 		final JClass wanted_t = convertTypeToJClass(wanted);
 		if (wanted != null && (expected == null ||
@@ -636,7 +637,7 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 			return wanted_t.staticRef("I").invoke("make").arg(value);
 		} else {
 			// no need to convert
-			return value;
+			return JExpr.cast(wanted_t, value);
 		}
 	}
 
@@ -644,19 +645,17 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 	 * If wanted is not null, make sure that value is of this type, by
 	 * invoking a cast to value. Return the expression holding the value
 	 * after cast. expected is a result of type analysis and must be the
-	 * superset of possible types of expression.
+	 * superset of possible types of expression, this is checked and
+	 * an TypeError is thrown if this doesn't hold.
 	 */
-	public JExpression cast_or_pass(Type wanted, JExpression value, Type expected)
+	public JExpression do_cast(Type wanted, JExpression value, Type expected)
 	{
 		final JClass wanted_t = convertTypeToJClass(wanted);
-		if (wanted != null && (expected == null ||
-				       !wanted.getClass().isAssignableFrom(expected.getClass()))) {
-			// cast requiered
-			return JExpr.cast(wanted_t, value);
-		} else {
-			// no need to cast
-			return value;
-		}
+		if (wanted != null && expected != null &&
+		    !wanted.getClass().isAssignableFrom(expected.getClass()))
+			throw new ExpressionFault.TypeError(expected, wanted);
+		// cast requiered
+		return JExpr.cast(wanted_t, value);
 	}
 
         public JMethod classCacheMethod(JDefinedClass parent, String id, JDefinedClass klass)
@@ -740,10 +739,12 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 		comment_stamp(sequence.body());
 
 		final JavaExprGen javagen = createExprGen(node, null);
-		final JVar range = sequence.body().decl(Type_t, "range",
-							node.sequence.accept(javagen));
-		make_or_return(sequence.body(), new TypeList(), range,
-			       node.sequence.getType());
+		final JExpression expr = do_cast(TypeList.I,
+						 node.sequence.accept(javagen),
+						 node.sequence.getType());
+		final JVar range = sequence.body().decl(TypeList_t, "range", expr);
+
+		sequence.body()._return(range);
 		return sequence;
 	}
 
@@ -949,7 +950,7 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 		final JavaExprGen javagen = createExprGen(node, null);
 		final JVar value = method.body().decl(Type_t, "value",
 						      node.format.accept(javagen));
-		make_or_return(method.body(), TypeString.I, value, node.format.getType());
+		return_make_or_cast(method.body(), TypeString.I, value, node.format.getType());
 		return method;
 	}
 
@@ -962,9 +963,9 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 		final JavaExprGen javagen = createExprGen(node, null);
 		final JVar value = method.body().decl(Type_t, "value",
 						      node.mapping.accept(javagen));
-		make_or_return(method.body(), TypeInt.I,
-			       value.invoke("call").arg(JExpr._new(TypeInt_t).arg(sample)),
-			       null);
+		return_make_or_cast(method.body(), TypeInt.I,
+				    value.invoke("call").arg(JExpr._new(TypeInt_t).arg(sample)),
+				    null);
 		return method;
 	}
 
