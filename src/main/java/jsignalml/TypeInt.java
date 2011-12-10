@@ -72,7 +72,7 @@ public class TypeInt extends Type {
 			return new TypeInt(((TypeFloat)other).value);
 		if (other instanceof TypeString)
 			return new TypeInt(((TypeString)other).value);
-		throw new ExpressionFault.TypeError(other.getClass(), this.getClass());
+		throw new ExpressionFault.TypeError(other, this);
 	}
 
 	static TypeInt makeFromUnsignedReadAsSigned(long value) {

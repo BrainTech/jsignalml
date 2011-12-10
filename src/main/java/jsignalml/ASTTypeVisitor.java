@@ -201,6 +201,6 @@ public class ASTTypeVisitor extends ASTVisitor<Type> {
 		assert type != null;
 		if (var != null &&
 		    ! type.getClass().isAssignableFrom(var.getClass()))
-			throw new ExpressionFault.TypeError(var.getClass(), type.getClass());
+			throw new ExpressionFault.TypeError(var, type);
 	}
 }

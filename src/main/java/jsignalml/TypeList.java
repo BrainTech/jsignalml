@@ -96,7 +96,7 @@ public class TypeList extends Type implements Iterable<Type> {
 		case LOG_OR:
 			throw new RuntimeException();
 		default:
-			throw new ExpressionFault.TypeError(this.getClass(), other.getClass());
+			throw new ExpressionFault.TypeError(this, other);
 		}
 	}
 

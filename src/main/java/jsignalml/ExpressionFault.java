@@ -43,6 +43,10 @@ public class ExpressionFault extends RuntimeException {
 			this.to = to;
 		}
 
+		public TypeError(Type from, Type to) {
+			this(from.getClass(), to.getClass());
+		}
+
 		@Deprecated public TypeError() {
 			this.from = this.to = Type.class;
 		}

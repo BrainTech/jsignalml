@@ -161,7 +161,7 @@ public abstract class Type implements Comparable<Type> {
 		case LOG_OR:
 			throw new RuntimeException();
 		default:
-			throw new ExpressionFault.TypeError(this.getClass(), other.getClass());
+			throw new ExpressionFault.TypeError(this, other);
 		}
 	}
 
@@ -188,21 +188,21 @@ public abstract class Type implements Comparable<Type> {
 		case LOG_OR:
 			throw new RuntimeException();
 		default:
-			throw new ExpressionFault.TypeError(this.getClass(), other.getClass());
+			throw new ExpressionFault.TypeError(this, other);
 		}
 	}
 
 	public Type binaryOp(BinaryOp op, TypeString other)
 	{
-		throw new ExpressionFault.TypeError(this.getClass(), other.getClass());
+		throw new ExpressionFault.TypeError(this, other);
 	}
 	public Type binaryOp(BinaryOp op, TypeList other)
 	{
-		throw new ExpressionFault.TypeError(this.getClass(), other.getClass());
+		throw new ExpressionFault.TypeError(this, other);
 	}
 	public Type binaryOp(BinaryOp op, TypeMap other)
 	{
-		throw new ExpressionFault.TypeError(this.getClass(), other.getClass());
+		throw new ExpressionFault.TypeError(this, other);
 	}
 
 	/**
