@@ -120,26 +120,6 @@ public class Frame implements CallHelper {
 		}
 	}
 
-	public static class TypeVariable extends TypeObject {
-		final ASTNode node;
-		final Frame frame;
-
-		TypeVariable(ASTNode node, Frame frame) {
-			this.node = node;
-			this.frame = frame;
-		}
-
-		@Override public Object getValue(){
-			ASTEvalVisitor visitor = new ASTEvalVisitor(this.frame);
-			return this.node.accept(visitor, null);
-		}
-
-		@Override
-		public java.lang.String toString() {
-			return format("Variable[%s]", node);
-		}
-	}
-
 	public static class CannotEvaluate extends RuntimeException {
 		public CannotEvaluate(String reason)
 		{
