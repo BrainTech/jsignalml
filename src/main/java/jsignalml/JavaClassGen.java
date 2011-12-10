@@ -35,6 +35,7 @@ import com.sun.codemodel.writer.FileCodeWriter;
 
 import org.apache.log4j.BasicConfigurator;
 
+import static jsignalml.Type.typename;
 import jsignalml.logging.Logger;
 
 public class JavaClassGen extends ASTVisitor<JDefinedClass> {
@@ -415,7 +416,7 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 		final JBlock body = impl.body();
 		comment_stamp(body);
 
-		comment(body, "type=%s", node.type);
+		comment(body, "type=%s", typename(node.type));
 		comment(body, "format=%s", node.format);
 		comment(body, "offset=%s", node.offset);
 		final JVar offset_ = body.decl(Type_t, "offset",
@@ -490,7 +491,7 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 	{
 		final JClass javatype = convertTypeToJClass(node.type);
 		final JMethod impl = klass.method(JMod.PROTECTED, javatype, "_get");
-		comment(impl.body(), "type=%s", node.type);
+		comment(impl.body(), "type=%s", typename(node.type));
 		comment_stamp(impl.body());
 		final JavaExprGen javagen = createExprGen(node, null);
 		final JExpression value = node.expr.accept(javagen);
@@ -544,8 +545,9 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 		final JavaExprGen javagen = createExprGen(node, locals);
 		JExpression value = node.expr.accept(javagen);
 
-		comment(impl.body(), "type=%s", node.type);
-		comment(impl.body(), "node.expr.type=%s", node.expr.getType());
+		comment(impl.body(), "type=%s", typename(node.type));
+		comment(impl.body(), "node.expr.type=%s",
+			typename(node.expr.getType()));
 
 		make_or_return(impl.body(), node.type, value, node.expr.getType());
 		return impl;

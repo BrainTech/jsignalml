@@ -31,7 +31,7 @@ public class ASTTypeVisitor extends ASTVisitor<Type> {
 
 	Type putCached(ASTNode node, Type value) {
 		this._nestedness--;
-		log.trace("caching %s -> %s", node, Type.typename(value));
+		log.info("found %s -> %s", node, Type.typename(value));
 
 		this._cache.put(node, value == null ? _null_repl : value);
 		return value;
