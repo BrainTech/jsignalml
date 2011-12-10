@@ -2,11 +2,11 @@ package jsignalml.codec;
 
 import java.util.Map;
 import jsignalml.ContextVisitor;
-import jsignalml.Logger;
 import jsignalml.SyntaxError;
 import jsignalml.ExpressionFault;
 import jsignalml.Type;
 import jsignalml.TypeObject;
+import jsignalml.logging.Logger;
 
 public abstract class Context extends TypeObject {
 	static final Logger log = new Logger(Context.class);

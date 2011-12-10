@@ -2,6 +2,8 @@ package jsignalml;
 
 import java.util.List;
 import java.util.Map;
+
+import jsignalml.logging.Logger;
 import static jsignalml.Type.typename;
 
 /*

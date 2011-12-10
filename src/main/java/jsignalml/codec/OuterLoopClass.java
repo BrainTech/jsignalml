@@ -4,8 +4,8 @@ import jsignalml.Type;
 import jsignalml.TypeList;
 import jsignalml.TypeInt;
 import jsignalml.ContextVisitor;
-import jsignalml.Logger;
 import jsignalml.util;
+import jsignalml.logging.Logger;
 
 import java.util.List;
 import java.util.ArrayList;

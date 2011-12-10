@@ -5,6 +5,8 @@ import java.math.BigInteger;
 import java.util.List;
 import java.util.ArrayList;
 
+import jsignalml.logging.Logger;
+
 public class Builtins extends ASTNode {
 	static final Logger log = new Logger(Builtins.class);
 

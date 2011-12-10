@@ -13,6 +13,8 @@ import jsignalml.codec.ChannelClass;
 
 import java.nio.FloatBuffer;
 
+import jsignalml.logging.Logger;
+
 /**
  * Produces a human readable representation of the Context tree.
  */

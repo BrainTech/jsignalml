@@ -3,6 +3,8 @@ package jsignalml;
 import java.util.List;
 import java.util.Map;
 
+import jsignalml.logging.Logger;
+
 public class ASTEvalVisitor extends ASTVisitor<Type> {
 	public static final Logger log = new Logger(ASTEvalVisitor.class);
 

@@ -5,7 +5,7 @@ import jsignalml.Channel;
 import jsignalml.ContextVisitor;
 import jsignalml.ExpressionFault;
 import jsignalml.TypeInt;
-import jsignalml.Logger;
+import jsignalml.logging.Logger;
 
 import java.util.ArrayList;
 import java.util.Iterator;

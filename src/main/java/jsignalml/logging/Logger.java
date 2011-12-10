@@ -1,4 +1,4 @@
-package jsignalml;
+package jsignalml.logging;
 
 import static java.lang.String.format;
 

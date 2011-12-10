@@ -13,6 +13,8 @@ import java.io.FileNotFoundException;
 import static java.lang.String.format;
 import static java.util.Collections.unmodifiableList;
 
+import jsignalml.logging.Logger;
+
 /**
  * Class to hold an AST correspoding to the XML file
  */

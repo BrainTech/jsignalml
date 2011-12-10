@@ -6,6 +6,8 @@ import java.util.Arrays;
 import java.util.Iterator;
 import static java.lang.String.format;
 
+import jsignalml.logging.Logger;
+
 public abstract class Type implements Comparable<Type> {
 	static final Logger log = new Logger(Type.class);
 

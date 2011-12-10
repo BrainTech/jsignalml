@@ -12,6 +12,8 @@ options {
     import java.util.LinkedList;
     import java.util.Map;
     import java.util.AbstractMap.SimpleImmutableEntry;
+
+    import jsignalml.logging.Logger;
 }
 
 @members {

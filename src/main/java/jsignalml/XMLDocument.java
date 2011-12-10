@@ -14,6 +14,8 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.xpath.XPathExpressionException;
 
+import jsignalml.logging.Logger;
+
 public class XMLDocument
 {
 	public static class NodeError extends Exception {

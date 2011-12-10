@@ -1,6 +1,5 @@
 package jsignalml;
 
-import static java.lang.String.format;
 import java.util.List;
 import java.util.Map;
 import java.util.HashMap;
@@ -9,7 +8,7 @@ import java.io.File;
 import java.io.OutputStream;
 import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
-import org.apache.log4j.BasicConfigurator;
+import static java.lang.String.format;
 
 import com.sun.codemodel.JClass;
 import com.sun.codemodel.JDefinedClass;
@@ -33,6 +32,10 @@ import com.sun.codemodel.JMod;
 import com.sun.codemodel.JClassAlreadyExistsException;
 import com.sun.codemodel.writer.SingleStreamCodeWriter;
 import com.sun.codemodel.writer.FileCodeWriter;
+
+import org.apache.log4j.BasicConfigurator;
+
+import jsignalml.logging.Logger;
 
 public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 	public static final Logger log = new Logger(JavaClassGen.class);

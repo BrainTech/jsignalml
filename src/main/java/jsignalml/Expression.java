@@ -12,6 +12,7 @@ import static java.util.Collections.unmodifiableList;
 
 import org.apache.commons.lang.StringUtils;
 
+import jsignalml.logging.Logger;
 import static jsignalml.Type.typename;
 
 public abstract class Expression {

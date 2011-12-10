@@ -52,10 +52,14 @@ tokens {
 
 @lexer::header{
     package jsignalml;
+
+    import jsignalml.logging.Logger;
 }
 
 @parser::header{
     package jsignalml;
+
+    import jsignalml.logging.Logger;
 }
 
 @lexer::members {

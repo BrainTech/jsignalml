@@ -12,6 +12,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.Element;
 
 import org.apache.log4j.BasicConfigurator;
+import jsignalml.logging.Logger;
 
 /**
  * Translate an XML DOM into an ASTNode tree.

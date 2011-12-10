@@ -5,6 +5,8 @@ import java.io.FileNotFoundException;
 import java.io.File;
 import static java.lang.String.format;
 
+import jsignalml.logging.Logger;
+
 public abstract class FileType {
 	static final Logger log = new Logger(FileType.class);
 

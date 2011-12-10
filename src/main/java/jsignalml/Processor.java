@@ -19,6 +19,8 @@ import org.antlr.runtime.RecognitionException;
 
 import com.sun.codemodel.JClassAlreadyExistsException;
 
+import jsignalml.logging.Logger;
+
 public class Processor {
 	static Logger log = new Logger(Processor.class);
 

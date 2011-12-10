@@ -9,6 +9,8 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
+import jsignalml.logging.Logger;
+
 /* 'My' so it doesn't collide with java.nio.whatever . */
 public class MyBuffer {
 	protected static final Logger log = new Logger(MyBuffer.class);

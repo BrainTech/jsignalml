@@ -11,6 +11,8 @@ import static java.lang.String.format;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.NotImplementedException;
 
+import jsignalml.logging.Logger;
+
 public class TypeList extends Type implements Iterable<Type> {
 	public static final TypeList I = new TypeList();
 

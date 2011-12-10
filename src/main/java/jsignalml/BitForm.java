@@ -4,6 +4,8 @@ import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
 import java.nio.ByteOrder;
 
+import jsignalml.logging.Logger;
+
 public abstract class BitForm {
 	protected static final Logger log = new Logger(BitForm.class);
 

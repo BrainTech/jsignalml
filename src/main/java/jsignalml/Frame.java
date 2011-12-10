@@ -10,6 +10,8 @@ import java.io.IOException;
 import org.apache.commons.lang.StringUtils;
 import static java.lang.String.format;
 
+import jsignalml.logging.Logger;
+
 public class Frame implements CallHelper {
 	static Logger log = new Logger(Frame.class);
 

@@ -2,7 +2,7 @@ package jsignalml.codec;
 
 import jsignalml.Type;
 import jsignalml.ContextVisitor;
-import jsignalml.Logger;
+import jsignalml.logging.Logger;
 
 public abstract class ConditionalClass extends Context {
 	static final Logger log = new Logger(ConditionalClass.class);
