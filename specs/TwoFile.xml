@@ -1,19 +1,19 @@
 <signalml>
-  <file name="g" type="binary">
-    <param name="description">
+  <file id="g" type="binary">
+    <param id="description">
       <expr>"gooooooo"</expr>
     </param>
   </file>
-  <file name="b" type="binary">
-    <param name="description">
+  <file id="b" type="binary">
+    <param id="description">
       <expr>"booooooo"</expr>
     </param>
   </file>
-  <param name="a">
-    <expr>description()</expr>
+  <param id="a">
+    <expr>description</expr>
     <!-- TODO: add support for object notation: g.description() !!! -->
   </param>
-  <param name="description">
+  <param id="description">
     <expr>123456</expr>
   </param>
 </signalml>
