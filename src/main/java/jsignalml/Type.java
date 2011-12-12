@@ -334,7 +334,7 @@ public abstract class Type implements Comparable<Type> {
 
 	public Type access(String item)
 	{
-		return unsupported("access");
+		throw new ExpressionFault.AttributeError(item);
 	}
 
 	public abstract boolean isTrue();
