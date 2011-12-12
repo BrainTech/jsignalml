@@ -81,7 +81,7 @@ public class TestMapOps {
 		eval("{1:2} & {}");
 	}
 
-	@Test(expected=ExpressionFault.TypeError.class)
+	@Test(expected=ExpressionFault.Unsupported.class)
 	public void eval_keyerror_ops_unary_pos() throws Exception
 	{
 		eval("+{1:2}");

@@ -20,7 +20,7 @@ public class TestFrame {
 	}
 
 	ASTNode node = new ASTNode.Signalml("test");
-	final Frame state = new Frame(node, map);
+	final Frame state = new Frame(null, node, map);
 	final Frame state1 = state.localize(node, map1);
 
 	@Test public void test_call() throws Exception
@@ -29,7 +29,7 @@ public class TestFrame {
 		assertEquals(map.get("b"), state.lookup("b"));
 	}
 
-	@Test(expected=ExpressionFault.TypeError.class)
+	@Test(expected=ExpressionFault.Unsupported.class)
 	public void test_call_with_args() throws Exception
 	{
 		List<Type> args = Arrays.asList((Type)new TypeInt(666));
@@ -52,14 +52,14 @@ public class TestFrame {
 		assertEquals(map1.get("c"), state1.lookup("c"));
 	}
 
-	@Test(expected=ExpressionFault.TypeError.class)
+	@Test(expected=ExpressionFault.Unsupported.class)
 	public void test_parent_call_with_args() throws Exception
 	{
 		List<Type> args = Arrays.asList((Type)new TypeInt(667));
 		state1.lookup("c").call(args);
 	}
 
-	@Test(expected=ExpressionFault.TypeError.class)
+	@Test(expected=ExpressionFault.Unsupported.class)
 	public void test_parent_call_without_args() throws Exception
 	{
 		List<Type> noargs = util.newLinkedList();
