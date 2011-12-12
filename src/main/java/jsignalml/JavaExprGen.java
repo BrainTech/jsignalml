@@ -39,14 +39,6 @@ public class JavaExprGen extends ExpressionVisitor<JExpression> {
 		JExpression lookup(String id);
 	}
 
-	static class NullResolver implements JavaNameResolver {
-		@Override
-		public JInvocation lookup(String id)
-		{
-			throw new ExpressionFault.NameError(id);
-		}
-	}
-
 	//////////////////////////////////////////////////////////////////
 	//////////////////////////////////////////////////////////////////
 
