@@ -654,8 +654,11 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 		if (wanted != null && expected != null &&
 		    !wanted.getClass().isAssignableFrom(expected.getClass()))
 			throw new ExpressionFault.TypeError(expected, wanted);
-		// cast requiered
-		return JExpr.cast(wanted_t, value);
+		if (wanted != null)
+			// cast requiered
+			return JExpr.cast(wanted_t, value);
+		else
+			return value;
 	}
 
         public JMethod classCacheMethod(JDefinedClass parent, String id, JDefinedClass klass)
