@@ -16,13 +16,27 @@ import com.sun.codemodel.JOp;
  */
 public class JavaExprGen extends ExpressionVisitor<JExpression> {
 
-	final JCodeModel codemodel;
+	final JCodeModel model;
 	final JavaNameResolver context;
 
-	JavaExprGen(JCodeModel codemodel, JavaNameResolver context)
+	final JClass Type_t;
+	final JClass TypeInt_t;
+	final JClass TypeFloat_t;
+	final JClass TypeString_t;
+	final JClass TypeList_t;
+	final JClass TypeMap_t;
+
+	JavaExprGen(JCodeModel model, JavaNameResolver context)
 	{
-		this.codemodel = codemodel;
+		this.model = model;
 		this.context = context;
+
+		this.Type_t = model.ref(Type.class);
+		this.TypeInt_t = model.ref(TypeInt.class);
+		this.TypeFloat_t = model.ref(TypeFloat.class);
+		this.TypeString_t = model.ref(TypeString.class);
+		this.TypeList_t = model.ref(TypeList.class);
+		this.TypeMap_t = model.ref(TypeMap.class);
 	}
 
 	JavaExprGen(ASTNode context)
@@ -47,8 +61,10 @@ public class JavaExprGen extends ExpressionVisitor<JExpression> {
 				 JExpression left, JExpression right)
 	{
 		if (op.op.javaMethod == "cmp") {
-			JExpression cmp_res = left.invoke("compareTo").arg(right);
-			JExpression cond;
+			final JExpression cmp_res =
+				left.invoke("compareTo").arg(right);
+
+			final JExpression cond;
 			switch(op.op){
 			case EQ: cond = cmp_res.eq(JExpr.lit(0)); break;
 			case NE: cond = cmp_res.ne(JExpr.lit(0)); break;
@@ -58,9 +74,10 @@ public class JavaExprGen extends ExpressionVisitor<JExpression> {
 			case GE: cond = cmp_res.gte(JExpr.lit(0)); break;
 			default: throw new RuntimeException();
 			}
-			JClass int_t = this.codemodel.ref(TypeInt.class);
-			return JOp.cond(cond, int_t.staticRef("True"),
-					int_t.staticRef("False"));
+
+			return JOp.cond(cond,
+					TypeInt_t.staticRef("True"),
+					TypeInt_t.staticRef("False"));
 		} else {
 			return left.invoke(op.op.javaMethod).arg(right);
 		}
@@ -111,7 +128,7 @@ public class JavaExprGen extends ExpressionVisitor<JExpression> {
 	@Override
 	public JExpression visit(Expression.List_ list, List<? extends JExpression> args)
 	{
-		JInvocation cons = JExpr._new(this.codemodel.ref(TypeList.class));
+		JInvocation cons = JExpr._new(TypeList_t);
 
 		for (JExpression arg: args)
 			cons.arg(arg);
@@ -123,7 +140,7 @@ public class JavaExprGen extends ExpressionVisitor<JExpression> {
 	public JExpression visit(Expression.Map_ map,
 				 List<Map.Entry<JExpression, JExpression>> args)
 	{
-		JInvocation cons = JExpr._new(this.codemodel.ref(TypeMap.class));
+		JInvocation cons = JExpr._new(TypeMap_t);
 
 		for (Map.Entry<JExpression, JExpression> entry: args) {
 			cons.arg(entry.getKey());
@@ -174,7 +191,7 @@ public class JavaExprGen extends ExpressionVisitor<JExpression> {
 			throw new RuntimeException();
 		}
 
-		return JExpr._new(this.codemodel.ref(type)).arg(repr);
+		return JExpr._new(this.model.ref(type)).arg(repr);
 	}
 
 	@Override
