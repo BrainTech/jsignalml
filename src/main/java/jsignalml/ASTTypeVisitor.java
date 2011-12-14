@@ -3,6 +3,7 @@ package jsignalml;
 import java.util.Map;
 
 import jsignalml.logging.Logger;
+import static jsignalml.Type.typename;
 
 public class ASTTypeVisitor extends ASTVisitor<Type> {
 	public static final Logger log = new Logger(ASTTypeVisitor.class);
@@ -19,7 +20,7 @@ public class ASTTypeVisitor extends ASTVisitor<Type> {
 		final Type cached = this._cache.get(node);
 		if (cached != null) {
 			log.trace("got cached %s -> %s", node,
-				  cached == _null_repl ? "unknown" : Type.typename(cached));
+				  cached == _null_repl ? "unknown" : typename(cached));
 			return cached;
 		} else {
 			this._nestedness++;
@@ -31,7 +32,7 @@ public class ASTTypeVisitor extends ASTVisitor<Type> {
 
 	Type putCached(ASTNode node, Type value) {
 		this._nestedness--;
-		log.info("found %s -> %s", node, Type.typename(value));
+		log.info("found %s -> %s", node, typename(value));
 
 		this._cache.put(node, value == null ? _null_repl : value);
 		return value;
@@ -60,9 +61,9 @@ public class ASTTypeVisitor extends ASTVisitor<Type> {
 		Type length_t = node.length.accept(_typeVisitor(node));
 		log.info("%s mapping.type=%s format.type=%s length.type=%s",
 			 node,
-			 Type.typename(mapping_t),
-			 Type.typename(format_t),
-			 Type.typename(length_t));
+			 typename(mapping_t),
+			 typename(format_t),
+			 typename(length_t));
 
 		return putCached(node, null);
 	}
@@ -76,7 +77,7 @@ public class ASTTypeVisitor extends ASTVisitor<Type> {
 
 		assert node.expr != null;
 		cached = node.expr.accept(_typeVisitor(node));
-		log.info("%s expr.type=%s", node, Type.typename(cached));
+		log.info("%s expr.type=%s", node, typename(cached));
 		return putCached(node, cached);
 	}
 
@@ -92,14 +93,14 @@ public class ASTTypeVisitor extends ASTVisitor<Type> {
 		{
 			assert node.format != null;
 			final Type t1 = node.format.accept(checker);
-			log.info("%s format.type=%s", node, Type.typename(t1));
+			log.info("%s format.type=%s", node, typename(t1));
 			assert_type(t1, TypeString.I);
 		}
 
 		{
 			assert node.offset != null;
 			final Type t2 = node.offset.accept(checker);
-			log.info("%s offset.type=%s", node, Type.typename(t2));
+			log.info("%s offset.type=%s", node, typename(t2));
 			assert_type(t2, TypeInt.I);
 		}
 
@@ -172,7 +173,7 @@ public class ASTTypeVisitor extends ASTVisitor<Type> {
 
 		assert node.expr != null;
 		Type t1 = node.expr.accept(_typeVisitor(node));
-		log.info("%s expr.type=%s", node, Type.typename(t1));
+		log.info("%s expr.type=%s", node, typename(t1));
 
 		return putCached(node, null);
 	}
@@ -186,7 +187,7 @@ public class ASTTypeVisitor extends ASTVisitor<Type> {
 
 		assert node.condition != null;
 		Type t1 = node.condition.accept(_typeVisitor(node));
-		log.info("%s condition.type=%s", node, Type.typename(t1));
+		log.info("%s condition.type=%s", node, typename(t1));
 
 		return putCached(node, null);
 	}
@@ -213,7 +214,7 @@ public class ASTTypeVisitor extends ASTVisitor<Type> {
 
 		assert node.sequence != null;
 		Type t1 = node.sequence.accept(_typeVisitor(node));
-		log.info("%s sequence.type=%s", node, Type.typename(t1));
+		log.info("%s sequence.type=%s", node, typename(t1));
 
 		return putCached(node, null);
 	}
