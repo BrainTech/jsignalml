@@ -173,12 +173,10 @@ public abstract class ASTNode {
 			if (handle == null)
 				throw new SyntaxError("<channel> must live inside <file>");
 
-			boolean found_channelset = false;
 			for(ASTNode node = parent; node!=null; node=node.parent)
 				if(node instanceof ChannelSet)
-					found_channelset = true;
-			if(!found_channelset)
-				throw new SyntaxError("<channel> must live inside <file>");
+					return;
+			throw new SyntaxError("<channel> must live inside <file>");
 		}
 
 		@Override
