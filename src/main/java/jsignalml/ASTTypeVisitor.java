@@ -46,6 +46,28 @@ public class ASTTypeVisitor extends ASTVisitor<Type> {
 	}
 
 	@Override
+	public Type visit(ASTNode.Channel node, Type parent)
+	{
+		Type cached = this.getCached(node);
+		if (cached != null)
+			return cached == _null_repl ? null : cached;
+
+		assert node.mapping != null;
+		assert node.format != null;
+		assert node.length != null;
+		Type mapping_t = node.mapping.accept(_typeVisitor(node));
+		Type format_t = node.format.accept(_typeVisitor(node));
+		Type length_t = node.length.accept(_typeVisitor(node));
+		log.info("%s mapping.type=%s format.type=%s length.type=%s",
+			 node,
+			 Type.typename(mapping_t),
+			 Type.typename(format_t),
+			 Type.typename(length_t));
+
+		return putCached(node, null);
+	}
+
+	@Override
 	public Type visit(ASTNode.ExprParam node, Type parent)
 	{
 		Type cached = this.getCached(node);

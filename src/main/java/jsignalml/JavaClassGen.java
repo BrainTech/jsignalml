@@ -949,11 +949,16 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 	{
 		final JMethod method = klass.method(JMod.PUBLIC, TypeString_t,
 						    "getSampleFormat");
-		comment_stamp(method.body());
+		final Type expected = node.format.getType();
+		final JType expected_t = this.model.ref(expected.getClass());
+		final JBlock body = method.body();
+		comment_stamp(body);
+		comment(body, "node.format.type=%s", typename(expected));
+
 		final JavaExprGen javagen = createExprGen(node, null);
-		final JVar value = method.body().decl(Type_t, "value",
-						      node.format.accept(javagen));
-		return_make_or_cast(method.body(), TypeString.I, value, node.format.getType());
+		final JVar value = body.decl(expected_t, "value",
+					     node.format.accept(javagen));
+		return_make_or_cast(body, TypeString.I, value, expected);
 		return method;
 	}
 
