@@ -230,10 +230,18 @@ public class CodecParser {
 
 		final Expression id = _identifier(element);
 		final String var = _attribute(element, "var");
-		final String sequence = _attribute(element, "sequence");
 
+		final String type_ = _attribute(element, "type");
+		final Type type;
+		try {
+			type = Type.getType(type_);
+		} catch(IllegalArgumentException e){
+			throw new SyntaxError(format("%s: unkown type='%s'", element, type_));
+		}
+
+		final String sequence = _attribute(element, "sequence");
 		final Expression expr = _null_or_parse(sequence);
-		return new ASTNode.ForLoop(parent, id, var, expr);
+		return new ASTNode.ForLoop(parent, id, var, type, expr);
 	}
 
 	public ASTNode.Conditional do_conditional(ASTNode parent, Element element,

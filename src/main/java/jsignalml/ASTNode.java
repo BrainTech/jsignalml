@@ -456,7 +456,7 @@ public abstract class ASTNode {
 		public final Expression sequence;
 		public final Itername itername;
 
-		public ForLoop(ASTNode parent, Expression id, String itername,
+		public ForLoop(ASTNode parent, Expression id, String itername, Type type,
 			       Expression sequence) {
 			super(parent, id);
 			if (parent==null)
@@ -464,7 +464,7 @@ public abstract class ASTNode {
 			this.sequence = sequence;
 			if (sequence==null)
 				throw new SyntaxError("<for-each> must have sequence attribute'");
-			this.itername = new Itername(this, itername, null);
+			this.itername = new Itername(this, itername, type);
 		}
 
 		@Override
