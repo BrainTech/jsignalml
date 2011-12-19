@@ -549,7 +549,7 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 		comment(impl.body(), "node.expr.type=%s",
 			typename(node.expr.getType()));
 
-		return_make_or_cast(impl.body(), node.type, value, node.expr.getType());
+		impl.body()._return(do_cast(node.type, value, node.expr.getType()));
 		return impl;
 	}
 

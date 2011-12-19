@@ -57,3 +57,28 @@ Use synchronized in singleton initializers.
 Remove illegal characters from codec name.
 
 Add tests for TypeVisitor.
+
+
+Notes:
+type of expressions: for functions, the type of the function is
+a TypeObject subclass, for Call(Function) we get the return type of the
+function.
+
+Types of ASTNodes: the return of the evaluation, irrespective wheter
+we have a function or normal param.
+
+Speed up this:
+while (dst.hasRemaining()) {
+      Type input = format.read(buffer, ((TypeInt) mapping.call(new TypeInt(sample))));
+      dst.put(((float) TypeFloat.I.make(input).value));
+}
+we want:
+long count = ...;
+while(count-- > 0) {
+   float value = format.read(buffer, mapping.call_p(sample));
+   dst.put(value);
+}
+
+1. add _p variant working on primitives (for mapping.call)
+2. remove casting and making
+3. convert loop control to call-less lock-less form

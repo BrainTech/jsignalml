@@ -12,7 +12,8 @@ import com.sun.codemodel.JStringLiteral;
 import com.sun.codemodel.JOp;
 
 /**
- * Create JExpression representations of Expressions.
+ * Create JExpression representations of Expressions. The implementation is
+ * based on Type.
  */
 public class JavaExprGen extends ExpressionVisitor<JExpression> {
 
@@ -172,8 +173,8 @@ public class JavaExprGen extends ExpressionVisitor<JExpression> {
 	@Override
 	public JExpression visit(Expression.Const val)
 	{
-		Class<? extends Type> type;
-		JExpression repr;
+		final Class<? extends Type> type;
+		final JExpression repr;
 
 		// XXX
 
