@@ -66,6 +66,9 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 		GET_P = "get_p",
 		CALL_P = "call_p";
 
+	public static final boolean _comments =
+		System.getProperties().getProperty("jsignalml.comments", "1").equals("1");
+
 	private int numbered_expression_number = 0;
 	private String makeGeneratedID(String part)
 	{
@@ -1123,6 +1126,9 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 
 	private static void comment(JGenerable where, String fmt, Object...args)
 	{
+		if (!_comments)
+			return;
+
 		final String out = format(fmt, args);
 		if (where instanceof JBlock) {
 			final JBlock body = (JBlock) where;
@@ -1142,6 +1148,9 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 	 */
 	private static void comment_stamp(JGenerable where)
 	{
+		if (!_comments)
+			return;
+
 		final StackTraceElement[] trace = new Throwable().getStackTrace();
 		final String trigger = JavaClassGen.class.getName();
 		boolean flag = false;
