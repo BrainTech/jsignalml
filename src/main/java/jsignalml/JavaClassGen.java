@@ -714,9 +714,9 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 
 	JMethod iternameGetter(String id, JDefinedClass klass)
 	{
-		final JMethod getter = klass.method(JMod.PUBLIC, Type_t, makeGetter(id));
+		final JMethod getter = klass.method(JMod.PUBLIC, IndexClass_t, makeGetter(id));
 		comment_stamp(getter.body());
-		getter.body()._return(JExpr.refthis("index").invoke(GET));
+		getter.body()._return(JExpr.refthis("index"));
 
 		Metadata metadata = (Metadata) klass.metadata;
 		metadata.registerParam(id, IndexClass_t, JExpr.refthis("index"));
