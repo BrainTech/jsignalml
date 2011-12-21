@@ -212,13 +212,15 @@ public class ASTTypeVisitor extends ASTVisitor<Type> {
 	@Override
 	public Type visit(ASTNode.ForLoop node, Type parent)
 	{
-		Type cached = this.getCached(node);
+		final Type cached = this.getCached(node);
 		if (cached != null)
 			return cached == _null_repl ? null : cached;
 
-		assert node.sequence != null;
-		Type t1 = node.sequence.accept(_typeVisitor(node));
-		log.info("%s sequence.type=%s", node, typename(t1));
+		{
+			assert node.sequence != null;
+			final Type t1 = node.sequence.accept(_typeVisitor(node));
+			log.info("%s sequence.type=%s", node, typename(t1));
+		}
 
 		return putCached(node, null);
 	}
