@@ -228,6 +228,9 @@ public abstract class ASTNode {
 	public static class BinaryParam extends ReadParam {
 		final Expression format, offset;
 
+		// XXX: move this somewhere proper?
+		Type _read_type = null;
+
 		public BinaryParam(ASTNode parent, Expression id, Type type,
 		                   Expression format, Expression offset)
 			throws SyntaxError

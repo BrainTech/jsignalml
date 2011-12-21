@@ -104,23 +104,27 @@ public class ASTTypeVisitor extends ASTVisitor<Type> {
 			assert_type(t2, TypeInt.I);
 		}
 
-		// XXX: change the visitor to use outer context
-		// this will only work for very simple expressions
-		final EvalVisitor valuator = EvalVisitor.create(node);
-		Type value;
-		try{
-			value = node.format.accept(valuator);
-		} catch(Frame.CannotEvaluate e) {
-			value = null;
-		}
-		assert_type(value, TypeString.I);
-		final Type readtype;
-		if (value != null)
-			readtype = BitForm.get(((TypeString)value)).readType();
-		else
-			readtype = null;
+		final Type type;
+		{
+			// XXX: change the visitor to use outer context
+			// this will only work for very simple expressions
+			final EvalVisitor valuator = EvalVisitor.create(node);
+			Type value;
+			try{
+				value = node.format.accept(valuator);
+			} catch(Frame.CannotEvaluate e) {
+				value = null;
+			}
+			assert_type(value, TypeString.I);
+			final Type readtype;
+			if (value != null)
+				readtype = BitForm.get(((TypeString)value)).readType();
+			else
+				readtype = null;
 
-		Type type = node.type != null ? node.type : readtype;
+			node._read_type = readtype;
+			type = node.type != null ? node.type : readtype;
+		}
 
 		return putCached(node, type);
 	}
