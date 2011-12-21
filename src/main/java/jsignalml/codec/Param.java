@@ -4,7 +4,12 @@ import jsignalml.Type;
 import jsignalml.ContextVisitor;
 
 public abstract class Param<T extends Type> extends Context {
-	T cache = null;
+	public T cache = null; /* This is public so it can be accessed
+				* from within generated code. Maybe an
+				* abstract "proxy" class should be added
+				* so IndexClass can inherit and get protected
+				* access
+				*/
 
 	abstract protected T _get();
 	public T get()

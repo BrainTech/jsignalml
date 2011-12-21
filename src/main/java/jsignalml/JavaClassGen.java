@@ -737,7 +737,7 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 		final JDefinedClass inner = loopClass(theid + "_inner", outer);
 		comment_stamp(inner);
 		idMethod(inner, node, theid + "_inner");
-		createLoopMethod(outer, inner);
+
 		return inner;
 	}
 
@@ -779,14 +779,18 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 		return sequence;
 	}
 
-	public JMethod createLoopMethod(JDefinedClass klass, JDefinedClass child_class)
+	public JMethod createLoopMethod(JDefinedClass klass, JDefinedClass child_class,
+					Type indextype)
 	{
 		final JMethod create_loop = klass.method(JMod.PROTECTED, child_class,
 							 "createLoop");
 		comment_stamp(create_loop.body());
 
-		final JVar index = create_loop.param(Type.class, "index");
-		create_loop.body()._return(JExpr._new(child_class).arg(index));
+		final JVar index = create_loop.param(Type_t, "index");
+		final JExpression cast =
+			JExpr.cast(convertTypeToJClass(indextype), index);
+		create_loop.body()._return(JExpr._new(child_class)
+					   .arg(cast));
 		return create_loop;
 	}
 
@@ -800,11 +804,6 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 		}
 		klass._extends(jsignalml.codec.OuterLoopClass.LoopClass.class);
 		comment_stamp(klass);
-
-		JMethod constructor = klass.constructor(JMod.NONE);
-		JVar index = constructor.param(Type.class, "index");
-		comment_stamp(constructor.body());
-		constructor.body().add(JExpr.invoke("super").arg(index));
 
 		klass.metadata = new Metadata(klass);
 		log.info("%s.metadata has been set", klass);
@@ -906,11 +905,32 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 		comment_stamp(constructor.body());
 		constructor.body().assign(JExpr._this().ref("cache"), index);
 
+		idMethod(klass, node, id);
+
+		loopClassConstructor(parent, id, type, klass);
+
+		createLoopMethod((JDefinedClass) parent.outer(), parent, type);
+
 		final JMethod impl = klass.method(JMod.PROTECTED, javatype, GET_PRIV);
 		comment_stamp(impl.body());
 		impl.body()._throw(JExpr._new(RuntimeException_t));
 
 		return klass;
+	}
+
+	public JMethod loopClassConstructor(JDefinedClass klass,
+					    String id, Type type,
+					    JDefinedClass indexClass)
+	{
+		JMethod constructor = klass.constructor(JMod.NONE);
+		JVar index = constructor.param(convertTypeToJClass(type), id);
+		comment_stamp(constructor.body());
+		JFieldVar stor = klass.field(JMod.FINAL, indexClass, "index");
+
+		// work around bug in jcodemodel on using index instead of this.index
+		constructor.body().assign(JExpr.refthis("index"),
+					  JExpr._new(indexClass).arg(index));
+		return constructor;
 	}
 
 	@Override
