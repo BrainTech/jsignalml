@@ -42,7 +42,8 @@ public class JavaExprGen extends ExpressionVisitor<JExpression> {
 
 	JavaExprGen(ASTNode context)
 	{
-		this(new JCodeModel(), new JavaClassGen().createResolver(context, null));
+		this(new JCodeModel(), new
+		     JavaClassGen().createResolver(context, null, JavaClassGen.GET));
 	}
 
 	public interface JavaNameResolver {

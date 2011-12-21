@@ -30,7 +30,7 @@ public class DynamicJavaNameResolver implements JavaExprGen.JavaNameResolver {
 		}
 
 		final JavaExprGen.JavaNameResolver res =
-			this.gen.createResolver(this.frame.node, locals);
+			this.gen.createResolver(this.frame.node, locals, JavaClassGen.GET);
 		return res.lookup(id);
 	}
 
