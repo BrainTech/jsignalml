@@ -102,10 +102,9 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 	final JClass MyBuffer_t = this.model.ref(MyBuffer.class);
 	final JClass BitForm_t = this.model.ref(BitForm.class);
 	final JClass Builtins_t = this.model.ref(Builtins.class);
+	final JClass RuntimeException_t = this.model.ref(RuntimeException.class);
 	final JClass Param_t = this.model.ref(jsignalml.codec.Param.class);
 	final JClass FunctionParam_t = this.model.ref(jsignalml.codec.FunctionParam.class);
-	final JClass IndexClass_t =
-		this.model.ref(jsignalml.codec.OuterLoopClass.LoopClass.IndexClass.class);
 
 	final JClass BasicConfigurator_t = this.model.ref(BasicConfigurator.class);
 	final JClass File_t = this.model.ref(File.class);
@@ -705,21 +704,23 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
         }
 
 	@Override
-	public JDefinedClass visit(ASTNode.Itername node, JDefinedClass klass)
+	public JDefinedClass visit(ASTNode.Itername node, JDefinedClass parent)
 	{
-		log.info("visit((Itername) %s, %s)", node, klass);
-		iternameGetter(dynamicID(node, node.id), klass);
+		log.info("visit((Itername) %s, %s)", node, parent);
+		final String theid = dynamicID(node, node.id);
+		final JDefinedClass klass = indexClass(parent, theid, node);
+		iternameGetter(parent, theid, klass);
 		return klass;
 	}
 
-	JMethod iternameGetter(String id, JDefinedClass klass)
+	JMethod iternameGetter(JDefinedClass klass, String id, JDefinedClass indexclass)
 	{
-		final JMethod getter = klass.method(JMod.PUBLIC, IndexClass_t, makeGetter(id));
+		final JMethod getter = klass.method(JMod.PUBLIC, indexclass, makeGetter(id));
 		comment_stamp(getter.body());
 		getter.body()._return(JExpr.refthis("index"));
 
 		Metadata metadata = (Metadata) klass.metadata;
-		metadata.registerParam(id, IndexClass_t, JExpr.refthis("index"));
+		metadata.registerParam(id, indexclass, JExpr.refthis("index"));
 		return getter;
 	}
 
@@ -883,6 +884,31 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 
 		MetadataIfBranch metadata = (MetadataIfBranch) parent.metadata;
 		metadata.elseBranch.registerContext(id, klass, JExpr._new(klass));
+
+		return klass;
+	}
+
+	public JDefinedClass indexClass(JDefinedClass parent, String id, ASTNode.Itername node)
+	{
+		final JDefinedClass klass;
+		try {
+			klass = parent._class(id);
+		} catch(JClassAlreadyExistsException e) {
+			throw new RuntimeException("WTF?");
+		}
+		final Type type = node.type; // FIXME
+		final JClass javatype = convertTypeToJClass(type);
+		klass._extends(Param_t.narrow(javatype));
+		comment_stamp(klass);
+
+		JMethod constructor = klass.constructor(JMod.NONE);
+		JVar index = constructor.param(javatype, "index");
+		comment_stamp(constructor.body());
+		constructor.body().assign(JExpr._this().ref("cache"), index);
+
+		final JMethod impl = klass.method(JMod.PROTECTED, javatype, GET_PRIV);
+		comment_stamp(impl.body());
+		impl.body()._throw(JExpr._new(RuntimeException_t));
 
 		return klass;
 	}
