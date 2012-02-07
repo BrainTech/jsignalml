@@ -1,6 +1,8 @@
 package jsignalml;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.math.util.FastMath;
+import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.List;
 import java.util.ArrayList;
@@ -27,6 +29,9 @@ public class Builtins extends ASTNode {
 			instance = new Builtins();
 		return instance;
 	}
+
+	public static final BigInteger DOUBLE_MAX = new BigDecimal(Double.MAX_VALUE).toBigInteger();
+	public static final BigInteger DOUBLE_MIN = new BigDecimal(1 - Double.MAX_VALUE).toBigInteger();
 
 	public static class factorial extends TypeObject {
 		public static TypeInt call(TypeInt x)
@@ -206,6 +211,304 @@ public class Builtins extends ASTNode {
 	private static TypeObject _get = new get();
 	public static TypeObject get(){ return _get; }
 
+	/**
+	 * Sine function
+	 */
+	public static class sin extends TypeObject {
+		public static TypeFloat call(TypeFloat x)
+		{
+			Double val = x.getValue();
+			Double ret = FastMath.sin(val);
+			return new TypeFloat(ret);
+		}
+
+		public static TypeFloat call(TypeInt x)
+		{
+			BigInteger val = x.getValue();
+
+			// Check for overflow
+			if (DOUBLE_MAX.compareTo(val) < 0 || DOUBLE_MIN.compareTo(val) > 0)
+				throw new ExpressionFault.ValueError("overflow");
+
+			Double ret = FastMath.sin(val.doubleValue());
+			return new TypeFloat(ret);
+		}
+
+		@Override
+		public TypeFloat call(List<Type> args)
+		{
+			if(args.size() != 1)
+				throw new ExpressionFault.ArgMismatch(1, args.size());
+
+			Type arg0 = args.get(0);
+			if (arg0 instanceof TypeInt) {
+				return call((TypeInt)arg0);
+			} else if (arg0 instanceof TypeFloat) {
+				return call((TypeFloat)arg0);
+			} else {
+				throw new ExpressionFault.ValueError("argument must be a number");
+			}
+		}
+	}
+
+	private static TypeObject _sin = new sin();
+	public static TypeObject sin(){ return _sin; }
+
+	/**
+	 * Cosine function
+	 */
+	public static class cos extends TypeObject {
+		public static TypeFloat call(TypeFloat x) {
+			Double val = x.getValue();
+			Double ret = FastMath.cos(val);
+			return new TypeFloat(ret);
+		}
+
+		public static TypeFloat call(TypeInt x) {
+			BigInteger val = x.getValue();
+			// Check for overflow
+			if (DOUBLE_MAX.compareTo(val) < 0 || DOUBLE_MIN.compareTo(val) > 0)
+				throw new ExpressionFault.ValueError("overflow");
+
+			Double ret = FastMath.cos(val.doubleValue());
+			return new TypeFloat(ret);
+		}
+
+		@Override
+		public TypeFloat call(List<Type> args)
+		{
+			if(args.size() != 1)
+				throw new ExpressionFault.ArgMismatch(1, args.size());
+
+			Type arg0 = args.get(0);
+			if (arg0 instanceof TypeInt) {
+				return call((TypeInt)arg0);
+			} else if (arg0 instanceof TypeFloat) {
+				return call((TypeFloat)arg0);
+			} else {
+				throw new ExpressionFault.ValueError("argument must be a number");
+			}
+		}
+	}
+
+	private static TypeObject _cos = new cos();
+	public static TypeObject cos(){ return _cos; }
+
+	/**
+	 * Tangent function
+	 */
+	public static class tan extends TypeObject {
+		public static TypeFloat call(TypeFloat x) {
+			Double val = x.getValue();
+			Double ret = FastMath.tan(val);
+			return new TypeFloat(ret);
+		}
+
+		public static TypeFloat call(TypeInt x) {
+			BigInteger val = x.getValue();
+			// Check for overflow
+			if (DOUBLE_MAX.compareTo(val) < 0 || DOUBLE_MIN.compareTo(val) > 0)
+				throw new ExpressionFault.ValueError("overflow");
+
+			Double ret = FastMath.tan(val.doubleValue());
+			return new TypeFloat(ret);
+		}
+
+		@Override
+		public TypeFloat call(List<Type> args)
+		{
+			if(args.size() != 1)
+				throw new ExpressionFault.ArgMismatch(1, args.size());
+
+			Type arg0 = args.get(0);
+			if (arg0 instanceof TypeInt) {
+				return call((TypeInt)arg0);
+			} else if (arg0 instanceof TypeFloat) {
+				return call((TypeFloat)arg0);
+			} else {
+				throw new ExpressionFault.ValueError("argument must be a number");
+			}
+		}
+	}
+
+	private static TypeObject _tan = new tan();
+	public static TypeObject tan(){ return _tan; }
+
+	/**
+	 * Cotangent function
+	 */
+	public static class cot extends TypeObject {
+		public static TypeFloat call(TypeFloat x) {
+			Double val = x.getValue();
+			Double ret = 1/FastMath.tan(val);
+			return new TypeFloat(ret);
+		}
+
+		public static TypeFloat call(TypeInt x) {
+			BigInteger val = x.getValue();
+			// Check for overflow
+			if (DOUBLE_MAX.compareTo(val) < 0 || DOUBLE_MIN.compareTo(val) > 0)
+				throw new ExpressionFault.ValueError("overflow");
+
+			Double ret = 1/FastMath.tan(val.doubleValue());
+			return new TypeFloat(ret);
+		}
+
+		@Override
+		public TypeFloat call(List<Type> args)
+		{
+			if(args.size() != 1)
+				throw new ExpressionFault.ArgMismatch(1, args.size());
+
+			Type arg0 = args.get(0);
+			if (arg0 instanceof TypeInt) {
+				return call((TypeInt)arg0);
+			} else if (arg0 instanceof TypeFloat) {
+				return call((TypeFloat)arg0);
+			} else {
+				throw new ExpressionFault.ValueError("argument must be a number");
+			}
+		}
+	}
+
+	private static TypeObject _cot = new cot();
+	public static TypeObject cot(){ return _cot; }
+
+	/**
+	 * Exponential function
+	 */
+	public static class exp extends TypeObject {
+		public static TypeFloat call(TypeFloat x) {
+			Double val = x.getValue();
+			Double ret = FastMath.exp(val);
+			return new TypeFloat(ret);
+		}
+
+		public static TypeFloat call(TypeInt x) {
+			BigInteger val = x.getValue();
+			// Check for overflow
+			if (DOUBLE_MAX.compareTo(val) < 0 || DOUBLE_MIN.compareTo(val) > 0)
+				throw new ExpressionFault.ValueError("overflow");
+
+			Double ret = FastMath.exp(val.doubleValue());
+			return new TypeFloat(ret);
+		}
+
+		@Override
+		public TypeFloat call(List<Type> args)
+		{
+			if(args.size() != 1)
+				throw new ExpressionFault.ArgMismatch(1, args.size());
+
+			Type arg0 = args.get(0);
+			if (arg0 instanceof TypeInt) {
+				return call((TypeInt)arg0);
+			} else if (arg0 instanceof TypeFloat) {
+				return call((TypeFloat)arg0);
+			} else {
+				throw new ExpressionFault.ValueError("argument must be a number");
+			}
+		}
+	}
+
+	private static TypeObject _exp = new exp();
+	public static TypeObject exp(){ return _exp; }
+
+	/**
+	 * Natural logarithm
+	 */
+	public static class log extends TypeObject {
+		public static TypeFloat call(TypeFloat x) {
+			Double val = x.getValue();
+
+			if (val <= 0)
+				throw new ExpressionFault.ValueError("argument must be positive");
+
+			Double ret = FastMath.log(val);
+			return new TypeFloat(ret);
+		}
+
+		public static TypeFloat call(TypeInt x) {
+			BigInteger val = x.getValue();
+			// Check for overflow
+			if (DOUBLE_MAX.compareTo(val) < 0 || DOUBLE_MIN.compareTo(val) > 0)
+				throw new ExpressionFault.ValueError("overflow");
+
+			double doubleVal = val.doubleValue();
+			if(doubleVal <= 0)
+				throw new ExpressionFault.ValueError("argument must be positive");
+
+			Double ret = FastMath.log(doubleVal);
+			return new TypeFloat(ret);
+		}
+
+
+		@Override
+		public TypeFloat call(List<Type> args)
+		{
+			if(args.size() != 1)
+				throw new ExpressionFault.ArgMismatch(1, args.size());
+
+			Type arg0 = args.get(0);
+			if (arg0 instanceof TypeInt) {
+				return call((TypeInt)arg0);
+			} else if (arg0 instanceof TypeFloat) {
+				return call((TypeFloat)arg0);
+			} else {
+				throw new ExpressionFault.ValueError("argument must be a number");
+			}
+		}
+	}
+
+	private static TypeObject _log = new log();
+	public static TypeObject log(){ return _log; }
+
+	/**
+	 * Common logarithm
+	 */
+	public static class log10 extends TypeObject {
+		public static TypeFloat call(TypeFloat x) {
+			Double val = x.getValue();
+			if (val <= 0)
+				throw new ExpressionFault.ValueError("argument must be positive");
+
+			Double ret = FastMath.log10(val);
+			return new TypeFloat(ret);
+		}
+
+		public static TypeFloat call(TypeInt x) {
+			BigInteger val = x.getValue();
+			// Check for overflow
+			if (DOUBLE_MAX.compareTo(val) < 0 || DOUBLE_MIN.compareTo(val) > 0)
+				throw new ExpressionFault.ValueError("overflow");
+
+			double doubleVal = val.doubleValue();
+			if(doubleVal <= 0)
+				throw new ExpressionFault.ValueError("argument must be positive");
+
+			Double ret = FastMath.log10(doubleVal);
+			return new TypeFloat(ret);
+		}
+
+		@Override
+		public TypeFloat call(List<Type> args)
+		{
+			if(args.size() != 1)
+				throw new ExpressionFault.ArgMismatch(1, args.size());
+
+			Type arg0 = args.get(0);
+			if (arg0 instanceof TypeInt) {
+				return call((TypeInt)arg0);
+			} else if (arg0 instanceof TypeFloat) {
+				return call((TypeFloat)arg0);
+			} else {
+				throw new ExpressionFault.ValueError("argument must be a number");
+			}
+		}
+	}
+
+	private static TypeObject _log10 = new log10();
+	public static TypeObject log10(){ return _log10; }
 
 	public ASTNode.BuiltinFunction lookup(String name)
 	{
@@ -256,6 +559,41 @@ public class Builtins extends ASTNode {
 			function.arg("map", new TypeMap());
 			function.arg("key", null);
 			function.arg("default", null);
+			return function;
+		} else if (name.equals("sin")) {
+			ASTNode.BuiltinFunction function =
+				new ASTNode.BuiltinFunction(owner, name, null, _sin);
+			function.arg("x", null);
+			return function;
+		} else if (name.equals("cos")) {
+			ASTNode.BuiltinFunction function =
+				new ASTNode.BuiltinFunction(owner, name, null, _cos);
+			function.arg("x", null);
+			return function;
+		} else if (name.equals("tan")) {
+			ASTNode.BuiltinFunction function =
+				new ASTNode.BuiltinFunction(owner, name, null, _tan);
+			function.arg("x", null);
+			return function;
+		} else if (name.equals("cot")) {
+			ASTNode.BuiltinFunction function =
+				new ASTNode.BuiltinFunction(owner, name, null, _cot);
+			function.arg("x", null);
+			return function;
+		} else if (name.equals("exp")) {
+			ASTNode.BuiltinFunction function =
+				new ASTNode.BuiltinFunction(owner, name, null, _exp);
+			function.arg("x", null);
+			return function;
+		} else if (name.equals("log")) {
+			ASTNode.BuiltinFunction function =
+				new ASTNode.BuiltinFunction(owner, name, null, _log);
+			function.arg("x", null);
+			return function;
+		} else if (name.equals("log10")) {
+			ASTNode.BuiltinFunction function =
+				new ASTNode.BuiltinFunction(owner, name, null, _log10);
+			function.arg("x", null);
 			return function;
 		}
 

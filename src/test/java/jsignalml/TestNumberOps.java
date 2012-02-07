@@ -21,6 +21,14 @@ public class TestNumberOps {
 	{
 		assertEquals(new TypeFloat(expected), eval(line));
 	}
+
+	static void equal(String line, double expected, double delta)
+		throws Exception
+	{
+		assertEquals(new TypeFloat(expected).getValue(),
+			     ((TypeFloat)eval(line)).getValue(), delta);
+	}
+
 	static void equal(String line, String expected) throws Exception
 	{
 		assertEquals(new TypeString(expected), eval(line));
@@ -768,5 +776,130 @@ public class TestNumberOps {
 	@Test public void eval_is_true_float_minus_1() throws Exception
 	{
 		verifyIsTrue("-1.", true);
+	}
+
+	@Test public void eval_sin_0() throws Exception
+	{
+	    equal("sin(0)", 0);
+	}
+
+	@Test public void val_sin_30() throws Exception
+	{
+		equal("sin(0.5236)", 0.5, .001);
+	}
+
+	@Test public void val_sin_45() throws Exception
+	{
+		equal("sin(0.7854)", 0.7071, .001);
+	}
+
+	@Test public void val_sin_neg45() throws Exception
+	{
+		equal("sin(-0.7854)", -0.7071, .001);
+	}
+
+	@Test public void eval_cos_0() throws Exception
+	{
+		equal("cos(0)", 1);
+	}
+
+	@Test public void eval_cos_30() throws Exception
+	{
+		equal("cos(0.5236)", 0.8660, .001);
+	}
+
+	@Test public void eval_cos_45() throws Exception
+	{
+	    equal("cos(0.7854)", 0.7071 , .001);
+	}
+
+	@Test public void eval_cos_neg45() throws Exception
+	{
+	    equal("cos(-0.7854)", 0.7071 , .001);
+	}
+
+	@Test public void eval_tan_0() throws Exception
+	{
+	    equal("tan(0)", 0);
+	}
+
+	@Test public void eval_tan_30() throws Exception
+	{
+		equal("tan(0.5236)", 0.5774, .001);
+	}
+
+	@Test public void eval_tan_45() throws Exception
+	{
+	    equal("tan(0.7854)", 1, .001);
+	}
+
+	@Test public void eval_tan_neg45() throws Exception
+	{
+		equal("tan(-0.7854)", -1, .001);
+	}
+
+	@Test public void eval_cot_0() throws Exception
+	{
+		equal("cot(0)", new TypeFloat(Double.POSITIVE_INFINITY).getValue());
+	}
+
+	@Test public void eval_cot_30() throws Exception
+	{
+		equal("cot(0.5236)", 1.7321, .001);
+	}
+
+	@Test public void eval_cot_45() throws Exception
+	{
+		equal("cot(0.7854)", 1, .001);
+	}
+
+	@Test public void eval_cot_neg45() throws Exception
+	{
+		equal("cot(-0.7854)", -1, .001);
+	}
+
+	@Test public void eval_exp_neg_float_3_5() throws Exception
+	{
+		equal("exp(-3.5)", 0.030197, .001);
+	}
+
+	@Test public void eval_exp_neg_int_3() throws Exception
+	{
+		equal("exp(-3)", 0.049787, .001);
+	}
+
+	@Test public void eval_exp_pos_float_3_5() throws Exception
+	{
+		equal("exp(3.5)", 33.1155, .001);
+	}
+
+	@Test public void eval_exp_pos_int_3() throws Exception
+	{
+		equal("exp(3)", 20.0855, .001);
+	}
+
+	@Test public void eval_exp_zero() throws Exception
+	{
+		equal("exp(0)", 1);
+	}
+
+	@Test public void eval_log_int_10() throws Exception
+	{
+		equal("log(10)", 2.30259, .001);
+	}
+
+	@Test public void eval_log_float_7_5() throws Exception
+	{
+		equal("log(7.5)", 2.01490, .001);
+	}
+
+	@Test public void eval_log10_int_10() throws Exception
+	{
+		equal("log10(10)", 1);
+	}
+
+	@Test public void eval_log10_float_7_5() throws Exception
+	{
+		equal("log10(7.5)", 0.875061, .001);
 	}
 }
