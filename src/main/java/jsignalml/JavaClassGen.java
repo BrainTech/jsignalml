@@ -118,6 +118,23 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 	final JClass ByteBuffer_t = this.model.ref(ByteBuffer.class);
 
 	JFieldVar log_var = null; // this should be set when Signalml class is created.
+	final ASTTypeResolver typeresolver;
+
+	private static ASTTypeResolver nullTypeResolver() {
+		return new ASTTypeResolver() {
+			public Type getType(ASTNode node) {
+				return null;
+			}
+		};
+	}
+
+	public JavaClassGen() {
+		this(nullTypeResolver());
+	}
+
+	public JavaClassGen(ASTTypeResolver typeresolver) {
+		this.typeresolver = typeresolver;
+	}
 
 	private String dynamicID(ASTNode start, Expression id)
 	{
@@ -178,6 +195,7 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 				comment_stamp(method.body());
 				this.create_params = method.body();
 				final String msg = format("%s.%s()", klass.name(), method.name());
+				assert JavaClassGen.this.log_var != null;
 				this.create_params.add(JavaClassGen.this.log_var
 						       .invoke("debug").arg(msg));
 			}
@@ -189,6 +207,7 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 				comment_stamp(method.body());
 				this.create_channels = method.body();
 				final String msg = format("%s.%s()", klass.name(), method.name());
+				assert JavaClassGen.this.log_var != null;
 				this.create_channels.add(JavaClassGen.this.log_var
 							 .invoke("debug").arg(msg));
 			}

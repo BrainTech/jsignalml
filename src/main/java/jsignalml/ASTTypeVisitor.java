@@ -38,6 +38,22 @@ public class ASTTypeVisitor extends ASTVisitor<Type> {
 		return value;
 	}
 
+	/**
+	 * Returns a ASTTypeResolver instance which can be used to query the
+	 * results of this ASTVisitor.
+	 */
+	public ASTTypeResolver getTypeResolver() {
+		return new ASTTypeResolver() {
+			public Type getType(ASTNode node) {
+				Type cached = ASTTypeVisitor.this.getCached(node);
+				if (cached == null || cached == _null_repl)
+					return null;
+				else
+					return cached;
+			}
+		};
+	}
+
 	// All Expression fields defined in subclasses of ASTNode should be
 	// checked.
 

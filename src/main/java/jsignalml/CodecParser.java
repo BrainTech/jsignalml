@@ -336,7 +336,7 @@ public class CodecParser {
 		codec.accept(typer, null);
 		log.info("-- type checking is done --");
 
-		final JavaClassGen gen = new JavaClassGen();
+		final JavaClassGen gen = new JavaClassGen(typer.getTypeResolver());
 		codec.accept(gen, null);
 		log.info("-- java has been generated --");
 		gen.write(System.out);
