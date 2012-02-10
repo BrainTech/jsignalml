@@ -136,6 +136,13 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 		this.typeresolver = typeresolver;
 	}
 
+	/**
+	 * What is the type of this node? Query our typeresolver and node.type.
+	 */
+	private Type nodeType(ASTNode node) {
+		return this.typeresolver.getType(node);
+	}
+
 	private String dynamicID(ASTNode start, Expression id)
 	{
 		final EvalVisitor valuator = EvalVisitor.create(start);
@@ -397,7 +404,8 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 
 	JDefinedClass paramClass(JDefinedClass parent, String theid, ASTNode.Param node)
 	{
-		final JClass typeref = convertTypeToJClass(node.type);
+		final Type nodetype = this.nodeType(node);
+		final JClass typeref = convertTypeToJClass(nodetype);
 
 		final JClass klass_type = node.args.isEmpty() ? Param_t : FunctionParam_t;
 		final JClass param_class = klass_type.narrow(typeref);
@@ -410,6 +418,7 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 		nested._extends(param_class);
 		comment_stamp(nested);
 		comment(nested, "node.type=%s", typename(node.type));
+		comment(nested, "--> nodetype=%s", typename(nodetype));
 
 		final JMethod getter = classCacheMethod(parent, theid, nested);
 
@@ -447,15 +456,15 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 		assert klass != null;
 
 		final JavaExprGen javagen = createExprGen(node, null);
-		final Type wanted = node.type != null ? node.type : node._read_type;
-		final JClass wanted_t = convertTypeToJClass(wanted);
-		final JMethod impl = klass.method(JMod.PROTECTED, wanted_t, GET_PRIV);
+		final Type nodetype = nodeType(node);
+		final JClass nodetype_t = convertTypeToJClass(nodetype);
+		final JMethod impl = klass.method(JMod.PROTECTED, nodetype_t, GET_PRIV);
 		final JBlock body = impl.body();
 		comment_stamp(body);
 
 		comment(body, "node.type=%s", typename(node.type));
 		comment(body, "node._read_type=%s", typename(node._read_type));
-		comment(body, "--> type=%s", typename(wanted));
+		comment(body, "--> nodetype=%s", typename(nodetype));
 		comment(body, "format=(%s)", node.format);
 		comment(body, "format.type=%s", typename(node.format.type));
 		comment(body, "offset=(%s)", node.offset);
@@ -489,10 +498,10 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 			.arg(offset_);
 
 		final JVar input = body.decl(expected_t, "input", expr);
-		body._return(make_or_cast(wanted, input, expected));
+		body._return(make_or_cast(nodetype, input, expected));
 
 		if (_prim)
-			getMethod_p(klass, wanted);
+			getMethod_p(klass, nodetype);
 
 		return impl;
 	}
@@ -546,19 +555,19 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 
 	public JMethod getExprMethod(JDefinedClass klass, ASTNode.ExprParam node)
 	{
-		final Type type = node.type != null ? node.type : node.expr.type;
-		final JClass javatype = convertTypeToJClass(type);
+		final Type nodetype = nodeType(node);
+		final JClass javatype = convertTypeToJClass(nodetype);
 		final JMethod impl = klass.method(JMod.PROTECTED, javatype, GET_PRIV);
 		comment_stamp(impl.body());
 		comment(impl.body(), "node.type=%s", typename(node.type));
 		comment(impl.body(), "node.expr.type=%s", typename(node.expr.type));
-		comment(impl.body(), "-> type=%s", typename(type));
+		comment(impl.body(), "--> nodetype=%s", typename(nodetype));
 		final JavaExprGen javagen = createExprGen(node, null);
 		final JExpression value = node.expr.accept(javagen);
-		impl.body()._return(do_cast(type, value, node.expr.type));
+		impl.body()._return(do_cast(nodetype, value, node.expr.type));
 
 		if (_prim)
-			getMethod_p(klass, type);
+			getMethod_p(klass, nodetype);
 
 		return impl;
 	}
@@ -595,8 +604,8 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 
 	public JMethod callExprMethod(JDefinedClass klass, ASTNode.ExprParam node)
 	{
-		final Type type = node.type != null ? node.type : node.expr.type;
-		final JClass javatype = convertTypeToJClass(type);
+		final Type nodetype = nodeType(node);
+		final JClass javatype = convertTypeToJClass(nodetype);
 		final JMethod impl = klass.method(JMod.PUBLIC, javatype, CALL);
 		comment_stamp(impl.body());
 
@@ -630,9 +639,9 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 		comment(impl.body(), "node.type=%s", typename(node.type));
 		comment(impl.body(), "node.expr=(%s)", node.expr);
 		comment(impl.body(), "node.expr.type=%s", typename(node.expr.getType()));
-		comment(impl.body(), "--> type=%s", typename(type));
+		comment(impl.body(), "--> nodetype=%s", typename(nodetype));
 
-		impl.body()._return(do_cast(type, value, node.expr.getType()));
+		impl.body()._return(do_cast(nodetype, value, node.expr.getType()));
 		return impl;
 	}
 
@@ -642,8 +651,8 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 		final JavaExprGen.JavaNameResolver resolver = createResolver(node, locals, GET_P);
 		final JavaPrimitiveGen gen = new JavaPrimitiveGen(this.model, resolver);
 
-		final Type type = node.type != null ? node.type : node.expr.getType();
-		final JType javatype = gen.convertTypeToJClass_p(type);
+		final Type nodetype = nodeType(node);
+		final JType javatype = gen.convertTypeToJClass_p(nodetype);
 		final JMethod impl = klass.method(JMod.PUBLIC, javatype, CALL_P);
 		final JBlock body = impl.body();
 		comment_stamp(body);
@@ -660,7 +669,7 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 		comment(body, "node.type=%s", typename(node.type));
 		comment(body, "node.expr=(%s)", node.expr);
 		comment(body, "node.expr.type=%s", typename(node.expr.getType()));
-		comment(body, "--> type=%s", typename(type));
+		comment(body, "--> nodetype=%s", typename(nodetype));
 
 		body._return(value);
 		return impl;
@@ -987,8 +996,8 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 		} catch(JClassAlreadyExistsException e) {
 			throw new RuntimeException("WTF?");
 		}
-		final Type type = node.type; // FIXME
-		final JClass javatype = convertTypeToJClass(type);
+		final Type nodetype = nodeType(node);
+		final JClass javatype = convertTypeToJClass(nodetype);
 		klass._extends(Param_t.narrow(javatype));
 		comment_stamp(klass);
 
@@ -999,16 +1008,16 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 
 		idMethod(klass, node, id);
 
-		loopClassConstructor(parent, id, type, klass);
+		loopClassConstructor(parent, id, nodetype, klass);
 
-		createLoopMethod((JDefinedClass) parent.outer(), parent, type);
+		createLoopMethod((JDefinedClass) parent.outer(), parent, nodetype);
 
 		final JMethod impl = klass.method(JMod.PROTECTED, javatype, GET_PRIV);
 		comment_stamp(impl.body());
 		impl.body()._throw(JExpr._new(RuntimeException_t));
 
 		if (_prim)
-			getMethod_p(klass, type);
+			getMethod_p(klass, nodetype);
 
 		return klass;
 	}

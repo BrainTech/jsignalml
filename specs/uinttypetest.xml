@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<!DOCTYPE signalml SYSTEM "SignalML_2_0.dtd">
+<signalml>
+  <file type='binary' id='main'>
+    <param id='def_len'>
+      <format>'&lt;u2'</format>
+      <offset>4</offset>
+    </param>
+  </file>
+</signalml>
