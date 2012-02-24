@@ -262,6 +262,39 @@ public abstract class ASTNode {
 			return v.visit(this, data);
 		}
 	}
+	
+	
+	public static class TextParam extends ReadParam {
+		final Expression line, pattern, format, group;
+
+		// XXX: move this somewhere proper?
+		Type _read_type = null;
+
+		public TextParam(ASTNode parent, Expression id, Type type,
+		                   Expression format, Expression line, Expression pattern, Expression group)
+			throws SyntaxError
+		{
+			super(parent, id, type);
+			this.format = format;
+			this.line = line;
+			this.pattern = pattern;
+			this.group = group;
+			// TODO: test file type
+		}
+
+		@Override
+		public String toString()
+		{
+			return format("ASTNode.TextParam %s on %s format=%s line=%s pattern=%s group=%s" ,
+			              id, handle, format, line, pattern, group);
+		}
+
+		@Override
+		public <T> T _accept(ASTVisitor<T> v, T data)
+		{
+			return v.visit(this, data);
+		}
+	}	
 
 	public static class ExprParam extends Param {
 		final Expression expr, fast;
@@ -386,7 +419,10 @@ public abstract class ASTNode {
 		{
 			if (type.equals("binary"))
 				return new FileHandle<FileType.BinaryFile>(parent, id, filename);
+			else if(type.equals("text")){
+				return new FileHandle<FileType.TextFile>(parent, id, filename);
 
+			}
 			throw new IllegalArgumentException(format("unkown file type '%s'", type));
 		}
 

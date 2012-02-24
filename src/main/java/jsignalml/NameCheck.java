@@ -33,6 +33,22 @@ public class NameCheck extends ASTVisitor<NullType> {
 	}
 
 	@Override
+	public NullType visit(ASTNode.TextParam node, NullType parent)
+	{
+		log.debug("checking %s", node);
+		ExpressionNameCheck checker = new ExpressionNameCheck(node);
+		assert node.format != null;
+		assert node.line != null;
+		assert node.pattern != null;
+		assert node.group != null;
+		node.format.accept(checker);
+		node.line.accept(checker);
+		node.pattern.accept(checker);
+		node.group.accept(checker);
+		return null;
+	}
+	
+	@Override
 	public NullType visit(ASTNode.Assert node, NullType parent)
 	{
 		log.debug("checking %s", node);

@@ -1,13 +1,16 @@
 package jsignalml;
 
-import org.apache.commons.lang.StringUtils;
-import org.apache.commons.math.util.FastMath;
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import jsignalml.logging.Logger;
+
+import org.apache.commons.lang.StringUtils;
+import org.apache.commons.math.util.FastMath;
 
 public class Builtins extends ASTNode {
 	static final Logger log = new Logger(Builtins.class);
@@ -105,6 +108,41 @@ public class Builtins extends ASTNode {
 	private static TypeObject _trim = new trim();
 	public static TypeObject trim(){ return _trim; }
 
+	
+	public static class fetch extends TypeObject {
+		public static TypeString call(TypeString text, TypeString pattern, TypeInt group)
+		{
+			Pattern pat = Pattern.compile(pattern.getValue());
+			Matcher matcher = pat.matcher(text.getValue());
+
+			if (matcher.find()) {
+				return new TypeString(matcher.group(group.getValue().intValue()));
+			}
+
+			return null;
+		}
+
+		@Override
+		public TypeString call(List<Type> args)
+		{
+			if(args.size() != 3)
+				throw new ExpressionFault.ArgMismatch(3, args.size());
+			
+			TypeString retValue = call((TypeString)args.get(0), 
+					(TypeString)args.get(1), (TypeInt)args.get(2));
+			if(retValue != null){
+				return retValue;
+			}
+			
+			throw new ExpressionFault.NoMatchFoundError(((TypeString)args.get(0)).getValue(), 
+					((TypeString)args.get(1)).getValue());
+		}
+	}	
+	
+	private static TypeObject _fetch = new fetch();
+	public static TypeObject fetch(){ return _fetch; }
+
+	
 	public static class bool extends TypeObject {
 		public static TypeInt call(Type x)
 		{
@@ -119,7 +157,7 @@ public class Builtins extends ASTNode {
 			return call(args.get(0));
 		}
 	}
-
+	
 	private static TypeObject _bool = new bool();
 	public static TypeObject bool(){ return _bool; }
 
@@ -530,6 +568,13 @@ public class Builtins extends ASTNode {
 			ASTNode.BuiltinFunction function =
 				new ASTNode.BuiltinFunction(owner, name, new TypeString(), _trim);
 			function.arg("s", new TypeString());
+			return function;
+		} else if (name.equals("fetch")) {
+			ASTNode.BuiltinFunction function =
+				new ASTNode.BuiltinFunction(owner, name, new TypeString(), _fetch);
+			function.arg("text", new TypeString());
+			function.arg("pattern", new TypeString());
+			function.arg("group", new TypeInt());
 			return function;
 		} else if (name.equals("bool")) {
 			ASTNode.BuiltinFunction function =

@@ -30,6 +30,27 @@ public abstract class FileType {
 		}
 	}
 
+	public static class TextFile extends FileType {
+		final TextBuffer buffer;
+
+		public TextFile(File filename)
+		throws IOException, FileNotFoundException
+		{
+			log.info("opening buffer for %s", filename);
+			buffer = new TextBuffer(filename);
+		}
+
+//		public Type read(BitForm format, TypeInt offset)
+//		{
+//			return this.buffer.read(format, offset);
+//		}
+//		public Type read(BitForm format, int offset)
+//		{
+//			return this.read(format, new TypeInt(offset));
+//		}
+	}
+
+	
 	public static <T extends FileType>
 	T open(File filename)
 	throws IOException, FileNotFoundException

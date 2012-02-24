@@ -2,17 +2,15 @@ package jsignalml;
 
 import static java.lang.String.format;
 
-import java.util.List;
-import java.util.Map;
-import java.io.InputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.InputStream;
 
-import org.w3c.dom.Node;
-import org.w3c.dom.Element;
+import jsignalml.logging.Logger;
 
 import org.apache.log4j.BasicConfigurator;
-import jsignalml.logging.Logger;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 
 /**
  * Translate an XML DOM into an ASTNode tree.
@@ -69,7 +67,8 @@ public class CodecParser {
 		if (name.equals("file"))
 			return this.do_file(parent, element);
 		if (name.equals("expr") || name.equals("format") || name.equals("offset")
-		    || name.equals("pattern") || name.equals("line") || name.equals("xpath"))
+		    || name.equals("pattern") || name.equals("line") || name.equals("xpath")
+		    || name.equals("group"))
 			return null; /* handled directly */
 		log.warn("unknown element: %s", element);
 		return null;
@@ -128,6 +127,7 @@ public class CodecParser {
 		final Expression offset  = _extract(element, "offset");
 		final Expression pattern = _extract(element, "pattern");
 		final Expression line    = _extract(element, "line");
+		final Expression group    = _extract(element, "group");
 		final Expression xpath   = _extract(element, "xpath");
 
 		/* The code below is structed like it is to keep it simple and
@@ -143,8 +143,9 @@ public class CodecParser {
 			if (expr == null && pattern == null && line == null && xpath == null)
 				p = new ASTNode.BinaryParam(parent, id, type, format, offset,
 						fast);
-		} else if (pattern != null) {
-			throw new UnsupportedOperationException();
+		} else if (pattern != null && line != null && format != null && group != null) {
+			if (offset == null && xpath == null && expr == null)
+				p = new ASTNode.TextParam(parent, id, type, format, line, pattern, group);
 		} else if (xpath != null) {
 			throw new UnsupportedOperationException();
 		} else {

@@ -1,42 +1,36 @@
 package jsignalml;
 
-import java.util.List;
-import java.util.Map;
-import java.util.HashMap;
-import java.util.Arrays;
+import static java.lang.String.format;
+import static jsignalml.Type.typename;
+
 import java.io.File;
 import java.io.OutputStream;
 import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
-import static java.lang.String.format;
+import java.util.List;
 
-import com.sun.codemodel.JClass;
-import com.sun.codemodel.JDefinedClass;
-import com.sun.codemodel.JMethod;
-import com.sun.codemodel.JCodeModel;
-import com.sun.codemodel.JExpression;
-import com.sun.codemodel.JExpr;
-import com.sun.codemodel.JInvocation;
-import com.sun.codemodel.JConditional;
-import com.sun.codemodel.JGenerable;
-import com.sun.codemodel.JType;
-import com.sun.codemodel.JBlock;
-import com.sun.codemodel.JFieldVar;
-import com.sun.codemodel.JFieldRef;
-import com.sun.codemodel.JTryBlock;
-import com.sun.codemodel.JCatchBlock;
-import com.sun.codemodel.JForEach;
-import com.sun.codemodel.JForLoop;
-import com.sun.codemodel.JVar;
-import com.sun.codemodel.JMod;
-import com.sun.codemodel.JClassAlreadyExistsException;
-import com.sun.codemodel.writer.SingleStreamCodeWriter;
-import com.sun.codemodel.writer.FileCodeWriter;
+import jsignalml.logging.Logger;
 
 import org.apache.log4j.BasicConfigurator;
 
-import static jsignalml.Type.typename;
-import jsignalml.logging.Logger;
+import com.sun.codemodel.JBlock;
+import com.sun.codemodel.JClass;
+import com.sun.codemodel.JClassAlreadyExistsException;
+import com.sun.codemodel.JCodeModel;
+import com.sun.codemodel.JDefinedClass;
+import com.sun.codemodel.JExpr;
+import com.sun.codemodel.JExpression;
+import com.sun.codemodel.JFieldRef;
+import com.sun.codemodel.JFieldVar;
+import com.sun.codemodel.JForLoop;
+import com.sun.codemodel.JGenerable;
+import com.sun.codemodel.JInvocation;
+import com.sun.codemodel.JMethod;
+import com.sun.codemodel.JMod;
+import com.sun.codemodel.JType;
+import com.sun.codemodel.JVar;
+import com.sun.codemodel.writer.FileCodeWriter;
+import com.sun.codemodel.writer.SingleStreamCodeWriter;
 
 public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 	public static final Logger log = new Logger(JavaClassGen.class);
@@ -103,6 +97,7 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 	final JClass ChannelSet_t = this.model.ref(ChannelSet.class);
 	final JClass Channel_t = this.model.ref(Channel.class);
 	final JClass MyBuffer_t = this.model.ref(MyBuffer.class);
+	final JClass TextBuffer_t = this.model.ref(TextBuffer.class);
 	final JClass BitForm_t = this.model.ref(BitForm.class);
 	final JClass Builtins_t = this.model.ref(Builtins.class);
 	final JClass RuntimeException_t = this.model.ref(RuntimeException.class);
@@ -402,6 +397,18 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 		return nested;
 	}
 
+	@Override
+	public JDefinedClass visit(ASTNode.TextParam node, JDefinedClass klass)
+	{
+		log.info("visit((TextParam) %s, %s)", node, klass);
+		assert klass != null;
+		final String theid = dynamicID(node, node.id);
+		JDefinedClass nested = paramClass(klass, theid, node);
+		idMethod(nested, node, theid);
+		readParamFunction(nested, node);
+		return nested;
+	}
+
 	JDefinedClass paramClass(JDefinedClass parent, String theid, ASTNode.Param node)
 	{
 		final Type nodetype = this.nodeType(node);
@@ -499,6 +506,50 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 
 		final JVar input = body.decl(expected_t, "input", expr);
 		body._return(make_or_cast(nodetype, input, expected));
+
+		if (_prim)
+			getMethod_p(klass, nodetype);
+
+		return impl;
+	}
+	
+	public JMethod readParamFunction(JDefinedClass klass, ASTNode.TextParam node)
+	{
+		assert klass != null;
+
+		final JavaExprGen javagen = createExprGen(node, null);
+		final Type nodetype = nodeType(node);
+		final JClass nodetype_t = convertTypeToJClass(nodetype);
+		final JMethod impl = klass.method(JMod.PROTECTED, nodetype_t, GET_PRIV);
+		final JBlock body = impl.body();
+		comment_stamp(body);
+
+		comment(body, "node.type=%s", typename(node.type));
+		comment(body, "node._read_type=%s", typename(node._read_type));
+		comment(body, "--> nodetype=%s", typename(nodetype));
+		comment(body, "format=(%s)", node.format);
+		comment(body, "format.type=%s", typename(node.format.type));
+		comment(body, "line=(%s)", node.line);
+		comment(body, "line.type=%s", typename(node.line.type));
+		comment(body, "pattern=(%s)", node.pattern);
+		comment(body, "pattern.type=%s", typename(node.pattern.type));
+		comment(body, "group=(%s)", node.group);
+		comment(body, "group.type=%s", typename(node.group.type));
+
+		
+		final JVar line_ = body.decl(TypeInt_t, "line", node.line.accept(javagen));
+		final JVar pattern_ = body.decl(TypeString_t, "pattern", node.pattern.accept(javagen));
+		final JVar group_ = body.decl(TypeInt_t, "group", node.group.accept(javagen));
+
+		
+		final JVar textBuf = body.decl(TextBuffer_t, "textBuf", JExpr.invoke("textBuffer"));
+		final JVar _t = body.decl(nodetype_t, "_t", JExpr._null());
+		
+		final JVar value = body.decl(nodetype_t, "value", 
+				textBuf.invoke("read").arg(line_).arg(pattern_).arg(group_).arg(_t));
+		
+
+		body._return(value);
 
 		if (_prim)
 			getMethod_p(klass, nodetype);
