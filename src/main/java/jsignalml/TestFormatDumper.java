@@ -52,9 +52,9 @@ public class TestFormatDumper {
 
 		out.format("%s = %d\n", "number_of_channels",
 			   channels);
-		out.format("%s = %ld\n", "number_of_samples",
+		out.format("%s = %d\n", "number_of_samples",
 			   set.getNumberOfSamples());
-		out.format("%s = %lf\n", "sampling_frequency",
+		out.format("%s = %f\n", "sampling_frequency",
 			   set.getSamplingFrequency());
 
 		{
