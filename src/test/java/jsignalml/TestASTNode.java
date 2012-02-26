@@ -28,7 +28,8 @@ public class TestASTNode {
 		final int VAL = 11;
 		final TypeInt intval = new TypeInt(VAL);
 		ASTNode.ExprParam p = new ASTNode.ExprParam(signalml, "p", new TypeInt(1),
-							new Expression.Const(intval));
+							new Expression.Const(intval),
+							null);
 		final Type val = p.expr.accept(new EvalVisitor(state));
 		assertThat(val, instanceOf(TypeInt.class));
 		assertEquals(val, intval);
@@ -38,7 +39,8 @@ public class TestASTNode {
 		throws Exception
 	{
 		Expression expr = Processor.parse(line);
-		return new ASTNode.ExprParam(signalml, "generated", type, expr);
+		return new ASTNode.ExprParam(signalml, "generated", type, expr,
+				null);
 	}
 
 	@Test public void eval_ExprParam() throws Exception

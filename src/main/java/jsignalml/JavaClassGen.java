@@ -1156,6 +1156,7 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 
 	public JMethod getSamplesMethod(JDefinedClass klass, ASTNode.Channel node)
 	{
+		final Expression fastSet = Processor.parse("1"); 
 		final JMethod method = klass.method(JMod.PUBLIC, this.model.VOID, "getSamples");
 		comment_stamp(method.body());
 		final JVar dst = method.param(FloatBuffer_t, "dst");
@@ -1163,23 +1164,37 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 
 		final JavaExprGen javagen = createExprGen(node, null);
 		final JBlock body = method.body();
-		final JVar mapping = body.decl(Type_t, "mapping",
-					       node.mapping.accept(javagen));
 		final JVar format_ = body.decl(TypeString_t, "format_",
 					       JExpr._this().invoke("getSampleFormat"));
 		final JVar format = body.decl(BitForm_t, "format",
 					      BitForm_t.staticInvoke("get").arg(format_));
 		final JVar buffer = body.decl(ByteBuffer_t, "buffer",
-					      JExpr.invoke("_buffer").ref("source"));
-		final JBlock _while = body._while(JExpr.invoke(dst, "hasRemaining")).body();
-		final JExpression mapping_call = mapping.invoke(CALL)
-			.arg(JExpr._new(TypeInt_t).arg(sample));
-		final JVar input = _while.decl(Type_t, "input",
-					       format.invoke("read").arg(buffer)
-					       .arg(JExpr.cast(TypeInt_t, mapping_call)));
-		final JExpression conv = TypeFloat_I.invoke("make").arg(input);
-		_while.add(dst.invoke("put")
-			   .arg(JExpr.cast(this.model.FLOAT, conv.ref("value"))));
+					JExpr.invoke("_buffer").ref("source"));
+		if (_prim && node.fast.equals(fastSet)) {
+			// Primitive types code variant
+			final JVar count = body.decl(this.model.INT, "count",
+						JExpr.invoke(dst, "remaining"));
+			final JBlock _while = body._while(count.decr().gt(JExpr.lit(0))).body();
+			final JExpression mapping_call = JExpr.cast(model.INT,
+					JExpr.invoke("get_mapping").invoke(CALL_P).arg(sample.incr()));
+			final JExpression input = format.invoke("read").arg(buffer)
+					.arg(mapping_call);
+			final JVar value = _while.decl(this.model.FLOAT, "value", input);
+			_while.add(dst.invoke("put").arg(value));
+		}
+		else {
+			final JVar mapping = body.decl(Type_t, "mapping",
+					node.mapping.accept(javagen));
+			final JBlock _while = body._while(JExpr.invoke(dst, "hasRemaining")).body();
+			final JExpression mapping_call = mapping.invoke(CALL)
+					.arg(JExpr._new(TypeInt_t).arg(sample.incr()));
+			final JVar input = _while.decl(Type_t, "input",
+					       	format.invoke("read").arg(buffer)
+					       	.arg(JExpr.cast(TypeInt_t, mapping_call)));
+			final JExpression conv = TypeFloat_I.invoke("make").arg(input);
+			_while.add(dst.invoke("put")
+					.arg(JExpr.cast(this.model.FLOAT, conv.ref("value"))));
+		}
 		return method;
 	}
 
@@ -1241,17 +1256,17 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 
 		final String field_name = "duration_of_data_record";
 		final ASTNode signalml = new ASTNode.Signalml("Test");
-		new ASTNode.ExprParam(signalml, field_name, new TypeInt(), expr);
+		new ASTNode.ExprParam(signalml, field_name, new TypeInt(), expr, null);
 
 		final Expression expr2 = Processor.parse(field_name + "() + 1");
-		new ASTNode.ExprParam(signalml, field_name+"2", new TypeInt(), expr2);
+		new ASTNode.ExprParam(signalml, field_name+"2", new TypeInt(), expr2, null);
 
 		ASTNode.FileHandle thefile = new ASTNode.FileHandle(signalml, "thefile", null);
 
 		new ASTNode.BinaryParam(thefile, Processor.parse("'readTest'"), new TypeInt(),
-					Expression.Const.make("<i4"), Expression.Const.make(25));
+					Expression.Const.make("<i4"), Expression.Const.make(25), null);
 		new ASTNode.BinaryParam(thefile, Processor.parse("'readTestConv'"), new TypeInt(),
-					Expression.Const.make("|S8"), Expression.Const.make(0));
+					Expression.Const.make("|S8"), Expression.Const.make(0), null);
 
 		final NameCheck check = new NameCheck();
 		signalml.accept(check, null);

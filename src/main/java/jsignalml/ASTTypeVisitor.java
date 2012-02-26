@@ -72,14 +72,17 @@ public class ASTTypeVisitor extends ASTVisitor<Type> {
 		assert node.mapping != null;
 		assert node.format != null;
 		assert node.length != null;
+		assert node.fast != null;
 		Type mapping_t = node.mapping.accept(_typeVisitor(node));
 		Type format_t = node.format.accept(_typeVisitor(node));
 		Type length_t = node.length.accept(_typeVisitor(node));
-		log.info("%s mapping.type=%s format.type=%s length.type=%s",
+		Type fast_t = node.fast.accept(_typeVisitor(node));
+		log.info("%s mapping.type=%s format.type=%s length.type=%s fast.type=%s",
 			 node,
 			 typename(mapping_t),
 			 typename(format_t),
-			 typename(length_t));
+			 typename(length_t),
+			 typename(fast_t));
 
 		return putCached(node, null);
 	}

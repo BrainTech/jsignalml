@@ -1,5 +1,6 @@
 package jsignalml;
 
+import java.math.BigInteger;
 import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
 import java.nio.ByteOrder;
@@ -8,6 +9,41 @@ import jsignalml.logging.Logger;
 
 public abstract class BitForm {
 	protected static final Logger log = new Logger(BitForm.class);
+
+	public static class PrimitiveConversion {
+		
+		static long makeFromUnsignedReadAsSigned(byte value) {
+			log.info("converting byte %s", value);
+			if (value >= 0)
+				return value;
+			return value + Byte.MIN_VALUE * -2;
+		}
+		
+		static long makeFromUnsignedReadAsSigned(short value) {
+			log.info("converting short %s", value);
+			if (value >= 0)
+				return value;
+			
+			return value + Short.MIN_VALUE * -2;
+		}
+		
+		static long makeFromUnsignedReadAsSigned(int value) {
+			log.info("converting int %s", value);
+			if (value >= 0)
+				return value;
+
+			return value + Long.valueOf(Integer.MIN_VALUE) * -2L;
+		}
+		
+		static long makeFromUnsignedReadAsSigned(long value) {
+			log.info("converting long %s", value);
+			if (value >= 0)
+				return value;
+			else 
+				// Value beyond range of long
+				throw new ExpressionFault.ValueError("overflow");
+		}
+	}
 
 	public static class BadBitForm extends Exception {
 		public BadBitForm(java.lang.String description) {
@@ -72,6 +108,8 @@ public abstract class BitForm {
 
 	public abstract Type read(ByteBuffer buffer, TypeInt offset);
 
+	public abstract float read(ByteBuffer buffer, int offset);
+
 	public abstract Type readType();
 
 	public java.lang.String toString()
@@ -79,6 +117,7 @@ public abstract class BitForm {
 		return this.getClass().getName().replace("$", ".") + "()";
 	}
 
+	
 	public static abstract class Int extends BitForm {
 		@Override
 		public abstract TypeInt read(ByteBuffer buffer, TypeInt offset);
@@ -90,6 +129,18 @@ public abstract class BitForm {
 
 		public static class Int8 extends Int {
 			protected static final Logger log = new Logger(Int8.class);
+
+			@Override
+			public float read(ByteBuffer buffer, int offset_) {
+				byte data;
+				try {
+					data = buffer.get(offset_);
+				} catch (IndexOutOfBoundsException e) {
+					throw new ExpressionFault.IndexError(offset_, buffer.limit());
+				}
+				return data;
+			}
+
 			@Override
 			public TypeInt read(ByteBuffer buffer, TypeInt offset) {
 				int offset_ = offset.safeIntValue();
@@ -106,6 +157,19 @@ public abstract class BitForm {
 		public static abstract class Int16 extends Int {
 			public static class LE extends Int16 {
 				protected static final Logger log = new Logger(Int16.LE.class);
+
+				@Override
+				public float read(ByteBuffer buffer, int offset_) {
+					int data;
+					buffer.order(ByteOrder.LITTLE_ENDIAN);
+					try {
+						data = buffer.getShort(offset_);
+					} catch (IndexOutOfBoundsException e) {
+						throw new ExpressionFault.IndexError(offset_, buffer.limit());
+					}
+					return data;
+				}
+
 				@Override
 				public TypeInt read(ByteBuffer buffer, TypeInt offset) {
 					int offset_ = offset.safeIntValue();
@@ -122,6 +186,19 @@ public abstract class BitForm {
 
 			public static class BE extends Int16 {
 				protected static final Logger log = new Logger(Int16.BE.class);
+
+				@Override
+				public float read(ByteBuffer buffer, int offset_) {
+					int data;
+					buffer.order(ByteOrder.BIG_ENDIAN);
+					try {
+						data = buffer.getShort(offset_);
+					} catch (IndexOutOfBoundsException e) {
+						throw new ExpressionFault.IndexError(offset_, buffer.limit());
+					}
+					return data;
+				}
+
 				@Override
 				public TypeInt read(ByteBuffer buffer, TypeInt offset) {
 					int offset_ = offset.safeIntValue();
@@ -140,6 +217,19 @@ public abstract class BitForm {
 		public static abstract class Int32 extends Int {
 			public static class LE extends Int32 {
 				protected static final Logger log = new Logger(Int32.LE.class);
+
+				@Override
+				public float read(ByteBuffer buffer, int offset_) {
+					int data;
+					buffer.order(ByteOrder.LITTLE_ENDIAN);
+					try {
+						data = buffer.getInt(offset_);
+					} catch (IndexOutOfBoundsException e) {
+						throw new ExpressionFault.IndexError(offset_, buffer.limit());
+					}
+					return data;
+				}
+
 				@Override
 				public TypeInt read(ByteBuffer buffer, TypeInt offset) {
 					int offset_ = offset.safeIntValue();
@@ -156,6 +246,18 @@ public abstract class BitForm {
 
 			public static class BE extends Int32 {
 				protected static final Logger log = new Logger(Int32.BE.class);
+				@Override
+				public float read(ByteBuffer buffer, int offset_) {
+					int data;
+					buffer.order(ByteOrder.BIG_ENDIAN);
+					try {
+						data = buffer.getInt(offset_);
+					} catch (IndexOutOfBoundsException e) {
+						throw new ExpressionFault.IndexError(offset_, buffer.limit());
+					}
+					return data;
+				}
+
 				@Override
 				public TypeInt read(ByteBuffer buffer, TypeInt offset) {
 					int offset_ = offset.safeIntValue();
@@ -174,6 +276,19 @@ public abstract class BitForm {
 		public static abstract class Int64 extends Int {
 			public static class LE extends Int64 {
 				protected static final Logger log = new Logger(Int64.LE.class);
+
+				@Override
+				public float read(ByteBuffer buffer, int offset_) {
+					long data;
+					buffer.order(ByteOrder.LITTLE_ENDIAN);
+					try {
+						data = buffer.getLong(offset_);
+					} catch (IndexOutOfBoundsException e) {
+						throw new ExpressionFault.IndexError(offset_, buffer.limit());
+					}
+					return data;
+				}
+
 				@Override
 				public TypeInt read(ByteBuffer buffer, TypeInt offset) {
 					int offset_ = offset.safeIntValue();
@@ -190,6 +305,19 @@ public abstract class BitForm {
 
 			public static class BE extends Int64 {
 				protected static final Logger log = new Logger(Int64.BE.class);
+
+				@Override
+				public float read(ByteBuffer buffer, int offset_) {
+					long data;
+					buffer.order(ByteOrder.BIG_ENDIAN);
+					try {
+						data = buffer.getLong(offset_);
+					} catch (IndexOutOfBoundsException e) {
+						throw new ExpressionFault.IndexError(offset_, buffer.limit());
+					}
+					return data;
+				}
+
 				@Override
 				public TypeInt read(ByteBuffer buffer, TypeInt offset) {
 					int offset_ = offset.safeIntValue();
@@ -208,6 +336,18 @@ public abstract class BitForm {
 
 		public static class Unsigned8 extends Int {
 			protected static final Logger log = new Logger(Unsigned8.class);
+
+			@Override
+			public float read(ByteBuffer buffer, int offset_) {
+				byte data;
+				try {
+					data = buffer.get(offset_);
+				} catch (IndexOutOfBoundsException e) {
+					throw new ExpressionFault.IndexError(offset_, buffer.limit());
+				}
+				return PrimitiveConversion.makeFromUnsignedReadAsSigned(data);
+			}
+
 			//@Override
 			public TypeInt read(ByteBuffer buffer, TypeInt offset) {
 				int offset_ = offset.safeIntValue();
@@ -224,6 +364,19 @@ public abstract class BitForm {
 		public static abstract class Unsigned16 extends Int {
 			public static class LE extends Unsigned16 {
 				protected static final Logger log = new Logger(Unsigned16.LE.class);
+
+				@Override
+				public float read(ByteBuffer buffer, int offset_) {
+					short data;
+					buffer.order(ByteOrder.LITTLE_ENDIAN);
+					try {
+						data = buffer.getShort(offset_);
+					} catch (IndexOutOfBoundsException e) {
+						throw new ExpressionFault.IndexError(offset_, buffer.limit());
+					}
+					return PrimitiveConversion.makeFromUnsignedReadAsSigned(data);
+				}
+
 				@Override
 				public TypeInt read(ByteBuffer buffer, TypeInt offset) {
 					int offset_ = offset.safeIntValue();
@@ -240,6 +393,19 @@ public abstract class BitForm {
 
 			public static class BE extends Unsigned16 {
 				protected static final Logger log = new Logger(Unsigned16.BE.class);
+
+				@Override
+				public float read(ByteBuffer buffer, int offset_) {
+					short data;
+					buffer.order(ByteOrder.BIG_ENDIAN);
+					try {
+						data = buffer.getShort(offset_);
+					} catch (IndexOutOfBoundsException e) {
+						throw new ExpressionFault.IndexError(offset_, buffer.limit());
+					}
+					return PrimitiveConversion.makeFromUnsignedReadAsSigned(data);
+				}
+
 				@Override
 				public TypeInt read(ByteBuffer buffer, TypeInt offset) {
 					int offset_ = offset.safeIntValue();
@@ -258,6 +424,19 @@ public abstract class BitForm {
 		public static abstract class Unsigned32 extends Int {
 			public static class LE extends Unsigned32 {
 				protected static final Logger log = new Logger(Unsigned32.LE.class);
+
+				@Override
+				public float read(ByteBuffer buffer, int offset_) {
+					int data;
+					buffer.order(ByteOrder.LITTLE_ENDIAN);
+					try {
+						data = buffer.getInt(offset_);
+					} catch (IndexOutOfBoundsException e) {
+						throw new ExpressionFault.IndexError(offset_, buffer.limit());
+					}
+					return PrimitiveConversion.makeFromUnsignedReadAsSigned(data);
+				}
+				
 				@Override
 				public TypeInt read(ByteBuffer buffer, TypeInt offset) {
 					int offset_ = offset.safeIntValue();
@@ -274,6 +453,19 @@ public abstract class BitForm {
 
 			public static class BE extends Unsigned32 {
 				protected static final Logger log = new Logger(Unsigned32.BE.class);
+				
+				@Override
+				public float read(ByteBuffer buffer, int offset_) {
+					int data;
+					buffer.order(ByteOrder.BIG_ENDIAN);
+					try {
+						data = buffer.getInt(offset_);
+					} catch (IndexOutOfBoundsException e) {
+						throw new ExpressionFault.IndexError(offset_, buffer.limit());
+					}
+					return PrimitiveConversion.makeFromUnsignedReadAsSigned(data);
+				}
+				
 				@Override
 				public TypeInt read(ByteBuffer buffer, TypeInt offset) {
 					int offset_ = offset.safeIntValue();
@@ -292,6 +484,19 @@ public abstract class BitForm {
 		public static abstract class Unsigned64 extends Int {
 			public static class LE extends Unsigned64 {
 				protected static final Logger log = new Logger(Unsigned64.LE.class);
+
+				@Override
+				public float read(ByteBuffer buffer, int offset_) {
+					long data;
+					buffer.order(ByteOrder.LITTLE_ENDIAN);
+					try {
+						data = buffer.getLong(offset_);
+					} catch (IndexOutOfBoundsException e) {
+						throw new ExpressionFault.IndexError(offset_, buffer.limit());
+					}
+					return PrimitiveConversion.makeFromUnsignedReadAsSigned(data);
+				}
+				
 				@Override
 				public TypeInt read(ByteBuffer buffer, TypeInt offset) {
 					int offset_ = offset.safeIntValue();
@@ -308,6 +513,19 @@ public abstract class BitForm {
 
 			public static class BE extends Unsigned64 {
 				protected static final Logger log = new Logger(Unsigned64.BE.class);
+
+				@Override
+				public float read(ByteBuffer buffer, int offset_) {
+					long data;
+					buffer.order(ByteOrder.BIG_ENDIAN);
+					try {
+						data = buffer.getLong(offset_);
+					} catch (IndexOutOfBoundsException e) {
+						throw new ExpressionFault.IndexError(offset_, buffer.limit());
+					}
+					return PrimitiveConversion.makeFromUnsignedReadAsSigned(data);
+				}
+				
 				@Override
 				public TypeInt read(ByteBuffer buffer, TypeInt offset) {
 					int offset_ = offset.safeIntValue();
@@ -334,6 +552,18 @@ public abstract class BitForm {
 		public abstract static class Float32 extends Float {
 			public static class LE extends Float32 {
 				protected static final Logger log = new Logger(Float32.LE.class);
+
+				@Override
+				public float read(ByteBuffer buffer, int offset_) {
+					float data;
+					try {
+						data = buffer.getFloat(offset_);
+					} catch (IndexOutOfBoundsException e) {
+						throw new ExpressionFault.IndexError(offset_, buffer.limit());
+					}
+					return data;
+				}
+				
 				@Override
 				public TypeFloat read(ByteBuffer buffer, TypeInt offset) {
 					int offset_ = offset.safeIntValue();
@@ -360,6 +590,11 @@ public abstract class BitForm {
 		final int size;
 		public String(int size) {
 			this.size = size;
+		}
+
+		@Override
+		public float read(ByteBuffer buffer, int offset_) {
+			throw new ExpressionFault.ValueError("Unsupported format for Primitive Types read");
 		}
 
 		@Override

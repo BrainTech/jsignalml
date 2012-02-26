@@ -120,7 +120,9 @@ public class CodecParser {
 		final Expression id = _identifier(element);
 		final String type_ = _attribute(element, "type");
 		final Type type = Type.getType(type_);
-
+		final String fast_ = _attribute(element, "fast");
+		final Expression fast = _null_or_parse(fast_);
+		
 		final Expression expr    = _extract(element, "expr");
 		final Expression format  = _extract(element, "format");
 		final Expression offset  = _extract(element, "offset");
@@ -136,10 +138,11 @@ public class CodecParser {
 		if (expr != null) {
 			if (format == null && offset == null && pattern == null &&
 			                line == null && xpath == null)
-				p = new ASTNode.ExprParam(parent, id, type, expr);
+				p = new ASTNode.ExprParam(parent, id, type, expr, fast);
 		} else if (format != null && offset != null) {
 			if (expr == null && pattern == null && line == null && xpath == null)
-				p = new ASTNode.BinaryParam(parent, id, type, format, offset);
+				p = new ASTNode.BinaryParam(parent, id, type, format, offset,
+						fast);
 		} else if (pattern != null) {
 			throw new UnsupportedOperationException();
 		} else if (xpath != null) {
@@ -202,8 +205,10 @@ public class CodecParser {
 		final Expression mapping = _null_or_parse(_attribute(element, "mapping"));
 		final Expression format = _null_or_parse(_attribute(element, "format"));
 		final Expression length = _null_or_parse(_attribute(element, "length"));
+		final Expression fast = _null_or_parse(_attribute(element, "fast"));
 
-		final ASTNode.Channel node = new ASTNode.Channel(parent, id, mapping, format, length);
+		final ASTNode.Channel node = new ASTNode.Channel(parent, id, mapping, format,
+				length, fast);
 		return node;
 	}
 
@@ -320,6 +325,7 @@ public class CodecParser {
 			return _null_or_parse(name);
 	}
 
+	
 	public static void main(String...args) throws Exception
 	{
 		BasicConfigurator.configure();

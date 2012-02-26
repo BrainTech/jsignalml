@@ -365,6 +365,17 @@ public abstract class Expression {
 			return this.value.repr();
 		}
 
+		@Override
+		public int hashCode() {
+			return value.hashCode();
+		}
+
+		@Override
+		public boolean equals(Object obj) {
+			return obj instanceof Const ?
+					value.equals(((Const)obj).value) : false;
+		}
+
 		public static Expression make(String str) {
 			assert str != null;
 			return new Const(new TypeString(str));

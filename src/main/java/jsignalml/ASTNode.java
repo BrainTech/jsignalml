@@ -151,16 +151,21 @@ public abstract class ASTNode {
 	}
 
 	public static class Channel extends ASTNode {
-		public final Expression mapping, format, length;
+		public final Expression mapping, format, length, fast;
 
 		public Channel(ASTNode parent, Expression id, 
-			       Expression mapping, Expression format, Expression length)
+			       Expression mapping, Expression format,
+			       Expression length, Expression fast)
 		{
 			super(parent, id);
 
+			if (fast == null)
+				fast = Processor.parse("0");
+			
 			this.mapping = mapping;
 			this.format = format;
 			this.length = length;
+			this.fast = fast;
 
 			if (mapping == null)
 				throw new SyntaxError("<channel> must have mapping attribute");
@@ -182,8 +187,8 @@ public abstract class ASTNode {
 		@Override
 		public String toString()
 		{
-			return format("ASTNode.Channel %s mapping=%s format=%s", id,
-				      mapping, format);
+			return format("ASTNode.Channel %s mapping=%s format=%s fast=%s",
+					id, mapping, format, fast);
 		}
 
 		@Override
@@ -226,18 +231,24 @@ public abstract class ASTNode {
 	}
 
 	public static class BinaryParam extends ReadParam {
-		final Expression format, offset;
+		final Expression format, offset, fast;
 
 		// XXX: move this somewhere proper?
 		Type _read_type = null;
 
 		public BinaryParam(ASTNode parent, Expression id, Type type,
-		                   Expression format, Expression offset)
+		                   Expression format, Expression offset,
+		                   Expression fast)
 			throws SyntaxError
 		{
 			super(parent, id, type);
+		
+			if (fast == null)
+				fast = Processor.parse("0");
+			
 			this.format = format;
 			this.offset = offset;
+			this.fast = fast;
 
 			// TODO: test file type
 		}
@@ -257,16 +268,23 @@ public abstract class ASTNode {
 	}
 
 	public static class ExprParam extends Param {
-		final Expression expr;
+		final Expression expr, fast;
 
-		public ExprParam(ASTNode parent, Expression id, Type type, Expression expr)
+		public ExprParam(ASTNode parent, Expression id, Type type,
+				Expression expr, Expression fast)
 		{
 			super(parent, id, type);
 			this.expr = expr;
+			
+			if (fast == null)
+				fast = Processor.parse("0");
+			
+			this.fast = fast;
 		}
-		public ExprParam(ASTNode parent, String id, Type type, Expression expr)
+		public ExprParam(ASTNode parent, String id, Type type,
+				Expression expr, Expression fast)
 		{
-			this(parent, Expression.Const.make(id), type, expr);
+			this(parent, Expression.Const.make(id), type, expr, fast);
 		}
 
 		@Override
