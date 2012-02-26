@@ -3,9 +3,6 @@ package jsignalml;
 import java.io.FileOutputStream;
 import java.io.PrintStream;
 import java.io.File;
-import java.net.URLClassLoader;
-import java.net.URL;
-import java.lang.reflect.Method;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.io.FilenameUtils;
@@ -33,15 +30,12 @@ public class TestFormatDumper {
 	static void dumpTestFormat(Source source, String output_prefix)
 		throws Exception
 	{
-		FileOutputStream
-			header_f = new FileOutputStream(output_prefix + ".hdr"),
-			ascii_f = new FileOutputStream(output_prefix + ".ascii");
-		PrintStream
-			header = new PrintStream(header_f),
-			ascii = new PrintStream(ascii_f);
+		FileOutputStream header_f =
+			new FileOutputStream(output_prefix + ".hdr");
+		PrintStream header = new PrintStream(header_f);
 
 		dumpHeader(source, header);
-		dumpAscii(source, ascii);
+		dumpAscii(source, System.out);
 	}
 
 	static void dumpHeader(Source source, PrintStream out)
