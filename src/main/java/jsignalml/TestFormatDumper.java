@@ -8,6 +8,7 @@ import java.net.URL;
 import java.lang.reflect.Method;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.io.FilenameUtils;
 
 import jsignalml.codec.Signalml;
 
@@ -92,7 +93,8 @@ public class TestFormatDumper {
 		final String file_name = args[1];
 
 		Source source = makeSource(klass_name, file_name);
-		String prefix = StringUtils.split(file_name, ".", 2)[0];
+		// String prefix = FilenameUtils.removeExtension(file_name);
+		String prefix = FilenameUtils.getBaseName(file_name);
 		dumpTestFormat(source, prefix);
 	}
 }
