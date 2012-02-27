@@ -159,13 +159,11 @@ public abstract class ASTNode {
 		{
 			super(parent, id);
 
-			if (fast == null)
-				fast = Processor.parse("0");
+			this.fast = fast != null ? fast : Processor.parse("0");
 
 			this.mapping = mapping;
 			this.format = format;
 			this.length = length;
-			this.fast = fast;
 
 			if (mapping == null)
 				throw new SyntaxError("<channel> must have mapping attribute");
@@ -243,12 +241,10 @@ public abstract class ASTNode {
 		{
 			super(parent, id, type);
 
-			if (fast == null)
-				fast = Processor.parse("0");
+			this.fast = fast != null ? fast : Processor.parse("0");
 
 			this.format = format;
 			this.offset = offset;
-			this.fast = fast;
 
 			// TODO: test file type
 		}
@@ -276,10 +272,7 @@ public abstract class ASTNode {
 			super(parent, id, type);
 			this.expr = expr;
 
-			if (fast == null)
-				fast = Processor.parse("0");
-
-			this.fast = fast;
+			this.fast = fast != null ? fast : Processor.parse("0");
 		}
 		public ExprParam(ASTNode parent, String id, Type type,
 				Expression expr, Expression fast)
