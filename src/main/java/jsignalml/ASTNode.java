@@ -161,7 +161,7 @@ public abstract class ASTNode {
 
 			if (fast == null)
 				fast = Processor.parse("0");
-			
+
 			this.mapping = mapping;
 			this.format = format;
 			this.length = length;
@@ -242,10 +242,10 @@ public abstract class ASTNode {
 			throws SyntaxError
 		{
 			super(parent, id, type);
-		
+
 			if (fast == null)
 				fast = Processor.parse("0");
-			
+
 			this.format = format;
 			this.offset = offset;
 			this.fast = fast;
@@ -275,10 +275,10 @@ public abstract class ASTNode {
 		{
 			super(parent, id, type);
 			this.expr = expr;
-			
+
 			if (fast == null)
 				fast = Processor.parse("0");
-			
+
 			this.fast = fast;
 		}
 		public ExprParam(ASTNode parent, String id, Type type,

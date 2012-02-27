@@ -11,22 +11,22 @@ public abstract class BitForm {
 	protected static final Logger log = new Logger(BitForm.class);
 
 	public static class PrimitiveConversion {
-		
+
 		static long makeFromUnsignedReadAsSigned(byte value) {
 			log.info("converting byte %s", value);
 			if (value >= 0)
 				return value;
 			return value + Byte.MIN_VALUE * -2;
 		}
-		
+
 		static long makeFromUnsignedReadAsSigned(short value) {
 			log.info("converting short %s", value);
 			if (value >= 0)
 				return value;
-			
+
 			return value + Short.MIN_VALUE * -2;
 		}
-		
+
 		static long makeFromUnsignedReadAsSigned(int value) {
 			log.info("converting int %s", value);
 			if (value >= 0)
@@ -34,12 +34,12 @@ public abstract class BitForm {
 
 			return value + Long.valueOf(Integer.MIN_VALUE) * -2L;
 		}
-		
+
 		static long makeFromUnsignedReadAsSigned(long value) {
 			log.info("converting long %s", value);
 			if (value >= 0)
 				return value;
-			else 
+			else
 				// Value beyond range of long
 				throw new ExpressionFault.ValueError("overflow");
 		}
@@ -117,7 +117,7 @@ public abstract class BitForm {
 		return this.getClass().getName().replace("$", ".") + "()";
 	}
 
-	
+
 	public static abstract class Int extends BitForm {
 		@Override
 		public abstract TypeInt read(ByteBuffer buffer, TypeInt offset);
@@ -436,7 +436,7 @@ public abstract class BitForm {
 					}
 					return PrimitiveConversion.makeFromUnsignedReadAsSigned(data);
 				}
-				
+
 				@Override
 				public TypeInt read(ByteBuffer buffer, TypeInt offset) {
 					int offset_ = offset.safeIntValue();
@@ -453,7 +453,7 @@ public abstract class BitForm {
 
 			public static class BE extends Unsigned32 {
 				protected static final Logger log = new Logger(Unsigned32.BE.class);
-				
+
 				@Override
 				public float read(ByteBuffer buffer, int offset_) {
 					int data;
@@ -465,7 +465,7 @@ public abstract class BitForm {
 					}
 					return PrimitiveConversion.makeFromUnsignedReadAsSigned(data);
 				}
-				
+
 				@Override
 				public TypeInt read(ByteBuffer buffer, TypeInt offset) {
 					int offset_ = offset.safeIntValue();
@@ -496,7 +496,7 @@ public abstract class BitForm {
 					}
 					return PrimitiveConversion.makeFromUnsignedReadAsSigned(data);
 				}
-				
+
 				@Override
 				public TypeInt read(ByteBuffer buffer, TypeInt offset) {
 					int offset_ = offset.safeIntValue();
@@ -525,7 +525,7 @@ public abstract class BitForm {
 					}
 					return PrimitiveConversion.makeFromUnsignedReadAsSigned(data);
 				}
-				
+
 				@Override
 				public TypeInt read(ByteBuffer buffer, TypeInt offset) {
 					int offset_ = offset.safeIntValue();
@@ -563,7 +563,7 @@ public abstract class BitForm {
 					}
 					return data;
 				}
-				
+
 				@Override
 				public TypeFloat read(ByteBuffer buffer, TypeInt offset) {
 					int offset_ = offset.safeIntValue();

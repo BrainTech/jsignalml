@@ -1156,7 +1156,7 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 
 	public JMethod getSamplesMethod(JDefinedClass klass, ASTNode.Channel node)
 	{
-		final Expression fastSet = Processor.parse("1"); 
+		final Expression fastSet = Processor.parse("1");
 		final JMethod method = klass.method(JMod.PUBLIC, this.model.VOID, "getSamples");
 		comment_stamp(method.body());
 		final JVar dst = method.param(FloatBuffer_t, "dst");
@@ -1189,8 +1189,8 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 			final JExpression mapping_call = mapping.invoke(CALL)
 					.arg(JExpr._new(TypeInt_t).arg(sample.incr()));
 			final JVar input = _while.decl(Type_t, "input",
-					       	format.invoke("read").arg(buffer)
-					       	.arg(JExpr.cast(TypeInt_t, mapping_call)));
+					format.invoke("read").arg(buffer)
+					.arg(JExpr.cast(TypeInt_t, mapping_call)));
 			final JExpression conv = TypeFloat_I.invoke("make").arg(input);
 			_while.add(dst.invoke("put")
 					.arg(JExpr.cast(this.model.FLOAT, conv.ref("value"))));

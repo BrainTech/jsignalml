@@ -183,7 +183,7 @@
        <for-each id='channels' var='index' sequence='range(number_of_channels)'
 		type='int'>
 	 <channel mapping='mapping' format='"&lt;i2"' length='number_of_samples'
-	 	fast='1'/>
+		fast='1'/>
 
 	 <param id='mapping' type='int'>
 	   <arg type='int' name='sample' />

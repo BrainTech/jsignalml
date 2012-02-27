@@ -122,7 +122,7 @@ public class CodecParser {
 		final Type type = Type.getType(type_);
 		final String fast_ = _attribute(element, "fast");
 		final Expression fast = _null_or_parse(fast_);
-		
+
 		final Expression expr    = _extract(element, "expr");
 		final Expression format  = _extract(element, "format");
 		final Expression offset  = _extract(element, "offset");
@@ -325,7 +325,7 @@ public class CodecParser {
 			return _null_or_parse(name);
 	}
 
-	
+
 	public static void main(String...args) throws Exception
 	{
 		BasicConfigurator.configure();

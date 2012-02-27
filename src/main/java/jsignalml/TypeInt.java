@@ -379,15 +379,14 @@ public class TypeInt extends Type {
 				("cannot cast to long without changing value.");
 		return this.value.longValue();
 	}
-	
+
 	@Override
 	public int hashCode() {
 		return value.hashCode();
 	}
-	
+
 	@Override
 	public boolean equals(Object obj) {
-		return obj instanceof TypeInt ?
-			value.equals(((TypeInt)obj).value) : false;
+		return obj instanceof TypeInt ? value.equals(((TypeInt)obj).value) : false;
 	}
 }
