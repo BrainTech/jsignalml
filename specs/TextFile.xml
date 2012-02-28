@@ -7,8 +7,6 @@
 		<url>sometestfile</url>
 	</header>
 
-	<file id='data_file' type='binary' fiename='test,a'>
-	</file>
 
 	<file id='main' type='text'>
 		<!---->
@@ -59,9 +57,19 @@
 		</param>
 
 
-		<channelset id='data_test'>
+		<channelset id='data_test' filename='a.txt'>
+
 			<for-each id='channels' var='index' sequence='range(number_of_channels)'>
-				<channel mapping='mapping' format='"&lt;i2"' length='number_of_samples' />
+				<channel mapping='mapping' format='"&gt;f4"' 
+							length='number_of_samples' data='data_file' fast='1' />
+				
+				<file id='data_file' type='binary' filename='dupajasio'>
+				</file>
+				
+				<param id='dupajasio' type='str'>
+					<expr>"test,a"</expr>
+				</param>
+								
 				<param id='channel_name' type='str'>
 					<format>'|S1'</format>
 					<line>-1</line>
@@ -86,20 +94,16 @@
 
 				<param id='mapping' type='int'>
 					<arg type='int' name='sample' />
-					<expr>sample</expr>
-<!-- 					<expr>(sample*total_channels) + channel_index + 4</expr>
- -->				</param>
+					<expr>(sample*total_channels + channel_index -1) * 4</expr>
+				</param>
+
+		<param id='calibration_gain' type='float' units='μV'>
+			<expr>1/_calibration_unit</expr>
+		</param>
 
  			</for-each>
 		</channelset>
 
-
-		<param id='mapping' type='int'>
-			<arg type='int' name='sample_number' />
-			<arg type='int' name='channel_number' />
-			<expr>number_of_channels * channel_number
-			</expr>
-		</param>
 
 	</file>
 
