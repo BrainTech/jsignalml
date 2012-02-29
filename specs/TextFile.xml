@@ -63,14 +63,14 @@
 			<group>2</group>
 		</param>
 
+		<file id='data_file' type='binary' filename='get_data_filename'>
+		</file>
+
 		<channelset id='data_test' filename='a.txt'>
 
 			<for-each id='channels' var='index' sequence='range(number_of_channels)'>
 				<channel mapping='mapping' format='"&gt;f4"' 
 							length='number_of_samples' data='data_file' fast='1' />
-				
-				<file id='data_file' type='binary' filename='get_data_filename'>
-				</file>
 				
 				<param id='channel_name' type='str'>
 					<format>'|S1'</format>
