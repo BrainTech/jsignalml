@@ -62,7 +62,8 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 		CALL_P = "call_p";
 
 	public static final boolean _prim =
-		System.getProperties().getProperty("jsignalml.primitive", "").length() > 0;
+		System.getProperties().getProperty("jsignalml.primitive", "").length() > 0
+			&& System.getProperties().getProperty("jsignalml.primitive").equals("1");
 
 	public static final boolean _comments =
 		System.getProperties().getProperty("jsignalml.comments", "1").equals("1");
