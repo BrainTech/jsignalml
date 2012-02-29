@@ -66,7 +66,7 @@
 		<file id='data_file' type='binary' filename='get_data_filename'>
 		</file>
 
-		<channelset id='data_test' filename='a.txt'>
+		<channelset id='data_test'>
 
 			<for-each id='channels' var='index' sequence='range(number_of_channels)'>
 				<channel mapping='mapping' format='"&gt;f4"' 
