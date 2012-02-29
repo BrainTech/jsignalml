@@ -9,6 +9,7 @@ import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 import java.util.List;
 
+import jsignalml.codec.Signalml.FileClass;
 import jsignalml.logging.Logger;
 
 import org.apache.log4j.BasicConfigurator;
@@ -111,6 +112,7 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 	final JClass System_t = this.model.ref(System.class);
 	final JClass FloatBuffer_t = this.model.ref(FloatBuffer.class);
 	final JClass ByteBuffer_t = this.model.ref(ByteBuffer.class);
+	final JClass FileClass_t = this.model.ref(FileClass.class);
 
 	JFieldVar log_var = null; // this should be set when Signalml class is created.
 	final ASTTypeResolver typeresolver;
@@ -730,6 +732,7 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 	public JDefinedClass visit(ASTNode.FileHandle node, JDefinedClass parent)
 	{
 		log.info("visit((FileHandle) %s, %s)", node, parent);
+
 		final String theid = dynamicID(node, node.id);
 		final JDefinedClass klass = this.fileClass(node, theid, parent);
 		idMethod(klass, node, theid);
@@ -754,6 +757,22 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 		   because otherwise methods abstract super classes cannot be called
 		   from nested classes.
 		*/
+
+		{
+			final JMethod constructor =
+					klass.constructor(JMod.PUBLIC);
+			constructor.body().block();
+
+			if(node.filename != null){
+				final JavaExprGen javagen = createExprGen(node, null);
+				final JVar filename = constructor.body().decl(String_t, "filename",
+						node.filename.accept(javagen).ref("value"));
+
+				constructor.body().assign(JExpr.ref("default_filename"),
+						JExpr._new(File_t).arg(filename));
+			}
+		}
+
 		{
 			final JMethod get_child =
 				klass.method(JMod.PUBLIC, jsignalml.Type.class, "access");
@@ -1134,6 +1153,7 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 		underBufferMethod(klass);
 		sampleFormatMethod(klass, node);
 		mapSampleMethod(klass, node);
+		getSampleMethod(klass, node);
 		getSamplesMethod(klass, node);
 		getSamplingFrequencyMethod(klass, node);
 		getNumberOfSamplesMethod(klass, node);
@@ -1205,6 +1225,67 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 		return method;
 	}
 
+	public JMethod getSampleMethod(JDefinedClass klass, ASTNode.Channel node)
+	{
+		final Expression fastSet = Processor.parse("1");
+		final JMethod method = klass.method(JMod.PUBLIC, this.model.FLOAT, "getSample");
+		comment_stamp(method.body());
+
+		final JVar sample = method.param(this.model.LONG, "sample");
+
+		final JavaExprGen javagen = createExprGen(node, null);
+		final JBlock body = method.body();
+		final JVar format_ = body.decl(TypeString_t, "format_",
+					       JExpr._this().invoke("getSampleFormat"));
+		final JVar format = body.decl(BitForm_t, "format",
+					      BitForm_t.staticInvoke("get").arg(format_));
+
+		JVar buffer = null;
+		if(node.data != null){
+			final JVar dataFileId = body.decl(Type_t, "dataFileId",
+					node.data.accept(javagen));
+
+			final JVar dataFilehandler = body.decl(FileClass_t, "fileHandler",
+					JExpr.cast(FileClass_t, dataFileId));
+			JVar filename = body.decl(File_t, "file",
+					dataFilehandler.invoke("getCurrentFilename"));
+			body._if(filename.eq(JExpr._null()))
+					._then().invoke(dataFilehandler, "open").arg(JExpr._null());
+			buffer = body.decl(ByteBuffer_t, "buffer",
+					dataFilehandler.invoke("buffer").ref("source"));
+		} else {
+			buffer = body.decl(ByteBuffer_t, "buffer",
+					JExpr.invoke("_buffer").ref("source"));
+		}
+
+
+		if (_prim && node.fast.equals(fastSet)) {
+			// Primitive types code variant
+
+			final JExpression mapping_call = JExpr.cast(model.INT,
+					JExpr.invoke("get_mapping").invoke(CALL_P).arg(sample));
+			final JExpression input = format.invoke("read").arg(buffer)
+					.arg(mapping_call);
+			final JVar value = body.decl(this.model.FLOAT, "value", input);
+
+			body._return(value);
+
+		}
+		else {
+			final JVar mapping = body.decl(Type_t, "mapping",
+					node.mapping.accept(javagen));
+			final JExpression mapping_call = mapping.invoke(CALL)
+					.arg(JExpr._new(TypeInt_t).arg(sample));
+			final JVar input = body.decl(Type_t, "input",
+					format.invoke("read").arg(buffer)
+					.arg(JExpr.cast(TypeInt_t, mapping_call)));
+			final JExpression conv = TypeFloat_I.invoke("make").arg(input);
+
+			body._return(JExpr.cast(this.model.FLOAT, conv.ref("value")));
+		}
+		return method;
+	}
+
 	public JMethod getSamplesMethod(JDefinedClass klass, ASTNode.Channel node)
 	{
 		final Expression fastSet = Processor.parse("1");
@@ -1218,8 +1299,25 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 					       JExpr._this().invoke("getSampleFormat"));
 		final JVar format = body.decl(BitForm_t, "format",
 					      BitForm_t.staticInvoke("get").arg(format_));
-		final JVar buffer = body.decl(ByteBuffer_t, "buffer",
+
+		JVar buffer = null;
+		if(node.data != null){
+			final JVar dataFileId = body.decl(Type_t, "dataFileId",
+					node.data.accept(javagen));
+
+			final JVar dataFilehandler = body.decl(FileClass_t, "fileHandler",
+					JExpr.cast(FileClass_t, dataFileId));
+			JVar filename = body.decl(File_t, "file",
+					dataFilehandler.invoke("getCurrentFilename"));
+			body._if(filename.eq(JExpr._null()))
+					._then().invoke(dataFilehandler, "open").arg(JExpr._null());
+			buffer = body.decl(ByteBuffer_t, "buffer",
+					dataFilehandler.invoke("buffer").ref("source"));
+		} else {
+			buffer = body.decl(ByteBuffer_t, "buffer",
 					JExpr.invoke("_buffer").ref("source"));
+		}
+
 		if (_prim && node.fast.equals(fastSet)) {
 			// Primitive types code variant
 			final JVar count = body.decl(this.model.INT, "count",

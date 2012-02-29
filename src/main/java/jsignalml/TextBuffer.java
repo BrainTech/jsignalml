@@ -62,7 +62,7 @@ public class TextBuffer {
 					Matcher matcher = pat.matcher(textLine);
 					if(matcher.find()){
 						found = matcher.group(groupNumber);
-						log.debug("Found match: " + found);
+						log.debug("Found match: '" + found + "'");
 						
 						return found;
 					}
@@ -72,7 +72,7 @@ public class TextBuffer {
 				}
 				
 			} else {
-				log.debug("Searching for match in line " + line);
+				log.debug("Searching for match [" + pattern + "] in line " + line);
 				String textLine = getLine(line);
 
 				String found = null;
@@ -81,7 +81,7 @@ public class TextBuffer {
 
 				if (matcher.find()) {
 					found = matcher.group(REGEXP_GROUP_NUMBER);
-					log.debug("Found match: " + found);
+					log.debug("Found match: '" + found + "'");
 				}
 																																															
 				if (found == null) {

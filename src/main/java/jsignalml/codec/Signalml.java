@@ -41,6 +41,12 @@ public abstract class Signalml extends Context implements jsignalml.Source {
 		MyBuffer buffer;
 		TextBuffer textBuffer;
 
+		protected File currentFilename;
+
+		public File getCurrentFilename(){
+			return currentFilename;
+		}
+
 		public void open(File filename)
 		{
 			if ((filename == null) && (default_filename != null)) {
@@ -51,6 +57,7 @@ public abstract class Signalml extends Context implements jsignalml.Source {
 				throw new ExpressionFault.ValueError("filename must be specified");
 			this.buffer = MyBuffer.open(filename);
 			this.textBuffer = TextBuffer.open(filename);
+			this.currentFilename = filename;
 		}
 
 		public TextBuffer textBuffer()

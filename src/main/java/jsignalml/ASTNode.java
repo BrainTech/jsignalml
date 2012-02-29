@@ -1,17 +1,9 @@
 package jsignalml;
 
-import java.util.Map;
-import java.util.TreeMap;
-import java.util.Set;
-import java.util.TreeSet;
-import java.util.List;
-import java.util.LinkedList;
-import java.util.Arrays;
-import java.io.File;
-import java.io.IOException;
-import java.io.FileNotFoundException;
 import static java.lang.String.format;
-import static java.util.Collections.unmodifiableList;
+
+import java.util.LinkedList;
+import java.util.List;
 
 import jsignalml.logging.Logger;
 
@@ -151,11 +143,11 @@ public abstract class ASTNode {
 	}
 
 	public static class Channel extends ASTNode {
-		public final Expression mapping, format, length, fast;
+		public final Expression mapping, format, length, fast, data;
 
 		public Channel(ASTNode parent, Expression id, 
 			       Expression mapping, Expression format,
-			       Expression length, Expression fast)
+			       Expression length, Expression fast, Expression data)
 		{
 			super(parent, id);
 
@@ -164,6 +156,7 @@ public abstract class ASTNode {
 			this.mapping = mapping;
 			this.format = format;
 			this.length = length;
+			this.data = data;
 
 			if (mapping == null)
 				throw new SyntaxError("<channel> must have mapping attribute");

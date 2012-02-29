@@ -207,9 +207,10 @@ public class CodecParser {
 		final Expression format = _null_or_parse(_attribute(element, "format"));
 		final Expression length = _null_or_parse(_attribute(element, "length"));
 		final Expression fast = _null_or_parse(_attribute(element, "fast"));
+		final Expression data = _null_or_parse(_attribute(element, "data"));
 
 		final ASTNode.Channel node = new ASTNode.Channel(parent, id, mapping, format,
-				length, fast);
+				length, fast, data);
 		return node;
 	}
 
@@ -219,9 +220,7 @@ public class CodecParser {
 
 		final Expression id = _identifier(element);
 		final String type = _attribute(element, "type");
-		final String filename_ = _attribute(element, "filename");
-		final Expression filename =
-		        filename_ == null ? null : Expression.Const.make(filename_);
+		final Expression filename = _null_or_parse(_attribute(element, "filename"));
 
 		if (type == null)
 			throw new SyntaxError("<file> needs a type attribute");
