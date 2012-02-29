@@ -1253,9 +1253,13 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 	public JMethod getSamplingFrequencyMethod(JDefinedClass klass, ASTNode.Channel node)
 	{
 		final JMethod method = klass.method(JMod.PUBLIC, this.model.DOUBLE,
-						    "getSamplingFrequency");
+					"getSamplingFrequency");
 		comment_stamp(method.body());
-		method.body()._return(JExpr.lit(0.0));
+		final JVar value = method.body().decl(Type_t, "value",
+					JExpr.invoke("get_sampling_frequency").invoke("get"));
+		final JVar cast = method.body().decl(TypeFloat_t, "cast",
+					TypeFloat_I.invoke("make").arg(value));
+		method.body()._return(cast.invoke("getValue"));
 		return method;
 	}
 
