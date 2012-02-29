@@ -1213,7 +1213,6 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 		final JVar dst = method.param(FloatBuffer_t, "dst");
 		final JVar sample = method.param(this.model.LONG, "sample");
 
-		final JavaExprGen javagen = createExprGen(node, null);
 		final JBlock body = method.body();
 		final JVar format_ = body.decl(TypeString_t, "format_",
 					       JExpr._this().invoke("getSampleFormat"));
@@ -1227,13 +1226,15 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 						JExpr.invoke(dst, "remaining"));
 			final JBlock _while = body._while(count.decr().gt(JExpr.lit(0))).body();
 			final JExpression mapping_call = JExpr.cast(model.INT,
-					JExpr.invoke("get_mapping").invoke(CALL_P).arg(sample.incr()));
+					JExpr.invoke(makeGetter(node.mapping.toString())).invoke(CALL_P)
+					.arg(sample.incr()));
 			final JExpression input = format.invoke("read").arg(buffer)
 					.arg(mapping_call);
 			final JVar value = _while.decl(this.model.FLOAT, "value", input);
 			_while.add(dst.invoke("put").arg(value));
 		}
 		else {
+			final JavaExprGen javagen = createExprGen(node, null);
 			final JVar mapping = body.decl(Type_t, "mapping",
 					node.mapping.accept(javagen));
 			final JBlock _while = body._while(JExpr.invoke(dst, "hasRemaining")).body();
