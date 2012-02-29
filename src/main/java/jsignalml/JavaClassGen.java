@@ -1294,6 +1294,7 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 		final JVar dst = method.param(FloatBuffer_t, "dst");
 		final JVar sample = method.param(this.model.LONG, "sample");
 
+		final JavaExprGen javagen = createExprGen(node, null);
 		final JBlock body = method.body();
 		final JVar format_ = body.decl(TypeString_t, "format_",
 					       JExpr._this().invoke("getSampleFormat"));
@@ -1332,7 +1333,6 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 			_while.add(dst.invoke("put").arg(value));
 		}
 		else {
-			final JavaExprGen javagen = createExprGen(node, null);
 			final JVar mapping = body.decl(Type_t, "mapping",
 					node.mapping.accept(javagen));
 			final JBlock _while = body._while(JExpr.invoke(dst, "hasRemaining")).body();
