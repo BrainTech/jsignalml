@@ -705,7 +705,7 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 		final JavaExprGen.JavaNameResolver resolver = createResolver(node, locals, GET_P);
 		final JavaPrimitiveGen gen = new JavaPrimitiveGen(this.model, resolver);
 
-		final Type nodetype = node.type;
+		final Type nodetype = nodeType(node);
 		final JType javatype = gen.convertTypeToJClass_p(nodetype);
 		final JMethod impl = klass.method(JMod.PUBLIC, javatype, CALL_P);
 		final JBlock body = impl.body();
