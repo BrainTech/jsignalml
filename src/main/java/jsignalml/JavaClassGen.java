@@ -61,6 +61,10 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 		GET_P = "get_p",
 		CALL_P = "call_p";
 
+	public static boolean calibrGainPresent = false;
+
+	public static boolean calibOffsPresent = false;
+
 	public static final boolean _prim =
 		System.getProperties().getProperty("jsignalml.primitive", "").length() > 0
 			&& System.getProperties().getProperty("jsignalml.primitive").equals("1");
@@ -229,6 +233,13 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 			final JBlock block = this.create_params.block();
 			comment_stamp(block);
 			block.add(JExpr.invoke("register").arg(name).arg(param_inv));
+
+			if (name.equals("calibration_gain")) {
+				calibrGainPresent = true;
+			}
+			else if (name.equals("calibration_offset")) {
+				calibOffsPresent = true;
+			}
 		}
 
 		void registerContext(String name, JDefinedClass context_class, JExpression get)
@@ -1392,11 +1403,18 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 				"getCalibrationGain");
 		comment_stamp(method.body());
 
-		final JVar value = method.body().decl(Type_t, "value",
-				JExpr.invoke("get_calibration_gain").invoke("get"));
-		final JVar cast = method.body().decl(TypeFloat_t, "cast",
-				TypeFloat_I.invoke("make").arg(value));
-		method.body()._return(cast);
+		if (calibrGainPresent) {
+			final JVar value = method.body().decl(Type_t, "value",
+					JExpr.invoke("get_calibration_gain").invoke("get"));
+			final JVar cast = method.body().decl(TypeFloat_t, "cast",
+					TypeFloat_I.invoke("make").arg(value));
+			method.body()._return(cast);
+		}
+		else {
+			final JVar value = method.body().decl(TypeFloat_t, "cast",
+					JExpr._new(TypeFloat_t).arg("1"));
+			method.body()._return(value);
+		}
 
 		return method;
 	}
@@ -1407,12 +1425,18 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 				"getCalibrationOffset");
 		comment_stamp(method.body());
 
-		final JVar value = method.body().decl(Type_t, "value",
-				JExpr.invoke("get_calibration_offset").invoke("get"));
-		final JVar cast = method.body().decl(TypeFloat_t, "cast",
-				TypeFloat_I.invoke("make").arg(value));
-		method.body()._return(cast);
-
+		if (calibOffsPresent) {
+			final JVar value = method.body().decl(Type_t, "value",
+					JExpr.invoke("get_calibration_offset").invoke("get"));
+			final JVar cast = method.body().decl(TypeFloat_t, "cast",
+					TypeFloat_I.invoke("make").arg(value));
+			method.body()._return(cast);
+		}
+		else {
+			final JVar value = method.body().decl(TypeFloat_t, "cast",
+					JExpr._new(TypeFloat_t).arg("0"));
+			method.body()._return(value);
+		}
 		return method;
 	}
 
