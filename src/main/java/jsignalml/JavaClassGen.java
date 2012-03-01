@@ -1159,6 +1159,8 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 		getSamplingFrequencyMethod(klass, node);
 		getNumberOfSamplesMethod(klass, node);
 		getChannelNameMethod(klass, node);
+		getCalibrationGainMethod(klass, node);
+		getCalibrationOffsetMethod(klass, node);
 
 		return klass;
 	}
@@ -1381,6 +1383,36 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 		final JMethod method = klass.method(JMod.PUBLIC, String_t, "getChannelName");
 		comment_stamp(method.body());
 		method.body()._return(JExpr.lit("unknown"));
+		return method;
+	}
+
+	public JMethod getCalibrationGainMethod(JDefinedClass klass, ASTNode.Channel node)
+	{
+		final JMethod method = klass.method(JMod.PUBLIC, TypeFloat_t,
+				"getCalibrationGain");
+		comment_stamp(method.body());
+
+		final JVar value = method.body().decl(Type_t, "value",
+				JExpr.invoke("get_calibration_gain").invoke("get"));
+		final JVar cast = method.body().decl(TypeFloat_t, "cast",
+				TypeFloat_I.invoke("make").arg(value));
+		method.body()._return(cast);
+
+		return method;
+	}
+
+	public JMethod getCalibrationOffsetMethod(JDefinedClass klass, ASTNode.Channel node)
+	{
+		final JMethod method = klass.method(JMod.PUBLIC, TypeFloat_t,
+				"getCalibrationOffset");
+		comment_stamp(method.body());
+
+		final JVar value = method.body().decl(Type_t, "value",
+				JExpr.invoke("get_calibration_offset").invoke("get"));
+		final JVar cast = method.body().decl(TypeFloat_t, "cast",
+				TypeFloat_I.invoke("make").arg(value));
+		method.body()._return(cast);
+
 		return method;
 	}
 
