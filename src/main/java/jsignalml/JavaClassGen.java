@@ -1272,6 +1272,12 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 					JExpr.invoke("_buffer").ref("source"));
 		}
 
+		final JVar calibGain = body.decl(this.model.FLOAT, "calibGain",
+				JExpr.invoke("getCalibrationGain").invoke("getValue")
+				.invoke("floatValue"));
+		final JVar calibOffs = body.decl(this.model.FLOAT, "calibOffs",
+				JExpr.invoke("getCalibrationOffset").invoke("getValue")
+				.invoke("floatValue"));
 
 		if (_prim && node.fast.equals(fastSet)) {
 			// Primitive types code variant
@@ -1282,7 +1288,7 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 					.arg(mapping_call);
 			final JVar value = body.decl(this.model.FLOAT, "value", input);
 
-			body._return(value);
+			body._return(value.minus(calibOffs).mul(calibGain));
 
 		}
 		else {
@@ -1294,8 +1300,9 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 					format.invoke("read").arg(buffer)
 					.arg(JExpr.cast(TypeInt_t, mapping_call)));
 			final JExpression conv = TypeFloat_I.invoke("make").arg(input);
-
-			body._return(JExpr.cast(this.model.FLOAT, conv.ref("value")));
+			final JVar ret_value = body.decl(this.model.FLOAT, "ret_value",
+					JExpr.cast(this.model.FLOAT, conv.ref("value")));
+			body._return(ret_value.minus(calibOffs).mul(calibGain));
 		}
 		return method;
 	}
@@ -1333,10 +1340,18 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 					JExpr.invoke("_buffer").ref("source"));
 		}
 
+		final JVar calibGain = body.decl(this.model.FLOAT, "calibGain",
+				JExpr.invoke("getCalibrationGain").invoke("getValue")
+				.invoke("floatValue"));
+		final JVar calibOffs = body.decl(this.model.FLOAT, "calibOffs",
+				JExpr.invoke("getCalibrationOffset").invoke("getValue")
+				.invoke("floatValue"));
+
 		if (_prim && node.fast.equals(fastSet)) {
 			// Primitive types code variant
 			final JVar count = body.decl(this.model.INT, "count",
-						JExpr.invoke(dst, "remaining"));
+					JExpr.invoke(dst, "remaining"));
+
 			final JBlock _while = body._while(count.decr().gt(JExpr.lit(0))).body();
 			final JExpression mapping_call = JExpr.cast(model.INT,
 					JExpr.invoke(makeGetter(node.mapping.toString())).invoke(CALL_P)
@@ -1344,11 +1359,12 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 			final JExpression input = format.invoke("read").arg(buffer)
 					.arg(mapping_call);
 			final JVar value = _while.decl(this.model.FLOAT, "value", input);
-			_while.add(dst.invoke("put").arg(value));
+			_while.add(dst.invoke("put").arg(value.minus(calibOffs).mul(calibGain)));
 		}
 		else {
 			final JVar mapping = body.decl(Type_t, "mapping",
 					node.mapping.accept(javagen));
+
 			final JBlock _while = body._while(JExpr.invoke(dst, "hasRemaining")).body();
 			final JExpression mapping_call = mapping.invoke(CALL)
 					.arg(JExpr._new(TypeInt_t).arg(sample.incr()));
@@ -1356,8 +1372,10 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 					format.invoke("read").arg(buffer)
 					.arg(JExpr.cast(TypeInt_t, mapping_call)));
 			final JExpression conv = TypeFloat_I.invoke("make").arg(input);
+			final JVar ret_value = _while.decl(this.model.FLOAT, "ret_value",
+					JExpr.cast(this.model.FLOAT, conv.ref("value")));
 			_while.add(dst.invoke("put")
-					.arg(JExpr.cast(this.model.FLOAT, conv.ref("value"))));
+					.arg(ret_value.minus(calibOffs).mul(calibGain)));
 		}
 		return method;
 	}
