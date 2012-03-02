@@ -62,6 +62,10 @@
 			<group>2</group>
 		</param>
 
+		<param id='sample_unit' type='float'>
+			<expr>1</expr>
+		</param>
+
 		<param id='calibration_gain' type='float' units='μV'>
 			<expr>1.0e15</expr>
 		</param>
