@@ -1172,6 +1172,7 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 		getChannelNameMethod(klass, node);
 		getCalibrationGainMethod(klass, node);
 		getCalibrationOffsetMethod(klass, node);
+		getSampleUnitMethod(klass, node);
 
 		return klass;
 	}
@@ -1404,6 +1405,19 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 		final JVar cast = method.body().decl(TypeInt_t, "cast",
 						     TypeInt_I.invoke("make").arg(value));
 		method.body()._return(cast.invoke("safeLongValue"));
+		return method;
+	}
+
+	public JMethod getSampleUnitMethod(JDefinedClass klass, ASTNode.Channel node)
+	{
+		final JMethod method = klass.method(JMod.PUBLIC, TypeFloat_t,
+				"getSampleUnit");
+		comment_stamp(method.body());
+		final JVar value = method.body().decl(Type_t, "value",
+				JExpr.invoke("get_sample_unit").invoke("get"));
+		final JVar cast = method.body().decl(TypeFloat_t, "cast",
+				TypeFloat_I.invoke("make").arg(value));
+		method.body()._return(cast);
 		return method;
 	}
 
