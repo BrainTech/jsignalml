@@ -63,7 +63,7 @@
 		</param>
 
 		<param id='calibration_gain' type='float' units='μV'>
-			<expr>'1.0e15f'</expr>
+			<expr>1.0e15</expr>
 		</param>
 
 		<file id='data_file' type='binary' filename='get_data_filename'>
