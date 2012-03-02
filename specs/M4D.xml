@@ -62,6 +62,10 @@
 			<group>2</group>
 		</param>
 
+		<param id='calibration_gain' type='float' units='μV'>
+			<expr>'1.0e15f'</expr>
+		</param>
+
 		<file id='data_file' type='binary' filename='get_data_filename'>
 		</file>
 
@@ -141,10 +145,6 @@
 				<param id='mapping' type='int'>
 					<arg type='int' name='sample' />
 					<expr>(sample*total_channels + channel_index -1) * sample_size</expr>
-				</param>
-
-				<param id='calibration_gain' type='float' units='μV'>
-					<expr>'1.0e15f'</expr>
 				</param>
 
  			</for-each>
