@@ -2,6 +2,7 @@ package jsignalml;
 
 import static java.lang.String.format;
 import static jsignalml.Type.typename;
+import static jsignalml.codec.Signalml.isPrimGeneration;
 
 import java.io.File;
 import java.io.OutputStream;
@@ -64,10 +65,6 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 	public static boolean calibrGainPresent = false;
 
 	public static boolean calibOffsPresent = false;
-
-	public static final boolean _prim =
-		System.getProperties().getProperty("jsignalml.primitive", "").length() > 0
-			&& System.getProperties().getProperty("jsignalml.primitive").equals("1");
 
 	public static final boolean _comments =
 		System.getProperties().getProperty("jsignalml.comments", "1").equals("1");
@@ -393,7 +390,7 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 		} else {
 			getThisMethod(nested, node);
 			callExprMethod(nested, node);
-			if (_prim)
+			if (isPrimGeneration())
 				callExprMethod_p(nested, node);
 		}
 		return nested;
@@ -521,7 +518,7 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 		final JVar input = body.decl(expected_t, "input", expr);
 		body._return(make_or_cast(nodetype, input, expected));
 
-		if (_prim)
+		if (isPrimGeneration())
 			getMethod_p(klass, nodetype);
 
 		return impl;
@@ -565,7 +562,7 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 
 		body._return(value);
 
-		if (_prim)
+		if (isPrimGeneration())
 			getMethod_p(klass, nodetype);
 
 		return impl;
@@ -631,7 +628,7 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 		final JExpression value = node.expr.accept(javagen);
 		impl.body()._return(do_cast(nodetype, value, node.expr.type));
 
-		if (_prim)
+		if (isPrimGeneration())
 			getMethod_p(klass, nodetype);
 
 		return impl;
@@ -1098,7 +1095,7 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 		comment_stamp(impl.body());
 		impl.body()._throw(JExpr._new(RuntimeException_t));
 
-		if (_prim)
+		if (isPrimGeneration())
 			getMethod_p(klass, nodetype);
 
 		return klass;
@@ -1283,7 +1280,7 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 				JExpr.invoke("getSampleUnit").invoke("getValue")
 				.invoke("floatValue"));
 
-		if (_prim && node.fast.equals(fastSet)) {
+		if (isPrimGeneration() && node.fast.equals(fastSet)) {
 			// Primitive types code variant
 
 			final JExpression mapping_call = JExpr.cast(model.INT,
@@ -1356,7 +1353,7 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 				JExpr.invoke("getSampleUnit").invoke("getValue")
 				.invoke("floatValue"));
 
-		if (_prim && node.fast.equals(fastSet)) {
+		if (isPrimGeneration() && node.fast.equals(fastSet)) {
 			// Primitive types code variant
 			final JVar count = body.decl(this.model.INT, "count",
 					JExpr.invoke(dst, "remaining"));

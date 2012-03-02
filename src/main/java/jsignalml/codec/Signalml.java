@@ -80,4 +80,16 @@ public abstract class Signalml extends Context implements jsignalml.Source {
 			return v.visit(this, name, data);
 		}
 	}
+
+	public static boolean isPrimGeneration() {
+		return _prim;
+	}
+
+	public static void setPrimGeneration(boolean prim) {
+		_prim = prim;
+	}
+
+	private static boolean _prim =
+			System.getProperties().getProperty("jsignalml.primitive", "").length() > 0
+				&& System.getProperties().getProperty("jsignalml.primitive").equals("1");
 }
