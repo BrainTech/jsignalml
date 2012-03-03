@@ -49,7 +49,10 @@ public abstract class Signalml extends Context implements jsignalml.Source {
 
 		public void open(File filename)
 		{
-			if ((filename == null) && (default_filename != null)) {
+			if ((filename == null) && (currentFilename != null)) {
+				filename = currentFilename;
+				default_filename = null;
+			} else if ((filename == null) && (default_filename != null)) {
 				filename = default_filename;
 				default_filename = null;
 			}

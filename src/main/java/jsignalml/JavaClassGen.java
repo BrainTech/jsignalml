@@ -770,14 +770,25 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 		{
 			final JMethod constructor =
 					klass.constructor(JMod.PUBLIC);
-			constructor.body().block();
+//			constructor.body().block();
+
+			JBlock body = constructor.body();
 
 			if(node.filename != null){
-				final JavaExprGen javagen = createExprGen(node, null);
-				final JVar filename = constructor.body().decl(String_t, "filename",
-						node.filename.accept(javagen).ref("value"));
 
-				constructor.body().assign(JExpr.ref("default_filename"),
+				final JVar mainFile = body.decl(File_t, "main", 
+						JExpr.ref("default_filename"));
+				final JVar endIndex = body.decl(Integer_t, "endIndex", 
+						mainFile.invoke("getAbsolutePath").invoke("length").
+									minus(mainFile.invoke("getName").invoke("length")));
+				final JVar dirname = body.decl(String_t, "dirname", 
+						mainFile.invoke("getAbsolutePath").invoke("substring").arg(JExpr.lit(0)).arg(endIndex));
+
+				final JavaExprGen javagen = createExprGen(node, null);
+				final JVar filename = body.decl(String_t, "filename",
+						dirname.plus(node.filename.accept(javagen).ref("value")));
+
+				body.assign(JExpr.ref("currentFilename"),
 						JExpr._new(File_t).arg(filename));
 			}
 		}
