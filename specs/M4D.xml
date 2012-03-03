@@ -55,7 +55,7 @@
 			<group>1</group>
 		</param>
 
-		<param id='get_data_filename' type='str'>
+		<param id='data_filename' type='str'>
 			<format>'|S2'</format>
 			<line>-1</line>
 			<pattern>"MSI.FileDescriptor: (.+;){4}([a-zA-Z0-9,._-]+)"</pattern>
@@ -70,7 +70,7 @@
 			<expr>1.0e15</expr>
 		</param>
 
-		<file id='data_file' type='binary' filename='get_data_filename'>
+		<file id='data_file' type='binary' filename='data_filename'>
 		</file>
 
 		<param id='msi_format' type='str'>
