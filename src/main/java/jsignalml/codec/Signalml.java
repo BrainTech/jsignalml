@@ -81,15 +81,15 @@ public abstract class Signalml extends Context implements jsignalml.Source {
 		}
 	}
 
-	public static boolean isPrimGeneration() {
+	public boolean isPrimGeneration() {
 		return _prim;
 	}
 
-	public static void setPrimGeneration(boolean prim) {
+	public void setPrimGeneration(boolean prim) {
 		_prim = prim;
 	}
 
-	private static boolean _prim =
+	private boolean _prim =
 			System.getProperties().getProperty("jsignalml.primitive", "").length() > 0
 				&& System.getProperties().getProperty("jsignalml.primitive").equals("1");
 }
