@@ -62,9 +62,9 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 		GET_P = "get_p",
 		CALL_P = "call_p";
 
-	public static boolean calibrGainPresent = false;
+	public boolean calibrGainPresent = false;
 
-	public static boolean calibOffsPresent = false;
+	public boolean calibOffsPresent = false;
 
 	public static final boolean _comments =
 		System.getProperties().getProperty("jsignalml.comments", "1").equals("1");
