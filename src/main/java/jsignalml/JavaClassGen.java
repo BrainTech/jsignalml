@@ -232,9 +232,10 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 			block.add(JExpr.invoke("register").arg(name).arg(param_inv));
 
 			if (name.equals("calibration_gain")) {
+				log.info("calibration_gain present");
 				calibrGainPresent = true;
-			}
-			else if (name.equals("calibration_offset")) {
+			} else if (name.equals("calibration_offset")) {
+				log.info("calibration_offset present");
 				calibOffsPresent = true;
 			}
 		}
@@ -770,8 +771,6 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 		{
 			final JMethod constructor =
 					klass.constructor(JMod.PUBLIC);
-//			constructor.body().block();
-
 			JBlock body = constructor.body();
 
 			if(node.filename != null){
@@ -1443,7 +1442,13 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 	{
 		final JMethod method = klass.method(JMod.PUBLIC, String_t, "getChannelName");
 		comment_stamp(method.body());
-		method.body()._return(JExpr.lit("unknown"));
+
+		final JVar value = method.body().decl(Type_t, "value",
+				JExpr.invoke("get_channel_name").invoke("get"));
+		final JVar val = method.body().decl(TypeString_t, "stringValue",
+				JExpr.cast(TypeString_t, value));
+
+		method.body()._return(val.invoke("getValue"));
 		return method;
 	}
 
