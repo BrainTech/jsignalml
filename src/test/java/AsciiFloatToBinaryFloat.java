@@ -35,6 +35,7 @@ public class AsciiFloatToBinaryFloat {
 		int numberOfChannels = -1;
 		int fileLinesWithSampleNr = 0;
 		long[] numberOfSamplesPerChannel = null;
+		boolean lineStartsWithNrOfChannels = true;
 		for (String line = fir.readLine(); (sampleNr < 100000000) && (line != null); sampleNr ++, line = fir.readLine()) {
 			String[] floatValuesStr = line.split(" ");
 			if (sampleNr == 0) {
@@ -45,7 +46,7 @@ public class AsciiFloatToBinaryFloat {
 			}
 			for (int channelNr = 0; channelNr < floatValuesStr.length; channelNr ++) {
 				String floatValueStr = floatValuesStr[channelNr];
-				if (channelNr == 0) {
+				if (channelNr == 0 && lineStartsWithNrOfChannels) {
 					try {
 						int intValue = Integer.parseInt(floatValueStr);
 						//int found (sample number)
@@ -72,6 +73,7 @@ public class AsciiFloatToBinaryFloat {
 						}
 						continue;
 					} catch (NumberFormatException nfe) {
+						lineStartsWithNrOfChannels = false;
 						if (fows == null) {
 							fows = new RandomAccessFile[numberOfChannels - fileLinesWithSampleNr];
 						}
