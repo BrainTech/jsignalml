@@ -80,24 +80,31 @@
 		        <group>1</group>
 		</param>
 
-		<if id='format' test='msi_format == "SHORT"'>
+		<if id='size' test='msi_format == "SHORT"'>
 			<param id='sample_size_1' type='int'>
 				<expr>2</expr>
 			</param>
+			<else>  <!--  test='msi_format == "FLOAT"'> -->
+				<param id='sample_size_1' type='int'>
+					<expr>4</expr>
+				</param>
+			</else>
+
+		</if>
+
+		<if id='format' test='msi_format == "SHORT"'>
 			<param id='sample_format_1' type='str'>
 				<expr>"&gt;i2"</expr>
 			</param>
 
 			<else>  <!--  test='msi_format == "FLOAT"'> -->
-				<param id='sample_size_1' type='int'>
-					<expr>4</expr>
-				</param>
 				<param id='sample_format_1' type='str'>
 					<expr>"&gt;f4"</expr>
 				</param>
 			</else>
 
 		</if>
+
 
 <!--   XXX : TODO: apply if for appropriate formats, i.e. FLOAT, LONG, DOUBLE
 		<else-if id='format' test='msi_format == "LONG"'>
@@ -110,7 +117,7 @@
 		</else-if>
  -->
 		<param id='sample_size' type='int'>
-			<expr>format.sample_size_1</expr>
+			<expr>size.sample_size_1</expr>
 		</param>
 
 		<param id='sample_format' type='str'>
@@ -119,9 +126,9 @@
 
 		<channelset id='data_test'>
 
-			<for-each id='channels' var='index' sequence='range(number_of_channels)'>
+			<for-each id='channels' var='index' sequence='range(number_of_channels)' type='int'>
 				<channel mapping='mapping' format='sample_format'
-							length='number_of_samples' data='data_file' />
+							length='number_of_samples' data='data_file' fast='1'/>
 
 				
 				<param id='channel_name' type='str'>
