@@ -274,7 +274,7 @@ public class ASTTypeVisitor extends ASTVisitor<Type> {
 		Type t1 = node.condition.accept(_typeVisitor(node));
 		log.info("%s condition.type=%s", node, typename(t1));
 
-		return putCached(node, null);
+		return putCached(node, t1);
 	}
 
 	@Override

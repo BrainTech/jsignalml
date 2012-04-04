@@ -527,6 +527,34 @@ public abstract class ASTNode {
 		public final Expression condition;
 		public ElseBranch elsebranch = null;
 
+		public <T> T accept(ASTVisitor<T> v, T data) {
+			log.debug("%s on %s, %s", v, this, data);
+			T newdata = this._accept(v, data);
+
+			// For conditional pass the type of first child
+			T firstChildType = null;
+
+			// use a copy of the children list in case it changes
+			for(ASTNode child: new LinkedList<ASTNode>(this.children)) {
+				log.trace("recursing into child: %s >> %s", this, child);
+				T childType = child.accept(v, newdata);
+				if (firstChildType == null) {
+					firstChildType = childType;
+				}
+			}
+			log.trace("recursion done: %s -> %s", this, newdata);
+
+			// First child type
+			if (firstChildType != null) {
+				return firstChildType;
+			}
+			// This node type
+			else {
+				return newdata;
+			}
+		}
+
+
 		public Conditional(ASTNode parent, Expression id, Expression condition) {
 			super(parent, id);
 			if (parent==null)
