@@ -357,7 +357,10 @@ public class CodecParser {
 		final JavaClassGen gen = new JavaClassGen(typer.getTypeResolver());
 		codec.accept(gen, null);
 		log.info("-- java has been generated --");
-		gen.write(System.out);
+
+		if("true".equalsIgnoreCase(System.getProperties().getProperty("jsignalml.debug", "false"))){
+			gen.write(System.out);
+		}
 
 		if (args.length <= 1)
 			return;
