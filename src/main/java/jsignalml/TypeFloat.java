@@ -226,4 +226,11 @@ public class TypeFloat extends Type {
 			throw new ExpressionFault.TypeError();
 		}
 	}
+
+	@Override
+	public Type access(String item)
+	{
+		return this.get();
+	}
+
 }
