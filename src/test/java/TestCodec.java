@@ -85,6 +85,7 @@ public class TestCodec {
 		String  inDtaFileName = args[1]; //d:/grst/projects/UW/data/for_EASYS_codec/inb02.d                          //d:/grst/projects/UW/data/for_4D_format/m4d/example_data/Art_e,rfhp0.1Hz,n,ccfbp10-40-508-2,cag,c,n,tm,bahe001-1High350,a.m4d
 		String outHdrFileName = args[2]; //d:/grst/projects/UW/data/for_EASYS_codec/EASYS/inb02-unscaled/inb02.hdr   //d:/grst/projects/UW/data/for_4D_format/m4d/example_data/Art_e,rfhp0.1Hz,n,ccfbp10-40-508-2,cag,c,n,tm,bahe001-1High350,a.hdr
 		String outDtaFileName = args[3]; //d:/grst/projects/UW/data/for_EASYS_codec/EASYS/inb02-unscaled/inb02.float //d:/grst/projects/UW/data/for_4D_format/m4d/example_data/Art_e,rfhp0.1Hz,n,ccfbp10-40-508-2,cag,c,n,tm,bahe001-1High350,a.float
+		final boolean useContextDumper = false; //true; /////////////////////////////////////////////////////////////////////////////
 		float verificationMultiplyFactor = 1.0f;
 		if (args.length > 4) {
 			try {
@@ -136,7 +137,9 @@ public class TestCodec {
 			reader.createParams();
 		//	reader.setRange(0, inDtaFileFragmentSize);
 			reader.createChannels();
-	//		System.out.print(ContextDumper.dump(reader));	///////////////////////////////////////////////////
+			if (useContextDumper) {
+				System.out.print(ContextDumper.dump(reader));
+			}
 			int inDtaNumberOfChannelSets = reader.getNumberOfChannelSets(); //@Theory, do not know if this is fully supported
 			if (TestCodec.LOG_INFO) {
 				System.out.println("Number of channel sets: " + inDtaNumberOfChannelSets);
