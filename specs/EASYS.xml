@@ -120,129 +120,64 @@
 			</expr>
 		</param>
 
-		<!-- xhdr_org == 0 means no extended header! -->
-		<for-each id='extended_header' var='index' type='int'
-			sequence='xhdr_org ? range(20) : []'>
-			<if id='if' test='index==0 or extended_header[index-1].if.record_size'>
-				<param id='offset' type='int'>
-					<expr>index == 0 ? extended_header_offset :
-						extended_header[index-1].if.offset +
-						extended_header[index-1].if.record_size + 4</expr>
-				</param>
-				<param id='record_mnemonic' type='str'>
-					<format>'|S2'</format>
-					<offset>offset</offset>
-				</param>
-				<param id='record_size' type='int'>
-					<format>'&lt;u2'</format>
-					<offset>offset + 2</offset>
-				</param>
-
-				<if id='Authentication' test='record_mnemonic == "AU"'>
-					<param id='Authentication_key'>
-						<format>'&lt;u' + str(record_size)</format>
-						<offset>offset + 4</offset>
-					</param>
-				</if>
-				<if id='PJ' test='record_mnemonic == "PJ"'>
-					<param id='PJvalue'>
-						<format>'|S' + str(record_size)</format>
-						<offset>offset + 4</offset>
-					</param>
-				</if>
-				<if id='DF' test='record_mnemonic == "DF"'>
-					<param id='DFvalue'>
-						<format>'|S' + str(record_size)</format>
-						<offset>offset + 4</offset>
-					</param>
-				</if>
-				<if id='Time' test='record_mnemonic == "TI"'>
-					<param id='Time_info'>
-						<format>'&lt;u' + str(record_size)</format>
-						<offset>offset + 4</offset>
-					</param>
-				</if>
-				<if id='Patient' test='record_mnemonic == "ID"'>
-					<param id='Patient_ID_number_or_PIC'>
-						<format>'|S' + str(record_size)</format>
-						<offset>offset + 4</offset>
-					</param>
-				</if>
-				<if id='DI' test='record_mnemonic == "DI"'>
-					<param id='DIvalue'>
-						<format>'|S' + str(record_size)</format>
-						<offset>offset + 4</offset>
-					</param>
-				</if>
-				<if id='channel_names' test='record_mnemonic == "CN"'>
-					<for-each id='channels' var='indexCN' sequence='range(number_of_channels)'>
-						<param id='channel_name' type='str'>
-							<format>'|S4'</format>
-							<offset>offset + 4 + indexCN * 4</offset>
-						</param>
-					</for-each>
-				</if>
-				<if id='Tag_table' test='record_mnemonic == "TT"'>
-					<param id='def_len'>
-						<format>'&lt;u2'</format>
-						<offset>offset + 4</offset>
-					</param>
-					<param id='list_len'>
-						<format>'&lt;u2'</format>
-						<offset>offset + 6</offset>
-					</param>
-					<param id='def_off'>
-						<format>'&lt;u4'</format>
-						<offset>offset + 8</offset>
-					</param>
-					<param id='list_off'>
-						<format>'&lt;u4'</format>
-						<offset>offset + 12</offset>
-					</param>
-				</if>
-				<if id='BS' test='record_mnemonic == "BS"'>
-					<param id='BSvalue'>
-						<format>'|S' + str(record_size)</format>
-						<offset>offset + 4</offset>
-					</param>
-				</if>
-
-				<else>
-					<param id='record_size' type='int'>
-						<expr>0</expr>
-					</param>
-				</else>
-			</if>
-		</for-each>
-
 		<channelset id='data'>
-			<for-each id='extended_headerek' var='indexHdr' type='int'
+			<for-each id='extended_header' var='indexHdr' type='int'
 				sequence='xhdr_org ? range(20) : []'>
-				<if id='ifek' test='indexHdr==0 or extended_headerek[indexHdr-1].ifek.record_sizeek'>
-					<param id='offsetek' type='int'>
+				<if id='if_ext_hdr' test='indexHdr==0 or extended_header[indexHdr-1].if_ext_hdr.record_size'>
+					<param id='offset' type='int'>
 						<expr>indexHdr == 0 ? extended_header_offset :
-							extended_headerek[indexHdr-1].ifek.offsetek +
-							extended_headerek[indexHdr-1].ifek.record_sizeek + 4</expr>
+							extended_header[indexHdr-1].if_ext_hdr.offset +
+							extended_header[indexHdr-1].if_ext_hdr.record_size + 4</expr>
 					</param>
-					<param id='record_mnemonicek' type='str'>
+					<param id='record_mnemonic' type='str'>
 						<format>'|S2'</format>
-						<offset>offsetek</offset>
+						<offset>offset</offset>
 					</param>
-					<param id='record_sizeek' type='int'>
+					<param id='record_size' type='int'>
 						<format>'&lt;u2'</format>
-						<offset>offsetek + 2</offset>
+						<offset>offset + 2</offset>
 					</param>
-					<if id='channel_namesek' test='record_mnemonicek == "CN"'>
+					<if id='if_record_channel_names' test='record_mnemonic == "CN"'>
 						<for-each id='channels' var='index' sequence='range(number_of_channels)'
 							type='int'>
 							<channel mapping='mapping' format='"&lt;i2"' length='number_of_samples'
 								fast='1' />
 							<param id='channel_name_ASCIIZ' type='str'>
 								<format>'|S4'</format>
-								<offset>offsetek + 4 + index * 4</offset>
+								<offset>offset + 4 + index * 4</offset>
 							</param>
-							<param id='channel_name' type='str'>
+							<param id='channel_name_ASCII' type='str'>
 								<expr>trim(channel_name_ASCIIZ)</expr>
+							</param>
+							<!-- 
+							<if id='szukaj1If' test='channel_name_ASCII == "F7"'>
+										<param id='channel_name_temp' type='str'>
+											<expr>channel_name_ASCII + '__siedem'</expr>
+										</param>
+								<else id='szukaj1Else'>
+										<param id='channel_name_temp' type='str'>
+											<expr>channel_name_ASCII + '__inne'</expr>
+										</param>
+								</else>
+							</if>
+							 -->
+							<if id='szukajIf' test='channel_name_ASCII == "F7"'>
+										<param id='channel_name_temp' type='str'>
+											<expr>channel_name_ASCII + '_siedem'</expr>
+										</param>
+								<else-if id='szukajElseIf' test='channel_name_ASCII == "F8"'>
+										<param id='channel_name_temp' type='str'>
+											<expr>channel_name_ASCII + '_osiem'</expr>
+										</param>
+									<else id='szukajElse'>
+										<param id='channel_name_temp' type='str'>
+											<expr>channel_name_ASCII + '_inne'</expr>
+										</param>
+									</else>
+								</else-if>
+							</if>
+							<param id='channel_name' type='str'>
+								<expr>szukajIf.channel_name_temp</expr>
 							</param>
 							<param id='mapping' type='int'>
 								<arg type='int' name='sample' />
@@ -252,7 +187,7 @@
 						</for-each>
 					</if>
 					<else>
-						<param id='record_sizeek' type='int'>
+						<param id='record_size' type='int'>
 							<expr>0</expr>
 						</param>
 					</else>
