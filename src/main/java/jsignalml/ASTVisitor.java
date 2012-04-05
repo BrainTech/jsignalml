@@ -14,6 +14,7 @@ public abstract class ASTVisitor<T> {
 	public T visit(ASTNode.Itername node, T parent){ return parent; }
 	public T visit(ASTNode.Conditional node, T parent){ return parent; }
 	public T visit(ASTNode.ElseBranch node, T parent){ return parent; }
+	public T visit(ASTNode.ElseIfBranch node, T parent){ return parent; }
 	public T visit(ASTNode.TextParam node, T parent){ return parent; }
 	public T visit(Builtins node, T parent){ return parent; }
 

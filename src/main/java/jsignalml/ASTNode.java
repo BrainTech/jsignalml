@@ -526,6 +526,7 @@ public abstract class ASTNode {
 	public static class Conditional extends ASTNode {
 		public final Expression condition;
 		public ElseBranch elsebranch = null;
+		public ElseIfBranch elseifbranch = null;
 
 		public <T> T accept(ASTVisitor<T> v, T data) {
 			log.debug("%s on %s, %s", v, this, data);
@@ -554,7 +555,6 @@ public abstract class ASTNode {
 			}
 		}
 
-
 		public Conditional(ASTNode parent, Expression id, Expression condition) {
 			super(parent, id);
 			if (parent==null)
@@ -577,17 +577,64 @@ public abstract class ASTNode {
 		}
 	}
 
+	public static class ElseIfBranch extends ASTNode {
+		public final Expression condition;
+		public ElseBranch elsebranch = null;
+		public ElseIfBranch elseifbranch = null;
+		
+		public ElseIfBranch(ASTNode parent, Expression id, Expression condition) {
+			super(parent, id);
+			if (parent==null)
+				throw new SyntaxError("<else-if> tag must have a parent tag");
+			if (parent instanceof Conditional) {
+				Conditional elseifparent = (Conditional) parent;
+				if (elseifparent.elseifbranch != null)
+					throw new SyntaxError("cannot have more than one <else-if> tag inside parent <if> tag! instead of it please put <else-if> inside those internal <else-if> tag");
+				elseifparent.elseifbranch = this;
+			} else if (parent instanceof ElseIfBranch) {
+				ElseIfBranch elseifparent = (ElseIfBranch) parent;
+				if (elseifparent.elseifbranch != null)
+					throw new SyntaxError("cannot have more than one <else-if> tag inside parent <else-if> tag! instead of it please put <else-if> inside those internal <else-if> tag");
+				elseifparent.elseifbranch = this;
+			} else {
+				throw new SyntaxError("<else-if> tag can only be used inside <if> or <else-if> tag");
+			}
+			if (condition==null)
+				throw new SyntaxError("<else-if> must have test attribute'");
+			this.condition = condition;
+		}
+
+		@Override
+		public String toString()
+		{
+			return format("ASTNode.ElseIfBranch %s test=(%s)", id, condition);
+		}
+
+		@Override
+		public <T> T _accept(ASTVisitor<T> v, T data)
+		{
+			return v.visit(this, data);
+		}
+	}
+	
 	public static class ElseBranch extends ASTNode {
 		public ElseBranch(ASTNode parent, Expression id) {
 			super(parent, id);
 			if (parent==null)
-				throw new SyntaxError("<else> must have a parent");
-			if (!(parent instanceof Conditional))
-				throw new SyntaxError("<else> can only be used with <if>");
-			Conditional ifparent = (Conditional) parent;
-			if (ifparent.elsebranch != null)
-				throw new SyntaxError("cannot have more than one <else>");
-			ifparent.elsebranch = this;
+				throw new SyntaxError("<else> tag must have a parent tag");
+			if (parent instanceof Conditional) {
+				Conditional elseparent = (Conditional) parent;
+				if (elseparent.elsebranch != null)
+					throw new SyntaxError("cannot have more than one <else> tag inside parent <if> tag! instead of it please create new internal <if> tag and than <else> tag inside those new <if>");
+				elseparent.elsebranch = this;
+			} else if (parent instanceof ElseIfBranch) {
+				ElseIfBranch elseparent = (ElseIfBranch) parent;
+				if (elseparent.elsebranch != null)
+					throw new SyntaxError("cannot have more than one <else> tag inside parent <else-if> tag! instead of it please create new internal <if> tag (with or without <else-if> inside) and than <else> tag inside those new <if> or inside new additional <else-if> tag");
+				elseparent.elsebranch = this;
+			} else {
+				throw new SyntaxError("<else> tag can only be used inside <if> or <else-if> tag");
+			}
 		}
 
 		@Override

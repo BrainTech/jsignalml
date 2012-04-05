@@ -10,6 +10,7 @@ import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 import java.util.List;
 
+import jsignalml.ASTNode.ElseIfBranch;
 import jsignalml.codec.Signalml.FileClass;
 import jsignalml.logging.Logger;
 
@@ -281,9 +282,11 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 	 */
 	class MetadataIfBranch extends Metadata {
 		final Metadata elseBranch;
+		final Metadata elseIfBranch;
 		MetadataIfBranch(JDefinedClass klass)
 		{
 			super(klass, "If");
+			this.elseIfBranch = new Metadata(this.klass, "ElseIf");
 			this.elseBranch = new Metadata(this.klass, "Else");
 		}
 	}
@@ -430,7 +433,9 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 		final JClass param_class = klass_type.narrow(typeref);
 		final JDefinedClass nested;
 		try {
-			nested = parent._class(makeParamClass(theid));
+			String parentParamClass = makeParamClass(theid);
+			comment(parent, "parent paramClass=%s", parentParamClass);
+			nested = parent._class(parentParamClass);
 		} catch(JClassAlreadyExistsException e) {
 			throw new SyntaxError(format("duplicate name: '%s'", theid));
 		}
@@ -1006,14 +1011,22 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 	{
 		log.info("visit((Conditional) %s, %s)", node, parent);
 		String theid = dynamicID(node, node.id);
-		final JDefinedClass klass = conditionalClass(theid, parent);
+		List<ASTNode> children = node.children;
+		boolean conditionalWithElseIf = false;
+		for (ASTNode astNode : children) {
+			if(astNode instanceof ElseIfBranch){
+				conditionalWithElseIf = true;
+				break;
+			}
+		}
+		final JDefinedClass klass = conditionalClass(theid, parent, conditionalWithElseIf);
 		comment_stamp(klass);
 		idMethod(klass, node, theid);
 		conditionMethod(klass, node);
 		return klass;
 	}
 
-	JDefinedClass conditionalClass(String id, JDefinedClass parent)
+	JDefinedClass conditionalClass(String id, JDefinedClass parent, boolean conditionalWithElseIf)
 	{
 		final JDefinedClass klass;
 		try {
@@ -1029,8 +1042,18 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 
 		final JMethod getter = classCacheMethod(parent, id, klass);
 
-		Metadata metadata = (Metadata) parent.metadata;
-		metadata.registerContext(id, klass, JExpr.invoke(getter));
+		// hasElseIf method body
+		final JMethod hasElseIf = klass.method(JMod.PUBLIC, this.model.BOOLEAN, "hasElseIf");
+		hasElseIf.body()._return(JExpr.lit(conditionalWithElseIf));
+
+		if (parent.metadata instanceof Metadata) {
+			Metadata metadata = (Metadata) parent.metadata;
+			metadata.registerContext(id, klass, JExpr.invoke(getter));
+		} else {
+			throw new RuntimeException("Parent Metadata for <if> tag is instance of not supported class "
+					+ parent.metadata.getClass().getSimpleName());
+			//TODO throw proper exception
+		}
 
 		return klass;
 	}
@@ -1065,16 +1088,84 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 		} catch(JClassAlreadyExistsException e) {
 			throw new RuntimeException("WTF?");
 		}
-		klass._extends(jsignalml.codec.ConditionalClass.ElseBranchClass.class);
-		comment_stamp(klass);
-
-		klass.metadata = new Metadata(klass);
-		log.info("%s.metadata has been set", klass);
-
-		MetadataIfBranch metadata = (MetadataIfBranch) parent.metadata;
-		metadata.elseBranch.registerContext(id, klass, JExpr._new(klass));
+		if (parent.metadata instanceof MetadataIfBranch) {
+			MetadataIfBranch metadata = (MetadataIfBranch) parent.metadata;
+			metadata.elseBranch.registerContext(id, klass, JExpr._new(klass));
+			klass._extends(jsignalml.codec.ConditionalClass.ElseBranchClass.class);
+			comment_stamp(klass);
+			klass.metadata = new Metadata(klass);
+			log.info("%s.metadata has been set", klass);
+		} else {
+			throw new RuntimeException("Parent Metadata for <else> tag is instance of not supported class "
+					+ parent.metadata.getClass().getSimpleName());
+			//TODO throw proper exception
+		}
 
 		return klass;
+	}
+
+	public JDefinedClass visit(ASTNode.ElseIfBranch node, JDefinedClass parent)
+	{
+		log.info("visit((ElseIfBranch) %s, %s)", node, parent);
+		final String theid = dynamicID(node, node.id);
+		
+		// lets check if there is any else-if inside this node
+		List<ASTNode> children = node.children;
+		boolean conditionalWithElseIf = false;
+		for (ASTNode astNode : children) {
+			if(astNode instanceof ElseIfBranch){
+				conditionalWithElseIf = true;
+				break;
+			}
+		}
+		
+		final JDefinedClass klass = elseIfBranchClass(theid, parent, conditionalWithElseIf);
+		comment_stamp(klass);
+		idMethod(klass, node, theid);
+		conditionMethod(klass, node);
+		return klass;
+	}
+
+	public JDefinedClass elseIfBranchClass(String id, JDefinedClass parent, boolean conditionalWithElseIf)
+	{
+		final JDefinedClass klass;
+		try {
+			klass = parent._class("ElseIf_" + id);
+		} catch(JClassAlreadyExistsException e) {
+			throw new RuntimeException("WTF?");
+		}
+		klass._extends(jsignalml.codec.ConditionalClass.ElseIfBranchClass.class);
+		comment_stamp(klass);
+		
+		final JMethod hasElseIf = klass.method(JMod.PUBLIC, this.model.BOOLEAN, "hasElseIf");
+		hasElseIf.body()._return(JExpr.lit(conditionalWithElseIf));
+		
+		klass.metadata = new MetadataIfBranch(klass);
+		log.info("%s.metadata/else-if has been set", klass);
+		
+		final JMethod getter = classCacheMethod(parent, id, klass);
+		
+		if (parent.metadata instanceof MetadataIfBranch) {
+			MetadataIfBranch metadata = (MetadataIfBranch) parent.metadata;
+			metadata.elseIfBranch.registerContext(id, klass, JExpr.invoke(getter));
+		} else {
+			throw new RuntimeException("Parent Metadata for <else-if> tag is instance of not supported class "
+					+ parent.metadata.getClass().getSimpleName());
+			//TODO throw proper exception
+		}
+		
+		return klass;
+	}
+
+	public JMethod conditionMethod(JDefinedClass klass, ASTNode.ElseIfBranch node)
+	{
+		final JMethod condition = klass.method(JMod.PUBLIC, Type_t, "getCondition");
+		comment_stamp(condition.body());
+		final JavaExprGen javagen = createExprGen(node, null);
+		final JVar test = condition.body().decl(Type_t, "test",
+						       node.condition.accept(javagen));
+		condition.body()._return(test);
+		return condition;
 	}
 
 	public JDefinedClass indexClass(JDefinedClass parent, String id, ASTNode.Itername node)

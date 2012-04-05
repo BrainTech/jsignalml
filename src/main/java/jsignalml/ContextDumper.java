@@ -1,19 +1,19 @@
 package jsignalml;
-import java.util.List;
-import org.apache.commons.lang.StringUtils;
-
-import jsignalml.codec.Context;
-import jsignalml.codec.Signalml;
-import jsignalml.codec.OuterLoopClass;
-import jsignalml.codec.ConditionalClass;
-import jsignalml.codec.Param;
-import jsignalml.codec.FunctionParam;
-import jsignalml.codec.ChannelSetClass;
-import jsignalml.codec.ChannelClass;
 
 import java.nio.FloatBuffer;
+import java.util.List;
 
+import jsignalml.codec.ChannelClass;
+import jsignalml.codec.ChannelSetClass;
+import jsignalml.codec.ConditionalClass;
+import jsignalml.codec.Context;
+import jsignalml.codec.FunctionParam;
+import jsignalml.codec.OuterLoopClass;
+import jsignalml.codec.Param;
+import jsignalml.codec.Signalml;
 import jsignalml.logging.Logger;
+
+import org.apache.commons.lang.StringUtils;
 
 /**
  * Produces a human readable representation of the Context tree.
@@ -57,16 +57,25 @@ public class ContextDumper implements ContextVisitor<Integer> {
 		return level;
 	}
 
-	@Override public Integer visit(Param node, String name, Integer level)
+	@Override public Integer visit(ConditionalClass.ElseIfBranchClass node, String name, Integer level)
+	{
+		return dumper.put(level, "%s => ElseIfCondition is %s\n", name,
+				  node.getCondition().isTrue() ? "True" : "False");
+	}
+
+	@Override public Integer visit(Param<?> node, String name, Integer level)
 	{
 		return dumper.put(level, "%s => %s\n", name, node.get().repr());
 	}
 
 	@Override public Integer visit(ChannelSetClass node, String name, Integer level)
 	{
-		node.createChannels();
+		int nrOfChannels = node.getNumberOfChannels();
+		if (nrOfChannels == 0) {
+			node.createChannels();
+		}
 		return dumper.put(level, "ChannelSet %s number_of_channels=%d\n",
-				  name, node.getNumberOfChannels());
+				  name, nrOfChannels);
 	}
 
 	@Override public Integer visit(ChannelClass node, String name, Integer level)
@@ -87,7 +96,7 @@ public class ContextDumper implements ContextVisitor<Integer> {
 		return ans;
 	}
 
-	@Override public Integer visit(FunctionParam node, String name, Integer level)
+	@Override public Integer visit(FunctionParam<?> node, String name, Integer level)
 	{
 		return dumper.put(level, "%s => %s\n", name, node.get().repr());
 	}
@@ -98,4 +107,9 @@ public class ContextDumper implements ContextVisitor<Integer> {
 		node.accept(dumper, "ROOT", 0);
 		return dumper.dumper.getText();
 	}
+	
+	@Override public String toString() {
+		return dumper.getText();
+	}
+	
 }
