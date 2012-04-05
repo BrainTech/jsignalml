@@ -5,6 +5,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.HashMap;
+import java.util.Set;
 
 import org.apache.commons.lang.NotImplementedException;
 
@@ -233,5 +234,21 @@ public class TypeMap extends Type /* implements Map<Type, Type>  */ {
 	}
 	public TypeInt bin_neg() {
 		throw new ExpressionFault.TypeError();
+	}
+	
+	@Override
+	public String toString() {
+		String result = "TypeMap [";
+		Set<Map.Entry<Type, Type>> entries = this.map.entrySet();
+		int i = 0;
+		for(Map.Entry<Type, Type> entry: entries) {
+			Type key = entry.getKey();
+			Type val = entry.getValue();
+			if (i > 0) result += ", ";
+			result += key + " = " + val;
+			i ++;
+		}
+		result += "]";
+		return result;
 	}
 }

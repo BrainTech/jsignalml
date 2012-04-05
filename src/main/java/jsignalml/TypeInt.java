@@ -389,10 +389,15 @@ public class TypeInt extends Type {
 	public boolean equals(Object obj) {
 		return obj instanceof TypeInt ? value.equals(((TypeInt)obj).value) : false;
 	}
-
+	
 	@Override
-	public Type access(String item)
-	{
+	public Type access(String item) {
 		return this.get();
 	}
+	
+	@Override
+	public String toString() {
+		return (this.getValue() != null) ? this.getValue().toString() : "null";
+	}
+	
 }

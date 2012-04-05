@@ -240,9 +240,13 @@ public class TypeString extends Type {
 	}
 
 	@Override
-	public Type access(String item)
-	{
+	public Type access(String item) {
 		return this.get();
 	}
-
+	
+	@Override
+	public String toString() {
+		return (this.getValue() != null) ? this.getValue().toString() : "null";
+	}
+	
 }
