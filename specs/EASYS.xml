@@ -146,38 +146,8 @@
 								<format>'|S4'</format>
 								<offset>offset + 4 + index * 4</offset>
 							</param>
-							<param id='channel_name_ASCII' type='str'>
-								<expr>trim(channel_name_ASCIIZ)</expr>
-							</param>
-							<!-- 
-							<if id='szukaj1If' test='channel_name_ASCII == "F7"'>
-										<param id='channel_name_temp' type='str'>
-											<expr>channel_name_ASCII + '__siedem'</expr>
-										</param>
-								<else id='szukaj1Else'>
-										<param id='channel_name_temp' type='str'>
-											<expr>channel_name_ASCII + '__inne'</expr>
-										</param>
-								</else>
-							</if>
-							 -->
-							<if id='szukajIf' test='channel_name_ASCII == "F7"'>
-										<param id='channel_name_temp' type='str'>
-											<expr>channel_name_ASCII + '_siedem'</expr>
-										</param>
-								<else-if id='szukajElseIf' test='channel_name_ASCII == "F8"'>
-										<param id='channel_name_temp' type='str'>
-											<expr>channel_name_ASCII + '_osiem'</expr>
-										</param>
-									<else id='szukajElse'>
-										<param id='channel_name_temp' type='str'>
-											<expr>channel_name_ASCII + '_inne'</expr>
-										</param>
-									</else>
-								</else-if>
-							</if>
 							<param id='channel_name' type='str'>
-								<expr>szukajIf.channel_name_temp</expr>
+								<expr>trim(channel_name_ASCIIZ)</expr>
 							</param>
 							<param id='mapping' type='int'>
 								<arg type='int' name='sample' />
