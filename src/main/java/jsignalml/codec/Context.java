@@ -18,38 +18,6 @@ public abstract class Context extends TypeObject {
 		Context old = this.param_map.get(name);
 		if (old != null)
 			throw new SyntaxError("duplicate name " + name); // what exception?
-		
-		TypeString typeOld = null;
-		TypeString typeChild = null;
-		try {
-			typeOld = (old != null && old instanceof Param<?> && ((Param<?>) old)._get() instanceof TypeString) ? (TypeString) ((Param<?>) old)._get() : null;
-		} catch (RuntimeException ex) {
-			//ex.printStackTrace();
-		}
-		try {
-			typeChild = (child != null && child instanceof Param<?> && ((Param<?>) child)._get() instanceof TypeString) ? (TypeString) ((Param<?>) child)._get() : null;
-		} catch (RuntimeException ex) {
-			//ex.printStackTrace();
-		}
-		String typeOldName = (typeOld != null) ? typeOld.toString() : null;
-		String typeChildName = (typeChild != null) ? typeChild.toString() : null;
-		String c = (typeChildName != null) ? typeChildName : (typeOldName != null) ? typeOldName : ""; //jsignalml.TypeString@217c59=Fp1
-		if (c.length() > 0) {
-			int eq = c.indexOf("=");
-			if (eq >= 0) {
-				c = c.substring(eq + 1);
-			}
-		}
-		/*
-		if (c.startsWith("F7")) {
-			System.out.println("F7 registered");
-		} else if (c.startsWith("F8")) {
-			System.out.println("F8 registered");
-		} else if (c.startsWith("RES")) {
-			System.out.println("RES registered");
-		}
-		*/
-		
 		this.param_map.put(name, child);
 	}
 
