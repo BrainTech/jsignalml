@@ -74,21 +74,28 @@
 		</file>
 
 		<param id='msi_format' type='str'>
-		        <format>'|S1'</format>
-		        <line>-1</line>
-		        <pattern>"MSI.Format: ([a-zA-Z]+)"</pattern>
-		        <group>1</group>
+			<format>'|S1'</format>
+			<line>-1</line>
+			<pattern>"MSI.Format: ([a-zA-Z]+)"</pattern>
+			<group>1</group>
 		</param>
 
 		<if id='size' test='msi_format == "SHORT"'>
 			<param id='sample_size_1' type='int'>
 				<expr>2</expr>
 			</param>
-			<else>  <!--  test='msi_format == "FLOAT"'> -->
+
+			<else-if test='msi_format == "LONG"'>
 				<param id='sample_size_1' type='int'>
 					<expr>4</expr>
 				</param>
-			</else>
+
+				<else>  <!-- test='msi_format == "FLOAT"'> -->
+					<param id='sample_size_1' type='int'>
+						<expr>4</expr>
+					</param>
+				</else>
+			</else-if>
 
 		</if>
 
@@ -97,16 +104,21 @@
 				<expr>"&gt;i2"</expr>
 			</param>
 
-			<else>  <!--  test='msi_format == "FLOAT"'> -->
+			<else-if test='msi_format == "LONG"'>
 				<param id='sample_format_1' type='str'>
-					<expr>"&gt;f4"</expr>
+					<expr>"&gt;i4"</expr>
 				</param>
-			</else>
+
+				<else>  <!-- test='msi_format == "FLOAT"'> -->
+					<param id='sample_format_1' type='str'>
+						<expr>"&gt;f4"</expr>
+					</param>
+				</else>
+			</else-if>
 
 		</if>
 
-
-<!--   XXX : TODO: apply if for appropriate formats, i.e. FLOAT, LONG, DOUBLE
+<!--   TODO: apply if-else for DOUBLE format
 		<else-if id='format' test='msi_format == "LONG"'>
 			<param id='sample_size_1' type='int'>
 				<expr>4</expr>
@@ -116,6 +128,7 @@
 			</param>
 		</else-if>
  -->
+
 		<param id='sample_size' type='int'>
 			<expr>size.sample_size_1</expr>
 		</param>
@@ -126,11 +139,12 @@
 
 		<channelset id='data_test'>
 
-			<for-each id='channels' var='index' sequence='range(number_of_channels)' type='int'>
-				<channel mapping='mapping' format='sample_format'
-							length='number_of_samples' data='data_file' fast='1'/>
+			<for-each id='channels' var='index' sequence='range(number_of_channels)'
+				type='int'>
+				<channel mapping='mapping' format='sample_format' length='number_of_samples'
+					data='data_file' fast='1' />
 
-				
+
 				<param id='channel_name' type='str'>
 					<format>'|S1'</format>
 					<line>-1</line>
@@ -139,7 +153,8 @@
 				</param>
 
 				<param id='single_channel_name_pattern' type='str'>
-					<expr>"MSI.MegChanNames: ([a-zA-Z0-9]+,){" + str(index) + "}([A-Za-z0-9]+)"</expr>
+					<expr>"MSI.MegChanNames: ([a-zA-Z0-9]+,){" + str(index) +
+						"}([A-Za-z0-9]+)"</expr>
 				</param>
 
 				<param id='channel_index' type='int'>
@@ -158,7 +173,7 @@
 					<expr>(sample*total_channels + channel_index -1) * sample_size</expr>
 				</param>
 
- 			</for-each>
+			</for-each>
 		</channelset>
 
 
