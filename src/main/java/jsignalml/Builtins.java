@@ -607,37 +607,37 @@ public class Builtins extends ASTNode {
 			return function;
 		} else if (name.equals("sin")) {
 			ASTNode.BuiltinFunction function =
-				new ASTNode.BuiltinFunction(owner, name, null, _sin);
+				new ASTNode.BuiltinFunction(owner, name, new TypeFloat(), _sin);
 			function.arg("x", null);
 			return function;
 		} else if (name.equals("cos")) {
 			ASTNode.BuiltinFunction function =
-				new ASTNode.BuiltinFunction(owner, name, null, _cos);
+				new ASTNode.BuiltinFunction(owner, name, new TypeFloat(), _cos);
 			function.arg("x", null);
 			return function;
 		} else if (name.equals("tan")) {
 			ASTNode.BuiltinFunction function =
-				new ASTNode.BuiltinFunction(owner, name, null, _tan);
+				new ASTNode.BuiltinFunction(owner, name, new TypeFloat(), _tan);
 			function.arg("x", null);
 			return function;
 		} else if (name.equals("cot")) {
 			ASTNode.BuiltinFunction function =
-				new ASTNode.BuiltinFunction(owner, name, null, _cot);
+				new ASTNode.BuiltinFunction(owner, name, new TypeFloat(), _cot);
 			function.arg("x", null);
 			return function;
 		} else if (name.equals("exp")) {
 			ASTNode.BuiltinFunction function =
-				new ASTNode.BuiltinFunction(owner, name, null, _exp);
+				new ASTNode.BuiltinFunction(owner, name, new TypeFloat(), _exp);
 			function.arg("x", null);
 			return function;
 		} else if (name.equals("log")) {
 			ASTNode.BuiltinFunction function =
-				new ASTNode.BuiltinFunction(owner, name, null, _log);
+				new ASTNode.BuiltinFunction(owner, name, new TypeFloat(), _log);
 			function.arg("x", null);
 			return function;
 		} else if (name.equals("log10")) {
 			ASTNode.BuiltinFunction function =
-				new ASTNode.BuiltinFunction(owner, name, null, _log10);
+				new ASTNode.BuiltinFunction(owner, name, new TypeFloat(), _log10);
 			function.arg("x", null);
 			return function;
 		}
