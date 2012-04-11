@@ -321,6 +321,20 @@ public abstract class Type implements Comparable<Type> {
 		return this.call(Arrays.asList(args));
 	}
 
+	public String call(String arg)
+	{
+		throw new ExpressionFault.Unsupported(this.getClass(), "call");
+	}
+
+	public long call(long arg)
+	{
+		throw new ExpressionFault.Unsupported(this.getClass(), "call");
+	}
+
+	public double call(double arg)
+	{
+		throw new ExpressionFault.Unsupported(this.getClass(), "call");
+	}
 
 	public Type index(Type sub)
 	{
