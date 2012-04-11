@@ -109,7 +109,7 @@ public class TextBuffer {
 	private String getLine(int lineNumber) throws IOException {
 		log.debug("Looking into line: %d, currentLinesCounter: %d", 
 				lineNumber, currentLinesCounter);
-		if (currentLinesCounter > lineNumber) {
+		if (currentLinesCounter >= lineNumber) {
 			log.debug("Line found within cached lines, returning [" 
 					+ linesCache.get(lineNumber-1) + "]");
 			
