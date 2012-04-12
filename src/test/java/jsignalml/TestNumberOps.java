@@ -780,7 +780,7 @@ public class TestNumberOps {
 
 	@Test public void eval_sin_0() throws Exception
 	{
-	    equal("sin(0)", 0);
+	    equal("sin(0)", 0.0);
 	}
 
 	@Test public void val_sin_30() throws Exception
@@ -800,7 +800,7 @@ public class TestNumberOps {
 
 	@Test public void eval_cos_0() throws Exception
 	{
-		equal("cos(0)", 1);
+		equal("cos(0)", 1.0);
 	}
 
 	@Test public void eval_cos_30() throws Exception
@@ -820,7 +820,7 @@ public class TestNumberOps {
 
 	@Test public void eval_tan_0() throws Exception
 	{
-	    equal("tan(0)", 0);
+	    equal("tan(0)", 0.0);
 	}
 
 	@Test public void eval_tan_30() throws Exception
@@ -880,7 +880,7 @@ public class TestNumberOps {
 
 	@Test public void eval_exp_zero() throws Exception
 	{
-		equal("exp(0)", 1);
+		equal("exp(0)", 1.0);
 	}
 
 	@Test public void eval_log_int_10() throws Exception
@@ -895,7 +895,7 @@ public class TestNumberOps {
 
 	@Test public void eval_log10_int_10() throws Exception
 	{
-		equal("log10(10)", 1);
+		equal("log10(10)", 1.0);
 	}
 
 	@Test public void eval_log10_float_7_5() throws Exception
