@@ -1549,18 +1549,17 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 				"getCalibrationGain");
 		comment_stamp(method.body());
 
+		JInvocation ji = null;
 		if (calibrGainPresent) {
 			final JVar value = method.body().decl(Type_t, "value",
 					JExpr.invoke("get_calibration_gain").invoke("get"));
-			final JVar cast = method.body().decl(TypeFloat_t, "cast",
-					TypeFloat_I.invoke("make").arg(value));
-			method.body()._return(cast);
+			ji = TypeFloat_I.invoke("make").arg(value);
 		}
 		else {
-			final JVar value = method.body().decl(TypeFloat_t, "cast",
-					JExpr._new(TypeFloat_t).arg("1"));
-			method.body()._return(value);
+			ji = JExpr._new(TypeFloat_t).arg("1");
 		}
+		final JVar cast = method.body().decl(TypeFloat_t, "cast", ji);
+		method.body()._return(cast);
 
 		return method;
 	}
@@ -1571,18 +1570,18 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 				"getCalibrationOffset");
 		comment_stamp(method.body());
 
+		JInvocation ji = null;
 		if (calibOffsPresent) {
 			final JVar value = method.body().decl(Type_t, "value",
 					JExpr.invoke("get_calibration_offset").invoke("get"));
-			final JVar cast = method.body().decl(TypeFloat_t, "cast",
-					TypeFloat_I.invoke("make").arg(value));
-			method.body()._return(cast);
+			ji = TypeFloat_I.invoke("make").arg(value);
 		}
 		else {
-			final JVar value = method.body().decl(TypeFloat_t, "cast",
-					JExpr._new(TypeFloat_t).arg("0"));
-			method.body()._return(value);
+			 ji = JExpr._new(TypeFloat_t).arg("0");
 		}
+		final JVar cast = method.body().decl(TypeFloat_t, "cast", ji);
+		method.body()._return(cast);
+		
 		return method;
 	}
 
