@@ -1,11 +1,14 @@
 package jsignalml.codec;
 
 import java.util.Map;
+import java.util.Set;
+
 import jsignalml.ContextVisitor;
-import jsignalml.SyntaxError;
 import jsignalml.ExpressionFault;
+import jsignalml.SyntaxError;
 import jsignalml.Type;
 import jsignalml.TypeObject;
+import jsignalml.TypeString;
 import jsignalml.logging.Logger;
 
 public abstract class Context extends TypeObject {
@@ -38,11 +41,18 @@ public abstract class Context extends TypeObject {
 	 * registered parameters in turn.
 	 */
 	public <T> T accept(ContextVisitor<T> v, String name, T data) {
-		log.info("%s accept(%s, %s, %s)", this, v, name, data);
+		String visitorInfo = "[" + v + "]";
+		visitorInfo = visitorInfo.replaceAll("[\t ]+", "");
+		visitorInfo = visitorInfo.replaceAll("[\r\n]+", " ");
+		log.info("%s : accept(%s, %s, %s)", this, visitorInfo, name, data);
 		T newdata = this._accept(v, name, data);
 
-		for(Map.Entry<String, Context> entry: this.param_map.entrySet())
-			entry.getValue().accept(v, entry.getKey(), newdata);
+		Set<Map.Entry<String, Context>> entries = this.param_map.entrySet();
+		for(Map.Entry<String, Context> entry: entries) {
+			String key = entry.getKey();
+			Context val = entry.getValue();
+			val.accept(v, key, newdata);
+		}
 		return newdata;
 	}
 
@@ -64,4 +74,21 @@ public abstract class Context extends TypeObject {
 	 * channels in this namespace should be available.
 	 */
 	public abstract void createChannels();
+
+	@Override
+	public String toString() {
+		String result = /*"Context id=" +*/ this.id() + " = [";
+		Set<Map.Entry<String, Context>> entries = this.param_map.entrySet();
+		int i = 0;
+		for(Map.Entry<String, Context> entry: entries) {
+			String key = entry.getKey();
+			Context val = entry.getValue();
+			if (i > 0) result += ", ";
+			result += key + " = " + val;
+			i ++;
+		}
+		result += "]";
+		return result;
+	}
+	
 }

@@ -147,7 +147,8 @@ public class Processor {
 			System.out.format("expr: %s\n", expr);
 
 			final ASTNode.ExprParam param =
-				new ASTNode.ExprParam(frame.node, "expr", null, expr);
+				new ASTNode.ExprParam(frame.node, "expr", null, expr,
+						null);
 
 			try {
 				final Type type = expr.accept(new TypeVisitor(frame));

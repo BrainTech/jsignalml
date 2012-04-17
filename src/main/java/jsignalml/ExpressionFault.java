@@ -156,12 +156,32 @@ public class ExpressionFault extends RuntimeException {
 	}
 
 	/**
+	 * No match for a given pattern was found.
+	 */
+	public static class NoMatchFoundError extends ExpressionFault {
+		public final String text, pattern;
+		public NoMatchFoundError(java.lang.String text, 
+				java.lang.String pattern) {
+			this.text = text;
+			this.pattern = pattern;
+		}
+
+		public String getMessage() {
+			return format("pattern '%s' not found in the text line '%s'", pattern, text);
+		}
+	}
+
+	
+	/**
 	 * Signifies an error detected by the environment in the course of
 	 * expression evalution.
 	 */
 	public static class ExternalError extends ExpressionFault {
 		public ExternalError(Throwable cause) {
 			super(cause);
+		}
+		public ExternalError(String message) {
+			super(message);
 		}
 	}
 }

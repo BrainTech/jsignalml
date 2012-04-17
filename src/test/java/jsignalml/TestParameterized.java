@@ -1,3 +1,5 @@
+package jsignalml;
+
 import java.util.Arrays;
 import java.util.Collection;
  
@@ -25,7 +27,7 @@ public class TestParameterized {
  
 	@Parameters
 	public static Collection<Object[]> data() {
-		Object[][] data = new Object[][] { { 1, 0 }, { 2, 0 }, { 3, 0 }, { 4, 0 } };
+		Object[][] data = new Object[][] { { 1, 1 }, { 2, 2 }, { 3, 3 }, { 4, decrease(5) } };
 		return Arrays.asList(data);
 	}
  
@@ -33,5 +35,9 @@ public class TestParameterized {
 	public void pushTest() {
 		System.out.println("Parameterized Number is : " + number);
 		assertEquals(expected, number);
+	}
+
+	private static int decrease(int num){
+		return num-1;
 	}
 }

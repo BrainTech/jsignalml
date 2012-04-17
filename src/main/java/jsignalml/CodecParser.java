@@ -2,17 +2,15 @@ package jsignalml;
 
 import static java.lang.String.format;
 
-import java.util.List;
-import java.util.Map;
-import java.io.InputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.InputStream;
 
-import org.w3c.dom.Node;
-import org.w3c.dom.Element;
+import jsignalml.logging.Logger;
 
 import org.apache.log4j.BasicConfigurator;
-import jsignalml.logging.Logger;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 
 /**
  * Translate an XML DOM into an ASTNode tree.
@@ -61,15 +59,18 @@ public class CodecParser {
 		if (name.equals("for-each"))
 			return this.do_forloop(parent, element);
 		if (name.equals("if"))
-			return this.do_conditional(parent, element, false);
+			return this.do_conditional(parent, element);
+			//return this.do_conditional(parent, element, false);
 		if (name.equals("else"))
 			return this.do_else(parent, element);
 		if (name.equals("else-if"))
-			return this.do_conditional(parent, element, true);
+			return this.do_elseIf(parent, element);
+			//return this.do_conditional(parent, element, true);
 		if (name.equals("file"))
 			return this.do_file(parent, element);
 		if (name.equals("expr") || name.equals("format") || name.equals("offset")
-		    || name.equals("pattern") || name.equals("line") || name.equals("xpath"))
+		    || name.equals("pattern") || name.equals("line") || name.equals("xpath")
+		    || name.equals("group"))
 			return null; /* handled directly */
 		log.warn("unknown element: %s", element);
 		return null;
@@ -120,12 +121,15 @@ public class CodecParser {
 		final Expression id = _identifier(element);
 		final String type_ = _attribute(element, "type");
 		final Type type = Type.getType(type_);
+		final String fast_ = _attribute(element, "fast");
+		final Expression fast = _null_or_parse(fast_);
 
 		final Expression expr    = _extract(element, "expr");
 		final Expression format  = _extract(element, "format");
 		final Expression offset  = _extract(element, "offset");
 		final Expression pattern = _extract(element, "pattern");
 		final Expression line    = _extract(element, "line");
+		final Expression group    = _extract(element, "group");
 		final Expression xpath   = _extract(element, "xpath");
 
 		/* The code below is structed like it is to keep it simple and
@@ -136,12 +140,14 @@ public class CodecParser {
 		if (expr != null) {
 			if (format == null && offset == null && pattern == null &&
 			                line == null && xpath == null)
-				p = new ASTNode.ExprParam(parent, id, type, expr);
+				p = new ASTNode.ExprParam(parent, id, type, expr, fast);
 		} else if (format != null && offset != null) {
 			if (expr == null && pattern == null && line == null && xpath == null)
-				p = new ASTNode.BinaryParam(parent, id, type, format, offset);
-		} else if (pattern != null) {
-			throw new UnsupportedOperationException();
+				p = new ASTNode.BinaryParam(parent, id, type, format, offset,
+						fast);
+		} else if (pattern != null && line != null && format != null && group != null) {
+			if (offset == null && xpath == null && expr == null)
+				p = new ASTNode.TextParam(parent, id, type, format, line, pattern, group);
 		} else if (xpath != null) {
 			throw new UnsupportedOperationException();
 		} else {
@@ -202,8 +208,11 @@ public class CodecParser {
 		final Expression mapping = _null_or_parse(_attribute(element, "mapping"));
 		final Expression format = _null_or_parse(_attribute(element, "format"));
 		final Expression length = _null_or_parse(_attribute(element, "length"));
+		final Expression fast = _null_or_parse(_attribute(element, "fast"));
+		final Expression data = _null_or_parse(_attribute(element, "data"));
 
-		final ASTNode.Channel node = new ASTNode.Channel(parent, id, mapping, format, length);
+		final ASTNode.Channel node = new ASTNode.Channel(parent, id, mapping, format,
+				length, fast, data);
 		return node;
 	}
 
@@ -213,9 +222,7 @@ public class CodecParser {
 
 		final Expression id = _identifier(element);
 		final String type = _attribute(element, "type");
-		final String filename_ = _attribute(element, "filename");
-		final Expression filename =
-		        filename_ == null ? null : Expression.Const.make(filename_);
+		final Expression filename = _null_or_parse(_attribute(element, "filename"));
 
 		if (type == null)
 			throw new SyntaxError("<file> needs a type attribute");
@@ -244,16 +251,26 @@ public class CodecParser {
 		return new ASTNode.ForLoop(parent, id, var, type, expr);
 	}
 
-	public ASTNode.Conditional do_conditional(ASTNode parent, Element element,
-						  boolean elsebranch)
+	public ASTNode.Conditional do_conditional(ASTNode parent, Element element)
 	{
-		assert element.getNodeName().equals(elsebranch ? "else-if" : "if");
+		assert element.getNodeName().equals("if");
 
 		final Expression id = _identifier(element);
 		final String condition = _attribute(element, "test");
 
 		final Expression expr = _null_or_parse(condition);
 		return new ASTNode.Conditional(parent, id, expr);
+	}
+
+	public ASTNode.ElseIfBranch do_elseIf(ASTNode parent, Element element)
+	{
+		assert element.getNodeName().equals("else-if");
+
+		final Expression id = _identifier(element);
+		final String condition = _attribute(element, "test");
+		
+		final Expression expr = _null_or_parse(condition);
+		return new ASTNode.ElseIfBranch(parent, id, expr);
 	}
 
 	public ASTNode.ElseBranch do_else(ASTNode parent, Element element)
@@ -320,6 +337,7 @@ public class CodecParser {
 			return _null_or_parse(name);
 	}
 
+
 	public static void main(String...args) throws Exception
 	{
 		BasicConfigurator.configure();
@@ -339,7 +357,10 @@ public class CodecParser {
 		final JavaClassGen gen = new JavaClassGen(typer.getTypeResolver());
 		codec.accept(gen, null);
 		log.info("-- java has been generated --");
-		gen.write(System.out);
+
+		if("true".equalsIgnoreCase(System.getProperties().getProperty("jsignalml.debug", "false"))){
+			gen.write(System.out);
+		}
 
 		if (args.length <= 1)
 			return;

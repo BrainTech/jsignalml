@@ -1,17 +1,13 @@
 package jsignalml.codec;
 
 import java.io.File;
-import java.util.List;
-import java.util.LinkedList;
-import java.util.Map;
 import java.util.ArrayList;
 
-import jsignalml.MyBuffer;
-import jsignalml.ExpressionFault;
-import jsignalml.Type;
-import jsignalml.ContextVisitor;
-import jsignalml.Channel;
 import jsignalml.ChannelSet;
+import jsignalml.ContextVisitor;
+import jsignalml.ExpressionFault;
+import jsignalml.MyBuffer;
+import jsignalml.TextBuffer;
 import jsignalml.util;
 
 public abstract class Signalml extends Context implements jsignalml.Source {
@@ -43,16 +39,35 @@ public abstract class Signalml extends Context implements jsignalml.Source {
 
 	public abstract class FileClass extends Context {
 		MyBuffer buffer;
+		TextBuffer textBuffer;
+
+		protected File currentFilename;
+
+		public File getCurrentFilename(){
+			return currentFilename;
+		}
 
 		public void open(File filename)
 		{
-			if ((filename == null) && (default_filename != null)) {
+			if ((filename == null) && (currentFilename != null)) {
+				filename = currentFilename;
+				default_filename = null;
+			} else if ((filename == null) && (default_filename != null)) {
 				filename = default_filename;
 				default_filename = null;
 			}
 			if (filename == null)
 				throw new ExpressionFault.ValueError("filename must be specified");
 			this.buffer = MyBuffer.open(filename);
+			this.textBuffer = TextBuffer.open(filename);
+			this.currentFilename = filename;
+		}
+
+		public TextBuffer textBuffer()
+		{
+			if (this.textBuffer == null)
+				this.open(null);
+			return this.textBuffer;
 		}
 
 		public MyBuffer buffer()
@@ -68,4 +83,16 @@ public abstract class Signalml extends Context implements jsignalml.Source {
 			return v.visit(this, name, data);
 		}
 	}
+
+	public static boolean isPrimGeneration() {
+		return _prim;
+	}
+
+	public static void setPrimGeneration(boolean prim) {
+		_prim = prim;
+	}
+
+	private static boolean _prim =
+			System.getProperties().getProperty("jsignalml.primitive", "").length() > 0
+				&& System.getProperties().getProperty("jsignalml.primitive").equals("1");
 }

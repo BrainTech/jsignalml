@@ -1,17 +1,9 @@
 package jsignalml;
 
-import java.util.Map;
-import java.util.TreeMap;
-import java.util.Set;
-import java.util.TreeSet;
-import java.util.List;
-import java.util.LinkedList;
-import java.util.Arrays;
-import java.io.File;
-import java.io.IOException;
-import java.io.FileNotFoundException;
 import static java.lang.String.format;
-import static java.util.Collections.unmodifiableList;
+
+import java.util.LinkedList;
+import java.util.List;
 
 import jsignalml.logging.Logger;
 
@@ -151,16 +143,20 @@ public abstract class ASTNode {
 	}
 
 	public static class Channel extends ASTNode {
-		public final Expression mapping, format, length;
+		public final Expression mapping, format, length, fast, data;
 
 		public Channel(ASTNode parent, Expression id, 
-			       Expression mapping, Expression format, Expression length)
+			       Expression mapping, Expression format,
+			       Expression length, Expression fast, Expression data)
 		{
 			super(parent, id);
+
+			this.fast = fast != null ? fast : Processor.parse("0");
 
 			this.mapping = mapping;
 			this.format = format;
 			this.length = length;
+			this.data = data;
 
 			if (mapping == null)
 				throw new SyntaxError("<channel> must have mapping attribute");
@@ -182,8 +178,8 @@ public abstract class ASTNode {
 		@Override
 		public String toString()
 		{
-			return format("ASTNode.Channel %s mapping=%s format=%s", id,
-				      mapping, format);
+			return format("ASTNode.Channel %s mapping=%s format=%s fast=%s",
+					id, mapping, format, fast);
 		}
 
 		@Override
@@ -226,16 +222,20 @@ public abstract class ASTNode {
 	}
 
 	public static class BinaryParam extends ReadParam {
-		final Expression format, offset;
+		final Expression format, offset, fast;
 
 		// XXX: move this somewhere proper?
 		Type _read_type = null;
 
 		public BinaryParam(ASTNode parent, Expression id, Type type,
-		                   Expression format, Expression offset)
+		                   Expression format, Expression offset,
+		                   Expression fast)
 			throws SyntaxError
 		{
 			super(parent, id, type);
+
+			this.fast = fast != null ? fast : Processor.parse("0");
+
 			this.format = format;
 			this.offset = offset;
 
@@ -255,18 +255,55 @@ public abstract class ASTNode {
 			return v.visit(this, data);
 		}
 	}
+	
+	
+	public static class TextParam extends ReadParam {
+		final Expression line, pattern, format, group;
+
+		// XXX: move this somewhere proper?
+		Type _read_type = null;
+
+		public TextParam(ASTNode parent, Expression id, Type type,
+		                   Expression format, Expression line, Expression pattern, Expression group)
+			throws SyntaxError
+		{
+			super(parent, id, type);
+			this.format = format;
+			this.line = line;
+			this.pattern = pattern;
+			this.group = group;
+			// TODO: test file type
+		}
+
+		@Override
+		public String toString()
+		{
+			return format("ASTNode.TextParam %s on %s format=%s line=%s pattern=%s group=%s" ,
+			              id, handle, format, line, pattern, group);
+		}
+
+		@Override
+		public <T> T _accept(ASTVisitor<T> v, T data)
+		{
+			return v.visit(this, data);
+		}
+	}	
 
 	public static class ExprParam extends Param {
-		final Expression expr;
+		final Expression expr, fast;
 
-		public ExprParam(ASTNode parent, Expression id, Type type, Expression expr)
+		public ExprParam(ASTNode parent, Expression id, Type type,
+				Expression expr, Expression fast)
 		{
 			super(parent, id, type);
 			this.expr = expr;
+
+			this.fast = fast != null ? fast : Processor.parse("0");
 		}
-		public ExprParam(ASTNode parent, String id, Type type, Expression expr)
+		public ExprParam(ASTNode parent, String id, Type type,
+				Expression expr, Expression fast)
 		{
-			this(parent, Expression.Const.make(id), type, expr);
+			this(parent, Expression.Const.make(id), type, expr, fast);
 		}
 
 		@Override
@@ -375,7 +412,10 @@ public abstract class ASTNode {
 		{
 			if (type.equals("binary"))
 				return new FileHandle<FileType.BinaryFile>(parent, id, filename);
+			else if(type.equals("text")){
+				return new FileHandle<FileType.TextFile>(parent, id, filename);
 
+			}
 			throw new IllegalArgumentException(format("unkown file type '%s'", type));
 		}
 
@@ -486,6 +526,34 @@ public abstract class ASTNode {
 	public static class Conditional extends ASTNode {
 		public final Expression condition;
 		public ElseBranch elsebranch = null;
+		public ElseIfBranch elseifbranch = null;
+
+		public <T> T accept(ASTVisitor<T> v, T data) {
+			log.debug("%s on %s, %s", v, this, data);
+			T newdata = this._accept(v, data);
+
+			// For conditional pass the type of first child
+			T firstChildType = null;
+
+			// use a copy of the children list in case it changes
+			for(ASTNode child: new LinkedList<ASTNode>(this.children)) {
+				log.trace("recursing into child: %s >> %s", this, child);
+				T childType = child.accept(v, newdata);
+				if (firstChildType == null) {
+					firstChildType = childType;
+				}
+			}
+			log.trace("recursion done: %s -> %s", this, newdata);
+
+			// First child type
+			if (firstChildType != null) {
+				return firstChildType;
+			}
+			// This node type
+			else {
+				return newdata;
+			}
+		}
 
 		public Conditional(ASTNode parent, Expression id, Expression condition) {
 			super(parent, id);
@@ -509,17 +577,64 @@ public abstract class ASTNode {
 		}
 	}
 
+	public static class ElseIfBranch extends ASTNode {
+		public final Expression condition;
+		public ElseBranch elsebranch = null;
+		public ElseIfBranch elseifbranch = null;
+		
+		public ElseIfBranch(ASTNode parent, Expression id, Expression condition) {
+			super(parent, id);
+			if (parent==null)
+				throw new SyntaxError("<else-if> tag must have a parent tag");
+			if (parent instanceof Conditional) {
+				Conditional elseifparent = (Conditional) parent;
+				if (elseifparent.elseifbranch != null)
+					throw new SyntaxError("cannot have more than one <else-if> tag inside parent <if> tag! instead of it please put <else-if> inside those internal <else-if> tag");
+				elseifparent.elseifbranch = this;
+			} else if (parent instanceof ElseIfBranch) {
+				ElseIfBranch elseifparent = (ElseIfBranch) parent;
+				if (elseifparent.elseifbranch != null)
+					throw new SyntaxError("cannot have more than one <else-if> tag inside parent <else-if> tag! instead of it please put <else-if> inside those internal <else-if> tag");
+				elseifparent.elseifbranch = this;
+			} else {
+				throw new SyntaxError("<else-if> tag can only be used inside <if> or <else-if> tag");
+			}
+			if (condition==null)
+				throw new SyntaxError("<else-if> must have test attribute'");
+			this.condition = condition;
+		}
+
+		@Override
+		public String toString()
+		{
+			return format("ASTNode.ElseIfBranch %s test=(%s)", id, condition);
+		}
+
+		@Override
+		public <T> T _accept(ASTVisitor<T> v, T data)
+		{
+			return v.visit(this, data);
+		}
+	}
+	
 	public static class ElseBranch extends ASTNode {
 		public ElseBranch(ASTNode parent, Expression id) {
 			super(parent, id);
 			if (parent==null)
-				throw new SyntaxError("<else> must have a parent");
-			if (!(parent instanceof Conditional))
-				throw new SyntaxError("<else> can only be used with <if>");
-			Conditional ifparent = (Conditional) parent;
-			if (ifparent.elsebranch != null)
-				throw new SyntaxError("cannot have more than one <else>");
-			ifparent.elsebranch = this;
+				throw new SyntaxError("<else> tag must have a parent tag");
+			if (parent instanceof Conditional) {
+				Conditional elseparent = (Conditional) parent;
+				if (elseparent.elsebranch != null)
+					throw new SyntaxError("cannot have more than one <else> tag inside parent <if> tag! instead of it please create new internal <if> tag and than <else> tag inside those new <if>");
+				elseparent.elsebranch = this;
+			} else if (parent instanceof ElseIfBranch) {
+				ElseIfBranch elseparent = (ElseIfBranch) parent;
+				if (elseparent.elsebranch != null)
+					throw new SyntaxError("cannot have more than one <else> tag inside parent <else-if> tag! instead of it please create new internal <if> tag (with or without <else-if> inside) and than <else> tag inside those new <if> or inside new additional <else-if> tag");
+				elseparent.elsebranch = this;
+			} else {
+				throw new SyntaxError("<else> tag can only be used inside <if> or <else-if> tag");
+			}
 		}
 
 		@Override

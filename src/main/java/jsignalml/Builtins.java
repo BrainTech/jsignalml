@@ -1,13 +1,16 @@
 package jsignalml;
 
-import org.apache.commons.lang.StringUtils;
-import org.apache.commons.math.util.FastMath;
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import jsignalml.logging.Logger;
+
+import org.apache.commons.lang.StringUtils;
+import org.apache.commons.math.util.FastMath;
 
 public class Builtins extends ASTNode {
 	static final Logger log = new Logger(Builtins.class);
@@ -33,7 +36,21 @@ public class Builtins extends ASTNode {
 	public static final BigInteger DOUBLE_MAX = new BigDecimal(Double.MAX_VALUE).toBigInteger();
 	public static final BigInteger DOUBLE_MIN = new BigDecimal(1 - Double.MAX_VALUE).toBigInteger();
 
+	/**
+	 * Factorial function
+	 */
 	public static class factorial extends TypeObject {
+
+		@Override
+		public long call(long val) {
+			long ret = 1;
+			while(val > 0) {
+				ret *= val;
+				val--;
+			}
+			return ret;
+		}
+
 		public static TypeInt call(TypeInt x)
 		{
 			BigInteger val = x.getValue();
@@ -61,7 +78,17 @@ public class Builtins extends ASTNode {
 	private static TypeObject _factorial = new factorial();
 	public static TypeObject factorial(){ return _factorial; }
 
+	/**
+	 * Strip function
+	 */
 	public static class strip extends TypeObject {
+
+		@Override
+		public String call(String val)
+		{
+			return StringUtils.strip(val);
+		}
+
 		public static TypeString call(TypeString x)
 		{
 			String val = x.getValue();
@@ -86,7 +113,16 @@ public class Builtins extends ASTNode {
 		throw new RuntimeException();
 	}
 
+	/**
+	 * Trim function
+	 */
 	public static class trim extends TypeObject {
+
+		@Override
+		public String call(String val) {
+			return StringUtils.trim(val);
+		}
+
 		public static TypeString call(TypeString x)
 		{
 			String val = x.getValue();
@@ -105,6 +141,46 @@ public class Builtins extends ASTNode {
 	private static TypeObject _trim = new trim();
 	public static TypeObject trim(){ return _trim; }
 
+	/**
+	 * Fetch
+	 */
+	public static class fetch extends TypeObject {
+		public static TypeString call(TypeString text, TypeString pattern, TypeInt group)
+		{
+			Pattern pat = Pattern.compile(pattern.getValue());
+			Matcher matcher = pat.matcher(text.getValue());
+
+			if (matcher.find()) {
+				return new TypeString(matcher.group(group.getValue().intValue()));
+			}
+
+			return null;
+		}
+
+		@Override
+		public TypeString call(List<Type> args)
+		{
+			if(args.size() != 3)
+				throw new ExpressionFault.ArgMismatch(3, args.size());
+			
+			TypeString retValue = call((TypeString)args.get(0), 
+					(TypeString)args.get(1), (TypeInt)args.get(2));
+			if(retValue != null){
+				return retValue;
+			}
+			
+			throw new ExpressionFault.NoMatchFoundError(((TypeString)args.get(0)).getValue(), 
+					((TypeString)args.get(1)).getValue());
+		}
+	}	
+	
+	private static TypeObject _fetch = new fetch();
+	public static TypeObject fetch(){ return _fetch; }
+
+
+	/**
+	 * Bool
+	 */
 	public static class bool extends TypeObject {
 		public static TypeInt call(Type x)
 		{
@@ -119,10 +195,13 @@ public class Builtins extends ASTNode {
 			return call(args.get(0));
 		}
 	}
-
+	
 	private static TypeObject _bool = new bool();
 	public static TypeObject bool(){ return _bool; }
 
+	/**
+	 * Str
+	 */
 	public static class str extends TypeObject {
 		public static TypeString call(Type x)
 		{
@@ -141,6 +220,9 @@ public class Builtins extends ASTNode {
 	private static TypeObject _str = new str();
 	public static TypeObject str(){ return _str; }
 
+	/**
+	 * Len
+	 */
 	public static class len extends TypeObject {
 		public static TypeInt call(Type x)
 		{
@@ -159,6 +241,9 @@ public class Builtins extends ASTNode {
 	private static TypeObject _len = new len();
 	public static TypeObject len(){ return _len; }
 
+	/**
+	 * Range
+	 */
 	public static class range extends TypeObject {
 		public static TypeList call(TypeInt start, TypeInt stop, TypeInt step)
 		{
@@ -187,6 +272,9 @@ public class Builtins extends ASTNode {
 	private static TypeObject _range = new range();
 	public static TypeObject range(){ return _range; }
 
+	/**
+	 * Get
+	 */
 	public static class get extends TypeObject {
 		public static Type call(TypeMap map, Type key, Type default_)
 		{
@@ -215,6 +303,12 @@ public class Builtins extends ASTNode {
 	 * Sine function
 	 */
 	public static class sin extends TypeObject {
+
+		@Override
+		public double call(double val) {
+			return FastMath.sin(val);
+		}
+
 		public static TypeFloat call(TypeFloat x)
 		{
 			Double val = x.getValue();
@@ -258,6 +352,12 @@ public class Builtins extends ASTNode {
 	 * Cosine function
 	 */
 	public static class cos extends TypeObject {
+
+		@Override
+		public double call(double val) {
+			return FastMath.cos(val);
+		}
+
 		public static TypeFloat call(TypeFloat x) {
 			Double val = x.getValue();
 			Double ret = FastMath.cos(val);
@@ -298,6 +398,12 @@ public class Builtins extends ASTNode {
 	 * Tangent function
 	 */
 	public static class tan extends TypeObject {
+
+		@Override
+		public double call(double val) {
+			return FastMath.tan(val);
+		}
+
 		public static TypeFloat call(TypeFloat x) {
 			Double val = x.getValue();
 			Double ret = FastMath.tan(val);
@@ -338,6 +444,12 @@ public class Builtins extends ASTNode {
 	 * Cotangent function
 	 */
 	public static class cot extends TypeObject {
+
+		@Override
+		public double call(double val) {
+			return 1/FastMath.tan(val);
+		}
+
 		public static TypeFloat call(TypeFloat x) {
 			Double val = x.getValue();
 			Double ret = 1/FastMath.tan(val);
@@ -378,6 +490,12 @@ public class Builtins extends ASTNode {
 	 * Exponential function
 	 */
 	public static class exp extends TypeObject {
+
+		@Override
+		public double call(double val) {
+			return FastMath.exp(val);
+		}
+
 		public static TypeFloat call(TypeFloat x) {
 			Double val = x.getValue();
 			Double ret = FastMath.exp(val);
@@ -418,6 +536,12 @@ public class Builtins extends ASTNode {
 	 * Natural logarithm
 	 */
 	public static class log extends TypeObject {
+
+		@Override
+		public double call(double val) {
+			return FastMath.log(val);
+		}
+
 		public static TypeFloat call(TypeFloat x) {
 			Double val = x.getValue();
 
@@ -467,6 +591,12 @@ public class Builtins extends ASTNode {
 	 * Common logarithm
 	 */
 	public static class log10 extends TypeObject {
+
+		@Override
+		public double call(double val) {
+			return FastMath.log10(val);
+		}
+
 		public static TypeFloat call(TypeFloat x) {
 			Double val = x.getValue();
 			if (val <= 0)
@@ -510,6 +640,9 @@ public class Builtins extends ASTNode {
 	private static TypeObject _log10 = new log10();
 	public static TypeObject log10(){ return _log10; }
 
+	/**
+	 * @see jsignalml.ASTNode#lookup(java.lang.String)
+	 */
 	public ASTNode.BuiltinFunction lookup(String name)
 	{
 		log.debug("looking for %s", name);
@@ -530,6 +663,13 @@ public class Builtins extends ASTNode {
 			ASTNode.BuiltinFunction function =
 				new ASTNode.BuiltinFunction(owner, name, new TypeString(), _trim);
 			function.arg("s", new TypeString());
+			return function;
+		} else if (name.equals("fetch")) {
+			ASTNode.BuiltinFunction function =
+				new ASTNode.BuiltinFunction(owner, name, new TypeString(), _fetch);
+			function.arg("text", new TypeString());
+			function.arg("pattern", new TypeString());
+			function.arg("group", new TypeInt());
 			return function;
 		} else if (name.equals("bool")) {
 			ASTNode.BuiltinFunction function =
@@ -562,37 +702,37 @@ public class Builtins extends ASTNode {
 			return function;
 		} else if (name.equals("sin")) {
 			ASTNode.BuiltinFunction function =
-				new ASTNode.BuiltinFunction(owner, name, null, _sin);
+				new ASTNode.BuiltinFunction(owner, name, new TypeFloat(), _sin);
 			function.arg("x", null);
 			return function;
 		} else if (name.equals("cos")) {
 			ASTNode.BuiltinFunction function =
-				new ASTNode.BuiltinFunction(owner, name, null, _cos);
+				new ASTNode.BuiltinFunction(owner, name, new TypeFloat(), _cos);
 			function.arg("x", null);
 			return function;
 		} else if (name.equals("tan")) {
 			ASTNode.BuiltinFunction function =
-				new ASTNode.BuiltinFunction(owner, name, null, _tan);
+				new ASTNode.BuiltinFunction(owner, name, new TypeFloat(), _tan);
 			function.arg("x", null);
 			return function;
 		} else if (name.equals("cot")) {
 			ASTNode.BuiltinFunction function =
-				new ASTNode.BuiltinFunction(owner, name, null, _cot);
+				new ASTNode.BuiltinFunction(owner, name, new TypeFloat(), _cot);
 			function.arg("x", null);
 			return function;
 		} else if (name.equals("exp")) {
 			ASTNode.BuiltinFunction function =
-				new ASTNode.BuiltinFunction(owner, name, null, _exp);
+				new ASTNode.BuiltinFunction(owner, name, new TypeFloat(), _exp);
 			function.arg("x", null);
 			return function;
 		} else if (name.equals("log")) {
 			ASTNode.BuiltinFunction function =
-				new ASTNode.BuiltinFunction(owner, name, null, _log);
+				new ASTNode.BuiltinFunction(owner, name, new TypeFloat(), _log);
 			function.arg("x", null);
 			return function;
 		} else if (name.equals("log10")) {
 			ASTNode.BuiltinFunction function =
-				new ASTNode.BuiltinFunction(owner, name, null, _log10);
+				new ASTNode.BuiltinFunction(owner, name, new TypeFloat(), _log10);
 			function.arg("x", null);
 			return function;
 		}

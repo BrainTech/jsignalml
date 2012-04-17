@@ -72,14 +72,17 @@ public class ASTTypeVisitor extends ASTVisitor<Type> {
 		assert node.mapping != null;
 		assert node.format != null;
 		assert node.length != null;
+		assert node.fast != null;
 		Type mapping_t = node.mapping.accept(_typeVisitor(node));
 		Type format_t = node.format.accept(_typeVisitor(node));
 		Type length_t = node.length.accept(_typeVisitor(node));
-		log.info("%s mapping.type=%s format.type=%s length.type=%s",
+		Type fast_t = node.fast.accept(_typeVisitor(node));
+		log.info("%s mapping.type=%s format.type=%s length.type=%s fast.type=%s",
 			 node,
 			 typename(mapping_t),
 			 typename(format_t),
-			 typename(length_t));
+			 typename(length_t),
+			 typename(fast_t));
 
 		return putCached(node, null);
 	}
@@ -146,6 +149,68 @@ public class ASTTypeVisitor extends ASTVisitor<Type> {
 	}
 
 	@Override
+	public Type visit(ASTNode.TextParam node, Type parent)
+	{
+		Type cached = this.getCached(node);
+		if (cached != null)
+			return cached == _null_repl ? null : cached;
+
+		final TypeVisitor checker = _typeVisitor(node);
+
+		{
+			assert node.format != null;
+			final Type t1 = node.format.accept(checker);
+			log.info("%s format.type=%s", node, typename(t1));
+			assert_type(t1, TypeString.I);
+		}
+
+		{
+			assert node.line != null;
+			final Type t2 = node.line.accept(checker);
+			log.info("%s line.type=%s", node, typename(t2));
+			assert_type(t2, TypeInt.I);
+		}
+
+		{
+			assert node.pattern != null;
+			final Type t3 = node.pattern.accept(checker);
+			log.info("%s pattern.type=%s", node, typename(t3));
+			assert_type(t3, TypeString.I);
+		}
+
+		{
+			assert node.group != null;
+			final Type t4 = node.group.accept(checker);
+			log.info("%s group.type=%s", node, typename(t4));
+			assert_type(t4, TypeInt.I);
+		}
+
+		final Type type;
+		{
+			// XXX: change the visitor to use outer context
+			// this will only work for very simple expressions
+			final EvalVisitor valuator = EvalVisitor.create(node);
+			Type value;
+			try{
+				value = node.format.accept(valuator);
+			} catch(Frame.CannotEvaluate e) {
+				value = null;
+			}
+			assert_type(value, TypeString.I);
+			final Type readtype;
+			if (value != null)
+				readtype = BitForm.get(((TypeString)value)).readType();
+			else
+				readtype = null;
+
+			node._read_type = readtype;
+			type = node.type != null ? node.type : readtype;
+		}
+
+		return putCached(node, type);
+	}
+	
+	@Override
 	public Type visit(ASTNode.Positional node, Type parent)
 	{
 		Type cached = this.getCached(node);
@@ -209,7 +274,7 @@ public class ASTTypeVisitor extends ASTVisitor<Type> {
 		Type t1 = node.condition.accept(_typeVisitor(node));
 		log.info("%s condition.type=%s", node, typename(t1));
 
-		return putCached(node, null);
+		return putCached(node, t1);
 	}
 
 	@Override

@@ -1,0 +1,7 @@
+number_of_channels: 10
+channel_names: A1,A2,A3,C1,C2,C3,B1,B2,B3,00
+channel_filenames: ALT_TEST_20100406_1530_A1.alt_dta,ALT_TEST_20100406_1530_A2.alt_dta,ALT_TEST_20100406_1530_A3.alt_dta,ALT_TEST_20100406_1530_C1.alt_dta,ALT_TEST_20100406_1530_C2.alt_dta,ALT_TEST_20100406_1530_C3.alt_dta,ALT_TEST_20100406_1530_B1.alt_dta,ALT_TEST_20100406_1530_B2.alt_dta,ALT_TEST_20100406_1530_B3.alt_dta,ALT_TEST_20100406_1530_00.alt_dta
+channel_sampling_frequencies: 143.21,243.21,343.21,443.21,543.21,643.21,743.21,843.21,943.21,1043.21
+channel_nrs_of_samples: 3,3,3,4,4,4,5,5,5,6
+channel_calibration_gains: 1.0,1.1,1.2,2.0,2.1,2.2,3.0,3.1,3.2,4.0
+channel_calibration_offsets: 0.0,0.1,0.2,0.31,0.41,0.51,0.601,0.701,0.801,0.9999

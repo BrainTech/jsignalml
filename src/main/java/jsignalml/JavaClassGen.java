@@ -1,42 +1,39 @@
 package jsignalml;
 
-import java.util.List;
-import java.util.Map;
-import java.util.HashMap;
-import java.util.Arrays;
+import static java.lang.String.format;
+import static jsignalml.Type.typename;
+import static jsignalml.codec.Signalml.isPrimGeneration;
+
 import java.io.File;
 import java.io.OutputStream;
 import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
-import static java.lang.String.format;
+import java.util.List;
 
-import com.sun.codemodel.JClass;
-import com.sun.codemodel.JDefinedClass;
-import com.sun.codemodel.JMethod;
-import com.sun.codemodel.JCodeModel;
-import com.sun.codemodel.JExpression;
-import com.sun.codemodel.JExpr;
-import com.sun.codemodel.JInvocation;
-import com.sun.codemodel.JConditional;
-import com.sun.codemodel.JGenerable;
-import com.sun.codemodel.JType;
-import com.sun.codemodel.JBlock;
-import com.sun.codemodel.JFieldVar;
-import com.sun.codemodel.JFieldRef;
-import com.sun.codemodel.JTryBlock;
-import com.sun.codemodel.JCatchBlock;
-import com.sun.codemodel.JForEach;
-import com.sun.codemodel.JForLoop;
-import com.sun.codemodel.JVar;
-import com.sun.codemodel.JMod;
-import com.sun.codemodel.JClassAlreadyExistsException;
-import com.sun.codemodel.writer.SingleStreamCodeWriter;
-import com.sun.codemodel.writer.FileCodeWriter;
+import jsignalml.ASTNode.ElseIfBranch;
+import jsignalml.codec.Signalml.FileClass;
+import jsignalml.logging.Logger;
 
 import org.apache.log4j.BasicConfigurator;
 
-import static jsignalml.Type.typename;
-import jsignalml.logging.Logger;
+import com.sun.codemodel.JBlock;
+import com.sun.codemodel.JClass;
+import com.sun.codemodel.JClassAlreadyExistsException;
+import com.sun.codemodel.JCodeModel;
+import com.sun.codemodel.JDefinedClass;
+import com.sun.codemodel.JExpr;
+import com.sun.codemodel.JExpression;
+import com.sun.codemodel.JFieldRef;
+import com.sun.codemodel.JFieldVar;
+import com.sun.codemodel.JForLoop;
+import com.sun.codemodel.JGenerable;
+import com.sun.codemodel.JInvocation;
+import com.sun.codemodel.JMethod;
+import com.sun.codemodel.JMod;
+import com.sun.codemodel.JType;
+import com.sun.codemodel.JVar;
+import com.sun.codemodel.writer.FileCodeWriter;
+import com.sun.codemodel.writer.SingleStreamCodeWriter;
 
 public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 	public static final Logger log = new Logger(JavaClassGen.class);
@@ -66,8 +63,9 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 		GET_P = "get_p",
 		CALL_P = "call_p";
 
-	public static final boolean _prim =
-		System.getProperties().getProperty("jsignalml.primitive", "").length() > 0;
+	public boolean calibrGainPresent = false;
+
+	public boolean calibOffsPresent = false;
 
 	public static final boolean _comments =
 		System.getProperties().getProperty("jsignalml.comments", "1").equals("1");
@@ -103,6 +101,7 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 	final JClass ChannelSet_t = this.model.ref(ChannelSet.class);
 	final JClass Channel_t = this.model.ref(Channel.class);
 	final JClass MyBuffer_t = this.model.ref(MyBuffer.class);
+	final JClass TextBuffer_t = this.model.ref(TextBuffer.class);
 	final JClass BitForm_t = this.model.ref(BitForm.class);
 	final JClass Builtins_t = this.model.ref(Builtins.class);
 	final JClass RuntimeException_t = this.model.ref(RuntimeException.class);
@@ -116,6 +115,7 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 	final JClass System_t = this.model.ref(System.class);
 	final JClass FloatBuffer_t = this.model.ref(FloatBuffer.class);
 	final JClass ByteBuffer_t = this.model.ref(ByteBuffer.class);
+	final JClass FileClass_t = this.model.ref(FileClass.class);
 
 	JFieldVar log_var = null; // this should be set when Signalml class is created.
 	final ASTTypeResolver typeresolver;
@@ -231,6 +231,14 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 			final JBlock block = this.create_params.block();
 			comment_stamp(block);
 			block.add(JExpr.invoke("register").arg(name).arg(param_inv));
+
+			if (name.equals("calibration_gain")) {
+				log.info("calibration_gain present");
+				calibrGainPresent = true;
+			} else if (name.equals("calibration_offset")) {
+				log.info("calibration_offset present");
+				calibOffsPresent = true;
+			}
 		}
 
 		void registerContext(String name, JDefinedClass context_class, JExpression get)
@@ -274,9 +282,11 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 	 */
 	class MetadataIfBranch extends Metadata {
 		final Metadata elseBranch;
+		final Metadata elseIfBranch;
 		MetadataIfBranch(JDefinedClass klass)
 		{
 			super(klass, "If");
+			this.elseIfBranch = new Metadata(this.klass, "ElseIf");
 			this.elseBranch = new Metadata(this.klass, "Else");
 		}
 	}
@@ -384,7 +394,7 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 		} else {
 			getThisMethod(nested, node);
 			callExprMethod(nested, node);
-			if (_prim)
+			if (isPrimGeneration())
 				callExprMethod_p(nested, node);
 		}
 		return nested;
@@ -402,6 +412,18 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 		return nested;
 	}
 
+	@Override
+	public JDefinedClass visit(ASTNode.TextParam node, JDefinedClass klass)
+	{
+		log.info("visit((TextParam) %s, %s)", node, klass);
+		assert klass != null;
+		final String theid = dynamicID(node, node.id);
+		JDefinedClass nested = paramClass(klass, theid, node);
+		idMethod(nested, node, theid);
+		readParamFunction(nested, node);
+		return nested;
+	}
+
 	JDefinedClass paramClass(JDefinedClass parent, String theid, ASTNode.Param node)
 	{
 		final Type nodetype = this.nodeType(node);
@@ -411,7 +433,9 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 		final JClass param_class = klass_type.narrow(typeref);
 		final JDefinedClass nested;
 		try {
-			nested = parent._class(makeParamClass(theid));
+			String parentParamClass = makeParamClass(theid);
+			comment(parent, "parent paramClass=%s", parentParamClass);
+			nested = parent._class(parentParamClass);
 		} catch(JClassAlreadyExistsException e) {
 			throw new SyntaxError(format("duplicate name: '%s'", theid));
 		}
@@ -500,7 +524,51 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 		final JVar input = body.decl(expected_t, "input", expr);
 		body._return(make_or_cast(nodetype, input, expected));
 
-		if (_prim)
+		if (isPrimGeneration())
+			getMethod_p(klass, nodetype);
+
+		return impl;
+	}
+	
+	public JMethod readParamFunction(JDefinedClass klass, ASTNode.TextParam node)
+	{
+		assert klass != null;
+
+		final JavaExprGen javagen = createExprGen(node, null);
+		final Type nodetype = nodeType(node);
+		final JClass nodetype_t = convertTypeToJClass(nodetype);
+		final JMethod impl = klass.method(JMod.PROTECTED, nodetype_t, GET_PRIV);
+		final JBlock body = impl.body();
+		comment_stamp(body);
+
+		comment(body, "node.type=%s", typename(node.type));
+		comment(body, "node._read_type=%s", typename(node._read_type));
+		comment(body, "--> nodetype=%s", typename(nodetype));
+		comment(body, "format=(%s)", node.format);
+		comment(body, "format.type=%s", typename(node.format.type));
+		comment(body, "line=(%s)", node.line);
+		comment(body, "line.type=%s", typename(node.line.type));
+		comment(body, "pattern=(%s)", node.pattern);
+		comment(body, "pattern.type=%s", typename(node.pattern.type));
+		comment(body, "group=(%s)", node.group);
+		comment(body, "group.type=%s", typename(node.group.type));
+
+		
+		final JVar line_ = body.decl(TypeInt_t, "line", node.line.accept(javagen));
+		final JVar pattern_ = body.decl(TypeString_t, "pattern", node.pattern.accept(javagen));
+		final JVar group_ = body.decl(TypeInt_t, "group", node.group.accept(javagen));
+
+		
+		final JVar textBuf = body.decl(TextBuffer_t, "textBuf", JExpr.invoke("textBuffer"));
+		final JVar _t = body.decl(nodetype_t, "_t", JExpr._null());
+		
+		final JVar value = body.decl(nodetype_t, "value", 
+				textBuf.invoke("read").arg(line_).arg(pattern_).arg(group_).arg(_t));
+		
+
+		body._return(value);
+
+		if (isPrimGeneration())
 			getMethod_p(klass, nodetype);
 
 		return impl;
@@ -566,7 +634,7 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 		final JExpression value = node.expr.accept(javagen);
 		impl.body()._return(do_cast(nodetype, value, node.expr.type));
 
-		if (_prim)
+		if (isPrimGeneration())
 			getMethod_p(klass, nodetype);
 
 		return impl;
@@ -679,6 +747,7 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 	public JDefinedClass visit(ASTNode.FileHandle node, JDefinedClass parent)
 	{
 		log.info("visit((FileHandle) %s, %s)", node, parent);
+
 		final String theid = dynamicID(node, node.id);
 		final JDefinedClass klass = this.fileClass(node, theid, parent);
 		idMethod(klass, node, theid);
@@ -703,6 +772,31 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 		   because otherwise methods abstract super classes cannot be called
 		   from nested classes.
 		*/
+
+		{
+			final JMethod constructor =
+					klass.constructor(JMod.PUBLIC);
+			JBlock body = constructor.body();
+
+			if(node.filename != null){
+
+				final JVar mainFile = body.decl(File_t, "main", 
+						JExpr.ref("default_filename"));
+				final JVar endIndex = body.decl(Integer_t, "endIndex", 
+						mainFile.invoke("getAbsolutePath").invoke("length").
+									minus(mainFile.invoke("getName").invoke("length")));
+				final JVar dirname = body.decl(String_t, "dirname", 
+						mainFile.invoke("getAbsolutePath").invoke("substring").arg(JExpr.lit(0)).arg(endIndex));
+
+				final JavaExprGen javagen = createExprGen(node, null);
+				final JVar filename = body.decl(String_t, "filename",
+						dirname.plus(node.filename.accept(javagen).ref("value")));
+
+				body.assign(JExpr.ref("currentFilename"),
+						JExpr._new(File_t).arg(filename));
+			}
+		}
+
 		{
 			final JMethod get_child =
 				klass.method(JMod.PUBLIC, jsignalml.Type.class, "access");
@@ -917,14 +1011,22 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 	{
 		log.info("visit((Conditional) %s, %s)", node, parent);
 		String theid = dynamicID(node, node.id);
-		final JDefinedClass klass = conditionalClass(theid, parent);
+		List<ASTNode> children = node.children;
+		boolean conditionalWithElseIf = false;
+		for (ASTNode astNode : children) {
+			if(astNode instanceof ElseIfBranch){
+				conditionalWithElseIf = true;
+				break;
+			}
+		}
+		final JDefinedClass klass = conditionalClass(theid, parent, conditionalWithElseIf);
 		comment_stamp(klass);
 		idMethod(klass, node, theid);
 		conditionMethod(klass, node);
 		return klass;
 	}
 
-	JDefinedClass conditionalClass(String id, JDefinedClass parent)
+	JDefinedClass conditionalClass(String id, JDefinedClass parent, boolean conditionalWithElseIf)
 	{
 		final JDefinedClass klass;
 		try {
@@ -940,8 +1042,18 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 
 		final JMethod getter = classCacheMethod(parent, id, klass);
 
-		Metadata metadata = (Metadata) parent.metadata;
-		metadata.registerContext(id, klass, JExpr.invoke(getter));
+		// hasElseIf method body
+		final JMethod hasElseIf = klass.method(JMod.PUBLIC, this.model.BOOLEAN, "hasElseIf");
+		hasElseIf.body()._return(JExpr.lit(conditionalWithElseIf));
+
+		if (parent.metadata instanceof Metadata) {
+			Metadata metadata = (Metadata) parent.metadata;
+			metadata.registerContext(id, klass, JExpr.invoke(getter));
+		} else {
+			throw new RuntimeException("Parent Metadata for <if> tag is instance of not supported class "
+					+ parent.metadata.getClass().getSimpleName());
+			//TODO throw proper exception
+		}
 
 		return klass;
 	}
@@ -976,16 +1088,84 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 		} catch(JClassAlreadyExistsException e) {
 			throw new RuntimeException("WTF?");
 		}
-		klass._extends(jsignalml.codec.ConditionalClass.ElseBranchClass.class);
-		comment_stamp(klass);
-
-		klass.metadata = new Metadata(klass);
-		log.info("%s.metadata has been set", klass);
-
-		MetadataIfBranch metadata = (MetadataIfBranch) parent.metadata;
-		metadata.elseBranch.registerContext(id, klass, JExpr._new(klass));
+		if (parent.metadata instanceof MetadataIfBranch) {
+			MetadataIfBranch metadata = (MetadataIfBranch) parent.metadata;
+			metadata.elseBranch.registerContext(id, klass, JExpr._new(klass));
+			klass._extends(jsignalml.codec.ConditionalClass.ElseBranchClass.class);
+			comment_stamp(klass);
+			klass.metadata = new Metadata(klass);
+			log.info("%s.metadata has been set", klass);
+		} else {
+			throw new RuntimeException("Parent Metadata for <else> tag is instance of not supported class "
+					+ parent.metadata.getClass().getSimpleName());
+			//TODO throw proper exception
+		}
 
 		return klass;
+	}
+
+	public JDefinedClass visit(ASTNode.ElseIfBranch node, JDefinedClass parent)
+	{
+		log.info("visit((ElseIfBranch) %s, %s)", node, parent);
+		final String theid = dynamicID(node, node.id);
+		
+		// lets check if there is any else-if inside this node
+		List<ASTNode> children = node.children;
+		boolean conditionalWithElseIf = false;
+		for (ASTNode astNode : children) {
+			if(astNode instanceof ElseIfBranch){
+				conditionalWithElseIf = true;
+				break;
+			}
+		}
+		
+		final JDefinedClass klass = elseIfBranchClass(theid, parent, conditionalWithElseIf);
+		comment_stamp(klass);
+		idMethod(klass, node, theid);
+		conditionMethod(klass, node);
+		return klass;
+	}
+
+	public JDefinedClass elseIfBranchClass(String id, JDefinedClass parent, boolean conditionalWithElseIf)
+	{
+		final JDefinedClass klass;
+		try {
+			klass = parent._class("ElseIf_" + id);
+		} catch(JClassAlreadyExistsException e) {
+			throw new RuntimeException("WTF?");
+		}
+		klass._extends(jsignalml.codec.ConditionalClass.ElseIfBranchClass.class);
+		comment_stamp(klass);
+		
+		final JMethod hasElseIf = klass.method(JMod.PUBLIC, this.model.BOOLEAN, "hasElseIf");
+		hasElseIf.body()._return(JExpr.lit(conditionalWithElseIf));
+		
+		klass.metadata = new MetadataIfBranch(klass);
+		log.info("%s.metadata/else-if has been set", klass);
+		
+		final JMethod getter = classCacheMethod(parent, id, klass);
+		
+		if (parent.metadata instanceof MetadataIfBranch) {
+			MetadataIfBranch metadata = (MetadataIfBranch) parent.metadata;
+			metadata.elseIfBranch.registerContext(id, klass, JExpr.invoke(getter));
+		} else {
+			throw new RuntimeException("Parent Metadata for <else-if> tag is instance of not supported class "
+					+ parent.metadata.getClass().getSimpleName());
+			//TODO throw proper exception
+		}
+		
+		return klass;
+	}
+
+	public JMethod conditionMethod(JDefinedClass klass, ASTNode.ElseIfBranch node)
+	{
+		final JMethod condition = klass.method(JMod.PUBLIC, Type_t, "getCondition");
+		comment_stamp(condition.body());
+		final JavaExprGen javagen = createExprGen(node, null);
+		final JVar test = condition.body().decl(Type_t, "test",
+						       node.condition.accept(javagen));
+		condition.body()._return(test);
+		return condition;
 	}
 
 	public JDefinedClass indexClass(JDefinedClass parent, String id, ASTNode.Itername node)
@@ -1016,7 +1196,7 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 		comment_stamp(impl.body());
 		impl.body()._throw(JExpr._new(RuntimeException_t));
 
-		if (_prim)
+		if (isPrimGeneration())
 			getMethod_p(klass, nodetype);
 
 		return klass;
@@ -1083,10 +1263,14 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 		underBufferMethod(klass);
 		sampleFormatMethod(klass, node);
 		mapSampleMethod(klass, node);
+		getSampleMethod(klass, node);
 		getSamplesMethod(klass, node);
 		getSamplingFrequencyMethod(klass, node);
 		getNumberOfSamplesMethod(klass, node);
 		getChannelNameMethod(klass, node);
+		getCalibrationGainMethod(klass, node);
+		getCalibrationOffsetMethod(klass, node);
+		getSampleUnitMethod(klass, node);
 
 		return klass;
 	}
@@ -1154,8 +1338,82 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 		return method;
 	}
 
+	public JMethod getSampleMethod(JDefinedClass klass, ASTNode.Channel node)
+	{
+		final Expression fastSet = Processor.parse("1");
+		final JMethod method = klass.method(JMod.PUBLIC, this.model.FLOAT, "getSample");
+		comment_stamp(method.body());
+
+		final JVar sample = method.param(this.model.LONG, "sample");
+
+		final JavaExprGen javagen = createExprGen(node, null);
+		final JBlock body = method.body();
+		final JVar format_ = body.decl(TypeString_t, "format_",
+					       JExpr._this().invoke("getSampleFormat"));
+		final JVar format = body.decl(BitForm_t, "format",
+					      BitForm_t.staticInvoke("get").arg(format_));
+
+		JVar buffer = null;
+		if(node.data != null){
+			final JVar dataFileId = body.decl(Type_t, "dataFileId",
+					node.data.accept(javagen));
+
+			final JVar dataFilehandler = body.decl(FileClass_t, "fileHandler",
+					JExpr.cast(FileClass_t, dataFileId));
+			JVar filename = body.decl(File_t, "file",
+					dataFilehandler.invoke("getCurrentFilename"));
+			body._if(filename.eq(JExpr._null()))
+					._then().invoke(dataFilehandler, "open").arg(JExpr._null());
+			buffer = body.decl(ByteBuffer_t, "buffer",
+					dataFilehandler.invoke("buffer").ref("source"));
+		} else {
+			buffer = body.decl(ByteBuffer_t, "buffer",
+					JExpr.invoke("_buffer").ref("source"));
+		}
+
+		final JVar calibGain = body.decl(this.model.FLOAT, "calibGain",
+				JExpr.invoke("getCalibrationGain").invoke("getValue")
+				.invoke("floatValue"));
+		final JVar calibOffs = body.decl(this.model.FLOAT, "calibOffs",
+				JExpr.invoke("getCalibrationOffset").invoke("getValue")
+				.invoke("floatValue"));
+		final JVar sampleUnit = body.decl(this.model.FLOAT, "sampleUnit",
+				JExpr.invoke("getSampleUnit").invoke("getValue")
+				.invoke("floatValue"));
+
+		if (isPrimGeneration() && node.fast.equals(fastSet)) {
+			// Primitive types code variant
+
+			final JExpression mapping_call = JExpr.cast(model.INT,
+					JExpr.invoke("get_mapping").invoke(CALL_P).arg(sample));
+			final JExpression input = format.invoke("read").arg(buffer)
+					.arg(mapping_call);
+			final JVar value = body.decl(this.model.FLOAT, "value", input);
+
+			body._return(value.minus(calibOffs).mul(calibGain)
+					.mul(sampleUnit));
+
+		}
+		else {
+			final JVar mapping = body.decl(Type_t, "mapping",
+					node.mapping.accept(javagen));
+			final JExpression mapping_call = mapping.invoke(CALL)
+					.arg(JExpr._new(TypeInt_t).arg(sample));
+			final JVar input = body.decl(Type_t, "input",
+					format.invoke("read").arg(buffer)
+					.arg(JExpr.cast(TypeInt_t, mapping_call)));
+			final JExpression conv = TypeFloat_I.invoke("make").arg(input);
+			final JVar ret_value = body.decl(this.model.FLOAT, "ret_value",
+					JExpr.cast(this.model.FLOAT, conv.ref("value")));
+			body._return(ret_value.minus(calibOffs).mul(calibGain)
+					.mul(sampleUnit));
+		}
+		return method;
+	}
+
 	public JMethod getSamplesMethod(JDefinedClass klass, ASTNode.Channel node)
 	{
+		final Expression fastSet = Processor.parse("1");
 		final JMethod method = klass.method(JMod.PUBLIC, this.model.VOID, "getSamples");
 		comment_stamp(method.body());
 		final JVar dst = method.param(FloatBuffer_t, "dst");
@@ -1163,32 +1421,84 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 
 		final JavaExprGen javagen = createExprGen(node, null);
 		final JBlock body = method.body();
-		final JVar mapping = body.decl(Type_t, "mapping",
-					       node.mapping.accept(javagen));
 		final JVar format_ = body.decl(TypeString_t, "format_",
 					       JExpr._this().invoke("getSampleFormat"));
 		final JVar format = body.decl(BitForm_t, "format",
 					      BitForm_t.staticInvoke("get").arg(format_));
-		final JVar buffer = body.decl(ByteBuffer_t, "buffer",
-					      JExpr.invoke("_buffer").ref("source"));
-		final JBlock _while = body._while(JExpr.invoke(dst, "hasRemaining")).body();
-		final JExpression mapping_call = mapping.invoke(CALL)
-			.arg(JExpr._new(TypeInt_t).arg(sample));
-		final JVar input = _while.decl(Type_t, "input",
-					       format.invoke("read").arg(buffer)
-					       .arg(JExpr.cast(TypeInt_t, mapping_call)));
-		final JExpression conv = TypeFloat_I.invoke("make").arg(input);
-		_while.add(dst.invoke("put")
-			   .arg(JExpr.cast(this.model.FLOAT, conv.ref("value"))));
+
+		JVar buffer = null;
+		if(node.data != null){
+			final JVar dataFileId = body.decl(Type_t, "dataFileId",
+					node.data.accept(javagen));
+
+			final JVar dataFilehandler = body.decl(FileClass_t, "fileHandler",
+					JExpr.cast(FileClass_t, dataFileId));
+			JVar filename = body.decl(File_t, "file",
+					dataFilehandler.invoke("getCurrentFilename"));
+			body._if(filename.eq(JExpr._null()))
+					._then().invoke(dataFilehandler, "open").arg(JExpr._null());
+			buffer = body.decl(ByteBuffer_t, "buffer",
+					dataFilehandler.invoke("buffer").ref("source"));
+		} else {
+			buffer = body.decl(ByteBuffer_t, "buffer",
+					JExpr.invoke("_buffer").ref("source"));
+		}
+
+		final JVar calibGain = body.decl(this.model.FLOAT, "calibGain",
+				JExpr.invoke("getCalibrationGain").invoke("getValue")
+				.invoke("floatValue"));
+		final JVar calibOffs = body.decl(this.model.FLOAT, "calibOffs",
+				JExpr.invoke("getCalibrationOffset").invoke("getValue")
+				.invoke("floatValue"));
+		final JVar sampleUnit = body.decl(this.model.FLOAT, "sampleUnit",
+				JExpr.invoke("getSampleUnit").invoke("getValue")
+				.invoke("floatValue"));
+
+		if (isPrimGeneration() && node.fast.equals(fastSet)) {
+			// Primitive types code variant
+			final JVar count = body.decl(this.model.INT, "count",
+					JExpr.invoke(dst, "remaining"));
+
+			final JBlock _while = body._while(count.decr().gt(JExpr.lit(0))).body();
+			final JExpression mapping_call = JExpr.cast(model.INT,
+					JExpr.invoke(makeGetter(node.mapping.toString())).invoke(CALL_P)
+					.arg(sample.incr()));
+			final JExpression input = format.invoke("read").arg(buffer)
+					.arg(mapping_call);
+			final JVar value = _while.decl(this.model.FLOAT, "value", input);
+			_while.add(dst.invoke("put").arg(value.minus(calibOffs).mul(calibGain)
+					.mul(sampleUnit)));
+		}
+		else {
+			final JVar mapping = body.decl(Type_t, "mapping",
+					node.mapping.accept(javagen));
+
+			final JBlock _while = body._while(JExpr.invoke(dst, "hasRemaining")).body();
+			final JExpression mapping_call = mapping.invoke(CALL)
+					.arg(JExpr._new(TypeInt_t).arg(sample.incr()));
+			final JVar input = _while.decl(Type_t, "input",
+					format.invoke("read").arg(buffer)
+					.arg(JExpr.cast(TypeInt_t, mapping_call)));
+			final JExpression conv = TypeFloat_I.invoke("make").arg(input);
+			final JVar ret_value = _while.decl(this.model.FLOAT, "ret_value",
+					JExpr.cast(this.model.FLOAT, conv.ref("value")));
+			_while.add(dst.invoke("put")
+					.arg(ret_value.minus(calibOffs).mul(calibGain)
+					.mul(sampleUnit)));
+		}
 		return method;
 	}
 
 	public JMethod getSamplingFrequencyMethod(JDefinedClass klass, ASTNode.Channel node)
 	{
 		final JMethod method = klass.method(JMod.PUBLIC, this.model.DOUBLE,
-						    "getSamplingFrequency");
+					"getSamplingFrequency");
 		comment_stamp(method.body());
-		method.body()._return(JExpr.lit(0.0));
+		final JVar value = method.body().decl(Type_t, "value",
+					JExpr.invoke("get_sampling_frequency").invoke("get"));
+		final JVar cast = method.body().decl(TypeFloat_t, "cast",
+					TypeFloat_I.invoke("make").arg(value));
+		method.body()._return(cast.invoke("getValue"));
 		return method;
 	}
 
@@ -1206,11 +1516,72 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 		return method;
 	}
 
+	public JMethod getSampleUnitMethod(JDefinedClass klass, ASTNode.Channel node)
+	{
+		final JMethod method = klass.method(JMod.PUBLIC, TypeFloat_t,
+				"getSampleUnit");
+		comment_stamp(method.body());
+		final JVar value = method.body().decl(Type_t, "value",
+				JExpr.invoke("get_sample_unit").invoke("get"));
+		final JVar cast = method.body().decl(TypeFloat_t, "cast",
+				TypeFloat_I.invoke("make").arg(value));
+		method.body()._return(cast);
+		return method;
+	}
+
 	public JMethod getChannelNameMethod(JDefinedClass klass, ASTNode.Channel node)
 	{
 		final JMethod method = klass.method(JMod.PUBLIC, String_t, "getChannelName");
 		comment_stamp(method.body());
-		method.body()._return(JExpr.lit("unknown"));
+
+		final JVar value = method.body().decl(Type_t, "value",
+				JExpr.invoke("get_channel_name").invoke("get"));
+		final JVar val = method.body().decl(TypeString_t, "stringValue",
+				JExpr.cast(TypeString_t, value));
+
+		method.body()._return(val.invoke("getValue"));
+		return method;
+	}
+
+	public JMethod getCalibrationGainMethod(JDefinedClass klass, ASTNode.Channel node)
+	{
+		final JMethod method = klass.method(JMod.PUBLIC, TypeFloat_t,
+				"getCalibrationGain");
+		comment_stamp(method.body());
+
+		JInvocation ji = null;
+		if (calibrGainPresent) {
+			final JVar value = method.body().decl(Type_t, "value",
+					JExpr.invoke("get_calibration_gain").invoke("get"));
+			ji = TypeFloat_I.invoke("make").arg(value);
+		}
+		else {
+			ji = JExpr._new(TypeFloat_t).arg("1");
+		}
+		final JVar cast = method.body().decl(TypeFloat_t, "cast", ji);
+		method.body()._return(cast);
+
+		return method;
+	}
+
+	public JMethod getCalibrationOffsetMethod(JDefinedClass klass, ASTNode.Channel node)
+	{
+		final JMethod method = klass.method(JMod.PUBLIC, TypeFloat_t,
+				"getCalibrationOffset");
+		comment_stamp(method.body());
+
+		JInvocation ji = null;
+		if (calibOffsPresent) {
+			final JVar value = method.body().decl(Type_t, "value",
+					JExpr.invoke("get_calibration_offset").invoke("get"));
+			ji = TypeFloat_I.invoke("make").arg(value);
+		}
+		else {
+			 ji = JExpr._new(TypeFloat_t).arg("0");
+		}
+		final JVar cast = method.body().decl(TypeFloat_t, "cast", ji);
+		method.body()._return(cast);
+		
 		return method;
 	}
 
@@ -1241,17 +1612,17 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 
 		final String field_name = "duration_of_data_record";
 		final ASTNode signalml = new ASTNode.Signalml("Test");
-		new ASTNode.ExprParam(signalml, field_name, new TypeInt(), expr);
+		new ASTNode.ExprParam(signalml, field_name, new TypeInt(), expr, null);
 
 		final Expression expr2 = Processor.parse(field_name + "() + 1");
-		new ASTNode.ExprParam(signalml, field_name+"2", new TypeInt(), expr2);
+		new ASTNode.ExprParam(signalml, field_name+"2", new TypeInt(), expr2, null);
 
 		ASTNode.FileHandle thefile = new ASTNode.FileHandle(signalml, "thefile", null);
 
 		new ASTNode.BinaryParam(thefile, Processor.parse("'readTest'"), new TypeInt(),
-					Expression.Const.make("<i4"), Expression.Const.make(25));
+					Expression.Const.make("<i4"), Expression.Const.make(25), null);
 		new ASTNode.BinaryParam(thefile, Processor.parse("'readTestConv'"), new TypeInt(),
-					Expression.Const.make("|S8"), Expression.Const.make(0));
+					Expression.Const.make("|S8"), Expression.Const.make(0), null);
 
 		final NameCheck check = new NameCheck();
 		signalml.accept(check, null);

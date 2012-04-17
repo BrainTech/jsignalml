@@ -239,4 +239,14 @@ public class TypeString extends Type {
 		throw new ExpressionFault.TypeError();
 	}
 
+	@Override
+	public Type access(String item) {
+		return this.get();
+	}
+	
+	@Override
+	public String toString() {
+		return (this.getValue() != null) ? this.getValue().toString() : "null";
+	}
+	
 }

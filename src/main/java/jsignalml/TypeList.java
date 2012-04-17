@@ -269,4 +269,17 @@ public class TypeList extends Type implements Iterable<Type> {
 	public TypeInt bin_neg() {
 		throw new ExpressionFault.TypeError();
 	}
+	
+	@Override
+	public String toString() {
+		String result = "TypeList [";
+		int i = 0;
+		for (Type type : this.value) {
+			if (i > 0) result += ", ";
+			result += (type != null) ? type.toString() : "null";
+			i ++;
+		}
+		result += "]";
+		return result;
+	}
 }
