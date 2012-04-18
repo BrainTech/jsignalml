@@ -47,6 +47,29 @@ public class TextBuffer {
 		return new TypeString(s);
 	}
 
+	public TypeInt get_line_matching_pattern(TypeString pattern, TypeInt groupNumber){
+		Pattern pat = Pattern.compile(pattern.value);
+		log.debug("Searching for match [" + pattern.value + "] in all the lines");
+		int line = 1;
+		try {
+			while (true) { // either some match will be found or exception will
+							// be thrown
+				String textLine;
+				textLine = getLine(line);
+				Matcher matcher = pat.matcher(textLine);
+				if (matcher.find()) {
+					return new TypeInt(line);
+				}
+				line++;
+
+			}
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			throw new RuntimeException();
+		}
+	}
+
 	private String read(int line, String pattern, int groupNumber) {
 		Pattern pat = Pattern.compile(pattern);
 

@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import jsignalml.codec.Signalml.FileClass;
 import jsignalml.logging.Logger;
 
 import org.apache.commons.lang.StringUtils;
@@ -219,6 +220,27 @@ public class Builtins extends ASTNode {
 
 	private static TypeObject _str = new str();
 	public static TypeObject str(){ return _str; }
+
+	/**
+	 * Get line for pattern
+	 */
+	public static class get_line_for_pattern extends TypeObject {
+		public static TypeInt call(Type file, Type pattern, Type group)
+		{
+			return ((FileClass) file).textBuffer().get_line_matching_pattern((TypeString)pattern, (TypeInt)group);
+		}
+
+		@Override
+		public TypeInt call(List<Type> args)
+		{
+			if(args.size() != 3)
+				throw new ExpressionFault.ArgMismatch(1, args.size());
+			return call(args.get(0), args.get(1), args.get(2));
+		}
+	}
+
+	private static TypeObject _get_line_for_pattern = new get_line_for_pattern();
+	public static TypeObject get_line_for_pattern(){ return _get_line_for_pattern; }
 
 	/**
 	 * Len
@@ -685,6 +707,13 @@ public class Builtins extends ASTNode {
 			ASTNode.BuiltinFunction function =
 				new ASTNode.BuiltinFunction(owner, name, new TypeInt(), _len);
 			function.arg("sequence", null);
+			return function;
+		} else if (name.equals("get_line_for_pattern")) {
+			ASTNode.BuiltinFunction function =
+				new ASTNode.BuiltinFunction(owner, name, new TypeInt(), _get_line_for_pattern);
+			function.arg("file_handler", null);
+			function.arg("pattern", null);
+			function.arg("group", null);
 			return function;
 		} else if (name.equals("range")) {
 			ASTNode.BuiltinFunction function =
