@@ -184,4 +184,19 @@ public class ExpressionFault extends RuntimeException {
 			super(message);
 		}
 	}
+
+	/**
+	 * No attributes allowed for const
+	 */
+	public static class ConstAttributeError extends ExpressionFault {
+		public final String name;
+
+		public ConstAttributeError(String name) {
+			this.name = name;
+		}
+
+		public String getMessage() {
+			return format("attributes not allowed for const '%s'", name);
+		}
+	}
 }

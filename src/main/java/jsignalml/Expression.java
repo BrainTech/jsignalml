@@ -1,19 +1,18 @@
 package jsignalml;
 
-import java.util.List;
-import java.util.LinkedList;
-import java.util.ArrayList;
-import java.util.Map;
-import java.util.TreeMap;
-import java.util.AbstractMap.SimpleImmutableEntry;
-
 import static java.lang.String.format;
 import static java.util.Collections.unmodifiableList;
+import static jsignalml.Type.typename;
+
+import java.util.AbstractMap.SimpleImmutableEntry;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+import jsignalml.ExpressionFault.AttributeError;
+import jsignalml.logging.Logger;
 
 import org.apache.commons.lang.StringUtils;
-
-import jsignalml.logging.Logger;
-import static jsignalml.Type.typename;
 
 public abstract class Expression {
 	public static final Logger log = new Logger(Expression.class);
@@ -348,6 +347,10 @@ public abstract class Expression {
 		@Override
 		public <T> T accept(ExpressionVisitor<T> v)
 		{
+			if(this.struct instanceof Const){
+				throw new ExpressionFault.ConstAttributeError(this.struct.toString());
+			}
+
 			final T struct = this.struct.accept(v);
 			return v.visit(this, struct);
 		}
