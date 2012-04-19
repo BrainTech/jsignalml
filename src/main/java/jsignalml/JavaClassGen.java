@@ -554,9 +554,10 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 		comment(body, "group.type=%s", typename(node.group.type));
 
 		
-		final JVar line_ = body.decl(TypeInt_t, "line", node.line.accept(javagen));
+		// appropriate casting for line and group is required here
+		final JVar line_ = body.decl(TypeInt_t, "line", JExpr.cast(TypeInt_t, node.line.accept(javagen)));
 		final JVar pattern_ = body.decl(TypeString_t, "pattern", node.pattern.accept(javagen));
-		final JVar group_ = body.decl(TypeInt_t, "group", node.group.accept(javagen));
+		final JVar group_ = body.decl(TypeInt_t, "group", JExpr.cast(TypeInt_t, node.group.accept(javagen)));
 
 		
 		final JVar textBuf = body.decl(TextBuffer_t, "textBuf", JExpr.invoke("textBuffer"));
