@@ -145,7 +145,7 @@ public class CodecParser {
 			if (expr == null && pattern == null && line == null && xpath == null)
 				p = new ASTNode.BinaryParam(parent, id, type, format, offset,
 						fast);
-		} else if (pattern != null && line != null && format != null && group != null) {
+		} else if (pattern != null && format != null && group != null) {
 			if (offset == null && xpath == null && expr == null)
 				p = new ASTNode.TextParam(parent, id, type, format, line, pattern, group);
 		} else if (xpath != null) {

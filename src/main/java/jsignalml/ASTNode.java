@@ -5,6 +5,7 @@ import static java.lang.String.format;
 import java.util.LinkedList;
 import java.util.List;
 
+import jsignalml.Expression.Const;
 import jsignalml.logging.Logger;
 
 /**
@@ -269,7 +270,7 @@ public abstract class ASTNode {
 		{
 			super(parent, id, type);
 			this.format = format;
-			this.line = line;
+			this.line = line != null ? line : Const.make(-1);
 			this.pattern = pattern;
 			this.group = group;
 			// TODO: test file type
