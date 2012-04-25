@@ -83,9 +83,11 @@ public class ContextDumper implements ContextVisitor<Integer> {
 		long count = node.getNumberOfSamples();
 		int ans = dumper.put(level, "Channel %s name=%s length=%d\n", name,
 				     node.getChannelName(), count);
+		if (count < 3) throw new RuntimeException("Number of samples must be at least 3!");
 
 		List<String> array = util.newLinkedList();
-		for(long i: new long[]{0, 1, 2, 3, -1, count-3, count-1, count-1})
+
+		for(long i: new long[]{0, 1, 2, 3, -1, count-3, count-2, count-1})
 			array.add(i!=-1 ? "" + node.getSample(i) : "...");
 		dumper.put(level+1, "[%s]\n", StringUtils.join(array, ", "));
 		dumper.put(level+1, "samples 0..%d @ %d..%d\n", count-1,
