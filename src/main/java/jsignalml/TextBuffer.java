@@ -55,9 +55,11 @@ public class TextBuffer {
 			while (true) { // either some match will be found or exception will
 							// be thrown
 				String textLine;
-				textLine = getLine(line);
+				textLine = getLine(line, true);
 				Matcher matcher = pat.matcher(textLine);
-				if (matcher.find()) {
+				if (matcher.find()
+						&& (groupNumber.value.intValue() < 1
+								|| matcher.group(groupNumber.value.intValue()) != null)) {
 					return new TypeInt(line);
 				}
 				line++;
@@ -81,9 +83,9 @@ public class TextBuffer {
 				while (true) { // either some match will be found or exception will be thrown
 					String found = null;
 					
-					String textLine = getLine(line);
+					String textLine = getLine(line, true);
 					Matcher matcher = pat.matcher(textLine);
-					if(matcher.find()){
+					if (matcher.find()) {
 						found = matcher.group(groupNumber);
 						log.debug("Found match: '" + found + "'");
 						
@@ -96,16 +98,17 @@ public class TextBuffer {
 				
 			} else {
 				log.debug("Searching for match [" + pattern + "] in line " + line);
-				String textLine = getLine(line);
+				String textLine = getLine(line, /*false*/true);
+				//if (textLine == null) return "";
 
 				String found = null;
 				
 				Matcher matcher = pat.matcher(textLine);
 
 				if (matcher.find()) {
-					found = matcher.group(REGEXP_GROUP_NUMBER);
+					found = matcher.group((groupNumber < 0) ? REGEXP_GROUP_NUMBER : groupNumber);
 					log.debug("Found match: '" + found + "'");
-				}
+				} //else return "";
 																																															
 				if (found == null) {
 					throw new ExternalError("No match found for pattern " + pattern + " in line "
@@ -129,7 +132,7 @@ public class TextBuffer {
 	 * @return
 	 * @throws IOException
 	 */
-	private String getLine(int lineNumber) throws IOException {
+	private String getLine(int lineNumber, boolean throwExceptionOnEof) throws IOException {
 		log.debug("Looking into line: %d, currentLinesCounter: %d", 
 				lineNumber, currentLinesCounter);
 		if (currentLinesCounter >= lineNumber) {
@@ -143,7 +146,8 @@ public class TextBuffer {
 				log.debug("Reading line number: " + (currentLinesCounter+1));
 				String line = source.readLine();
 				if(line == null){
-					throw new ExternalError("End of file reached, expected line/data not found in file");
+					if (throwExceptionOnEof) throw new ExternalError("End of file reached, expected line/data not found in file");
+					else return null;
 				}
 				linesCache.add(line);
 				currentLinesCounter++;
