@@ -554,7 +554,6 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 		comment(body, "group.type=%s", typename(node.group.type));
 
 		
-		// appropriate casting for line and group is required here
 		final JVar line_ = body.decl(TypeInt_t, "line", JExpr.cast(TypeInt_t, node.line.accept(javagen)));
 		final JVar pattern_ = body.decl(TypeString_t, "pattern", node.pattern.accept(javagen));
 		final JVar group_ = body.decl(TypeInt_t, "group", JExpr.cast(TypeInt_t, node.group.accept(javagen)));
@@ -721,13 +720,13 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 		final JavaPrimitiveGen gen = new JavaPrimitiveGen(this.model, resolver);
 
 		final Type nodetype = nodeType(node);
-		final JType javatype = gen.convertTypeToJClass_p(nodetype);
+		final JType javatype = gen.convertTypeToJClass_p(node, nodetype);
 		final JMethod impl = klass.method(JMod.PUBLIC, javatype, CALL_P);
 		final JBlock body = impl.body();
 		comment_stamp(body);
 
 		for (ASTNode.Positional arg: node.args) {
-			JVar var = impl.param(gen.convertTypeToJClass_p(arg.type),
+			JVar var = impl.param(gen.convertTypeToJClass_p(node, arg.type),
 					      dynamicID(node, arg.id));
 			locals.add(var);
 		}
