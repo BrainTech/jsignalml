@@ -225,17 +225,31 @@ public class Builtins extends ASTNode {
 	 * Get line for pattern
 	 */
 	public static class get_line_for_pattern extends TypeObject {
-		public static TypeInt call(Type file, Type pattern, Type group)
+		public static TypeInt call(FileClass file, TypeString pattern, TypeInt group)
 		{
-			return ((FileClass) file).textBuffer().get_line_matching_pattern((TypeString)pattern, (TypeInt)group);
+			return file.textBuffer().get_line_matching_pattern(pattern, group);
+		}
+		public static TypeInt call(FileClass file, TypeString pattern)
+		{
+			return call(file, pattern, new TypeInt(0));
 		}
 
 		@Override
 		public TypeInt call(List<Type> args)
 		{
-			if(args.size() != 3)
-				throw new ExpressionFault.ArgMismatch(1, args.size());
-			return call(args.get(0), args.get(1), args.get(2));
+			if (args.size() < 2) {
+				throw new ExpressionFault.ArgMismatch(2, args.size());
+			} else if (args.size() == 2) {
+				TypeInt retValue = call((FileClass) args.get(0), 
+						(TypeString) args.get(1));
+				if(retValue != null) return retValue;
+			} else if (args.size() == 3) {
+				TypeInt retValue = call((FileClass) args.get(0), 
+						(TypeString) args.get(1), (TypeInt) args.get(2));
+				if(retValue != null) return retValue;
+			}
+			throw new ExpressionFault.NoMatchFoundError(((TypeString) args.get(0)).getValue(), 
+					((TypeString) args.get(1)).getValue());
 		}
 	}
 
@@ -711,9 +725,9 @@ public class Builtins extends ASTNode {
 		} else if (name.equals("get_line_for_pattern")) {
 			ASTNode.BuiltinFunction function =
 				new ASTNode.BuiltinFunction(owner, name, new TypeInt(), _get_line_for_pattern);
-			function.arg("file_handler", null);
-			function.arg("pattern", null);
-			function.arg("group", null);
+			function.arg("file_handler", new TypeObject() {});
+			function.arg("pattern", new TypeString());
+			function.arg("group", new TypeInt());
 			return function;
 		} else if (name.equals("range")) {
 			ASTNode.BuiltinFunction function =
