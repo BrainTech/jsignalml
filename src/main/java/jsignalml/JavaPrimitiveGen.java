@@ -40,7 +40,7 @@ public class JavaPrimitiveGen extends JavaExprGen {
 		case MUL: return left.mul(right);
 		case DIV:
 			JExpression fl_right =
-				JExpr.cast(convertTypeToJClass_p(TypeFloat.I), right);
+				JExpr.cast(convertTypeToJClass_p(null, TypeFloat.I), right);
 			return left.div(fl_right);
 		case FLOORDIV:
 			  return left.div(right);
@@ -109,11 +109,12 @@ public class JavaPrimitiveGen extends JavaExprGen {
 		return repr;
 	}
 
-	JType convertTypeToJClass_p(Type type)
+	JType convertTypeToJClass_p(ASTNode.ExprParam node, Type type)
 	{
 		if (type == null)
 			throw new ExpressionFault.Unsupported(Type.class,
-			   "primitive evaluation cannot be used for unspecified types");
+			   "primitive evaluation. Type was not specified correctly, evaluation cannot be used"
+			   +" for unspecified or wrong types. Please check content of the expresion: " + node + ".");
 
 		if (type instanceof TypeInt)
 			return this.model.LONG;
