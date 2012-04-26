@@ -54,7 +54,7 @@ public abstract class Signalml extends Context implements jsignalml.Source {
 				default_filename = null;
 			} else if ((filename == null) && (default_filename != null)) {
 				filename = default_filename;
-				default_filename = null;
+				//default_filename = null;
 			}
 			if (filename == null)
 				throw new ExpressionFault.ValueError("filename must be specified");
