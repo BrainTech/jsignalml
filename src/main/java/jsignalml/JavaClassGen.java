@@ -20,6 +20,7 @@ import com.sun.codemodel.JBlock;
 import com.sun.codemodel.JClass;
 import com.sun.codemodel.JClassAlreadyExistsException;
 import com.sun.codemodel.JCodeModel;
+import com.sun.codemodel.JConditional;
 import com.sun.codemodel.JDefinedClass;
 import com.sun.codemodel.JExpr;
 import com.sun.codemodel.JExpression;
@@ -795,6 +796,11 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 				body.assign(JExpr.ref("currentFilename"),
 						JExpr._new(File_t).arg(filename));
 			}
+
+			if(!node.isBinary){
+				body.assign(JExpr.ref("isBinary"),
+						JExpr.FALSE);
+			}
 		}
 
 		{
@@ -1265,6 +1271,7 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 		mapSampleMethod(klass, node);
 		getSampleMethod(klass, node);
 		getSamplesMethod(klass, node);
+		applyLinearTransformationMethod(klass);
 		getSamplingFrequencyMethod(klass, node);
 		getNumberOfSamplesMethod(klass, node);
 		getChannelNameMethod(klass, node);
@@ -1355,58 +1362,56 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 
 		JVar buffer = null;
 		if(node.data != null){
-			final JVar dataFileId = body.decl(Type_t, "dataFileId",
-					node.data.accept(javagen));
-
-			final JVar dataFilehandler = body.decl(FileClass_t, "fileHandler",
-					JExpr.cast(FileClass_t, dataFileId));
-			JVar filename = body.decl(File_t, "file",
-					dataFilehandler.invoke("getCurrentFilename"));
-			body._if(filename.eq(JExpr._null()))
-					._then().invoke(dataFilehandler, "open").arg(JExpr._null());
-			buffer = body.decl(ByteBuffer_t, "buffer",
-					dataFilehandler.invoke("buffer").ref("source"));
+			buffer = fillBufferFromDataFile(node, javagen, body);
 		} else {
 			buffer = body.decl(ByteBuffer_t, "buffer",
 					JExpr.invoke("_buffer").ref("source"));
 		}
-
-		final JVar calibGain = body.decl(this.model.FLOAT, "calibGain",
-				JExpr.invoke("getCalibrationGain").invoke("getValue")
-				.invoke("floatValue"));
-		final JVar calibOffs = body.decl(this.model.FLOAT, "calibOffs",
-				JExpr.invoke("getCalibrationOffset").invoke("getValue")
-				.invoke("floatValue"));
-		final JVar sampleUnit = body.decl(this.model.FLOAT, "sampleUnit",
-				JExpr.invoke("getSampleUnit").invoke("getValue")
-				.invoke("floatValue"));
 
 		if (isPrimGeneration() && node.fast.equals(fastSet)) {
 			// Primitive types code variant
 
 			final JExpression mapping_call = JExpr.cast(model.INT,
 					JExpr.invoke("get_mapping").invoke(CALL_P).arg(sample));
+
+			final JConditional _if = body._if(JExpr.ref("isBinary"));
+			final JBlock _ifBlock = _if._then();
 			final JExpression input = format.invoke("read").arg(buffer)
 					.arg(mapping_call);
-			final JVar value = body.decl(this.model.FLOAT, "value", input);
+			final JVar rawValue = _ifBlock.decl(this.model.FLOAT, "rawValue", input);
+			_ifBlock._return(JExpr.invoke("applyLinearTransformation").arg(rawValue));
 
-			body._return(value.minus(calibOffs).mul(calibGain)
-					.mul(sampleUnit));
+			final JBlock _elseBlock = _if._else();
+			final JVar rawValueElse = _elseBlock.decl(this.model.FLOAT, "rawValue",
+					JExpr.ref("scanner").invoke("readFloat").arg(mapping_call));
+			_elseBlock._return(JExpr.invoke("applyLinearTransformation").arg(rawValueElse));
 
-		}
-		else {
+		} else {
 			final JVar mapping = body.decl(Type_t, "mapping",
 					node.mapping.accept(javagen));
 			final JExpression mapping_call = mapping.invoke(CALL)
 					.arg(JExpr._new(TypeInt_t).arg(sample));
-			final JVar input = body.decl(Type_t, "input",
+
+			final JConditional _if = body._if(JExpr.ref("isBinary"));
+
+			final JBlock _ifBlock = _if._then();
+			final JVar input = _ifBlock.decl(Type_t, "input",
 					format.invoke("read").arg(buffer)
 					.arg(JExpr.cast(TypeInt_t, mapping_call)));
 			final JExpression conv = TypeFloat_I.invoke("make").arg(input);
-			final JVar ret_value = body.decl(this.model.FLOAT, "ret_value",
+			final JVar rawValue = _ifBlock.decl(this.model.FLOAT, "rawValue",
 					JExpr.cast(this.model.FLOAT, conv.ref("value")));
-			body._return(ret_value.minus(calibOffs).mul(calibGain)
-					.mul(sampleUnit));
+			_ifBlock._return(JExpr.invoke("applyLinearTransformation").arg(rawValue));
+
+			final JBlock _elseBlock = _if._else();
+			final JVar rawValueElse = _elseBlock.decl(
+					this.model.FLOAT,"rawValue",
+					JExpr.ref("scanner")
+							.invoke("readFloat")
+							.arg(((JExpression) JExpr.cast(TypeInt_t, mapping_call)).ref("value")
+									.invoke("intValue")));
+
+			_elseBlock._return(JExpr.invoke("applyLinearTransformation").arg(rawValueElse));
 		}
 		return method;
 	}
@@ -1428,22 +1433,72 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 
 		JVar buffer = null;
 		if(node.data != null){
-			final JVar dataFileId = body.decl(Type_t, "dataFileId",
-					node.data.accept(javagen));
-
-			final JVar dataFilehandler = body.decl(FileClass_t, "fileHandler",
-					JExpr.cast(FileClass_t, dataFileId));
-			JVar filename = body.decl(File_t, "file",
-					dataFilehandler.invoke("getCurrentFilename"));
-			body._if(filename.eq(JExpr._null()))
-					._then().invoke(dataFilehandler, "open").arg(JExpr._null());
-			buffer = body.decl(ByteBuffer_t, "buffer",
-					dataFilehandler.invoke("buffer").ref("source"));
+			buffer = fillBufferFromDataFile(node, javagen, body);
 		} else {
 			buffer = body.decl(ByteBuffer_t, "buffer",
 					JExpr.invoke("_buffer").ref("source"));
 		}
 
+		if (isPrimGeneration() && node.fast.equals(fastSet)) {
+			// Primitive types code variant
+			final JVar count = body.decl(this.model.INT, "count",
+					JExpr.invoke(dst, "remaining"));
+			final JExpression mapping_call = JExpr.cast(model.INT,
+					JExpr.invoke(makeGetter(node.mapping.toString())).invoke(CALL_P)
+					.arg(sample.incr()));
+
+			final JConditional _if = body._if(JExpr.ref("isBinary"));
+
+			final JBlock _ifBlock = _if._then();
+			final JBlock _while = _ifBlock._while(count.decr().gt(JExpr.lit(0))).body();
+			final JExpression input = format.invoke("read").arg(buffer)
+					.arg(mapping_call);
+			final JVar rawValue = _while.decl(this.model.FLOAT, "rawValue", input);
+			_while.add(dst.invoke("put").arg(JExpr.invoke("applyLinearTransformation").arg(rawValue)));
+
+			final JBlock _elseBlock = _if._else();
+			final JBlock _whileElse = _elseBlock._while(count.decr().gt(JExpr.lit(0))).body();
+			final JVar rawValueElse = _whileElse.decl(this.model.FLOAT, "rawValue",
+					JExpr.ref("scanner").invoke("readFloat").arg(mapping_call));
+			_whileElse.add(dst.invoke("put").arg(JExpr.invoke("applyLinearTransformation").arg(rawValueElse)));
+
+		} else {
+			final JVar mapping = body.decl(Type_t, "mapping",
+					node.mapping.accept(javagen));
+			final JExpression mapping_call = mapping.invoke(CALL)
+					.arg(JExpr._new(TypeInt_t).arg(sample.incr()));
+
+			final JConditional _if = body._if(JExpr.ref("isBinary"));
+
+			final JBlock _ifBlock = _if._then();
+
+			final JBlock _while = _ifBlock._while(JExpr.invoke(dst, "hasRemaining")).body();
+			final JVar input = _while.decl(Type_t, "input",
+					format.invoke("read").arg(buffer)
+					.arg(JExpr.cast(TypeInt_t, mapping_call)));
+			final JExpression conv = TypeFloat_I.invoke("make").arg(input);
+			final JVar rawValue = _while.decl(this.model.FLOAT, "rawValue",
+					JExpr.cast(this.model.FLOAT, conv.ref("value")));
+			_while.add(dst.invoke("put").arg(JExpr.invoke("applyLinearTransformation").arg(rawValue)));
+
+			final JBlock _elseBlock = _if._else();
+			final JBlock _whileElse = _elseBlock._while(JExpr.invoke(dst, "hasRemaining")).body();
+			final JVar rawValueElse = _whileElse.decl(
+					this.model.FLOAT,"rawValue",
+					JExpr.ref("scanner")
+							.invoke("readFloat")
+							.arg(((JExpression) JExpr.cast(TypeInt_t, mapping_call)).ref("value")
+									.invoke("intValue")));
+			_whileElse.add(dst.invoke("put").arg(JExpr.invoke("applyLinearTransformation").arg(rawValueElse)));
+		}
+		return method;
+	}
+
+	private JMethod applyLinearTransformationMethod(JDefinedClass klass){
+		final JMethod method = klass.method(JMod.PRIVATE, this.model.FLOAT, "applyLinearTransformation");
+		final JVar rawValue = method.param(this.model.FLOAT, "rawValue");
+		comment_stamp(method.body());
+		final JBlock body = method.body();
 		final JVar calibGain = body.decl(this.model.FLOAT, "calibGain",
 				JExpr.invoke("getCalibrationGain").invoke("getValue")
 				.invoke("floatValue"));
@@ -1453,40 +1508,26 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 		final JVar sampleUnit = body.decl(this.model.FLOAT, "sampleUnit",
 				JExpr.invoke("getSampleUnit").invoke("getValue")
 				.invoke("floatValue"));
-
-		if (isPrimGeneration() && node.fast.equals(fastSet)) {
-			// Primitive types code variant
-			final JVar count = body.decl(this.model.INT, "count",
-					JExpr.invoke(dst, "remaining"));
-
-			final JBlock _while = body._while(count.decr().gt(JExpr.lit(0))).body();
-			final JExpression mapping_call = JExpr.cast(model.INT,
-					JExpr.invoke(makeGetter(node.mapping.toString())).invoke(CALL_P)
-					.arg(sample.incr()));
-			final JExpression input = format.invoke("read").arg(buffer)
-					.arg(mapping_call);
-			final JVar value = _while.decl(this.model.FLOAT, "value", input);
-			_while.add(dst.invoke("put").arg(value.minus(calibOffs).mul(calibGain)
-					.mul(sampleUnit)));
-		}
-		else {
-			final JVar mapping = body.decl(Type_t, "mapping",
-					node.mapping.accept(javagen));
-
-			final JBlock _while = body._while(JExpr.invoke(dst, "hasRemaining")).body();
-			final JExpression mapping_call = mapping.invoke(CALL)
-					.arg(JExpr._new(TypeInt_t).arg(sample.incr()));
-			final JVar input = _while.decl(Type_t, "input",
-					format.invoke("read").arg(buffer)
-					.arg(JExpr.cast(TypeInt_t, mapping_call)));
-			final JExpression conv = TypeFloat_I.invoke("make").arg(input);
-			final JVar ret_value = _while.decl(this.model.FLOAT, "ret_value",
-					JExpr.cast(this.model.FLOAT, conv.ref("value")));
-			_while.add(dst.invoke("put")
-					.arg(ret_value.minus(calibOffs).mul(calibGain)
-					.mul(sampleUnit)));
-		}
+		body._return(rawValue.minus(calibOffs).mul(calibGain)
+				.mul(sampleUnit));
 		return method;
+	}
+
+	private JVar fillBufferFromDataFile(ASTNode.Channel node, final JavaExprGen javagen,
+			final JBlock body) {
+		JVar buffer;
+		final JVar dataFileId = body.decl(Type_t, "dataFileId",
+				node.data.accept(javagen));
+
+		final JVar dataFilehandler = body.decl(FileClass_t, "fileHandler",
+				JExpr.cast(FileClass_t, dataFileId));
+		JVar filename = body.decl(File_t, "file",
+				dataFilehandler.invoke("getCurrentFilename"));
+		body._if(filename.eq(JExpr._null()))
+				._then().invoke(dataFilehandler, "open").arg(JExpr._null());
+		buffer = body.decl(ByteBuffer_t, "buffer",
+				dataFilehandler.invoke("buffer").ref("source"));
+		return buffer;
 	}
 
 	public JMethod getSamplingFrequencyMethod(JDefinedClass klass, ASTNode.Channel node)
@@ -1617,7 +1658,7 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 		final Expression expr2 = Processor.parse(field_name + "() + 1");
 		new ASTNode.ExprParam(signalml, field_name+"2", new TypeInt(), expr2, null);
 
-		ASTNode.FileHandle thefile = new ASTNode.FileHandle(signalml, "thefile", null);
+		ASTNode.FileHandle thefile = new ASTNode.FileHandle(signalml, "thefile", null, true);
 
 		new ASTNode.BinaryParam(thefile, Processor.parse("'readTest'"), new TypeInt(),
 					Expression.Const.make("<i4"), Expression.Const.make(25), null);

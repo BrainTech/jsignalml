@@ -391,30 +391,33 @@ public abstract class ASTNode {
 	public static class FileHandle<T extends FileType> extends ASTNode
 	{
 		public final Expression filename; // may be null
+		public boolean isBinary = false;
 
-		public FileHandle(ASTNode parent, Expression id, Expression filename) {
+		public FileHandle(ASTNode parent, Expression id, Expression filename, boolean isBinary) {
 			super(parent, id);
 			if (parent==null)
 				throw new SyntaxError("<file> must have a parent");
 			this.filename = filename;
+			this.isBinary = isBinary;
 		}
-		public FileHandle(ASTNode parent, String id, Expression filename)
+
+		public FileHandle(ASTNode parent, String id, Expression filename, boolean isBinary)
 		{
-			this(parent, Expression.Const.make(id), filename);
+			this(parent, Expression.Const.make(id), filename, isBinary);
 		}
 
 		public static <V extends FileType>
-		FileHandle<V> make(ASTNode parent, Expression filename) {
-			return new FileHandle<V>(parent, (Expression)null, filename);
+		FileHandle<V> make(ASTNode parent, Expression filename, boolean isBinary) {
+			return new FileHandle<V>(parent, (Expression)null, filename, isBinary);
 		}
 
 		public static FileHandle make(ASTNode parent, Expression id,
 					      Expression filename, String type)
 		{
 			if (type.equals("binary"))
-				return new FileHandle<FileType.BinaryFile>(parent, id, filename);
+				return new FileHandle<FileType.BinaryFile>(parent, id, filename, true);
 			else if(type.equals("text")){
-				return new FileHandle<FileType.TextFile>(parent, id, filename);
+				return new FileHandle<FileType.TextFile>(parent, id, filename, false);
 
 			}
 			throw new IllegalArgumentException(format("unkown file type '%s'", type));

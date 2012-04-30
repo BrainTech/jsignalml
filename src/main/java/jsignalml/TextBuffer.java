@@ -66,9 +66,7 @@ public class TextBuffer {
 
 			}
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			throw new RuntimeException();
+			throw new ExpressionFault.ValueError("Unable to read data from file: " + e.getMessage());
 		}
 	}
 
@@ -120,7 +118,7 @@ public class TextBuffer {
 			
 
 		} catch (IOException e) {
-			throw new ExternalError(e);
+			throw new ExpressionFault.ValueError("Unable to read data from file: " + e.getMessage());
 		}
 	}
 

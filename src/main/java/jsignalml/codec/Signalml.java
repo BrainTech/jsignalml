@@ -1,8 +1,10 @@
 package jsignalml.codec;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 
+import jsignalml.AsciiScanner;
 import jsignalml.ChannelSet;
 import jsignalml.ContextVisitor;
 import jsignalml.ExpressionFault;
@@ -40,6 +42,12 @@ public abstract class Signalml extends Context implements jsignalml.Source {
 	public abstract class FileClass extends Context {
 		MyBuffer buffer;
 		TextBuffer textBuffer;
+		protected AsciiScanner scanner;
+		protected boolean isBinary = true; // this is the default type
+
+		public boolean isBinary(){
+			return isBinary;
+		}
 
 		protected File currentFilename;
 
@@ -58,6 +66,14 @@ public abstract class Signalml extends Context implements jsignalml.Source {
 			}
 			if (filename == null)
 				throw new ExpressionFault.ValueError("filename must be specified");
+
+			if(!isBinary) {
+				try {
+					scanner = new AsciiScanner(filename);
+				} catch (FileNotFoundException e) {
+					throw new ExpressionFault.ValueError("Invalid filename specified: " + e.getMessage());
+				}
+			}
 			this.buffer = MyBuffer.open(filename);
 			this.textBuffer = TextBuffer.open(filename);
 			this.currentFilename = filename;

@@ -20,7 +20,7 @@ public class TestBinaryParam {
 
 	@Before	public void init() throws Exception
 	{
-		handle = ASTNode.FileHandle.make(codec, file1expr);
+		handle = ASTNode.FileHandle.make(codec, file1expr,true);
 	}
 
 	@Test public void read_binary_file_param() throws Exception
