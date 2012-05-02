@@ -4,6 +4,8 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Scanner;
 
+import jsignalml.logging.Logger;
+
 /**
  * This is a helper class which reads the float values from ascii files
  * at given offset (position in file) with whitespace delimiters
@@ -20,7 +22,9 @@ public class AsciiScanner {
 	
 	// current position at which the scanner returns the next value
 	private int currentPosition = 0;
-	
+
+	private static final Logger log = new Logger(AsciiScanner.class);
+
 	/**
 	 * The constructor which takes the file reference
 	 *   
@@ -28,6 +32,7 @@ public class AsciiScanner {
 	 * @throws FileNotFoundException
 	 */
 	public AsciiScanner(File source) throws FileNotFoundException{
+		log.debug("KAGO ASCII SCANNER new instance");
 		this.file = source;
 		sc = new Scanner(source);
 		sc.useDelimiter("[\\s]+");
@@ -52,6 +57,7 @@ public class AsciiScanner {
 				return sc.nextFloat();
 			} else if (offset > currentPosition){
 				// skip a number of values until meet the desired position
+				log.debug("Skipping " + (offset - currentPosition));
 				while(offset > currentPosition){
 					skip();
 					currentPosition ++;
@@ -61,10 +67,10 @@ public class AsciiScanner {
 			} else {
 				// the scanner need to go back
 				// the current position must be reset and new scanner created
-				System.out.println("reset ......");
+				log.debug("Reset scanner");
 				currentPosition = 0;
 				sc.close();
-					sc = new Scanner(file);
+				sc = new Scanner(file);
 				sc.useDelimiter("[\\s]+");
 				return readFloat(offset);
 			}

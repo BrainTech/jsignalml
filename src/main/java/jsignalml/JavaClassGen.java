@@ -1360,9 +1360,15 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 		final JVar format = body.decl(BitForm_t, "format",
 					      BitForm_t.staticInvoke("get").arg(format_));
 
+		final JVar dataFileId = body.decl(Type_t, "dataFileId",
+				node.data.accept(javagen));
+
+		final JVar dataFilehandler = body.decl(FileClass_t, "fileHandler",
+				JExpr.cast(FileClass_t, dataFileId));
+
 		JVar buffer = null;
 		if(node.data != null){
-			buffer = fillBufferFromDataFile(node, javagen, body);
+			buffer = fillBufferFromDataFile(dataFilehandler, javagen, body);
 		} else {
 			buffer = body.decl(ByteBuffer_t, "buffer",
 					JExpr.invoke("_buffer").ref("source"));
@@ -1374,7 +1380,7 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 			final JExpression mapping_call = JExpr.cast(model.INT,
 					JExpr.invoke("get_mapping").invoke(CALL_P).arg(sample));
 
-			final JConditional _if = body._if(JExpr.ref("isBinary"));
+			final JConditional _if = body._if(JExpr.invoke(dataFilehandler, "isBinary"));
 			final JBlock _ifBlock = _if._then();
 			final JExpression input = format.invoke("read").arg(buffer)
 					.arg(mapping_call);
@@ -1383,7 +1389,7 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 
 			final JBlock _elseBlock = _if._else();
 			final JVar rawValueElse = _elseBlock.decl(this.model.FLOAT, "rawValue",
-					JExpr.ref("scanner").invoke("readFloat").arg(mapping_call));
+					dataFilehandler.invoke("getScanner").invoke("readFloat").arg(mapping_call));
 			_elseBlock._return(JExpr.invoke("applyLinearTransformation").arg(rawValueElse));
 
 		} else {
@@ -1392,7 +1398,7 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 			final JExpression mapping_call = mapping.invoke(CALL)
 					.arg(JExpr._new(TypeInt_t).arg(sample));
 
-			final JConditional _if = body._if(JExpr.ref("isBinary"));
+			final JConditional _if = body._if(JExpr.invoke(dataFilehandler, "isBinary"));
 
 			final JBlock _ifBlock = _if._then();
 			final JVar input = _ifBlock.decl(Type_t, "input",
@@ -1406,7 +1412,7 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 			final JBlock _elseBlock = _if._else();
 			final JVar rawValueElse = _elseBlock.decl(
 					this.model.FLOAT,"rawValue",
-					JExpr.ref("scanner")
+					dataFilehandler.invoke("getScanner")
 							.invoke("readFloat")
 							.arg(((JExpression) JExpr.cast(TypeInt_t, mapping_call)).ref("value")
 									.invoke("intValue")));
@@ -1431,9 +1437,14 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 		final JVar format = body.decl(BitForm_t, "format",
 					      BitForm_t.staticInvoke("get").arg(format_));
 
+		final JVar dataFileId = body.decl(Type_t, "dataFileId",
+				node.data.accept(javagen));
+		final JVar dataFilehandler = body.decl(FileClass_t, "fileHandler",
+				JExpr.cast(FileClass_t, dataFileId));
+
 		JVar buffer = null;
 		if(node.data != null){
-			buffer = fillBufferFromDataFile(node, javagen, body);
+			buffer = fillBufferFromDataFile(dataFilehandler, javagen, body);
 		} else {
 			buffer = body.decl(ByteBuffer_t, "buffer",
 					JExpr.invoke("_buffer").ref("source"));
@@ -1447,7 +1458,7 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 					JExpr.invoke(makeGetter(node.mapping.toString())).invoke(CALL_P)
 					.arg(sample.incr()));
 
-			final JConditional _if = body._if(JExpr.ref("isBinary"));
+			final JConditional _if = body._if(JExpr.invoke(dataFilehandler, "isBinary"));
 
 			final JBlock _ifBlock = _if._then();
 			final JBlock _while = _ifBlock._while(count.decr().gt(JExpr.lit(0))).body();
@@ -1459,7 +1470,7 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 			final JBlock _elseBlock = _if._else();
 			final JBlock _whileElse = _elseBlock._while(count.decr().gt(JExpr.lit(0))).body();
 			final JVar rawValueElse = _whileElse.decl(this.model.FLOAT, "rawValue",
-					JExpr.ref("scanner").invoke("readFloat").arg(mapping_call));
+					dataFilehandler.invoke("getScanner").invoke("readFloat").arg(mapping_call));
 			_whileElse.add(dst.invoke("put").arg(JExpr.invoke("applyLinearTransformation").arg(rawValueElse)));
 
 		} else {
@@ -1468,7 +1479,7 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 			final JExpression mapping_call = mapping.invoke(CALL)
 					.arg(JExpr._new(TypeInt_t).arg(sample.incr()));
 
-			final JConditional _if = body._if(JExpr.ref("isBinary"));
+			final JConditional _if = body._if(JExpr.invoke(dataFilehandler, "isBinary"));
 
 			final JBlock _ifBlock = _if._then();
 
@@ -1485,7 +1496,7 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 			final JBlock _whileElse = _elseBlock._while(JExpr.invoke(dst, "hasRemaining")).body();
 			final JVar rawValueElse = _whileElse.decl(
 					this.model.FLOAT,"rawValue",
-					JExpr.ref("scanner")
+					dataFilehandler.invoke("getScanner")
 							.invoke("readFloat")
 							.arg(((JExpression) JExpr.cast(TypeInt_t, mapping_call)).ref("value")
 									.invoke("intValue")));
@@ -1513,14 +1524,10 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 		return method;
 	}
 
-	private JVar fillBufferFromDataFile(ASTNode.Channel node, final JavaExprGen javagen,
+	private JVar fillBufferFromDataFile(final JVar dataFilehandler, final JavaExprGen javagen,
 			final JBlock body) {
 		JVar buffer;
-		final JVar dataFileId = body.decl(Type_t, "dataFileId",
-				node.data.accept(javagen));
 
-		final JVar dataFilehandler = body.decl(FileClass_t, "fileHandler",
-				JExpr.cast(FileClass_t, dataFileId));
 		JVar filename = body.decl(File_t, "file",
 				dataFilehandler.invoke("getCurrentFilename"));
 		body._if(filename.eq(JExpr._null()))

@@ -81,6 +81,7 @@ public class TextBuffer {
 				while (true) { // either some match will be found or exception will be thrown
 					String found = null;
 					
+					log.debug("Searching for match [" + pattern + "] in all the lines");
 					String textLine = getLine(line, true);
 					Matcher matcher = pat.matcher(textLine);
 					if (matcher.find()) {
@@ -144,7 +145,8 @@ public class TextBuffer {
 				log.debug("Reading line number: " + (currentLinesCounter+1));
 				String line = source.readLine();
 				if(line == null){
-					if (throwExceptionOnEof) throw new ExternalError("End of file reached, expected line/data not found in file");
+					if (throwExceptionOnEof)
+						throw new ExternalError("End of file reached, expected line/data not found in file");
 					else return null;
 				}
 				linesCache.add(line);

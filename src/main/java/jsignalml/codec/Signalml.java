@@ -42,7 +42,7 @@ public abstract class Signalml extends Context implements jsignalml.Source {
 	public abstract class FileClass extends Context {
 		MyBuffer buffer;
 		TextBuffer textBuffer;
-		protected AsciiScanner scanner;
+		private AsciiScanner scanner;
 		protected boolean isBinary = true; // this is the default type
 
 		public boolean isBinary(){
@@ -53,6 +53,10 @@ public abstract class Signalml extends Context implements jsignalml.Source {
 
 		public File getCurrentFilename(){
 			return currentFilename;
+		}
+
+		public AsciiScanner getScanner(){
+			return scanner;
 		}
 
 		public void open(File filename)
