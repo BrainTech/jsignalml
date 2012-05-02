@@ -57,7 +57,7 @@ public class AsciiScanner {
 				return sc.nextFloat();
 			} else if (offset > currentPosition){
 				// skip a number of values until meet the desired position
-				log.debug("Skipping " + (offset - currentPosition));
+				log.trace("Skipping " + (offset - currentPosition));
 				while(offset > currentPosition){
 					skip();
 					currentPosition ++;

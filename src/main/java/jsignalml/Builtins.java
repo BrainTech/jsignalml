@@ -257,6 +257,29 @@ public class Builtins extends ASTNode {
 	public static TypeObject get_line_for_pattern(){ return _get_line_for_pattern; }
 
 	/**
+	 * Get name of the file specified by its handler
+	 */
+	public static class get_filename extends TypeObject {
+		public static TypeString call(FileClass file)
+		{
+			return new TypeString(file.getCurrentFilename().getName());
+		}
+
+		@Override
+		public TypeString call(List<Type> args)
+		{
+			if (args.size() == 1) {
+				return call((FileClass) args.get(0));
+			} else {
+				throw new ExpressionFault.ArgMismatch(1, args.size());
+			}
+		}
+	}
+
+	private static TypeObject _get_filename = new get_filename();
+	public static TypeObject get_filename(){ return _get_filename; }
+
+	/**
 	 * Len
 	 */
 	public static class len extends TypeObject {
@@ -728,6 +751,11 @@ public class Builtins extends ASTNode {
 			function.arg("file_handler", new TypeObject() {});
 			function.arg("pattern", new TypeString());
 			function.arg("group", new TypeInt());
+			return function;
+		} else if (name.equals("get_filename")) {
+			ASTNode.BuiltinFunction function =
+				new ASTNode.BuiltinFunction(owner, name, new TypeString(), _get_filename);
+			function.arg("file_handler", new TypeObject() {});
 			return function;
 		} else if (name.equals("range")) {
 			ASTNode.BuiltinFunction function =
