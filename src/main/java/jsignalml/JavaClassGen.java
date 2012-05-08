@@ -65,8 +65,9 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 		CALL_P = "call_p";
 
 	public boolean calibrGainPresent = false;
-
 	public boolean calibOffsPresent = false;
+	public boolean channelNamePresent = false;
+	public boolean channelTypePresent = false;
 
 	public static final boolean _comments =
 		System.getProperties().getProperty("jsignalml.comments", "1").equals("1");
@@ -239,6 +240,12 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 			} else if (name.equals("calibration_offset")) {
 				log.info("calibration_offset present");
 				calibOffsPresent = true;
+			} else if (name.equals("channel_name")) {
+				log.info("channel_name present");
+				channelNamePresent = true;
+			} else if (name.equals("channel_type_name")) {
+				log.info("channel_type_name present");
+				channelTypePresent = true;
 			}
 		}
 
@@ -301,6 +308,13 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 
 		final JBlock body = main.body();
 
+		final JVar argc = body.decl(Integer_t, "argc", args.ref("length"));
+		final JConditional _if = body._if(argc.lt(JExpr.lit(1)));
+		final JBlock _ifBlock = _if._then();
+		final JExpression syntax = JExpr.lit("Syntax:\n\t" + klass.name() + " inputFile channelNr1 channelNr2 ...");
+		_ifBlock.add(System_t.staticRef("out").invoke("println").arg(syntax));
+		_ifBlock._return();
+		
 		body.add(BasicConfigurator_t.staticInvoke("configure"));
 
 		final JVar reader = body.decl(klass, "reader", JExpr._new(klass));
@@ -317,7 +331,7 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 		{
 			final JForLoop for_ =  body._for();
 			final JVar i = for_.init(this.model.INT, "i", JExpr.lit(1));
-			for_.test(i.lt(args.ref("length")));
+			for_.test(i.lt(argc));
 			for_.update(i.incr());
 			final JBlock forbody = for_.body();
 			final JVar count = forbody.decl(this.model.LONG, "count",
@@ -745,7 +759,7 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 	}
 
 	@Override
-	public JDefinedClass visit(ASTNode.FileHandle node, JDefinedClass parent)
+	public JDefinedClass visit(ASTNode.FileHandle<?> node, JDefinedClass parent)
 	{
 		log.info("visit((FileHandle) %s, %s)", node, parent);
 
@@ -755,7 +769,7 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 		return klass;
 	}
 
-	public JDefinedClass fileClass(ASTNode.FileHandle node, String id,
+	public JDefinedClass fileClass(ASTNode.FileHandle<?> node, String id,
 				       JDefinedClass parent)
 	{
 		final JDefinedClass klass;
@@ -1215,7 +1229,7 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 		JMethod constructor = klass.constructor(JMod.NONE);
 		JVar index = constructor.param(convertTypeToJClass(type), id);
 		comment_stamp(constructor.body());
-		JFieldVar stor = klass.field(JMod.FINAL, indexClass, "index");
+		/*JFieldVar stor = */klass.field(JMod.FINAL, indexClass, "index");
 
 		// work around bug in jcodemodel on using index instead of this.index
 		constructor.body().assign(JExpr.refthis("index"),
@@ -1275,6 +1289,7 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 		getSamplingFrequencyMethod(klass, node);
 		getNumberOfSamplesMethod(klass, node);
 		getChannelNameMethod(klass, node);
+		getChannelTypeNameMethod(klass, node);
 		getCalibrationGainMethod(klass, node);
 		getCalibrationOffsetMethod(klass, node);
 		getSampleUnitMethod(klass, node);
@@ -1360,18 +1375,18 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 		final JVar format = body.decl(BitForm_t, "format",
 					      BitForm_t.staticInvoke("get").arg(format_));
 
-		final JVar dataFileId = body.decl(Type_t, "dataFileId",
-				node.data.accept(javagen));
-
-		final JVar dataFilehandler = body.decl(FileClass_t, "fileHandler",
-				JExpr.cast(FileClass_t, dataFileId));
+		JVar dataFilehandler = null;
+		if (node.data != null) {
+			JExpression dataFileIdValue = node.data.accept(javagen);
+			final JVar dataFileId = body.decl(Type_t, "dataFileId", dataFileIdValue);
+			dataFilehandler = body.decl(FileClass_t, "fileHandler", JExpr.cast(FileClass_t, dataFileId));
+		}
 
 		JVar buffer = null;
-		if(node.data != null){
+		if (node.data != null){
 			buffer = fillBufferFromDataFile(dataFilehandler, javagen, body);
 		} else {
-			buffer = body.decl(ByteBuffer_t, "buffer",
-					JExpr.invoke("_buffer").ref("source"));
+			buffer = body.decl(ByteBuffer_t, "buffer", JExpr.invoke("_buffer").ref("source"));
 		}
 
 		if (isPrimGeneration() && node.fast.equals(fastSet)) {
@@ -1389,7 +1404,7 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 
 			final JBlock _elseBlock = _if._else();
 			final JVar rawValueElse = _elseBlock.decl(this.model.FLOAT, "rawValue",
-					dataFilehandler.invoke("getScanner").invoke("readFloat").arg(mapping_call));
+					JExpr.invoke(dataFilehandler, "getScanner").invoke("readFloat").arg(mapping_call));
 			_elseBlock._return(JExpr.invoke("applyLinearTransformation").arg(rawValueElse));
 
 		} else {
@@ -1412,7 +1427,7 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 			final JBlock _elseBlock = _if._else();
 			final JVar rawValueElse = _elseBlock.decl(
 					this.model.FLOAT,"rawValue",
-					dataFilehandler.invoke("getScanner")
+					JExpr.invoke(dataFilehandler, "getScanner")
 							.invoke("readFloat")
 							.arg(((JExpression) JExpr.cast(TypeInt_t, mapping_call)).ref("value")
 									.invoke("intValue")));
@@ -1437,10 +1452,12 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 		final JVar format = body.decl(BitForm_t, "format",
 					      BitForm_t.staticInvoke("get").arg(format_));
 
-		final JVar dataFileId = body.decl(Type_t, "dataFileId",
-				node.data.accept(javagen));
-		final JVar dataFilehandler = body.decl(FileClass_t, "fileHandler",
-				JExpr.cast(FileClass_t, dataFileId));
+		JVar dataFilehandler = null;
+		if (node.data != null) {
+			JExpression dataFileIdValue = node.data.accept(javagen);
+			final JVar dataFileId = body.decl(Type_t, "dataFileId", dataFileIdValue);
+			dataFilehandler = body.decl(FileClass_t, "fileHandler", JExpr.cast(FileClass_t, dataFileId));
+		}
 
 		JVar buffer = null;
 		if(node.data != null){
@@ -1470,7 +1487,7 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 			final JBlock _elseBlock = _if._else();
 			final JBlock _whileElse = _elseBlock._while(count.decr().gt(JExpr.lit(0))).body();
 			final JVar rawValueElse = _whileElse.decl(this.model.FLOAT, "rawValue",
-					dataFilehandler.invoke("getScanner").invoke("readFloat").arg(mapping_call));
+					JExpr.invoke(dataFilehandler, "getScanner").invoke("readFloat").arg(mapping_call));
 			_whileElse.add(dst.invoke("put").arg(JExpr.invoke("applyLinearTransformation").arg(rawValueElse)));
 
 		} else {
@@ -1496,7 +1513,7 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 			final JBlock _whileElse = _elseBlock._while(JExpr.invoke(dst, "hasRemaining")).body();
 			final JVar rawValueElse = _whileElse.decl(
 					this.model.FLOAT,"rawValue",
-					dataFilehandler.invoke("getScanner")
+					JExpr.invoke(dataFilehandler, "getScanner")
 							.invoke("readFloat")
 							.arg(((JExpression) JExpr.cast(TypeInt_t, mapping_call)).ref("value")
 									.invoke("intValue")));
@@ -1529,11 +1546,11 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 		JVar buffer;
 
 		JVar filename = body.decl(File_t, "file",
-				dataFilehandler.invoke("getCurrentFilename"));
+				JExpr.invoke(dataFilehandler, "getCurrentFilename"));
 		body._if(filename.eq(JExpr._null()))
 				._then().invoke(dataFilehandler, "open").arg(JExpr._null());
 		buffer = body.decl(ByteBuffer_t, "buffer",
-				dataFilehandler.invoke("buffer").ref("source"));
+				JExpr.invoke(dataFilehandler, "buffer").ref("source"));
 		return buffer;
 	}
 
@@ -1582,12 +1599,36 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 		final JMethod method = klass.method(JMod.PUBLIC, String_t, "getChannelName");
 		comment_stamp(method.body());
 
-		final JVar value = method.body().decl(Type_t, "value",
-				JExpr.invoke("get_channel_name").invoke("get"));
-		final JVar val = method.body().decl(TypeString_t, "stringValue",
-				JExpr.cast(TypeString_t, value));
+		JInvocation ji = null;
+		if (channelNamePresent) {
+			ji = JExpr.invoke("get_channel_name").invoke("get");
+		} else {
+			ji = JExpr._new(TypeString_t).arg("");
+		}
+		final JVar value = method.body().decl(Type_t, "value", ji);
+		final JInvocation jiji = method.body().decl(TypeString_t, "stringValue",
+				JExpr.cast(TypeString_t, value)).invoke("getValue");
+		method.body()._return(jiji);
 
-		method.body()._return(val.invoke("getValue"));
+		return method;
+	}
+
+	public JMethod getChannelTypeNameMethod(JDefinedClass klass, ASTNode.Channel node)
+	{
+		final JMethod method = klass.method(JMod.PUBLIC, String_t, "getChannelTypeName");
+		comment_stamp(method.body());
+
+		JInvocation ji = null;
+		if (channelTypePresent) {
+			ji = JExpr.invoke("get_channel_type_name").invoke("get");
+		} else {
+			ji = JExpr._new(TypeString_t).arg("");
+		}
+		final JVar value = method.body().decl(Type_t, "value", ji);
+		final JInvocation jiji = method.body().decl(TypeString_t, "stringValue",
+				JExpr.cast(TypeString_t, value)).invoke("getValue");
+		method.body()._return(jiji);
+
 		return method;
 	}
 
@@ -1602,8 +1643,7 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 			final JVar value = method.body().decl(Type_t, "value",
 					JExpr.invoke("get_calibration_gain").invoke("get"));
 			ji = TypeFloat_I.invoke("make").arg(value);
-		}
-		else {
+		} else {
 			ji = JExpr._new(TypeFloat_t).arg("1");
 		}
 		final JVar cast = method.body().decl(TypeFloat_t, "cast", ji);
@@ -1623,8 +1663,7 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 			final JVar value = method.body().decl(Type_t, "value",
 					JExpr.invoke("get_calibration_offset").invoke("get"));
 			ji = TypeFloat_I.invoke("make").arg(value);
-		}
-		else {
+		} else {
 			 ji = JExpr._new(TypeFloat_t).arg("0");
 		}
 		final JVar cast = method.body().decl(TypeFloat_t, "cast", ji);
@@ -1665,7 +1704,7 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 		final Expression expr2 = Processor.parse(field_name + "() + 1");
 		new ASTNode.ExprParam(signalml, field_name+"2", new TypeInt(), expr2, null);
 
-		ASTNode.FileHandle thefile = new ASTNode.FileHandle(signalml, "thefile", null, true);
+		ASTNode.FileHandle<?> thefile = new ASTNode.FileHandle(signalml, "thefile", null, true);
 
 		new ASTNode.BinaryParam(thefile, Processor.parse("'readTest'"), new TypeInt(),
 					Expression.Const.make("<i4"), Expression.Const.make(25), null);
