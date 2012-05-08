@@ -143,6 +143,10 @@
 					<group>2</group>
 				</param>
 
+				<param id='channel_type_name' type='str'>
+					<expr>'MEG'</expr>
+				</param>
+
 				<param id='single_channel_name_pattern' type='str'>
 					<expr>"MSI.MegChanNames: ([a-zA-Z0-9]+,){" + str(index) +
 						"}([A-Za-z0-9]+)"</expr>

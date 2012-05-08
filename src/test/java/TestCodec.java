@@ -2,16 +2,9 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.nio.FloatBuffer;
 import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
-import java.util.AbstractMap;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.Map.Entry;
-import java.util.Set;
 
 import jsignalml.Channel;
 import jsignalml.ChannelSet;
@@ -20,7 +13,6 @@ import jsignalml.codec.Signalml;
 
 import org.apache.log4j.BasicConfigurator;
 import org.junit.experimental.theories.Theory;
-
 
 /**
  * @author Grzegorz Stadnik
@@ -32,6 +24,7 @@ public class TestCodec {
 	private final static String outHdrNameNrOfChannels = "number_of_channels";
 	private final static String outHdrNameSamplingFrequency = "sampling_frequency";
 	private final static String outHdrNameLabelsOfChannels = "channel_labels";
+	private final static String outHdrNameTypesOfChannels = "channel_types";
 	private final static String outHdrNameScaled = "scaled";
 	private final static String outHdrNameScalingGain = "scaling_gain";
 	private final static String outHdrNameScalingOffset = "scaling_offset";
@@ -107,11 +100,12 @@ public class TestCodec {
 			if (codecName.equalsIgnoreCase("EASYS")) {
 				if (TestCodec.LOG_INFO) System.out.println("You selected EASYS codec. Trying to use it.");
 				reader = new EASYS();
-			} else if (codecName.equalsIgnoreCase("4D") || codecName.equalsIgnoreCase("M4D")) {
+			} else if (/*codecName.equalsIgnoreCase("4D") ||*/ codecName.equalsIgnoreCase("M4D")) {
 				if (TestCodec.LOG_INFO) System.out.println("You selected M4D codec. Trying to use it.");
 				reader = new M4D();
-				//if (TestCodec.LOG_FATAL) System.out.println("Fatal error! 4D aka M4D codec is not supported yet. It is under construction.");
-				//return;
+			} else if (codecName.equalsIgnoreCase("4D") || codecName.equalsIgnoreCase("New4D")) {
+				if (TestCodec.LOG_INFO) System.out.println("You selected New4D codec. Trying to use it.");
+				reader = new New4D();
 			} else if (codecName.equalsIgnoreCase("EDF")) {
 				if (TestCodec.LOG_FATAL) System.out.println("Fatal error! EDF codec is not supported yet. It is under construction.");
 				return;
@@ -127,7 +121,7 @@ public class TestCodec {
 			}
 			inDtaFile = new File(fileName);
 			long inDtaFileLength = inDtaFile.length();
-			long inDtaFileFragmentSize = Math.min(200240, inDtaFileLength);
+			//long inDtaFileFragmentSize = Math.min(200240, inDtaFileLength);
 			if (TestCodec.LOG_INFO) {
 				System.out.println("Reading the input header/data file " + fileName);
 				System.out.println("Length of the file is " + inDtaFileLength + " bytes");
@@ -187,6 +181,7 @@ public class TestCodec {
 			Double    outHdrSamplingFrequency = null;
 			Double[]  outHdrSamplingFrequencies = new Double[0];
 			String[]  outHdrLabelsOfChannels = null;
+			String[]  outHdrTypesOfChannels = null;
 			Integer   outHdrScaled = null;
 			Double    outHdrScalingGain = null;
 			Double[]  outHdrScalingGains = new Double[0];
@@ -302,6 +297,14 @@ public class TestCodec {
 					}
 					String valueStr = line.substring(valueIdx + 1).trim();
 					outHdrLabelsOfChannels = valueStr.replaceAll("[\t ]+", "").split(",");
+				} else if (line.startsWith(TestCodec.outHdrNameTypesOfChannels)) {
+					int valueIdx = line.indexOf("=", TestCodec.outHdrNameTypesOfChannels.length());
+					if (valueIdx == -1) {
+						if (TestCodec.LOG_ERROR) System.out.println("Error! Can not find '=' character at the line #" + i + ": " + line);
+						return;
+					}
+					String valueStr = line.substring(valueIdx + 1).trim();
+					outHdrTypesOfChannels = valueStr.replaceAll("[\t ]+", "").split(",");
 				} else if (line.startsWith(TestCodec.outHdrNameScaled)) {
 					int valueIdx = line.indexOf("=", TestCodec.outHdrNameScaled.length());
 					if (valueIdx == -1) {
@@ -470,6 +473,10 @@ public class TestCodec {
 				if (TestCodec.LOG_ERROR) System.out.println("Error! There was no specified value with label of channel per every individual channel in the output header file. Please add it there!");
 				return;
 			}
+			if (outHdrTypesOfChannels == null) {
+				if (TestCodec.LOG_ERROR) System.out.println("Error! There was no specified value with type of channel per every individual channel in the output header file. Please add it there!");
+				return;
+			}
 			if (outHdrNrOfSamples == null && outHdrNrsOfSamples.length == 0) {
 				if (TestCodec.LOG_ERROR) System.out.println("Error! There was no specified value with number of sample units per all or per every individual channel in the output header file. Please add it there!");
 				return;
@@ -546,13 +553,19 @@ public class TestCodec {
 				Channel inDtaChannelObject = inDtaChannelSet.getChannel(channelNr);
 				long inDtaChannelObjectNumberOfSamplesPerChannel = inDtaChannelObject.getNumberOfSamples();
 				String inDtaChannelObjectChannelName = inDtaChannelObject.getChannelName();
+				String inDtaChannelObjectChannelTypeName = inDtaChannelObject.getChannelTypeName();
 				double inDtaChannelObjectSamplingFrequency = inDtaChannelObject.getSamplingFrequency();
 				boolean gotoNextChannel = false;
 				boolean gotoNextSamplePortionBig = false;
-				boolean gotoNextSamplePortionSmall = false;
+				//boolean gotoNextSamplePortionSmall = false;
 				//comparing header info
 				if (!inDtaChannelObjectChannelName.equals(outHdrLabelsOfChannels[channelNr])) {
 					if (TestCodec.LOG_TEST) System.out.println("\nCODEC TEST RESULT: ERROR. Details: Label or name of the channel #" + channelNr + " get from codec (" + inDtaChannelObjectChannelName + ") differs from that specified in output file .hdr (" + outHdrLabelsOfChannels[channelNr] + ").");
+					////TODO increment offset
+					//break channels; //return;
+				}
+				if (!inDtaChannelObjectChannelTypeName.equals(outHdrTypesOfChannels[channelNr])) {
+					if (TestCodec.LOG_TEST) System.out.println("\nCODEC TEST RESULT: ERROR. Details: Type of the channel #" + channelNr + " get from codec (" + inDtaChannelObjectChannelName + ") differs from that specified in output file .hdr (" + outHdrLabelsOfChannels[channelNr] + ").");
 					////TODO increment offset
 					//break channels; //return;
 				}
@@ -578,7 +591,7 @@ public class TestCodec {
 				final long samplesToReadMax = 4096;
 				long samplesToRead = Math.min(samplesToReadMax, samplesToReadAllRest);
 				long bytesToRead = samplesToRead * outDtaFisLengthSampleUnitValue;
-				samplesBig: for (int sampleUnitNr = 0; sampleUnitNr < outDtaFisNrOfSamplesPerChannel; ) {
+				/*samplesBig:*/ for (int sampleUnitNr = 0; sampleUnitNr < outDtaFisNrOfSamplesPerChannel; ) {
 					/*final long*/ samplesBytesAlreadyRead = outDtaFisOffset - outDtaFisOffsetStart;
 					/*final long*/ samplesAlreadyRead = samplesBytesAlreadyRead / outDtaFisLengthSampleUnitValue;
 					/*final long*/ samplesToReadAllRest = outDtaFisNrOfSamplesPerChannel - samplesAlreadyRead;
@@ -589,7 +602,7 @@ public class TestCodec {
 						outDtaFisMapBuffer = outDtaFisChannel.map(FileChannel.MapMode.READ_ONLY, outDtaFisOffset, bytesToRead);
 						int sampleUnitPosInCurrentBuffer = 0;
 						int sampleUnitNrInCurrentBuffer = 0;
-						samplesSmall: for (; sampleUnitPosInCurrentBuffer < bytesToRead; sampleUnitNrInCurrentBuffer ++, sampleUnitPosInCurrentBuffer += outDtaFisLengthSampleUnitValue) {
+						/*samplesSmall:*/ for (; sampleUnitPosInCurrentBuffer < bytesToRead; sampleUnitNrInCurrentBuffer ++, sampleUnitPosInCurrentBuffer += outDtaFisLengthSampleUnitValue) {
 							final float outDtaFisSampleUnitValue = outDtaFisMapBuffer.getFloat((int) sampleUnitPosInCurrentBuffer) * verificationMultiplyFactor;
 							if (TestCodec.LOG_DEBUG) System.out.print(" " + outDtaFisSampleUnitValue); //System.out.format(" %.3f", outDtaFisSampleUnitValue);
 							int fullSampleNr = sampleUnitNr + sampleUnitNrInCurrentBuffer;

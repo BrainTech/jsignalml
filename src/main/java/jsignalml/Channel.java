@@ -24,4 +24,6 @@ public interface Channel {
 	double getSamplingFrequency() throws ExpressionFault;
 	long getNumberOfSamples() throws ExpressionFault;
 	String getChannelName() throws ExpressionFault;
+	String getChannelTypeName() throws ExpressionFault;
+	
 }

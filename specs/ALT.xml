@@ -31,6 +31,9 @@
 				<param id='channel_name_pattern' type='str'>
 					<expr>"channel_names: ([a-zA-Z0-9]+,){" + str(index) + "}([A-Za-z0-9]+)"</expr>
 				</param>
+				<param id='channel_type_name_pattern' type='str'>
+					<expr>"channel_types: ([a-zA-Z0-9]+,){" + str(index) + "}([A-Za-z0-9]+)"</expr>
+				</param>
 				<param id='channel_filename_pattern' type='str'>
 					<expr>"channel_filenames: ([a-zA-Z0-9._-]+,){" + str(index) + "}([a-zA-Z0-9._-]+)"</expr>
 				</param>
@@ -54,6 +57,12 @@
 					<pattern>channel_name_pattern</pattern>
 					<group>2</group>
 				</param>
+				<!-- param id='channel_type_name' type='str'>
+					<format>'|S1'</format>
+					<line>-1</line>
+					<pattern>channel_type_name_pattern</pattern>
+					<group>2</group>
+				</param -->
 				<param id='channel_filename' type='str'>
 					<format>'|S2'</format>
 					<line>-1</line>
