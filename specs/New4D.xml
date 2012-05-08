@@ -23,6 +23,12 @@
 			<pattern>"[ ]*File[ _]*[Tt]{1}ype[ ]*:[ ]*\'([A-Za-z]*)\'"</pattern>
 			<group>1</group>
 		</param>
+		<param id='channel_name' type='str'>
+			<expr>'chNamInit0'</expr>
+		</param>
+		<param id='channel_type_name' type='str'>
+			<expr>'chTypInit0'</expr>
+		</param>
 		<param id='sample_period' type='float' units='s'>
 			<format>'&lt;f4'</format>
 			<line>-1</line>

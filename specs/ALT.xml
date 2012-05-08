@@ -57,12 +57,12 @@
 					<pattern>channel_name_pattern</pattern>
 					<group>2</group>
 				</param>
-				<!-- param id='channel_type_name' type='str'>
+				<param id='channel_type_name' type='str'>
 					<format>'|S1'</format>
 					<line>-1</line>
 					<pattern>channel_type_name_pattern</pattern>
 					<group>2</group>
-				</param -->
+				</param>
 				<param id='channel_filename' type='str'>
 					<format>'|S2'</format>
 					<line>-1</line>

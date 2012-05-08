@@ -308,10 +308,11 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 
 		final JBlock body = main.body();
 
-		final JVar argc = body.decl(Integer_t, "argc", args.ref("length"));
+		final JVar argc = body.decl(this.model.INT, "argc", args.ref("length"));
 		final JConditional _if = body._if(argc.lt(JExpr.lit(1)));
 		final JBlock _ifBlock = _if._then();
-		final JExpression syntax = JExpr.lit("Syntax:\n\t" + klass.name() + " inputFile channelNr1 channelNr2 ...");
+		final JExpression syntax = JExpr.lit("Syntax:\n\t" + klass.name()
+				+ " inputFile channelNr1 channelNr2 ...");
 		_ifBlock.add(System_t.staticRef("out").invoke("println").arg(syntax));
 		_ifBlock._return();
 		
@@ -324,29 +325,80 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 		body.add(reader.invoke("createParams"));
 		body.add(reader.invoke("createChannels"));
 
-		final JExpression dumper_dump =
-			ContextDumper_t.staticInvoke("dump").arg(reader);
-		body.add(System_t.staticRef("out").invoke("print").arg(dumper_dump));
-
+		comment(body, "%s", "System.out.print(ContextDumper.dump(reader));");
+		//final JExpression dumper_dump =
+		//	ContextDumper_t.staticInvoke("dump").arg(reader);
+		//body.add(System_t.staticRef("out").invoke("print").arg(dumper_dump));
+		
+		final JVar channelSet = body.decl(ChannelSet_t, "channelSet", reader.invoke("get_set"));
+		final JVar nrOfChannels = body.decl(this.model.INT, "nrOfChannels",
+				channelSet.invoke("getNumberOfChannels"));
+		final JVar nrOfChannelsToShow = body.decl(this.model.INT, "nrOfChannelsToShow",
+				nrOfChannels);
+		final JExpression inputFileName = JExpr.lit("Input file for " + klass.name() + " codec: ")
+				.plus(args.component(JExpr.lit(0)));
+		final JExpression inputFileChannels = JExpr.lit("Input file has ")
+				.plus(nrOfChannels).plus(JExpr.lit(" channels"));
+		body.add(System_t.staticRef("out").invoke("println").arg(inputFileName));
+		body.add(System_t.staticRef("out").invoke("println").arg(inputFileChannels));
+		final JConditional _ifArgc = body._if(argc.gt(JExpr.lit(1)));
+		final JBlock _ifBlockArgc = _ifArgc._then();
+		_ifBlockArgc.assign(nrOfChannelsToShow, argc);
+		
 		{
 			final JForLoop for_ =  body._for();
 			final JVar i = for_.init(this.model.INT, "i", JExpr.lit(1));
-			for_.test(i.lt(argc));
+			for_.test(i.lt(nrOfChannelsToShow));
 			for_.update(i.incr());
 			final JBlock forbody = for_.body();
-			final JVar count = forbody.decl(this.model.LONG, "count",
-							reader.invoke("get_set")
-							      .invoke("getNumberOfSamples"));
-			final JInvocation buffer_init = FloatBuffer_t
-				.staticInvoke("allocate")
-				.arg(JExpr.cast(this.model.INT, count));
-			final JVar buffer = forbody.decl(FloatBuffer_t, "buffer", buffer_init);
+			
 			final JInvocation channel_num =
-				Integer_t.staticInvoke("decode").arg(args.component(i));
-			forbody.add(reader
-				    .invoke("get_set")
-				    .invoke("getChannel").arg(channel_num)
-				    .invoke("getSamples").arg(buffer).arg(JExpr.lit(0)));
+				Integer_t.staticInvoke("decode").arg(args.component(i)).invoke("intValue");
+			final JVar channelNr = forbody.decl(this.model.INT, "channelNr", i.minus(JExpr.lit(1)));
+			final JConditional _ifChannelsArgc = forbody._if(argc.gt(JExpr.lit(1)));
+			final JBlock _ifBlockChannelsArgc = _ifChannelsArgc._then();
+			_ifBlockChannelsArgc.assign(channelNr, channel_num);
+			
+			final JVar channel = forbody.decl(Channel_t, "channel",
+					channelSet.invoke("getChannel").arg(channelNr));
+			final JVar nrOfSamples = forbody.decl(this.model.INT, "nrOfSamples",
+					JExpr.cast(this.model.INT, channel.invoke("getNumberOfSamples")));
+			final JVar nrOfSamplesToShow = forbody.decl(this.model.INT, "nrOfSamplesToShow",
+					this.model.ref(Math.class).staticInvoke("min").arg(nrOfSamples).arg(JExpr.lit(10)));
+			final JVar channelName = forbody.decl(String_t, "channelName",
+					channel.invoke("getChannelName"));
+			final JVar channelType = forbody.decl(String_t, "channelType",
+					channel.invoke("getChannelTypeName"));
+			final JExpression channelInfo = JExpr.lit("Channel #").plus(channelNr)
+					.plus(JExpr.lit("[").plus(channelType).plus(JExpr.lit(" ").plus(channelName)))
+					.plus(JExpr.lit("] has ").plus(nrOfSamples).plus(JExpr.lit(" samples:")));
+			forbody.add(System_t.staticRef("out").invoke("println").arg(channelInfo));
+			
+			/*
+			 * long count = channelSet.getNumberOfSamples();
+			 * FloatBuffer buffer = FloatBuffer.allocate(((int) count));
+			 * channelSet.getChannel(channelNr).getSamples(buffer, 0);
+			 */
+			//final JVar count = forbody.decl(this.model.LONG, "count",
+			//		channelSet.invoke("getNumberOfSamples"));
+			//final JInvocation buffer_init = FloatBuffer_t
+			//	.staticInvoke("allocate")
+			//	.arg(JExpr.cast(this.model.INT, count));
+			//final JVar buffer = forbody.decl(FloatBuffer_t, "buffer", buffer_init);
+			//forbody.add(channelSet.invoke("getChannel").arg(channelNr)
+			//	    .invoke("getSamples").arg(buffer).arg(JExpr.lit(0)));
+			
+			final JForLoop forSamples =  forbody._for();
+			final JVar j = forSamples.init(this.model.INT, "sampleNr", JExpr.lit(0));
+			forSamples.test(j.lt(nrOfSamplesToShow));
+			forSamples.update(j.incr());
+			final JBlock forSamplesBody = forSamples.body();
+			
+			final JExpression sampleUnitValue = forSamplesBody.decl(this.model.FLOAT, "sampleUnitValue",
+					channel.invoke("getSample").arg(JExpr.ref("sampleNr")));
+			final JExpression sampleInfo = JExpr.lit("\tSample #").plus(JExpr.ref("sampleNr"))
+					.plus(JExpr.lit(" ---> ").plus(sampleUnitValue));
+			forSamplesBody.add(System_t.staticRef("out").invoke("println").arg(sampleInfo));
 		}
 
 		return main;

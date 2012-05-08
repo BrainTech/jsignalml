@@ -4,6 +4,7 @@ import static java.lang.String.format;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 
 import jsignalml.logging.Logger;
@@ -11,6 +12,7 @@ import jsignalml.logging.Logger;
 import org.apache.log4j.BasicConfigurator;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
+import org.xml.sax.SAXException;
 
 /**
  * Translate an XML DOM into an ASTNode tree.
@@ -342,7 +344,13 @@ public class CodecParser {
 	{
 		BasicConfigurator.configure();
 
-		final ASTNode codec = makeCodec(new File(args[0]));
+		ASTNode codec;
+		try {
+			codec = makeCodec(new File(args[0]));
+		} catch (SAXException e) {
+			System.out.println("A problem occurred while parsing the file " + args[0]);
+			throw new SAXException(e);
+		}
 		log.info("-- codec is parsed --");
 		System.out.print(ASTDumper.dump(codec));
 
