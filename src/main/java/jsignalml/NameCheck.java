@@ -58,7 +58,7 @@ public class NameCheck extends ASTVisitor<NullType> {
 	}
 
 	@Override
-	public NullType visit(ASTNode.FileHandle node, NullType parent)
+	public NullType visit(ASTNode.FileHandle<?> node, NullType parent)
 	{
 		log.debug("checking %s", node);
 		if (node.filename != null)

@@ -83,7 +83,7 @@ public class ASTDumper extends ASTVisitor<Integer> {
 	}
 
 	@Override
-	public Integer visit(ASTNode.FileHandle node, Integer parent)
+	public Integer visit(ASTNode.FileHandle<?> node, Integer parent)
 	{
 		return this.header(parent, node, "file", "filename=%s\n", node.filename);
 	}

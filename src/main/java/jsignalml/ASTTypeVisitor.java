@@ -278,7 +278,7 @@ public class ASTTypeVisitor extends ASTVisitor<Type> {
 	}
 
 	@Override
-	public Type visit(ASTNode.FileHandle node, Type parent)
+	public Type visit(ASTNode.FileHandle<?> node, Type parent)
 	{
 		Type cached = this.getCached(node);
 		if (cached != null)

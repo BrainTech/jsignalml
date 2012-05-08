@@ -411,7 +411,7 @@ public abstract class ASTNode {
 			return new FileHandle<V>(parent, (Expression)null, filename, isBinary);
 		}
 
-		public static FileHandle make(ASTNode parent, Expression id,
+		public static FileHandle<?> make(ASTNode parent, Expression id,
 					      Expression filename, String type)
 		{
 			if (type.equals("binary"))

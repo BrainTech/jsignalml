@@ -216,7 +216,7 @@ public class CodecParser {
 		return node;
 	}
 
-	public ASTNode.FileHandle do_file(ASTNode parent, Element element)
+	public ASTNode.FileHandle<?> do_file(ASTNode parent, Element element)
 	{
 		assert element.getNodeName().equals("file");
 
@@ -227,7 +227,7 @@ public class CodecParser {
 		if (type == null)
 			throw new SyntaxError("<file> needs a type attribute");
 
-		final ASTNode.FileHandle handle = ASTNode.FileHandle.make(parent, id, filename, type);
+		final ASTNode.FileHandle<?> handle = ASTNode.FileHandle.make(parent, id, filename, type);
 		return handle;
 	}
 
