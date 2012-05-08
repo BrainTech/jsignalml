@@ -12,6 +12,7 @@ import jsignalml.logging.Logger;
  * Class to hold an AST correspoding to the XML file
  */
 public abstract class ASTNode {
+	public static final String XML_FILE_TYPE = "xml";
 	public static final Logger log = new Logger(ASTNode.class);
 
 	final ASTNode parent;
@@ -411,7 +412,8 @@ public abstract class ASTNode {
 				return new FileHandle<FileType.BinaryFile>(parent, id, filename, true);
 			else if(type.equals("text")){
 				return new FileHandle<FileType.TextFile>(parent, id, filename, false);
-
+			} else if (type.equals(XML_FILE_TYPE)){
+				return null;
 			}
 			throw new IllegalArgumentException(format("unkown file type '%s'", type));
 		}
