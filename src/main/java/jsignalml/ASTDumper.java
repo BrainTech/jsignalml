@@ -63,7 +63,6 @@ public class ASTDumper extends ASTVisitor<Integer> {
 	public Integer visit(ASTNode.TextParam node, Integer parent)
 	{
 		this.header(parent, node, "param (read text)", "");
-		this.attrib(parent, "format", node.format);
 		this.attrib(parent, "line", node.line);
 		return this.attrib(parent, "pattern", node.pattern);
 	}

@@ -611,8 +611,6 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 		comment(body, "node.type=%s", typename(node.type));
 		comment(body, "node._read_type=%s", typename(node._read_type));
 		comment(body, "--> nodetype=%s", typename(nodetype));
-		comment(body, "format=(%s)", node.format);
-		comment(body, "format.type=%s", typename(node.format.type));
 		comment(body, "line=(%s)", node.line);
 		comment(body, "line.type=%s", typename(node.line.type));
 		comment(body, "pattern=(%s)", node.pattern);

@@ -158,13 +158,6 @@ public class ASTTypeVisitor extends ASTVisitor<Type> {
 		final TypeVisitor checker = _typeVisitor(node);
 
 		{
-			assert node.format != null;
-			final Type t1 = node.format.accept(checker);
-			log.info("%s format.type=%s", node, typename(t1));
-			assert_type(t1, TypeString.I);
-		}
-
-		{
 			assert node.line != null;
 			final Type t2 = node.line.accept(checker);
 			log.info("%s line.type=%s", node, typename(t2));
@@ -187,24 +180,25 @@ public class ASTTypeVisitor extends ASTVisitor<Type> {
 
 		final Type type;
 		{
-			// XXX: change the visitor to use outer context
-			// this will only work for very simple expressions
-			final EvalVisitor valuator = EvalVisitor.create(node);
-			Type value;
-			try{
-				value = node.format.accept(valuator);
-			} catch(Frame.CannotEvaluate e) {
-				value = null;
-			}
-			assert_type(value, TypeString.I);
-			final Type readtype;
-			if (value != null)
-				readtype = BitForm.get(((TypeString)value)).readType();
-			else
-				readtype = null;
-
-			node._read_type = readtype;
-			type = node.type != null ? node.type : readtype;
+//			// XXX: change the visitor to use outer context
+//			// this will only work for very simple expressions
+//			final EvalVisitor valuator = EvalVisitor.create(node);
+//			Type value;
+//			try{
+//				value = node.format.accept(valuator);
+//			} catch(Frame.CannotEvaluate e) {
+//				value = null;
+//			}
+//			assert_type(value, TypeString.I);
+//			final Type readtype;
+//			if (value != null)
+//				readtype = BitForm.get(((TypeString)value)).readType();
+//			else
+//				readtype = null;
+//
+//			node._read_type = readtype;
+//			type = node.type != null ? node.type : readtype;
+			type = node.type;
 		}
 
 		return putCached(node, type);

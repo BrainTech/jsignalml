@@ -259,17 +259,16 @@ public abstract class ASTNode {
 	
 	
 	public static class TextParam extends ReadParam {
-		final Expression line, pattern, format, group;
+		final Expression line, pattern, group;
 
 		// XXX: move this somewhere proper?
 		Type _read_type = null;
 
 		public TextParam(ASTNode parent, Expression id, Type type,
-		                   Expression format, Expression line, Expression pattern, Expression group)
+		                   Expression line, Expression pattern, Expression group)
 			throws SyntaxError
 		{
 			super(parent, id, type);
-			this.format = format;
 			this.line = line != null ? line : Const.make(-1);
 			this.pattern = pattern;
 			this.group = group;
@@ -279,8 +278,8 @@ public abstract class ASTNode {
 		@Override
 		public String toString()
 		{
-			return format("ASTNode.TextParam %s on %s format=%s line=%s pattern=%s group=%s" ,
-			              id, handle, format, line, pattern, group);
+			return format("ASTNode.TextParam %s on %s line=%s pattern=%s group=%s" ,
+			              id, handle, line, pattern, group);
 		}
 
 		@Override

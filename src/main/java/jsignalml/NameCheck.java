@@ -37,11 +37,9 @@ public class NameCheck extends ASTVisitor<NullType> {
 	{
 		log.debug("checking %s", node);
 		ExpressionNameCheck checker = new ExpressionNameCheck(node);
-		assert node.format != null;
 		assert node.line != null;
 		assert node.pattern != null;
 		assert node.group != null;
-		node.format.accept(checker);
 		node.line.accept(checker);
 		node.pattern.accept(checker);
 		node.group.accept(checker);
