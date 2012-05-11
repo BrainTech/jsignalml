@@ -11,30 +11,70 @@ import jsignalml.ChannelSet;
 import jsignalml.ContextDumper;
 import jsignalml.codec.Signalml;
 
-import org.apache.log4j.BasicConfigurator;
-import org.junit.experimental.theories.Theory;
+//import org.apache.log4j.BasicConfigurator;
+//import org.junit.experimental.theories.Theory;
 
 /**
  * @author Grzegorz Stadnik
  *
  */
-public class TestCodec {
+public class CheckCodec {
 
-	private final static String outHdrNameNrOfSamples = "number_of_samples";
-	private final static String outHdrNameNrOfChannels = "number_of_channels";
-	private final static String outHdrNameSamplingFrequency = "sampling_frequency";
-	private final static String outHdrNameLabelsOfChannels = "channel_labels";
-	private final static String outHdrNameTypesOfChannels = "channel_types";
-	private final static String outHdrNameScaled = "scaled";
-	private final static String outHdrNameScalingGain = "scaling_gain";
-	private final static String outHdrNameScalingOffset = "scaling_offset";
-	private final static String outHdrNameCalibrationGain = "calibration_gain";
-	private final static String outHdrNameCalibrationOffset = "calibration_offset";
-	private final static String outHdrNameCalibrationUnits = "calibration_units";
-	
-	private final static float  precisionFloat = 0.001f;
-	private final static double precisionDouble = 0.000001d;
-	
+	private final static String  outHdrNameNrOfSamples = "number_of_samples";
+	private final static String  outHdrNameNrOfChannels = "number_of_channels";
+	private final static String  outHdrNameSamplingFrequency = "sampling_frequency";
+	private final static String  outHdrNameLabelsOfChannels = "channel_labels";
+	private final static String  outHdrNameTypesOfChannels = "channel_types";
+	private final static String  outHdrNameScaled = "scaled";
+	private final static String  outHdrNameScalingGain = "scaling_gain";
+	private final static String  outHdrNameScalingOffset = "scaling_offset";
+	private final static String  outHdrNameCalibrationGain = "calibration_gain";
+	private final static String  outHdrNameCalibrationOffset = "calibration_offset";
+	private final static String  outHdrNameCalibrationUnits = "calibration_units";
+
+	private Integer              outHdrNrOfChannels = null;
+	private Long                 outHdrNrOfSamples = null;
+	private Long[]               outHdrNrsOfSamples = new Long[0];
+	private Double               outHdrSamplingFrequency = null;
+	private Double[]             outHdrSamplingFrequencies = new Double[0];
+	private String[]             outHdrLabelsOfChannels = null;
+	private String[]             outHdrTypesOfChannels = null;
+	private Integer              outHdrScaled = null;
+	private Double               outHdrScalingGain = null;
+	private Double[]             outHdrScalingGains = new Double[0];
+	private Double               outHdrScalingOffset = null;
+	private Double[]             outHdrScalingOffsets = new Double[0];
+	private Double               outHdrCalibrationGain = null;
+	private Double[]             outHdrCalibrationGains = new Double[0];
+	private Double               outHdrCalibrationOffset = null;
+	private Double[]             outHdrCalibrationOffsets = new Double[0];
+	private String[]             outHdrCalibrationUnits = null;
+	private String               outHdrFileCharset = "UTF-8";
+	private String               outHdrFileLineDelimiter = "\n";
+	private final int            outHdrFileBigBufSize = 262144;
+	private final int            outHdrFileSmallBufSize = 16384;
+
+	private final int            howMuchErrorsToRemember = 100; //10;
+	private int                  howMuchErrorsFound = 0;
+	private float[]              rememberedErrorsValueShouldBe = new float[howMuchErrorsToRemember];
+	private float[]              rememberedErrorsValueThereIs = new float[howMuchErrorsToRemember];
+
+	private ChannelSet           inDtaChannelSet = null;
+	private int                  inDtaChannelSetNrOfChannels = 0;
+	private FileInputStream      outDtaFis = null;
+	private FileChannel          outDtaFisChannel = null;
+	private int                  outDtaFisNrOfChannels = 0;
+	private long                 outDtaFisOffset = 0;
+	private long                 outDtaFisSize = 0;
+	private final int            outDtaFisLengthNrOfChannels = 4;           //one int   fits in 4 bytes
+	private final int            outDtaFisLengthNrOfSamplesPerChannel = 8;  //one long  fits in 8 bytes
+	private final int            outDtaFisLengthSampleUnitValue = 4;        //one float fits in 4 bytes
+
+	private Signalml             codec = null;
+
+	public  final static float   precisionFloat = 0.001f;
+	public  final static double  precisionDouble = 0.000001d;
+
 	private final static boolean LOG_DEBUG = false;
 	private final static boolean LOG_INFO = true;
 	private final static boolean LOG_WARNING = true;
@@ -42,7 +82,591 @@ public class TestCodec {
 	private final static boolean LOG_FATAL = true;
 	private final static boolean LOG_TEST = true;
 
-	public static byte[] readFileUsingParts(String fileName, int bigBufSize, int smallBufSize)
+	/**
+	 * CheckCodec constructor. It stores Signalml codec object given as a parameter.
+	 * 
+	 * @param reader Signalml codec object to be stored and than used by methods
+	 * 
+	 * Note! After running this constructor please invoke also:
+	 * 
+	 *  boolean inDtaStatus = getInDta(inDtaFileName, useContextDumper,
+	 *  	usePreCheckingOfTheDataFromCodec);
+	 *  boolean outDtaStatus = getOutDta(outHdrFileName, outDtaFileName);
+	 *  boolean verificationStatus = checkChannels(verificationMultiplyFactor,
+	 *  	testDeltaForSample, testDeltaForSamplingFrequency);
+	 *
+	 *  See main() method to see an example of how to use CheckCodec class.
+	 *  Nothing more is needed to use this class completely.
+	 */
+	public CheckCodec(Signalml reader) {
+		this.codec = reader;
+	}
+	
+	/**
+	 * @return the outHdrNrOfChannels
+	 */
+	public Integer getOutHdrNrOfChannels() {
+		return outHdrNrOfChannels;
+	}
+
+	/**
+	 * @param outHdrNrOfChannels the outHdrNrOfChannels to set
+	 */
+	public void setOutHdrNrOfChannels(Integer outHdrNrOfChannels) {
+		this.outHdrNrOfChannels = outHdrNrOfChannels;
+	}
+
+	/**
+	 * @return the outHdrNrOfSamples
+	 */
+	public Long getOutHdrNrOfSamples() {
+		return outHdrNrOfSamples;
+	}
+
+	/**
+	 * @param outHdrNrOfSamples the outHdrNrOfSamples to set
+	 */
+	public void setOutHdrNrOfSamples(Long outHdrNrOfSamples) {
+		this.outHdrNrOfSamples = outHdrNrOfSamples;
+	}
+
+	/**
+	 * @return the outHdrNrsOfSamples
+	 */
+	public Long[] getOutHdrNrsOfSamples() {
+		return outHdrNrsOfSamples;
+	}
+
+	/**
+	 * @param outHdrNrsOfSamples the outHdrNrsOfSamples to set
+	 */
+	public void setOutHdrNrsOfSamples(Long[] outHdrNrsOfSamples) {
+		this.outHdrNrsOfSamples = outHdrNrsOfSamples;
+	}
+
+	/**
+	 * @return the outHdrSamplingFrequency
+	 */
+	public Double getOutHdrSamplingFrequency() {
+		return outHdrSamplingFrequency;
+	}
+
+	/**
+	 * @param outHdrSamplingFrequency the outHdrSamplingFrequency to set
+	 */
+	public void setOutHdrSamplingFrequency(Double outHdrSamplingFrequency) {
+		this.outHdrSamplingFrequency = outHdrSamplingFrequency;
+	}
+
+	/**
+	 * @return the outHdrSamplingFrequencies
+	 */
+	public Double[] getOutHdrSamplingFrequencies() {
+		return outHdrSamplingFrequencies;
+	}
+
+	/**
+	 * @param outHdrSamplingFrequencies the outHdrSamplingFrequencies to set
+	 */
+	public void setOutHdrSamplingFrequencies(Double[] outHdrSamplingFrequencies) {
+		this.outHdrSamplingFrequencies = outHdrSamplingFrequencies;
+	}
+
+	/**
+	 * @return the outHdrLabelsOfChannels
+	 */
+	public String[] getOutHdrLabelsOfChannels() {
+		return outHdrLabelsOfChannels;
+	}
+
+	/**
+	 * @param outHdrLabelsOfChannels the outHdrLabelsOfChannels to set
+	 */
+	public void setOutHdrLabelsOfChannels(String[] outHdrLabelsOfChannels) {
+		this.outHdrLabelsOfChannels = outHdrLabelsOfChannels;
+	}
+
+	/**
+	 * @return the outHdrTypesOfChannels
+	 */
+	public String[] getOutHdrTypesOfChannels() {
+		return outHdrTypesOfChannels;
+	}
+
+	/**
+	 * @param outHdrTypesOfChannels the outHdrTypesOfChannels to set
+	 */
+	public void setOutHdrTypesOfChannels(String[] outHdrTypesOfChannels) {
+		this.outHdrTypesOfChannels = outHdrTypesOfChannels;
+	}
+
+	/**
+	 * @return the outHdrScaled
+	 */
+	public Integer getOutHdrScaled() {
+		return outHdrScaled;
+	}
+
+	/**
+	 * @param outHdrScaled the outHdrScaled to set
+	 */
+	public void setOutHdrScaled(Integer outHdrScaled) {
+		this.outHdrScaled = outHdrScaled;
+	}
+
+	/**
+	 * @return the outHdrScalingGain
+	 */
+	public Double getOutHdrScalingGain() {
+		return outHdrScalingGain;
+	}
+
+	/**
+	 * @param outHdrScalingGain the outHdrScalingGain to set
+	 */
+	public void setOutHdrScalingGain(Double outHdrScalingGain) {
+		this.outHdrScalingGain = outHdrScalingGain;
+	}
+
+	/**
+	 * @return the outHdrScalingGains
+	 */
+	public Double[] getOutHdrScalingGains() {
+		return outHdrScalingGains;
+	}
+
+	/**
+	 * @param outHdrScalingGains the outHdrScalingGains to set
+	 */
+	public void setOutHdrScalingGains(Double[] outHdrScalingGains) {
+		this.outHdrScalingGains = outHdrScalingGains;
+	}
+
+	/**
+	 * @return the outHdrScalingOffset
+	 */
+	public Double getOutHdrScalingOffset() {
+		return outHdrScalingOffset;
+	}
+
+	/**
+	 * @param outHdrScalingOffset the outHdrScalingOffset to set
+	 */
+	public void setOutHdrScalingOffset(Double outHdrScalingOffset) {
+		this.outHdrScalingOffset = outHdrScalingOffset;
+	}
+
+	/**
+	 * @return the outHdrScalingOffsets
+	 */
+	public Double[] getOutHdrScalingOffsets() {
+		return outHdrScalingOffsets;
+	}
+
+	/**
+	 * @param outHdrScalingOffsets the outHdrScalingOffsets to set
+	 */
+	public void setOutHdrScalingOffsets(Double[] outHdrScalingOffsets) {
+		this.outHdrScalingOffsets = outHdrScalingOffsets;
+	}
+
+	/**
+	 * @return the outHdrCalibrationGain
+	 */
+	public Double getOutHdrCalibrationGain() {
+		return outHdrCalibrationGain;
+	}
+
+	/**
+	 * @param outHdrCalibrationGain the outHdrCalibrationGain to set
+	 */
+	public void setOutHdrCalibrationGain(Double outHdrCalibrationGain) {
+		this.outHdrCalibrationGain = outHdrCalibrationGain;
+	}
+
+	/**
+	 * @return the outHdrCalibrationGains
+	 */
+	public Double[] getOutHdrCalibrationGains() {
+		return outHdrCalibrationGains;
+	}
+
+	/**
+	 * @param outHdrCalibrationGains the outHdrCalibrationGains to set
+	 */
+	public void setOutHdrCalibrationGains(Double[] outHdrCalibrationGains) {
+		this.outHdrCalibrationGains = outHdrCalibrationGains;
+	}
+
+	/**
+	 * @return the outHdrCalibrationOffset
+	 */
+	public Double getOutHdrCalibrationOffset() {
+		return outHdrCalibrationOffset;
+	}
+
+	/**
+	 * @param outHdrCalibrationOffset the outHdrCalibrationOffset to set
+	 */
+	public void setOutHdrCalibrationOffset(Double outHdrCalibrationOffset) {
+		this.outHdrCalibrationOffset = outHdrCalibrationOffset;
+	}
+
+	/**
+	 * @return the outHdrCalibrationOffsets
+	 */
+	public Double[] getOutHdrCalibrationOffsets() {
+		return outHdrCalibrationOffsets;
+	}
+
+	/**
+	 * @param outHdrCalibrationOffsets the outHdrCalibrationOffsets to set
+	 */
+	public void setOutHdrCalibrationOffsets(Double[] outHdrCalibrationOffsets) {
+		this.outHdrCalibrationOffsets = outHdrCalibrationOffsets;
+	}
+
+	/**
+	 * @return the outHdrCalibrationUnits
+	 */
+	public String[] getOutHdrCalibrationUnits() {
+		return outHdrCalibrationUnits;
+	}
+
+	/**
+	 * @param outHdrCalibrationUnits the outHdrCalibrationUnits to set
+	 */
+	public void setOutHdrCalibrationUnits(String[] outHdrCalibrationUnits) {
+		this.outHdrCalibrationUnits = outHdrCalibrationUnits;
+	}
+
+	/**
+	 * @return the outHdrFileCharset
+	 */
+	public String getOutHdrFileCharset() {
+		return outHdrFileCharset;
+	}
+
+	/**
+	 * @param outHdrFileCharset the outHdrFileCharset to set
+	 */
+	public void setOutHdrFileCharset(String outHdrFileCharset) {
+		this.outHdrFileCharset = outHdrFileCharset;
+	}
+
+	/**
+	 * @return the outHdrFileLineDelimiter
+	 */
+	public String getOutHdrFileLineDelimiter() {
+		return outHdrFileLineDelimiter;
+	}
+
+	/**
+	 * @param outHdrFileLineDelimiter the outHdrFileLineDelimiter to set
+	 */
+	public void setOutHdrFileLineDelimiter(String outHdrFileLineDelimiter) {
+		this.outHdrFileLineDelimiter = outHdrFileLineDelimiter;
+	}
+
+	/**
+	 * @return the howMuchErrorsFound
+	 */
+	public int getHowMuchErrorsFound() {
+		return howMuchErrorsFound;
+	}
+
+	/**
+	 * @param howMuchErrorsFound the howMuchErrorsFound to set
+	 */
+	public void setHowMuchErrorsFound(int howMuchErrorsFound) {
+		this.howMuchErrorsFound = howMuchErrorsFound;
+	}
+
+	/**
+	 * @return the rememberedErrorsValueShouldBe
+	 */
+	public float[] getRememberedErrorsValueShouldBe() {
+		return rememberedErrorsValueShouldBe;
+	}
+
+	/**
+	 * @param rememberedErrorsValueShouldBe the rememberedErrorsValueShouldBe to set
+	 */
+	public void setRememberedErrorsValueShouldBe(
+			float[] rememberedErrorsValueShouldBe) {
+		this.rememberedErrorsValueShouldBe = rememberedErrorsValueShouldBe;
+	}
+
+	/**
+	 * @return the rememberedErrorsValueThereIs
+	 */
+	public float[] getRememberedErrorsValueThereIs() {
+		return rememberedErrorsValueThereIs;
+	}
+
+	/**
+	 * @param rememberedErrorsValueThereIs the rememberedErrorsValueThereIs to set
+	 */
+	public void setRememberedErrorsValueThereIs(float[] rememberedErrorsValueThereIs) {
+		this.rememberedErrorsValueThereIs = rememberedErrorsValueThereIs;
+	}
+
+	/**
+	 * @return the inDtaChannelSet
+	 */
+	public ChannelSet getInDtaChannelSet() {
+		return inDtaChannelSet;
+	}
+
+	/**
+	 * @param inDtaChannelSet the inDtaChannelSet to set
+	 */
+	public void setInDtaChannelSet(ChannelSet inDtaChannelSet) {
+		this.inDtaChannelSet = inDtaChannelSet;
+	}
+
+	/**
+	 * @return the inDtaChannelSetNrOfChannels
+	 */
+	public int getInDtaChannelSetNrOfChannels() {
+		return inDtaChannelSetNrOfChannels;
+	}
+
+	/**
+	 * @param inDtaChannelSetNrOfChannels the inDtaChannelSetNrOfChannels to set
+	 */
+	public void setInDtaChannelSetNrOfChannels(int inDtaChannelSetNrOfChannels) {
+		this.inDtaChannelSetNrOfChannels = inDtaChannelSetNrOfChannels;
+	}
+
+	/**
+	 * @return the outDtaFis
+	 */
+	public FileInputStream getOutDtaFis() {
+		return outDtaFis;
+	}
+
+	/**
+	 * @param outDtaFis the outDtaFis to set
+	 */
+	public void setOutDtaFis(FileInputStream outDtaFis) {
+		this.outDtaFis = outDtaFis;
+	}
+
+	/**
+	 * @return the outDtaFisChannel
+	 */
+	public FileChannel getOutDtaFisChannel() {
+		return outDtaFisChannel;
+	}
+
+	/**
+	 * @param outDtaFisChannel the outDtaFisChannel to set
+	 */
+	public void setOutDtaFisChannel(FileChannel outDtaFisChannel) {
+		this.outDtaFisChannel = outDtaFisChannel;
+	}
+
+	/**
+	 * @return the outDtaFisNrOfChannels
+	 */
+	public int getOutDtaFisNrOfChannels() {
+		return outDtaFisNrOfChannels;
+	}
+
+	/**
+	 * @param outDtaFisNrOfChannels the outDtaFisNrOfChannels to set
+	 */
+	public void setOutDtaFisNrOfChannels(int outDtaFisNrOfChannels) {
+		this.outDtaFisNrOfChannels = outDtaFisNrOfChannels;
+	}
+
+	/**
+	 * @return the outDtaFisOffset
+	 */
+	public long getOutDtaFisOffset() {
+		return outDtaFisOffset;
+	}
+
+	/**
+	 * @param outDtaFisOffset the outDtaFisOffset to set
+	 */
+	public void setOutDtaFisOffset(long outDtaFisOffset) {
+		this.outDtaFisOffset = outDtaFisOffset;
+	}
+
+	/**
+	 * @return the outDtaFisSize
+	 */
+	public long getOutDtaFisSize() {
+		return outDtaFisSize;
+	}
+
+	/**
+	 * @param outDtaFisSize the outDtaFisSize to set
+	 */
+	public void setOutDtaFisSize(long outDtaFisSize) {
+		this.outDtaFisSize = outDtaFisSize;
+	}
+
+	/**
+	 * @return the codec
+	 */
+	public Signalml getCodec() {
+		return codec;
+	}
+
+	/**
+	 * @param codec the codec to set
+	 */
+	public void setCodec(Signalml codec) {
+		this.codec = codec;
+	}
+
+	/**
+	 * @return the outHdrNameNrOfSamples
+	 */
+	public static String getOutHdrNameNrOfSamples() {
+		return outHdrNameNrOfSamples;
+	}
+
+	/**
+	 * @return the outHdrNameNrOfChannels
+	 */
+	public static String getOutHdrNameNrOfChannels() {
+		return outHdrNameNrOfChannels;
+	}
+
+	/**
+	 * @return the outHdrNameSamplingFrequency
+	 */
+	public static String getOutHdrNameSamplingFrequency() {
+		return outHdrNameSamplingFrequency;
+	}
+
+	/**
+	 * @return the outHdrNameLabelsOfChannels
+	 */
+	public static String getOutHdrNameLabelsOfChannels() {
+		return outHdrNameLabelsOfChannels;
+	}
+
+	/**
+	 * @return the outHdrNameTypesOfChannels
+	 */
+	public static String getOutHdrNameTypesOfChannels() {
+		return outHdrNameTypesOfChannels;
+	}
+
+	/**
+	 * @return the outHdrNameScaled
+	 */
+	public static String getOutHdrNameScaled() {
+		return outHdrNameScaled;
+	}
+
+	/**
+	 * @return the outHdrNameScalingGain
+	 */
+	public static String getOutHdrNameScalingGain() {
+		return outHdrNameScalingGain;
+	}
+
+	/**
+	 * @return the outHdrNameScalingOffset
+	 */
+	public static String getOutHdrNameScalingOffset() {
+		return outHdrNameScalingOffset;
+	}
+
+	/**
+	 * @return the outHdrNameCalibrationGain
+	 */
+	public static String getOutHdrNameCalibrationGain() {
+		return outHdrNameCalibrationGain;
+	}
+
+	/**
+	 * @return the outHdrNameCalibrationOffset
+	 */
+	public static String getOutHdrNameCalibrationOffset() {
+		return outHdrNameCalibrationOffset;
+	}
+
+	/**
+	 * @return the outHdrNameCalibrationUnits
+	 */
+	public static String getOutHdrNameCalibrationUnits() {
+		return outHdrNameCalibrationUnits;
+	}
+
+	/**
+	 * @return the outHdrFileBigBufSize
+	 */
+	public int getOutHdrFileBigBufSize() {
+		return outHdrFileBigBufSize;
+	}
+
+	/**
+	 * @return the outHdrFileSmallBufSize
+	 */
+	public int getOutHdrFileSmallBufSize() {
+		return outHdrFileSmallBufSize;
+	}
+
+	/**
+	 * @return the howMuchErrorsToRemember
+	 */
+	public int getHowMuchErrorsToRemember() {
+		return howMuchErrorsToRemember;
+	}
+
+	/**
+	 * @return the outDtaFisLengthNrOfChannels
+	 */
+	public int getOutDtaFisLengthNrOfChannels() {
+		return outDtaFisLengthNrOfChannels;
+	}
+
+	/**
+	 * @return the outDtaFisLengthNrOfSamplesPerChannel
+	 */
+	public int getOutDtaFisLengthNrOfSamplesPerChannel() {
+		return outDtaFisLengthNrOfSamplesPerChannel;
+	}
+
+	/**
+	 * @return the outDtaFisLengthSampleUnitValue
+	 */
+	public int getOutDtaFisLengthSampleUnitValue() {
+		return outDtaFisLengthSampleUnitValue;
+	}
+
+	/**
+	 * @return the precisionFloat
+	 */
+	public static float getPrecisionFloat() {
+		return precisionFloat;
+	}
+
+	/**
+	 * @return the precisionDouble
+	 */
+	public static double getPrecisionDouble() {
+		return precisionDouble;
+	}
+
+	/**
+	 * readFileUsingParts
+	 * 
+	 * @param fileName
+	 * @param bigBufSize
+	 * @param smallBufSize
+	 * @return
+	 * @throws FileNotFoundException
+	 * @throws IOException
+	 */
+	public static final byte[] readFileUsingParts(String fileName, int bigBufSize, int smallBufSize)
 	throws FileNotFoundException, IOException {
 		FileInputStream fis = new FileInputStream(fileName);
 		FileChannel channel = fis.getChannel();
@@ -61,594 +685,872 @@ public class TestCodec {
 		return buffer;
 	}
 
-	public static String[] readTextFileUsingParts(String fileName, String charset, String lineDelimiter, int bigBufSize, int smallBufSize)
-	throws FileNotFoundException, IOException {
-		byte[] buffer = TestCodec.readFileUsingParts(fileName, bigBufSize, smallBufSize);
+	/**
+	 * readTextFileUsingParts
+	 * 
+	 * @param fileName
+	 * @param charset
+	 * @param lineDelimiter
+	 * @param bigBufSize
+	 * @param smallBufSize
+	 * @return
+	 * @throws FileNotFoundException
+	 * @throws IOException
+	 */
+	public static final String[] readTextFileUsingParts(String fileName, String charset, String lineDelimiter,
+			int bigBufSize, int smallBufSize) throws FileNotFoundException, IOException {
+		byte[] buffer = CheckCodec.readFileUsingParts(fileName, bigBufSize, smallBufSize);
 		String bufStr = new String(buffer, charset);
 		String[] lines = bufStr.split(lineDelimiter);
 		return lines;
 	}
 	
+	/**
+	 * getValueOfItemFromLine
+	 * 
+	 * @param line
+	 * @param lineNr
+	 * @param item
+	 * @return
+	 */
+	public static final String getValueOfItemFromLine(String line, int lineNr, String item) {
+		int valueIdx = line.indexOf("=", item.length());
+		if (valueIdx == -1) {
+			if (CheckCodec.LOG_ERROR) System.out.println("Error! Can not find '=' character at the line #"
+				+ lineNr + ": " + line);
+			return null;
+		}
+		String valueStr = line.substring(valueIdx + 1).trim();
+		return valueStr;
+	}
+	
+	/**
+	 * getValuesOfItemFromLine
+	 * 
+	 * @param line
+	 * @param lineNr
+	 * @param item
+	 * @return
+	 */
+	public static final String[] getValuesOfItemFromLine(String line, int lineNr, String item) {
+		String valueStr = getValueOfItemFromLine(line, lineNr, item);
+		if (valueStr == null) return null;
+		String[] valueArrayStr = valueStr.replaceAll("[\t ]+", "").split(",");
+		return valueArrayStr;
+	}
+	
+	/**
+	 * convertValueFromStringToSpecifiedType
+	 * 
+	 * @param fileName
+	 * @param lineNr
+	 * @param item
+	 * @param valueStr
+	 * @param type
+	 * @return
+	 */
+	public static final Object convertValueFromStringToSpecifiedType(String fileName, int lineNr,
+			String item, String valueStr, Object type) {
+		try {
+			Object value = null;
+			if (type instanceof String) {
+				value = valueStr;
+			} else if (type instanceof Long) {
+				value = new Long(Long.parseLong(valueStr, 10));
+			} else if (type instanceof Integer) {
+				value = new Integer(Integer.parseInt(valueStr, 10));
+			} else if (type instanceof Double) {
+				value = new Double(Double.parseDouble(valueStr));
+			} else if (type instanceof Float) {
+				value = new Float(Float.parseFloat(valueStr));
+			} else {
+				if (CheckCodec.LOG_ERROR) System.out.println("Failed during convertion: value for " + item 
+					+ " item cannot have not supported type (" + type.getClass().getName() + ")");
+				return null;
+			}
+			if (CheckCodec.LOG_DEBUG) System.out.println("Value for " + item + " item is"
+				+ " (" + type.getClass().getName() + ")" + valueStr);
+			return value;
+		} catch (NumberFormatException ex) {
+			if (CheckCodec.LOG_ERROR) System.out.println("Wrong format of the file " + fileName + ": line #"
+				+ lineNr + " contains value which is not a " + type.getClass().getName() + " number, but "
+				+ item + " item wants it!");
+			return null;
+		}
+	}
+	
+	/**
+	 * convertValuesFromStringToSpecifiedType
+	 * 
+	 * @param fileName
+	 * @param lineNr
+	 * @param item
+	 * @param valueArrayStr
+	 * @param type
+	 * @return
+	 */
+	public static final Object convertValuesFromStringToSpecifiedType(String fileName, int lineNr,
+			String item, String[] valueArrayStr, Object type) {
+		if (type instanceof String) {
+			return valueArrayStr;
+		} else if (type instanceof Long) {
+			Long[] typeArray = new Long[0];
+			ArrayList<Long> arrayList = new ArrayList<Long>();
+			for (int j = 0; j < valueArrayStr.length; j++) {
+				String singleValueStr = valueArrayStr[j];
+				Long singleValue = (Long) convertValueFromStringToSpecifiedType(fileName, lineNr,
+					item, singleValueStr, new Long(-1L));
+				if (singleValue == null) return null;
+				arrayList.add(singleValue);
+			}
+			return arrayList.toArray(typeArray);
+		} else if (type instanceof Integer) {
+			Integer[] typeArray = new Integer[0];
+			ArrayList<Integer> arrayList = new ArrayList<Integer>();
+			for (int j = 0; j < valueArrayStr.length; j++) {
+				String singleValueStr = valueArrayStr[j];
+				Integer singleValue = (Integer) convertValueFromStringToSpecifiedType(fileName, lineNr,
+					item, singleValueStr, new Integer(-1));
+				if (singleValue == null) return null;
+				arrayList.add(singleValue);
+			}
+			return arrayList.toArray(typeArray);
+		} else if (type instanceof Double) {
+			Double[] typeArray = new Double[0];
+			ArrayList<Double> arrayList = new ArrayList<Double>();
+			for (int j = 0; j < valueArrayStr.length; j++) {
+				String singleValueStr = valueArrayStr[j];
+				Double singleValue = (Double) convertValueFromStringToSpecifiedType(fileName, lineNr,
+					item, singleValueStr, new Double(-1.0D));
+				if (singleValue == null) return null;
+				arrayList.add(singleValue);
+			}
+			return arrayList.toArray(typeArray);
+		} else if (type instanceof Float) {
+			Float[] typeArray = new Float[0];
+			ArrayList<Float> arrayList = new ArrayList<Float>();
+			for (int j = 0; j < valueArrayStr.length; j++) {
+				String singleValueStr = valueArrayStr[j];
+				Float singleValue = (Float) convertValueFromStringToSpecifiedType(fileName, lineNr,
+					item, singleValueStr, new Float(-1.0F));
+				if (singleValue == null) return null;
+				arrayList.add(singleValue);
+			}
+			return arrayList.toArray(typeArray);
+		} else {
+			if (CheckCodec.LOG_ERROR) System.out.println("Failed during convertion: values for " + item 
+				+ " item cannot have not supported type (" + type.getClass().getName() + ")");
+			return null;
+		}
+	}
+
+	/**
+	 * convertValueOrValuesFromStringToSpecifiedType
+	 * 
+	 * @param fileName
+	 * @param lineNr
+	 * @param item
+	 * @param valueStr
+	 * @param type
+	 * @return
+	 */
+	public static final Object convertValueOrValuesFromStringToSpecifiedType(String fileName, int lineNr,
+			String item, String valueStr, Object type) {
+		String[] valueArrayStr = valueStr.replaceAll("[\t ]+", "").split(",");
+		if (valueArrayStr.length < 2) {
+			return convertValueFromStringToSpecifiedType(fileName, lineNr, item, valueStr, type);
+		} else {
+			return convertValuesFromStringToSpecifiedType(fileName, lineNr, item, valueArrayStr, type);
+		}
+	}
+	
+	/**
+	 * getValueOfItemFromLineAsSpecifiedType
+	 * 
+	 * @param fileName
+	 * @param line
+	 * @param lineNr
+	 * @param item
+	 * @param type
+	 * @return
+	 */
+	public static final Object getValueOfItemFromLineAsSpecifiedType(String fileName, String line, int lineNr,
+			String item, Object type) {
+		String valueStr = getValueOfItemFromLine(line, lineNr, item);
+		if (valueStr == null) return null;
+		return convertValueFromStringToSpecifiedType(fileName, lineNr, item, valueStr, type);
+	}
+	
+	/**
+	 * getValuesOfItemFromLineAsSpecifiedType
+	 * 
+	 * @param fileName
+	 * @param line
+	 * @param lineNr
+	 * @param item
+	 * @param type
+	 * @return
+	 */
+	public static final Object getValuesOfItemFromLineAsSpecifiedType(String fileName, String line, int lineNr,
+			String item, Object type) {
+		String[] valueArrayStr = getValuesOfItemFromLine(line, lineNr, item);
+		if (valueArrayStr == null) return null;
+		return convertValuesFromStringToSpecifiedType(fileName, lineNr, item, valueArrayStr, type);
+	}
+	
+	/**
+	 * getValueOrValuesOfItemFromLineAsSpecifiedType
+	 * 
+	 * @param fileName
+	 * @param line
+	 * @param lineNr
+	 * @param item
+	 * @param type
+	 * @return
+	 */
+	public static final Object getValueOrValuesOfItemFromLineAsSpecifiedType(String fileName, String line, int lineNr,
+			String item, Object type) {
+		String valueStr = getValueOfItemFromLine(line, lineNr, item);
+		if (valueStr == null) return null;
+		return convertValueOrValuesFromStringToSpecifiedType(fileName, lineNr, item, valueStr, type);
+	}
+
+	/**
+	 * greaterThan
+	 * 
+	 * @param left
+	 * @param right
+	 * @param delta
+	 * @return
+	 */
+	public static final boolean greaterThan(float left, float right, float delta) {
+		boolean result = Math.abs(left - right) > delta;
+		return result;
+	}
+	
+	/**
+	 * greaterThan
+	 * 
+	 * @param left
+	 * @param right
+	 * @param delta
+	 * @return
+	 */
+	public static final boolean greaterThan(double left, double right, double delta) {
+		boolean result = Math.abs(left - right) > delta;
+		return result;
+	}
+
+	/**
+	 * logFileOperationException
+	 * 
+	 * @param e
+	 * @param fileName
+	 * @param prefix
+	 * @param suffix
+	 */
+	public static final void logFileOperationException(Exception e, String fileName, String prefix, String suffix) {
+		if (CheckCodec.LOG_ERROR) {
+			System.out.println("Error! " + prefix + " file " + fileName + ". " + suffix);
+			e.printStackTrace();
+		}
+	}
+	
+	/**
+	 * getAttributesFromOutHdr
+	 * 
+	 * @param fileName
+	 * @return
+	 * @throws FileNotFoundException
+	 * @throws IOException
+	 */
+	public final boolean getAttributesFromOutHdr(String fileName) throws FileNotFoundException, IOException {
+		if (CheckCodec.LOG_INFO) System.out.println("Reading the output header file " + fileName);
+		String[] outHdrLines = CheckCodec.readTextFileUsingParts(fileName, outHdrFileCharset, outHdrFileLineDelimiter,
+			outHdrFileBigBufSize, outHdrFileSmallBufSize);
+		if (CheckCodec.LOG_INFO) System.out.println("File " + fileName + " has been read out successfully to the buffer.");
+		if (CheckCodec.LOG_INFO) System.out.println("Parsing content of the buffer...");
+		for (int i = 0; i < outHdrLines.length; i++) {
+			String line = outHdrLines[i].trim();
+			if (line.startsWith("#")) {
+				//this is comment => skip line
+			} else if (line.trim().length() < 1) {
+				//empty => skip line
+			} else if (line.startsWith(CheckCodec.outHdrNameNrOfSamples)) {
+				Object o = getValueOrValuesOfItemFromLineAsSpecifiedType(fileName, line, i,
+					CheckCodec.outHdrNameNrOfSamples, new Long(Long.MIN_VALUE));
+				if (o == null) return false;
+				else if (o instanceof Long[]) outHdrNrsOfSamples = (Long[]) o;
+				else outHdrNrOfSamples = (Long) o;
+			} else if (line.startsWith(CheckCodec.outHdrNameNrOfChannels)) {
+				Object o = getValueOfItemFromLineAsSpecifiedType(fileName, line, i,
+					CheckCodec.outHdrNameNrOfChannels, new Integer(Integer.MIN_VALUE));
+				if (o == null) return false;
+				else outHdrNrOfChannels = (Integer) o;
+			} else if (line.startsWith(CheckCodec.outHdrNameSamplingFrequency)) {
+				Object o = getValueOrValuesOfItemFromLineAsSpecifiedType(fileName, line, i,
+					CheckCodec.outHdrNameSamplingFrequency, new Double(Double.NaN));
+				if (o == null) return false;
+				else if (o instanceof Double[]) outHdrSamplingFrequencies = (Double[]) o;
+				else outHdrSamplingFrequency = (Double) o;
+			} else if (line.startsWith(CheckCodec.outHdrNameLabelsOfChannels)) {
+				Object o = getValuesOfItemFromLineAsSpecifiedType(fileName, line, i,
+					CheckCodec.outHdrNameLabelsOfChannels, new String());
+				if (o == null) return false;
+				else outHdrLabelsOfChannels = (String[]) o;
+			} else if (line.startsWith(CheckCodec.outHdrNameTypesOfChannels)) {
+				Object o = (String[]) getValuesOfItemFromLineAsSpecifiedType(fileName, line, i,
+					CheckCodec.outHdrNameTypesOfChannels, new String());
+				if (o == null) return false;
+				else outHdrTypesOfChannels = (String[]) o;
+			} else if (line.startsWith(CheckCodec.outHdrNameScaled)) {
+				Object o = getValueOfItemFromLineAsSpecifiedType(fileName, line, i,
+					CheckCodec.outHdrNameScaled, new Integer(Integer.MIN_VALUE));
+				if (o == null) return false;
+				else outHdrScaled = (Integer) o;
+			} else if (line.startsWith(CheckCodec.outHdrNameScalingGain)) {
+				Object o = getValueOrValuesOfItemFromLineAsSpecifiedType(fileName, line, i,
+					CheckCodec.outHdrNameScalingGain, new Double(Double.NaN));
+				if (o == null) return false;
+				else if (o instanceof Double[]) outHdrScalingGains = (Double[]) o;
+				else outHdrScalingGain = (Double) o;
+			} else if (line.startsWith(CheckCodec.outHdrNameScalingOffset)) {
+				Object o = getValueOrValuesOfItemFromLineAsSpecifiedType(fileName, line, i,
+					CheckCodec.outHdrNameScalingOffset, new Double(Double.NaN));
+				if (o == null) return false;
+				else if (o instanceof Double[]) outHdrScalingOffsets = (Double[]) o;
+				else outHdrScalingOffset = (Double) o;
+			} else if (line.startsWith(CheckCodec.outHdrNameCalibrationGain)) {
+				Object o = getValueOrValuesOfItemFromLineAsSpecifiedType(fileName, line, i,
+					CheckCodec.outHdrNameCalibrationGain, new Double(Double.NaN));
+				if (o == null) return false;
+				else if (o instanceof Double[]) outHdrCalibrationGains = (Double[]) o;
+				else outHdrCalibrationGain = (Double) o;
+			} else if (line.startsWith(CheckCodec.outHdrNameCalibrationOffset)) {
+				Object o = getValueOrValuesOfItemFromLineAsSpecifiedType(fileName, line, i,
+					CheckCodec.outHdrNameCalibrationOffset, new Double(Double.NaN));
+				if (o == null) return false;
+				else if (o instanceof Double[]) outHdrCalibrationOffsets = (Double[]) o;
+				else outHdrCalibrationOffset = (Double) o;
+			} else if (line.startsWith(CheckCodec.outHdrNameCalibrationUnits)) {
+				Object o = getValuesOfItemFromLineAsSpecifiedType(fileName, line, i,
+					CheckCodec.outHdrNameCalibrationUnits, new String());
+				if (o == null) return false;
+				else outHdrCalibrationUnits = (String[]) o;
+			} else {
+				if (CheckCodec.LOG_WARNING) System.out.println("Warning! Unknown line format: " + line);
+			}
+		}
+		return true;
+	}
+	
+	/**
+	 * checkAttributesFromOutHdr
+	 * 
+	 * @return
+	 */
+	public final boolean checkAttributesFromOutHdr() {
+		if (outHdrNrOfChannels == null) {
+			if (CheckCodec.LOG_ERROR) System.out.println("Error! There was no specified value with number of channels" +
+				" in the output header file. Please add it there!");
+			return false;
+		}
+		if (outHdrLabelsOfChannels == null) {
+			if (CheckCodec.LOG_ERROR) System.out.println("Error! There was no specified value with label of channel per every" +
+				" individual channel in the output header file. Please add it there!");
+			return false;
+		}
+		if (outHdrTypesOfChannels == null) {
+			if (CheckCodec.LOG_ERROR) System.out.println("Error! There was no specified value with type of channel" +
+				" per every individual channel in the output header file. Please add it there!");
+			return false;
+		}
+		if (outHdrNrOfSamples == null && outHdrNrsOfSamples.length == 0) {
+			if (CheckCodec.LOG_ERROR) System.out.println("Error! There was no specified value with number of sample units per all" +
+				" or per every individual channel in the output header file. Please add it there!");
+			return false;
+		}
+		if (outHdrNrsOfSamples.length > 0 && outHdrNrOfChannels.longValue() != outHdrNrsOfSamples.length) {
+			if (CheckCodec.LOG_ERROR) System.out.println("Error! Number of channels specified in output header file was different in two places: "
+				+ outHdrNrOfChannels + " in line dedicated to it and " + outHdrNrsOfSamples.length
+				+ " in line with the list of the numbers of samples. Please correct it!");
+			return false;
+		}
+		if (outHdrSamplingFrequency == null && outHdrSamplingFrequencies.length == 0) {
+			if (CheckCodec.LOG_ERROR) System.out.println("Error! There was no specified value with sampling frequency per all"
+				+ "or per every individual channel in the output header file. Please add it there!");
+			return false;
+		}
+		if (outHdrSamplingFrequencies.length > 0 && outHdrNrOfChannels.longValue() != outHdrSamplingFrequencies.length) {
+			if (CheckCodec.LOG_ERROR) System.out.println("Error! Number of channels specified in output header file was different in two places: "
+				+ outHdrNrOfChannels + " in line dedicated to it and " + outHdrSamplingFrequencies.length
+				+ " in line with the list of sampling freqiencies. Please correct it!");
+			return false;
+		}
+		if (outHdrScaled == null) {
+			if (CheckCodec.LOG_ERROR) System.out.println("Error! There was no specified value determining if samples were scaled. " +
+				"Please add line scaled=0 or line scaled=1 to the .hdr file!");
+			return false;
+		}
+		return true;
+	}
+	
+	/**
+	 * checkSampleUnitAtPos
+	 * 
+	 * @param outDtaFisSampleUnitValue
+	 * @param inDtaChannelObject
+	 * @param channelNr
+	 * @param sampleUnitNr
+	 * @param sampleUnitNrInCurrentBuffer
+	 * @param testDeltaForSample
+	 * @return
+	 */
+	public final boolean checkSampleUnitAtPos(final float outDtaFisSampleUnitValue, final Channel inDtaChannelObject,
+			final int channelNr, final int sampleUnitNr,
+			final int sampleUnitNrInCurrentBuffer, final float testDeltaForSample) {
+		if (CheckCodec.LOG_DEBUG) System.out.print(" " + outDtaFisSampleUnitValue); //System.out.format(" %.3f", outDtaFisSampleUnitValue);
+		int fullSampleNr = sampleUnitNr + sampleUnitNrInCurrentBuffer;
+		float inDtaCodecSampleUnitValue = inDtaChannelObject.getSample(fullSampleNr);
+		boolean error = greaterThan(inDtaCodecSampleUnitValue, outDtaFisSampleUnitValue, testDeltaForSample);
+		if (error) {
+			if (howMuchErrorsFound < howMuchErrorsToRemember) {
+				rememberedErrorsValueShouldBe[howMuchErrorsFound] = outDtaFisSampleUnitValue;
+				rememberedErrorsValueThereIs[howMuchErrorsFound] = inDtaCodecSampleUnitValue;
+				if (CheckCodec.LOG_TEST) System.out.println("\nCODEC TEST RESULT: ERROR. Details: Value of the sample #" + fullSampleNr
+					+ " of the channel #" + channelNr + " taken from the codec (" + inDtaCodecSampleUnitValue + ")"
+					+ "differs from that specified in output file .float (" + outDtaFisSampleUnitValue + ").");
+			}
+			//increment offset -- if only we break it, but my last decision is not to break the flow
+			//continue samplesBig; //break channels; //return;
+			howMuchErrorsFound ++;
+		//} else {
+		//	if (howMuchErrorsFound < howMuchErrorsToRemember) {
+		//		if (CheckCodec.LOG_TEST) System.out.println("\nCODEC TEST RESULT: OK. Details: Value of the sample #" + fullSampleNr
+		//			+ " of the channel #" + channelNr + " taken from the codec (" + inDtaCodecSampleUnitValue + ")"
+		//			+ "is equal to that specified in output file .float (" + outDtaFisSampleUnitValue + ").");
+		//	}
+		}
+		return error;
+	}
+	
+	/**
+	 * checkSampleUnitsAtPos
+	 * 
+	 * @param outDtaFisChannel
+	 * @param outDtaFisOffset
+	 * @param bytesToRead
+	 * @param outDtaFisLengthSampleUnitValue
+	 * @param verificationMultiplyFactor
+	 * @param inDtaChannelObject
+	 * @param channelNr
+	 * @param sampleUnitNr
+	 * @param testDeltaForSample
+	 * @throws IOException
+	 */
+	public final void checkSampleUnitsAtPos(final FileChannel outDtaFisChannel, final long outDtaFisOffset, final long bytesToRead,
+			final int outDtaFisLengthSampleUnitValue, final float verificationMultiplyFactor, final Channel inDtaChannelObject,
+			final int channelNr, final int sampleUnitNr, final float testDeltaForSample) throws IOException {
+		MappedByteBuffer outDtaFisMapBuffer = outDtaFisChannel.map(FileChannel.MapMode.READ_ONLY, outDtaFisOffset, bytesToRead);
+		int sampleUnitPosInCurrentBuffer = 0;
+		int sampleUnitNrInCurrentBuffer = 0;
+		/*samplesSmall:*/
+		for (; sampleUnitPosInCurrentBuffer < bytesToRead; sampleUnitNrInCurrentBuffer ++, sampleUnitPosInCurrentBuffer += outDtaFisLengthSampleUnitValue) {
+			final float outDtaFisSampleUnitValue = outDtaFisMapBuffer.getFloat((int) sampleUnitPosInCurrentBuffer) * verificationMultiplyFactor;
+			checkSampleUnitAtPos(outDtaFisSampleUnitValue, inDtaChannelObject, channelNr, sampleUnitNr, sampleUnitNrInCurrentBuffer, testDeltaForSample);
+		}
+	}
+	
+	/**
+	 * checkSamples
+	 * 
+	 * @param gotoNextChannel
+	 * @param gotoNextSamplePortionBig
+	 * @param outDtaFisOffsetStart
+	 * @param outDtaFisLengthSampleUnitValue
+	 * @param outDtaFisNrOfSamplesPerChannel
+	 * @param outDtaFisChannel
+	 * @param verificationMultiplyFactor
+	 * @param inDtaChannelObject
+	 * @param channelNr
+	 * @param testDeltaForSample
+	 * @return
+	 * @throws IOException
+	 */
+	public final boolean checkSamples(boolean gotoNextChannel, boolean gotoNextSamplePortionBig, final long outDtaFisOffsetStart,
+			final int outDtaFisLengthSampleUnitValue, final long outDtaFisNrOfSamplesPerChannel, final FileChannel outDtaFisChannel,
+			final float verificationMultiplyFactor, final Channel inDtaChannelObject, final int channelNr, final float testDeltaForSample)
+			throws IOException {
+		long samplesBytesAlreadyRead = outDtaFisOffset - outDtaFisOffsetStart;
+		long samplesAlreadyRead = samplesBytesAlreadyRead / outDtaFisLengthSampleUnitValue;
+		long samplesToReadAllRest = outDtaFisNrOfSamplesPerChannel - samplesAlreadyRead;
+		final long samplesToReadMax = 4096;
+		long samplesToRead = Math.min(samplesToReadMax, samplesToReadAllRest);
+		long bytesToRead = samplesToRead * outDtaFisLengthSampleUnitValue;
+		/*samplesBig:*/
+		for (int sampleUnitNr = 0; sampleUnitNr < outDtaFisNrOfSamplesPerChannel; ) {
+			samplesBytesAlreadyRead = outDtaFisOffset - outDtaFisOffsetStart;
+			samplesAlreadyRead = samplesBytesAlreadyRead / outDtaFisLengthSampleUnitValue;
+			samplesToReadAllRest = outDtaFisNrOfSamplesPerChannel - samplesAlreadyRead;
+			samplesToRead = Math.min(samplesToReadMax, samplesToReadAllRest);
+			bytesToRead = samplesToRead * outDtaFisLengthSampleUnitValue;
+			if (gotoNextChannel == false && gotoNextSamplePortionBig == false) {
+				checkSampleUnitsAtPos(outDtaFisChannel, outDtaFisOffsetStart, bytesToRead, outDtaFisLengthSampleUnitValue,
+					verificationMultiplyFactor, inDtaChannelObject, channelNr, sampleUnitNr, testDeltaForSample);
+			}
+			outDtaFisOffset += bytesToRead;
+			sampleUnitNr += samplesToRead;
+			if (gotoNextChannel == true) {
+				gotoNextChannel = false;
+				return gotoNextChannel; //continue channels;
+			}
+		}
+		if (CheckCodec.LOG_INFO) System.out.println();
+		return gotoNextChannel;
+	}
+	
+	/**
+	 * checkChannel
+	 * 
+	 * @param outDtaFisOffsetStart
+	 * @param outDtaFisLengthSampleUnitValue
+	 * @param outDtaFisNrOfSamplesPerChannel
+	 * @param outDtaFisChannel
+	 * @param verificationMultiplyFactor
+	 * @param inDtaChannelObject
+	 * @param channelNr
+	 * @param testDeltaForSample
+	 * @param testDeltaForSamplingFrequency
+	 * @throws IOException
+	 */
+	public final void checkChannel(final long outDtaFisOffsetStart, final int outDtaFisLengthSampleUnitValue,
+			final long outDtaFisNrOfSamplesPerChannel, final FileChannel outDtaFisChannel,
+			final float verificationMultiplyFactor, final Channel inDtaChannelObject, final int channelNr,
+			final float testDeltaForSample, final double testDeltaForSamplingFrequency) throws IOException {
+		long inDtaChannelObjectNumberOfSamplesPerChannel = inDtaChannelObject.getNumberOfSamples();
+		String inDtaChannelObjectChannelName = inDtaChannelObject.getChannelName();
+		String inDtaChannelObjectChannelTypeName = inDtaChannelObject.getChannelTypeName();
+		double inDtaChannelObjectSamplingFrequency = inDtaChannelObject.getSamplingFrequency();
+		boolean gotoNextChannel = false;
+		boolean gotoNextSamplePortionBig = false;
+		//boolean gotoNextSamplePortionSmall = false;
+		//comparing header info
+		if (!inDtaChannelObjectChannelName.equals(outHdrLabelsOfChannels[channelNr])) {
+			if (CheckCodec.LOG_TEST) System.out.println("\nCODEC TEST RESULT: ERROR. Details: Label or name of the channel #"
+				+ channelNr + " get from codec (" + inDtaChannelObjectChannelName
+				+ ") differs from that specified in output file .hdr (" + outHdrLabelsOfChannels[channelNr] + ").");
+			////TODO increment offset
+			//break channels; //return;
+		}
+		if (!inDtaChannelObjectChannelTypeName.equals(outHdrTypesOfChannels[channelNr])) {
+			if (CheckCodec.LOG_TEST) System.out.println("\nCODEC TEST RESULT: ERROR. Details: Type of the channel #"
+				+ channelNr + " get from codec (" + inDtaChannelObjectChannelName
+				+ ") differs from that specified in output file .hdr (" + outHdrLabelsOfChannels[channelNr] + ").");
+			////TODO increment offset
+			//break channels; //return;
+		}
+		double outHdrSamplingFrequencyPerChannel = ((outHdrSamplingFrequency == null) ? outHdrSamplingFrequencies[channelNr] : outHdrSamplingFrequency);
+		if (greaterThan(inDtaChannelObjectSamplingFrequency, outHdrSamplingFrequencyPerChannel, testDeltaForSamplingFrequency)) {
+			if (CheckCodec.LOG_TEST) System.out.println("\nCODEC TEST RESULT: ERROR. Details: Sampling frequency of the channel #"
+				+ channelNr + " get from codec (" + inDtaChannelObjectSamplingFrequency + ") differs from that specified in output file .hdr ("
+				+ outHdrSamplingFrequencyPerChannel + ").");
+			////TODO increment offset
+			//break channels; //return;
+		}
+		if (inDtaChannelObjectNumberOfSamplesPerChannel != outDtaFisNrOfSamplesPerChannel) {
+			if (CheckCodec.LOG_TEST) System.out.println("\nCODEC TEST RESULT: ERROR. Details: Number of samples per channel #"
+				+ channelNr + " get from codec (" + inDtaChannelObjectNumberOfSamplesPerChannel + ") differs from that specified in output file .hdr ("
+				+ outDtaFisNrOfSamplesPerChannel + ").");
+			//TODO increment offset
+			gotoNextChannel = true; //continue channels; //return;
+		}
+		//comparing data info
+		gotoNextChannel = checkSamples(gotoNextChannel, gotoNextSamplePortionBig, outDtaFisOffsetStart, outDtaFisLengthSampleUnitValue,
+			outDtaFisNrOfSamplesPerChannel, outDtaFisChannel, verificationMultiplyFactor, inDtaChannelObject, channelNr, testDeltaForSample);
+	}
+	
+	/**
+	 * checkChannels
+	 * 
+	 * @param verificationMultiplyFactor
+	 * @param testDeltaForSample
+	 * @param testDeltaForSamplingFrequency
+	 * @return
+	 * @throws IOException
+	 */
+	public final boolean checkChannels(final float verificationMultiplyFactor,
+			final float testDeltaForSample, final double testDeltaForSamplingFrequency) throws IOException {
+		/*channels:*/
+		for (int channelNr = 0; channelNr < outDtaFisNrOfChannels && outDtaFisOffset < outDtaFisSize; channelNr ++) {
+			//info from output
+			if (CheckCodec.LOG_INFO) System.out.print("Channel " + channelNr);
+			MappedByteBuffer outDtaFisMapBuffer = outDtaFisChannel.map(FileChannel.MapMode.READ_ONLY,
+				outDtaFisOffset, outDtaFisLengthNrOfSamplesPerChannel);
+			final long outDtaFisNrOfSamplesPerChannel = outDtaFisMapBuffer.getLong(0);
+			if (CheckCodec.LOG_INFO) System.out.print(" has " + outDtaFisNrOfSamplesPerChannel + " sample units in output data file");
+			if (outHdrNrOfSamples != null) {
+				if (outDtaFisNrOfSamplesPerChannel != outHdrNrOfSamples) {
+					if (CheckCodec.LOG_ERROR) System.out.println("\nError! In output header file there were specified "
+						+ outHdrNrOfSamples + " sample units for every channel. Here is other value, please correct .hdr file or change output data file used!");
+					return false;
+				}
+			} else {
+				if (outDtaFisNrOfSamplesPerChannel != outHdrNrsOfSamples[channelNr]) {
+					if (CheckCodec.LOG_WARNING) System.out.println("\nWarning! In output header file there were specified "
+						+ outHdrNrOfSamples + " sample units for channel #" + channelNr + ". Here is other value!");
+				}
+			}
+			if (outDtaFisNrOfSamplesPerChannel * outDtaFisLengthSampleUnitValue >= outDtaFisSize) {
+				if (CheckCodec.LOG_ERROR) System.out.println("\nError! File has bad format, too big number of samples specified!");
+				return false;
+			}
+			outDtaFisOffset += outDtaFisLengthNrOfSamplesPerChannel;
+			long outDtaFisOffsetStart = outDtaFisOffset;
+			//info from input
+			Channel inDtaChannelObject = inDtaChannelSet.getChannel(channelNr);
+			checkChannel(outDtaFisOffsetStart, outDtaFisLengthSampleUnitValue, outDtaFisNrOfSamplesPerChannel, outDtaFisChannel,
+				verificationMultiplyFactor, inDtaChannelObject, channelNr, testDeltaForSample, testDeltaForSamplingFrequency);
+			//continue with next channel
+		}
+		return true;
+	}
+
+	/**
+	 * checkInDtaAccess
+	 * 
+	 * @return
+	 */
+	public final boolean checkInDtaAccess() {
+		/*long inDtaChannelSetNrOfSamples = */inDtaChannelSet.getNumberOfSamples(); //@Deprecated, please take that info from the channel
+		/*double inDtaChannelSetSamplingFrequency = */inDtaChannelSet.getSamplingFrequency(); //@Deprecated, please take that info from the channel
+		for (int channelNr = 0; channelNr < inDtaChannelSetNrOfChannels; channelNr ++) {
+			Channel inDtaChannelObject = inDtaChannelSet.getChannel(channelNr);
+			long inDtaChannelObjectNumberOfSamplesPerChannel = inDtaChannelObject.getNumberOfSamples();
+			/*String inDtaChannelObjectChannelName = /*inDtaChannelObject.getChannelName();
+			/*double inDtaChannelObjectSamplingFrequency = */inDtaChannelObject.getSamplingFrequency();
+			for (long sampleNr = 0; sampleNr < inDtaChannelObjectNumberOfSamplesPerChannel; sampleNr ++) {
+				try {
+					float sampleUnitValue = inDtaChannelObject.getSample(sampleNr);
+					if (CheckCodec.LOG_DEBUG) System.out.println(" " + sampleUnitValue); //System.out.format(" %.3f", sampleUnitValue);
+				} catch (Throwable t) {
+					System.out.println("Critical error during getting sample " + sampleNr + " of the channel " + channelNr);
+					t.printStackTrace();
+					return false;
+				}
+				//this is only for test; far far below will be made sth similar to this above
+			}
+		}
+		return true;
+	}
+
+	/**
+	 * getInDta
+	 * 
+	 * @param fileName
+	 * @param useContextDumper
+	 * @param useInDtaChecking
+	 * @return
+	 * @throws FileNotFoundException
+	 * @throws IOException
+	 */
+	public final boolean getInDta(String fileName, boolean useContextDumper, boolean useInDtaChecking)
+			throws FileNotFoundException, IOException {
+		File inDtaFile = new File(fileName);
+		long inDtaFileLength = inDtaFile.length();
+		//long inDtaFileFragmentSize = Math.min(200240, inDtaFileLength);
+		if (CheckCodec.LOG_INFO) {
+			System.out.println("Reading the input header/data file " + fileName);
+			System.out.println("Length of the file is " + inDtaFileLength + " bytes");
+	//		System.out.println("Reading fragment [0, " + inDtaFileFragmentSize + "] bytes from that file");
+		}
+		codec.open(inDtaFile);
+		codec.createParams();
+	//	reader.setRange(0, inDtaFileFragmentSize);
+		codec.createChannels();
+		if (useContextDumper) {
+			String allCodecDataDumped = ContextDumper.dump(codec); //it takes too much time
+			System.out.print(allCodecDataDumped);
+		}
+		int inDtaNumberOfChannelSets = codec.getNumberOfChannelSets(); //@Theory, do not know if this is fully supported
+		if (CheckCodec.LOG_INFO) {
+			System.out.println("Number of channel sets: " + inDtaNumberOfChannelSets);
+		}
+		inDtaChannelSet = codec.get_set();
+		inDtaChannelSetNrOfChannels = inDtaChannelSet.getNumberOfChannels();
+		if (CheckCodec.LOG_INFO) {
+			System.out.println("Number of channels: " + inDtaChannelSetNrOfChannels);
+		}
+		if (useInDtaChecking) {
+			boolean inDtaAccessStatus = checkInDtaAccess(); //it takes quite much time
+			if (!inDtaAccessStatus) return false;
+		}
+		//TODO show on the screen (optionally -- for INFO log only) some informations from the codec (from above)
+		//...
+		return true;
+	}
+
+	/**
+	 * getOutDtaHdr
+	 * 
+	 * @param fileName
+	 * @return
+	 * @throws FileNotFoundException
+	 * @throws IOException
+	 */
+	public final boolean getOutDtaHdr(String fileName) throws FileNotFoundException, IOException {
+		boolean outHdrSuccessfulyTaken = getAttributesFromOutHdr(fileName);
+		if (!outHdrSuccessfulyTaken) return false;
+		boolean outHdrAttribsStatus = checkAttributesFromOutHdr();
+		if (!outHdrAttribsStatus) return false;
+		return true;
+	}
+	
+	/**
+	 * getOutDtaBody
+	 * 
+	 * @param fileName
+	 * @return
+	 * @throws IOException
+	 */
+	public final boolean getOutDtaBody(String fileName) throws IOException {
+		if (CheckCodec.LOG_INFO) System.out.println("Reading and parsing the output data file: " + fileName);
+		if (!fileName.endsWith(".float")) {
+			if (CheckCodec.LOG_WARNING) System.out.println("Warning! File does not have the .float extension!");
+		}
+		outDtaFis = new FileInputStream(fileName);
+		outDtaFisChannel = outDtaFis.getChannel();
+		final long outDtaFisOffsetNrOfChannels = 0;
+		MappedByteBuffer outDtaFisMapBuffer = outDtaFisChannel.map(FileChannel.MapMode.READ_ONLY,
+			outDtaFisOffsetNrOfChannels, outDtaFisLengthNrOfChannels);
+		outDtaFisSize = outDtaFisChannel.size();
+		if (CheckCodec.LOG_INFO) System.out.println("File size: " + outDtaFisSize + " bytes = " + (outDtaFisSize/1024f)
+			+ " kB = " + (outDtaFisSize/1048576f) + " MB = " + (outDtaFisSize/1073741824f) + " GB");
+		
+		outDtaFisNrOfChannels = outDtaFisMapBuffer.getInt(0);
+		if (CheckCodec.LOG_INFO) System.out.println("Nr of channels found: " + outDtaFisNrOfChannels);
+		if (outDtaFisNrOfChannels * outDtaFisLengthNrOfSamplesPerChannel >= outDtaFisSize) {
+			if (CheckCodec.LOG_ERROR) System.out.println("Error! File has bad format, too big number of channels specified!");
+			return false;
+		}
+		if (outDtaFisNrOfChannels != outHdrNrOfChannels.longValue()) {
+			if (CheckCodec.LOG_ERROR) System.out.println("Error! Number of channels specified in output header file"
+				+ " differs from that specified here. Please correct .hdr file or use another .float file!");
+			return false;
+		}
+		if (inDtaChannelSetNrOfChannels != outDtaFisNrOfChannels) {
+			if (CheckCodec.LOG_TEST) System.out.println("CODEC TEST RESULT: ERROR. Details: Number of channels get from codec ("
+				+ inDtaChannelSetNrOfChannels + ") differs from that specified in output files .hdr and .float ("
+				+ outDtaFisNrOfChannels + ").");
+			return false;
+		}
+		outDtaFisOffset = outDtaFisOffsetNrOfChannels + outDtaFisLengthNrOfChannels;
+		return true;
+	}
+
+	/**
+	 * getOutDta
+	 * 
+	 * @param dataHeaderFileName
+	 * @param dataBodyFileName
+	 * @return
+	 * @throws IOException
+	 */
+	public final boolean getOutDta(String dataHeaderFileName, String dataBodyFileName) throws IOException {
+		//firstly read output header file (.hdr)
+		boolean outDtaHdrStatus = getOutDtaHdr(dataHeaderFileName);
+		if (!outDtaHdrStatus) return false;
+		//secondly read output body file (.float)
+		boolean outDtaBodyStatus = getOutDtaBody(dataBodyFileName);
+		if (!outDtaBodyStatus) return false;
+		return true;
+	}
+
+	/**
+	 * close
+	 */
+	public final void close() {
+		if (outDtaFis != null) {
+			try {
+				outDtaFis.close();
+			} catch (IOException e) {
+				logFileOperationException(e, "", "I/O error during closing output data", "");
+			}
+		}
+	}
+	
+	/**
+	 * main
+	 * 
+	 * @param args
+	 */
 	public static void main(java.lang.String[] args) {
 		if (args.length < 4) {
-			System.out.println("Using:\njava " + TestCodec.class.getSimpleName() + " input_header input_data output_header.hdr output_data.float");
+			System.out.println("Using:\njava " + CheckCodec.class.getSimpleName() + " input_header input_data output_header.hdr output_data.float");
 			return;
 		}
 		String      codecName = args[0]; //String  inHdrFileName = args[0]; //codec to use (EASYS, M4D, ...)
 		String  inDtaFileName = args[1]; //d:/grst/projects/UW/data/for_EASYS_codec/inb02.d                          //d:/grst/projects/UW/data/for_4D_format/m4d/example_data/Art_e,rfhp0.1Hz,n,ccfbp10-40-508-2,cag,c,n,tm,bahe001-1High350,a.m4d
 		String outHdrFileName = args[2]; //d:/grst/projects/UW/data/for_EASYS_codec/EASYS/inb02-unscaled/inb02.hdr   //d:/grst/projects/UW/data/for_4D_format/m4d/example_data/Art_e,rfhp0.1Hz,n,ccfbp10-40-508-2,cag,c,n,tm,bahe001-1High350,a.hdr
 		String outDtaFileName = args[3]; //d:/grst/projects/UW/data/for_EASYS_codec/EASYS/inb02-unscaled/inb02.float //d:/grst/projects/UW/data/for_4D_format/m4d/example_data/Art_e,rfhp0.1Hz,n,ccfbp10-40-508-2,cag,c,n,tm,bahe001-1High350,a.float
-		final boolean useContextDumper = false; //true; /////////////////////////////////////////////////////////////////////////////
+		final boolean useContextDumper = false; //true;
+		final boolean usePreCheckingOfTheDataFromCodec = false;
+		final float testDeltaForSample = CheckCodec.precisionFloat;
+		final double testDeltaForSamplingFrequency = CheckCodec.precisionDouble;
 		float verificationMultiplyFactor = 1.0f;
 		if (args.length > 4) {
 			try {
 				verificationMultiplyFactor = Float.parseFloat(args[4]); //i.e. 20 for scaled, no or 1 for unscaled
 			} catch (NumberFormatException nfe) {
-				if (TestCodec.LOG_ERROR) System.out.println("Error! Wrong 5th parameter: '" + args[4] + "'. Instead of those value pelase use value for verification multiply factor, i.e. 1.0f or 20 or other float numeric value.");
+				if (CheckCodec.LOG_ERROR) System.out.println("Error! Wrong 5th parameter: '" + args[4] +
+					"'. Instead of those value pelase use value for verification multiply factor, i.e. 1.0f or 20 or other float numeric value.");
 				return;
 			}
 		}
-		File inDtaFile = null;
-		FileInputStream outDtaFis = null;
-		String fileName = null; //name of the file currently read -- taken separately because of possible exceptions occurings
-		float testDeltaForSample = TestCodec.precisionFloat;
-		double testDeltaForSamplingFrequency = TestCodec.precisionDouble;
+		Signalml reader = null; //TODO please make abstract method getSignalml() and superclass of the CheckCodec will give us there codec EASYS or M4D or ...
+		if (codecName.equalsIgnoreCase("EASYS")) {
+			if (CheckCodec.LOG_INFO) System.out.println("You selected EASYS codec. Trying to use it.");
+			reader = new EASYS();
+		} else if (/*codecName.equalsIgnoreCase("4D") ||*/ codecName.equalsIgnoreCase("M4D")) {
+			if (CheckCodec.LOG_INFO) System.out.println("You selected M4D codec. Trying to use it.");
+			reader = new M4D();
+		} else if (codecName.equalsIgnoreCase("4D") || codecName.equalsIgnoreCase("New4D")) {
+			if (CheckCodec.LOG_INFO) System.out.println("You selected New4D codec. Trying to use it.");
+			reader = new New4D();
+		} else if (codecName.equalsIgnoreCase("EDF")) {
+			if (CheckCodec.LOG_FATAL) System.out.println("Fatal error! EDF codec is not supported yet. It is under construction.");
+			return;
+		} else if (codecName.equalsIgnoreCase("GDF")) {
+			if (CheckCodec.LOG_FATAL) System.out.println("Fatal error! GDF codec is not supported yet. It is under construction.");
+			return;
+		} else if (codecName.equalsIgnoreCase("BDF")) {
+			if (CheckCodec.LOG_FATAL) System.out.println("Fatal error! BDF codec is not supported yet. It is under construction.");
+			return;
+		} else {
+			if (CheckCodec.LOG_ERROR) System.out.println("Error! Unknown codec name '" + codecName +
+				"'. Instead of it pelase use one of the codec names from the list: EASYS, New4D, M4D, EDF, GDF, BDF.");
+			return;
+		}
+		CheckCodec checkCodec = new CheckCodec(reader);
+		String fileName = null; //name of the file currently read -- taken separately because of possible exception occurs
 		try {
 			//giving input to codec and getting result from it
 			fileName = inDtaFileName;
-			Signalml reader = null; //TODO please make abstract method getSignalml() and superclass of the TestCodec will give us there codec EASYS or M4D or ...
-			if (codecName.equalsIgnoreCase("EASYS")) {
-				if (TestCodec.LOG_INFO) System.out.println("You selected EASYS codec. Trying to use it.");
-				reader = new EASYS();
-			} else if (/*codecName.equalsIgnoreCase("4D") ||*/ codecName.equalsIgnoreCase("M4D")) {
-				if (TestCodec.LOG_INFO) System.out.println("You selected M4D codec. Trying to use it.");
-				reader = new M4D();
-			} else if (codecName.equalsIgnoreCase("4D") || codecName.equalsIgnoreCase("New4D")) {
-				if (TestCodec.LOG_INFO) System.out.println("You selected New4D codec. Trying to use it.");
-				reader = new New4D();
-			} else if (codecName.equalsIgnoreCase("EDF")) {
-				if (TestCodec.LOG_FATAL) System.out.println("Fatal error! EDF codec is not supported yet. It is under construction.");
-				return;
-			} else if (codecName.equalsIgnoreCase("GDF")) {
-				if (TestCodec.LOG_FATAL) System.out.println("Fatal error! GDF codec is not supported yet. It is under construction.");
-				return;
-			} else if (codecName.equalsIgnoreCase("BDF")) {
-				if (TestCodec.LOG_FATAL) System.out.println("Fatal error! BDF codec is not supported yet. It is under construction.");
-				return;
-			} else {
-				if (TestCodec.LOG_ERROR) System.out.println("Error! Unknown codec name '" + codecName + "'. Instead of it pelase use one of the codec names from the list: EASYS, M4D, EDF, GDF, BDF.");
-				return;
-			}
-			inDtaFile = new File(fileName);
-			long inDtaFileLength = inDtaFile.length();
-			//long inDtaFileFragmentSize = Math.min(200240, inDtaFileLength);
-			if (TestCodec.LOG_INFO) {
-				System.out.println("Reading the input header/data file " + fileName);
-				System.out.println("Length of the file is " + inDtaFileLength + " bytes");
-		//		System.out.println("Reading fragment [0, " + inDtaFileFragmentSize + "] bytes from that file");
-			}
-			reader.open(inDtaFile);
-			reader.createParams();
-		//	reader.setRange(0, inDtaFileFragmentSize);
-			reader.createChannels();
-			if (useContextDumper) {
-				System.out.print(ContextDumper.dump(reader));
-			}
-			int inDtaNumberOfChannelSets = reader.getNumberOfChannelSets(); //@Theory, do not know if this is fully supported
-			if (TestCodec.LOG_INFO) {
-				System.out.println("Number of channel sets: " + inDtaNumberOfChannelSets);
-			}
-			ChannelSet inDtaChannelSet = reader.get_set();
-			int inDtaChannelSetNrOfChannels = inDtaChannelSet.getNumberOfChannels();
-			if (TestCodec.LOG_INFO) {
-				System.out.println("Number of channels: " + inDtaChannelSetNrOfChannels);
-			}
-			/*
-			long inDtaChannelSetNrOfSamples = inDtaChannelSet.getNumberOfSamples(); //@Deprecated, please take that info from the channel
-			double inDtaChannelSetSamplingFrequency = inDtaChannelSet.getSamplingFrequency(); //@Deprecated, please take that info from the channel
-			for (int channelNr = 0; channelNr < inDtaChannelSetNrOfChannels; channelNr ++) {
-				Channel inDtaChannelObject = inDtaChannelSet.getChannel(channelNr);
-				long inDtaChannelObjectNumberOfSamplesPerChannel = inDtaChannelObject.getNumberOfSamples();
-				String inDtaChannelObjectChannelName = inDtaChannelObject.getChannelName();
-				double inDtaChannelObjectSamplingFrequency = inDtaChannelObject.getSamplingFrequency();
-				for (long sampleNr = 0; sampleNr < inDtaChannelObjectNumberOfSamplesPerChannel; sampleNr ++) {
-					//FloatBuffer inDtaChannelFloatBuffer = FloatBuffer.allocate(((int) inDtaChannelObjectNumberOfSamplesPerChannel));
-					//inDtaChannelObject.getSamples(inDtaChannelFloatBuffer, sampleNr);
-					//float[] buffer = inDtaChannelFloatBuffer.array();
-					//float sampleUnitValue = inDtaChannelFloatBuffer.get((int) sampleNr);
-				//	if (sampleNr >= 3284) {
-				//		System.out.println("HERE WE ARE, NOW DEBUGGING THIS");
-				//	}
-					try {
-						float sampleUnitValue = inDtaChannelObject.getSample(sampleNr);
-						if (TestCodec.LOG_DEBUG) System.out.println(" " + sampleUnitValue); //System.out.format(" %.3f", sampleUnitValue);
-					} catch (Throwable t) {
-						System.out.println("Critical error during getting sample " + sampleNr + " of the channel " + channelNr);
-						t.printStackTrace();
-						return;
-					}
-					//this is only for test; far far below will be made sth similar to this above
-				}
-			}
-			*/
-			//TODO show on the screen (optionally -- for INFO log only) some informations from the codec (from above)
-			//...
-			//firstly read output header file (.hdr)
-			fileName = outHdrFileName;
-			Integer   outHdrNrOfChannels = null;
-			Long      outHdrNrOfSamples = null;
-			Long[]    outHdrNrsOfSamples = new Long[0];
-			Double    outHdrSamplingFrequency = null;
-			Double[]  outHdrSamplingFrequencies = new Double[0];
-			String[]  outHdrLabelsOfChannels = null;
-			String[]  outHdrTypesOfChannels = null;
-			Integer   outHdrScaled = null;
-			Double    outHdrScalingGain = null;
-			Double[]  outHdrScalingGains = new Double[0];
-			Double    outHdrScalingOffset = null;
-			Double[]  outHdrScalingOffsets = new Double[0];
-			Double    outHdrCalibrationGain = null;
-			Double[]  outHdrCalibrationGains = new Double[0];
-			Double    outHdrCalibrationOffset = null;
-			Double[]  outHdrCalibrationOffsets = new Double[0];
-			String[]  outHdrCalibrationUnits = null;
-			String    outHdrFileCharset = "UTF-8";
-			String    outHdrFileLineDelimiter = "\n";
-			final int outHdrFileBigBufSize = 262144;
-			final int outHdrFileSmallBufSize = 16384;
-			if (TestCodec.LOG_INFO) System.out.println("Reading the output header file " + fileName);
-			String[] outHdrLines = TestCodec.readTextFileUsingParts(outHdrFileName, outHdrFileCharset, outHdrFileLineDelimiter, outHdrFileBigBufSize, outHdrFileSmallBufSize);
-			if (TestCodec.LOG_INFO) System.out.println("File " + outHdrFileName + " has been read out successfully to the buffer.");
-			if (TestCodec.LOG_INFO) System.out.println("Parsing content of the buffer...");
-			for (int i = 0; i < outHdrLines.length; i++) {
-				String line = outHdrLines[i].trim();
-				if (line.startsWith("#")) {
-					//this is comment => skip line
-				} else if (line.trim().length() < 1) {
-					//empty => skip line
-				} else if (line.startsWith(TestCodec.outHdrNameNrOfSamples)) {
-					int valueIdx = line.indexOf("=", TestCodec.outHdrNameNrOfSamples.length());
-					if (valueIdx == -1) {
-						if (TestCodec.LOG_ERROR) System.out.println("Error! Can not find '=' character at the line #" + i + ": " + line);
-						return;
-					}
-					String valueStr = line.substring(valueIdx + 1).trim();
-					String[] valueArrayStr = valueStr.replaceAll("[\t ]+", "").split(",");
-					if (valueArrayStr.length < 2) {
-						long valueLong = -1L;
-						try {
-							valueLong = Long.parseLong(valueStr, 10);
-						} catch (NumberFormatException ex) {
-							if (TestCodec.LOG_ERROR) System.out.println("Wrong format of the file " + outHdrFileName + ": line #" + i + " contains value which is not a long number, but " + TestCodec.outHdrNameNrOfSamples + " item wants it!");
-							return;
-						}
-						if (TestCodec.LOG_DEBUG) System.out.println("Value for " + TestCodec.outHdrNameNrOfSamples + " item is (int)" + valueLong);
-						outHdrNrOfSamples = new Long(valueLong);
-					} else {
-						ArrayList<Long> nrOfSamplesForAllChannels = new ArrayList<Long>();
-						for (int j = 0; j < valueArrayStr.length; j++) {
-							String nfOfSamplesPerChannelStr = valueArrayStr[j];
-							long nrOfSamplesPerChannelLong = -1L;
-							try {
-								nrOfSamplesPerChannelLong = Long.parseLong(nfOfSamplesPerChannelStr, 10);
-							} catch (NumberFormatException ex) {
-								if (TestCodec.LOG_ERROR) System.out.println("Wrong format of the file " + outHdrFileName + ": line #" + i + " contains value which is not a long number: " + nfOfSamplesPerChannelStr);
-								return;
-							}
-							nrOfSamplesForAllChannels.add(new Long(nrOfSamplesPerChannelLong));
-						}
-						outHdrNrsOfSamples = nrOfSamplesForAllChannels.toArray(outHdrNrsOfSamples);
-					}
-				} else if (line.startsWith(TestCodec.outHdrNameNrOfChannels)) {
-					int valueIdx = line.indexOf("=", TestCodec.outHdrNameNrOfChannels.length());
-					if (valueIdx == -1) {
-						if (TestCodec.LOG_ERROR) System.out.println("Error! Can not find '=' character at the line #" + i + ": " + line);
-						return;
-					}
-					String valueStr = line.substring(valueIdx + 1).trim();
-					int valueInt = -1;
-					try {
-						valueInt = Integer.parseInt(valueStr, 10);
-					} catch (NumberFormatException ex) {
-						if (TestCodec.LOG_ERROR) System.out.println("Wrong format of the file " + fileName + ": line #" + i + " contains value which is not an integer number, but " + TestCodec.outHdrNameNrOfChannels + " item wants it!");
-						return;
-					}
-					if (TestCodec.LOG_DEBUG) System.out.println("Value for " + TestCodec.outHdrNameNrOfChannels + " item is (int)" + valueInt);
-					outHdrNrOfChannels = new Integer(valueInt);
-					
-				} else if (line.startsWith(TestCodec.outHdrNameSamplingFrequency)) {
-					int valueIdx = line.indexOf("=", TestCodec.outHdrNameSamplingFrequency.length());
-					if (valueIdx == -1) {
-						if (TestCodec.LOG_ERROR) System.out.println("Error! Can not find '=' character at the line #" + i + ": " + line);
-						return;
-					}
-					String valueStr = line.substring(valueIdx + 1).trim();
-					String[] valueArrayStr = valueStr.replaceAll("[\t ]+", "").split(",");
-					if (valueArrayStr.length < 2) {
-						double valueDouble = Double.NaN; //-1.0f;
-						try {
-							valueDouble = Double.parseDouble(valueStr);
-						} catch (NumberFormatException ex) {
-							if (TestCodec.LOG_ERROR) System.out.println("Wrong format of the file " + fileName + ": line #" + i + " contains value which is not a double number, but " + TestCodec.outHdrNameSamplingFrequency + " item wants it!");
-							return;
-						}
-						if (TestCodec.LOG_DEBUG) System.out.println("Value for " + TestCodec.outHdrNameSamplingFrequency + " item is (double)" + valueDouble);
-						outHdrSamplingFrequency = new Double(valueDouble);
-					} else {
-						ArrayList<Double> samplingFrequenciesForAllChannels = new ArrayList<Double>();
-						for (int j = 0; j < valueArrayStr.length; j++) {
-							String samplingFrequencyPerChannelStr = valueArrayStr[j];
-							double samplingFrequencyPerChannelDouble = Double.NaN; //-1.0f;
-							try {
-								samplingFrequencyPerChannelDouble = Double.parseDouble(samplingFrequencyPerChannelStr);
-							} catch (NumberFormatException ex) {
-								if (TestCodec.LOG_ERROR) System.out.println("Wrong format of the file " + fileName + ": line #" + i + " contains value which is not a double number: " + samplingFrequencyPerChannelStr);
-								return;
-							}
-							samplingFrequenciesForAllChannels.add(new Double(samplingFrequencyPerChannelDouble));
-						}
-						outHdrSamplingFrequencies = samplingFrequenciesForAllChannels.toArray(outHdrSamplingFrequencies);
-					}
-				} else if (line.startsWith(TestCodec.outHdrNameLabelsOfChannels)) {
-					int valueIdx = line.indexOf("=", TestCodec.outHdrNameLabelsOfChannels.length());
-					if (valueIdx == -1) {
-						if (TestCodec.LOG_ERROR) System.out.println("Error! Can not find '=' character at the line #" + i + ": " + line);
-						return;
-					}
-					String valueStr = line.substring(valueIdx + 1).trim();
-					outHdrLabelsOfChannels = valueStr.replaceAll("[\t ]+", "").split(",");
-				} else if (line.startsWith(TestCodec.outHdrNameTypesOfChannels)) {
-					int valueIdx = line.indexOf("=", TestCodec.outHdrNameTypesOfChannels.length());
-					if (valueIdx == -1) {
-						if (TestCodec.LOG_ERROR) System.out.println("Error! Can not find '=' character at the line #" + i + ": " + line);
-						return;
-					}
-					String valueStr = line.substring(valueIdx + 1).trim();
-					outHdrTypesOfChannels = valueStr.replaceAll("[\t ]+", "").split(",");
-				} else if (line.startsWith(TestCodec.outHdrNameScaled)) {
-					int valueIdx = line.indexOf("=", TestCodec.outHdrNameScaled.length());
-					if (valueIdx == -1) {
-						if (TestCodec.LOG_ERROR) System.out.println("Error! Can not find '=' character at the line #" + i + ": " + line);
-						return;
-					}
-					String valueStr = line.substring(valueIdx + 1).trim();
-					int valueInt = -1;
-					try {
-						valueInt = Integer.parseInt(valueStr, 10);
-					} catch (NumberFormatException ex) {
-						if (TestCodec.LOG_ERROR) System.out.println("Wrong format of the file " + fileName + ": line #" + i + " contains value which is not an integer number, but " + TestCodec.outHdrNameScaled + " item wants it!");
-						return;
-					}
-					if (TestCodec.LOG_DEBUG) System.out.println("Value for " + TestCodec.outHdrNameScaled + " item is (int)" + valueInt);
-					outHdrScaled = new Integer(valueInt);
-				} else if (line.startsWith(TestCodec.outHdrNameScalingGain)) {
-					int valueIdx = line.indexOf("=", TestCodec.outHdrNameScalingGain.length());
-					if (valueIdx == -1) {
-						if (TestCodec.LOG_ERROR) System.out.println("Error! Can not find '=' character at the line #" + i + ": " + line);
-						return;
-					}
-					String valueStr = line.substring(valueIdx + 1).trim();
-					String[] valueArrayStr = valueStr.replaceAll("[\t ]+", "").split(",");
-					if (valueArrayStr.length < 2) {
-						double valueDouble = Double.NaN; //-1.0f;
-						try {
-							valueDouble = Double.parseDouble(valueStr);
-						} catch (NumberFormatException ex) {
-							if (TestCodec.LOG_ERROR) System.out.println("Wrong format of the file " + fileName + ": line #" + i + " contains value which is not a double number, but " + TestCodec.outHdrNameScalingGain + " item wants it!");
-							return;
-						}
-						if (TestCodec.LOG_DEBUG) System.out.println("Value for " + TestCodec.outHdrNameScalingGain + " item is (double)" + valueDouble);
-						outHdrScalingGain = new Double(valueDouble);
-					} else {
-						ArrayList<Double> valuesForAllChannels = new ArrayList<Double>();
-						for (int j = 0; j < valueArrayStr.length; j++) {
-							String valuePerChannelStr = valueArrayStr[j];
-							double valuePerChannelDouble = Double.NaN; //-1.0f;
-							try {
-								valuePerChannelDouble = Double.parseDouble(valuePerChannelStr);
-							} catch (NumberFormatException ex) {
-								if (TestCodec.LOG_ERROR) System.out.println("Wrong format of the file " + fileName + ": line #" + i + " contains value which is not a double number: " + valuePerChannelStr);
-								return;
-							}
-							valuesForAllChannels.add(new Double(valuePerChannelDouble));
-						}
-						outHdrScalingGains = valuesForAllChannels.toArray(outHdrScalingGains);
-					}
-				} else if (line.startsWith(TestCodec.outHdrNameScalingOffset)) {
-					int valueIdx = line.indexOf("=", TestCodec.outHdrNameScalingOffset.length());
-					if (valueIdx == -1) {
-						if (TestCodec.LOG_ERROR) System.out.println("Error! Can not find '=' character at the line #" + i + ": " + line);
-						return;
-					}
-					String valueStr = line.substring(valueIdx + 1).trim();
-					String[] valueArrayStr = valueStr.replaceAll("[\t ]+", "").split(",");
-					if (valueArrayStr.length < 2) {
-						double valueDouble = Double.NaN; //-1.0f;
-						try {
-							valueDouble = Double.parseDouble(valueStr);
-						} catch (NumberFormatException ex) {
-							if (TestCodec.LOG_ERROR) System.out.println("Wrong format of the file " + fileName + ": line #" + i + " contains value which is not a double number, but " + TestCodec.outHdrNameScalingOffset + " item wants it!");
-							return;
-						}
-						if (TestCodec.LOG_DEBUG) System.out.println("Value for " + TestCodec.outHdrNameScalingOffset + " item is (double)" + valueDouble);
-						outHdrScalingOffset = new Double(valueDouble);
-					} else {
-						ArrayList<Double> valuesForAllChannels = new ArrayList<Double>();
-						for (int j = 0; j < valueArrayStr.length; j++) {
-							String valuePerChannelStr = valueArrayStr[j];
-							double valuePerChannelDouble = Double.NaN; //-1.0f;
-							try {
-								valuePerChannelDouble = Double.parseDouble(valuePerChannelStr);
-							} catch (NumberFormatException ex) {
-								if (TestCodec.LOG_ERROR) System.out.println("Wrong format of the file " + fileName + ": line #" + i + " contains value which is not a double number: " + valuePerChannelStr);
-								return;
-							}
-							valuesForAllChannels.add(new Double(valuePerChannelDouble));
-						}
-						outHdrScalingOffsets = valuesForAllChannels.toArray(outHdrScalingOffsets);
-					}
-				} else if (line.startsWith(TestCodec.outHdrNameCalibrationGain)) {
-					int valueIdx = line.indexOf("=", TestCodec.outHdrNameCalibrationGain.length());
-					if (valueIdx == -1) {
-						if (TestCodec.LOG_ERROR) System.out.println("Error! Can not find '=' character at the line #" + i + ": " + line);
-						return;
-					}
-					String valueStr = line.substring(valueIdx + 1).trim();
-					String[] valueArrayStr = valueStr.replaceAll("[\t ]+", "").split(",");
-					if (valueArrayStr.length < 2) {
-						double valueDouble = Double.NaN; //-1.0f;
-						try {
-							valueDouble = Double.parseDouble(valueStr);
-						} catch (NumberFormatException ex) {
-							if (TestCodec.LOG_ERROR) System.out.println("Wrong format of the file " + fileName + ": line #" + i + " contains value which is not a double number, but " + TestCodec.outHdrNameCalibrationGain + " item wants it!");
-							return;
-						}
-						if (TestCodec.LOG_DEBUG) System.out.println("Value for " + TestCodec.outHdrNameCalibrationGain + " item is (double)" + valueDouble);
-						outHdrCalibrationGain = new Double(valueDouble);
-					} else {
-						ArrayList<Double> valuesForAllChannels = new ArrayList<Double>();
-						for (int j = 0; j < valueArrayStr.length; j++) {
-							String valuePerChannelStr = valueArrayStr[j];
-							double valuePerChannelDouble = Double.NaN; //-1.0f;
-							try {
-								valuePerChannelDouble = Double.parseDouble(valuePerChannelStr);
-							} catch (NumberFormatException ex) {
-								if (TestCodec.LOG_ERROR) System.out.println("Wrong format of the file " + fileName + ": line #" + i + " contains value which is not a double number: " + valuePerChannelStr);
-								return;
-							}
-							valuesForAllChannels.add(new Double(valuePerChannelDouble));
-						}
-						outHdrCalibrationGains = valuesForAllChannels.toArray(outHdrCalibrationGains);
-					}
-				} else if (line.startsWith(TestCodec.outHdrNameCalibrationOffset)) {
-					int valueIdx = line.indexOf("=", TestCodec.outHdrNameCalibrationOffset.length());
-					if (valueIdx == -1) {
-						if (TestCodec.LOG_ERROR) System.out.println("Error! Can not find '=' character at the line #" + i + ": " + line);
-						return;
-					}
-					String valueStr = line.substring(valueIdx + 1).trim();
-					String[] valueArrayStr = valueStr.replaceAll("[\t ]+", "").split(",");
-					if (valueArrayStr.length < 2) {
-						double valueDouble = Double.NaN; //-1.0f;
-						try {
-							valueDouble = Double.parseDouble(valueStr);
-						} catch (NumberFormatException ex) {
-							if (TestCodec.LOG_ERROR) System.out.println("Wrong format of the file " + fileName + ": line #" + i + " contains value which is not a double number, but " + TestCodec.outHdrNameCalibrationOffset + " item wants it!");
-							return;
-						}
-						if (TestCodec.LOG_DEBUG) System.out.println("Value for " + TestCodec.outHdrNameCalibrationOffset + " item is (double)" + valueDouble);
-						outHdrCalibrationOffset = new Double(valueDouble);
-					} else {
-						ArrayList<Double> valuesForAllChannels = new ArrayList<Double>();
-						for (int j = 0; j < valueArrayStr.length; j++) {
-							String valuePerChannelStr = valueArrayStr[j];
-							double valuePerChannelDouble = Double.NaN; //-1.0f;
-							try {
-								valuePerChannelDouble = Double.parseDouble(valuePerChannelStr);
-							} catch (NumberFormatException ex) {
-								if (TestCodec.LOG_ERROR) System.out.println("Wrong format of the file " + fileName + ": line #" + i + " contains value which is not a double number: " + valuePerChannelStr);
-								return;
-							}
-							valuesForAllChannels.add(new Double(valuePerChannelDouble));
-						}
-						outHdrCalibrationOffsets = valuesForAllChannels.toArray(outHdrCalibrationOffsets);
-					}
-				} else if (line.startsWith(TestCodec.outHdrNameCalibrationUnits)) {
-					int valueIdx = line.indexOf("=", TestCodec.outHdrNameCalibrationUnits.length());
-					if (valueIdx == -1) {
-						if (TestCodec.LOG_ERROR) System.out.println("Error! Can not find '=' character at the line #" + i + ": " + line);
-						return;
-					}
-					String valueStr = line.substring(valueIdx + 1).trim();
-					outHdrCalibrationUnits = valueStr.replaceAll("[\t ]+", "").split(",");
-				} else {
-					if (TestCodec.LOG_WARNING) System.out.println("Warning! Unknown line format: " + line);
-				}
-			}
-			if (outHdrNrOfChannels == null) {
-				if (TestCodec.LOG_ERROR) System.out.println("Error! There was no specified value with number of channels in the output header file. Please add it there!");
-				return;
-			}
-			if (outHdrLabelsOfChannels == null) {
-				if (TestCodec.LOG_ERROR) System.out.println("Error! There was no specified value with label of channel per every individual channel in the output header file. Please add it there!");
-				return;
-			}
-			if (outHdrTypesOfChannels == null) {
-				if (TestCodec.LOG_ERROR) System.out.println("Error! There was no specified value with type of channel per every individual channel in the output header file. Please add it there!");
-				return;
-			}
-			if (outHdrNrOfSamples == null && outHdrNrsOfSamples.length == 0) {
-				if (TestCodec.LOG_ERROR) System.out.println("Error! There was no specified value with number of sample units per all or per every individual channel in the output header file. Please add it there!");
-				return;
-			}
-			if (outHdrNrsOfSamples.length > 0 && outHdrNrOfChannels.longValue() != outHdrNrsOfSamples.length) {
-				if (TestCodec.LOG_ERROR) System.out.println("Error! Number of channels specified in output header file was different in two places: " + outHdrNrOfChannels + " in line dedicated to it and " + outHdrNrsOfSamples.length + " in line with the list of the numbers of samples. Please correct it!");
-				return;
-			}
-			if (outHdrSamplingFrequency == null && outHdrSamplingFrequencies.length == 0) {
-				if (TestCodec.LOG_ERROR) System.out.println("Error! There was no specified value with sampling frequency per all or per every individual channel in the output header file. Please add it there!");
-				return;
-			}
-			if (outHdrSamplingFrequencies.length > 0 && outHdrNrOfChannels.longValue() != outHdrSamplingFrequencies.length) {
-				if (TestCodec.LOG_ERROR) System.out.println("Error! Number of channels specified in output header file was different in two places: " + outHdrNrOfChannels + " in line dedicated to it and " + outHdrSamplingFrequencies.length + " in line with the list of sampling freqiencies. Please correct it!");
-				return;
-			}
-			if (outHdrScaled == null) {
-				if (TestCodec.LOG_ERROR) System.out.println("Error! There was no specified value determining if samples were scaled. Please add line scaled=0 or line scaled=1 to the .hdr file!");
-				return;
-			}
-			//secondly read output body file (.float)
-			fileName = outDtaFileName;
-			final int outDtaFisLengthNrOfChannels = 4;           //one int   fits in 4 bytes
-			final int outDtaFisLengthNrOfSamplesPerChannel = 8;  //one long  fits in 8 bytes
-			final int outDtaFisLengthSampleUnitValue = 4;        //one float fits in 4 bytes
-			if (TestCodec.LOG_INFO) System.out.println("Reading and parsing the output data file: " + fileName);
-			if (!fileName.endsWith(".float")) {
-				if (TestCodec.LOG_WARNING) System.out.println("Warning! File does not have the .float extension!");
-			}
-			outDtaFis = new FileInputStream(fileName);
-			FileChannel outDtaFisChannel = outDtaFis.getChannel();
-			final long outDtaFisOffsetNrOfChannels = 0;
-			MappedByteBuffer outDtaFisMapBuffer = outDtaFisChannel.map(FileChannel.MapMode.READ_ONLY, outDtaFisOffsetNrOfChannels, outDtaFisLengthNrOfChannels);
-			final long outDtaFisSize = outDtaFisChannel.size();
-			if (TestCodec.LOG_INFO) System.out.println("File size: " + outDtaFisSize + " bytes = " + (outDtaFisSize/1024f) + " kB = " + (outDtaFisSize/1048576f) + " MB = " + (outDtaFisSize/1073741824f) + " GB");
-			final int outDtaFisNrOfChannels = outDtaFisMapBuffer.getInt(0);
-			if (TestCodec.LOG_INFO) System.out.println("Nr of channels found: " + outDtaFisNrOfChannels);
-			if (outDtaFisNrOfChannels * outDtaFisLengthNrOfSamplesPerChannel >= outDtaFisSize) {
-				if (TestCodec.LOG_ERROR) System.out.println("Error! File has bad format, too big number of channels specified!");
-				return;
-			}
-			if (outDtaFisNrOfChannels != outHdrNrOfChannels.longValue()) {
-				if (TestCodec.LOG_ERROR) System.out.println("Error! Number of channels specified in output header file differs from that specified here. Please correct .hdr file or use another .float file!");
-				return;
-			}
-			if (inDtaChannelSetNrOfChannels != outDtaFisNrOfChannels) {
-				if (TestCodec.LOG_TEST) System.out.println("CODEC TEST RESULT: ERROR. Details: Number of channels get from codec (" + inDtaChannelSetNrOfChannels + ") differs from that specified in output files .hdr and .float (" + outDtaFisNrOfChannels + ").");
-				return;
-			}
-			long outDtaFisOffset = outDtaFisOffsetNrOfChannels + outDtaFisLengthNrOfChannels;
-			channels: for (int channelNr = 0; channelNr < outDtaFisNrOfChannels && outDtaFisOffset < outDtaFisSize; channelNr ++) {
-				//info from output
-				if (TestCodec.LOG_INFO) System.out.print("Channel " + channelNr);
-				outDtaFisMapBuffer = outDtaFisChannel.map(FileChannel.MapMode.READ_ONLY, outDtaFisOffset, outDtaFisLengthNrOfSamplesPerChannel);
-				final long outDtaFisNrOfSamplesPerChannel = outDtaFisMapBuffer.getLong(0);
-				if (TestCodec.LOG_INFO) System.out.print(" has " + outDtaFisNrOfSamplesPerChannel + " sample units in output data file");
-				if (outHdrNrOfSamples != null) {
-					if (outDtaFisNrOfSamplesPerChannel != outHdrNrOfSamples) {
-						if (TestCodec.LOG_ERROR) System.out.println("\nError! In output header file there were specified " + outHdrNrOfSamples + " sample units for every channel. Here is other value, please correct .hdr file or change output data file used!");
-						return;
-					}
-				} else {
-					if (outDtaFisNrOfSamplesPerChannel != outHdrNrsOfSamples[channelNr]) {
-						if (TestCodec.LOG_WARNING) System.out.println("\nWarning! In output header file there were specified " + outHdrNrOfSamples + " sample units for channel #" + channelNr + ". Here is other value!");
-					}
-				}
-				if (outDtaFisNrOfSamplesPerChannel * outDtaFisLengthSampleUnitValue >= outDtaFisSize) {
-					if (TestCodec.LOG_ERROR) System.out.println("\nError! File has bad format, too big number of samples specified!");
-					return;
-				}
-				outDtaFisOffset += outDtaFisLengthNrOfSamplesPerChannel;
-				long outDtaFisOffsetStart = outDtaFisOffset;
-				//info from input
-				Channel inDtaChannelObject = inDtaChannelSet.getChannel(channelNr);
-				long inDtaChannelObjectNumberOfSamplesPerChannel = inDtaChannelObject.getNumberOfSamples();
-				String inDtaChannelObjectChannelName = inDtaChannelObject.getChannelName();
-				String inDtaChannelObjectChannelTypeName = inDtaChannelObject.getChannelTypeName();
-				double inDtaChannelObjectSamplingFrequency = inDtaChannelObject.getSamplingFrequency();
-				boolean gotoNextChannel = false;
-				boolean gotoNextSamplePortionBig = false;
-				//boolean gotoNextSamplePortionSmall = false;
-				//comparing header info
-				if (!inDtaChannelObjectChannelName.equals(outHdrLabelsOfChannels[channelNr])) {
-					if (TestCodec.LOG_TEST) System.out.println("\nCODEC TEST RESULT: ERROR. Details: Label or name of the channel #" + channelNr + " get from codec (" + inDtaChannelObjectChannelName + ") differs from that specified in output file .hdr (" + outHdrLabelsOfChannels[channelNr] + ").");
-					////TODO increment offset
-					//break channels; //return;
-				}
-				if (!inDtaChannelObjectChannelTypeName.equals(outHdrTypesOfChannels[channelNr])) {
-					if (TestCodec.LOG_TEST) System.out.println("\nCODEC TEST RESULT: ERROR. Details: Type of the channel #" + channelNr + " get from codec (" + inDtaChannelObjectChannelName + ") differs from that specified in output file .hdr (" + outHdrLabelsOfChannels[channelNr] + ").");
-					////TODO increment offset
-					//break channels; //return;
-				}
-				double outHdrSamplingFrequencyPerChannel = ((outHdrSamplingFrequency == null) ? outHdrSamplingFrequencies[channelNr] : outHdrSamplingFrequency);
-				if (Math.abs(inDtaChannelObjectSamplingFrequency - outHdrSamplingFrequencyPerChannel) > testDeltaForSamplingFrequency) {
-					if (TestCodec.LOG_TEST) System.out.println("\nCODEC TEST RESULT: ERROR. Details: Sampling frequency of the channel #" + channelNr + " get from codec (" + inDtaChannelObjectSamplingFrequency + ") differs from that specified in output file .hdr (" + outHdrSamplingFrequencyPerChannel + ").");
-					////TODO increment offset
-					//break channels; //return;
-				}
-				if (inDtaChannelObjectNumberOfSamplesPerChannel != outDtaFisNrOfSamplesPerChannel) {
-					if (TestCodec.LOG_TEST) System.out.println("\nCODEC TEST RESULT: ERROR. Details: Number of samples per channel #" + channelNr + " get from codec (" + inDtaChannelObjectNumberOfSamplesPerChannel + ") differs from that specified in output file .hdr (" + outDtaFisNrOfSamplesPerChannel + ").");
-					//TODO increment offset
-					gotoNextChannel = true; //continue channels; //return;
-				}
-				int howMuchErrorsToRemember = 10; //100;
-				int howMuchErrorsFound = 0;
-				float[] rememberedErrorsValueShouldBe = new float[howMuchErrorsToRemember];
-				float[] rememberedErrorsValueThereIs = new float[howMuchErrorsToRemember];
-				//comparing data info
-				long samplesBytesAlreadyRead = outDtaFisOffset - outDtaFisOffsetStart;
-				long samplesAlreadyRead = samplesBytesAlreadyRead / outDtaFisLengthSampleUnitValue;
-				long samplesToReadAllRest = outDtaFisNrOfSamplesPerChannel - samplesAlreadyRead;
-				final long samplesToReadMax = 4096;
-				long samplesToRead = Math.min(samplesToReadMax, samplesToReadAllRest);
-				long bytesToRead = samplesToRead * outDtaFisLengthSampleUnitValue;
-				/*samplesBig:*/ for (int sampleUnitNr = 0; sampleUnitNr < outDtaFisNrOfSamplesPerChannel; ) {
-					/*final long*/ samplesBytesAlreadyRead = outDtaFisOffset - outDtaFisOffsetStart;
-					/*final long*/ samplesAlreadyRead = samplesBytesAlreadyRead / outDtaFisLengthSampleUnitValue;
-					/*final long*/ samplesToReadAllRest = outDtaFisNrOfSamplesPerChannel - samplesAlreadyRead;
-					/*final long samplesToReadMax = 4096; */
-					/*final long*/ samplesToRead = Math.min(samplesToReadMax, samplesToReadAllRest);
-					/*final long*/ bytesToRead = samplesToRead * outDtaFisLengthSampleUnitValue;
-					if (gotoNextChannel == false && gotoNextSamplePortionBig == false) {
-						outDtaFisMapBuffer = outDtaFisChannel.map(FileChannel.MapMode.READ_ONLY, outDtaFisOffset, bytesToRead);
-						int sampleUnitPosInCurrentBuffer = 0;
-						int sampleUnitNrInCurrentBuffer = 0;
-						/*samplesSmall:*/ for (; sampleUnitPosInCurrentBuffer < bytesToRead; sampleUnitNrInCurrentBuffer ++, sampleUnitPosInCurrentBuffer += outDtaFisLengthSampleUnitValue) {
-							final float outDtaFisSampleUnitValue = outDtaFisMapBuffer.getFloat((int) sampleUnitPosInCurrentBuffer) * verificationMultiplyFactor;
-							if (TestCodec.LOG_DEBUG) System.out.print(" " + outDtaFisSampleUnitValue); //System.out.format(" %.3f", outDtaFisSampleUnitValue);
-							int fullSampleNr = sampleUnitNr + sampleUnitNrInCurrentBuffer;
-							float inDtaCodecSampleUnitValue = inDtaChannelObject.getSample(fullSampleNr);
-							if (Math.abs(inDtaCodecSampleUnitValue - outDtaFisSampleUnitValue) > testDeltaForSample) {
-								if (howMuchErrorsFound < howMuchErrorsToRemember) {
-									rememberedErrorsValueShouldBe[howMuchErrorsFound] = outDtaFisSampleUnitValue;
-									rememberedErrorsValueThereIs[howMuchErrorsFound] = inDtaCodecSampleUnitValue;
-									if (TestCodec.LOG_TEST) System.out.println("\nCODEC TEST RESULT: ERROR. Details: Value of the sample #" + fullSampleNr + " of the channel #" + channelNr + " taken from the codec (" + inDtaCodecSampleUnitValue + ") differs from that specified in output file .float (" + outDtaFisSampleUnitValue + ").");
-								}
-								//increment offset -- if only we break it, but my last decision is not to break the flow
-								//continue samplesBig; //break channels; //return;
-								howMuchErrorsFound ++;
-							//} else {
-							//	if (howMuchErrorsFound < howMuchErrorsToRemember) {
-							//		if (TestCodec.LOG_TEST) System.out.println("\nCODEC TEST RESULT: OK. Details: Value of the sample #" + fullSampleNr + " of the channel #" + channelNr + " taken from the codec (" + inDtaCodecSampleUnitValue + ") is equal to that specified in output file .float (" + outDtaFisSampleUnitValue + ").");
-							//	}
-							}
-						}
-					}
-					outDtaFisOffset += bytesToRead;
-					sampleUnitNr += samplesToRead;
-					if (gotoNextChannel == true) {
-						gotoNextChannel = false;
-						continue channels;
-					}
-				}
-				if (TestCodec.LOG_INFO) System.out.println();
-			}
+			boolean inDtaStatus = checkCodec.getInDta(inDtaFileName, useContextDumper, usePreCheckingOfTheDataFromCodec);
+			if (!inDtaStatus) return;
+			//read output header file (.hdr) and output body file (.float)
+			fileName = outHdrFileName + " (or) " + outDtaFileName;
+			boolean outDtaStatus = checkCodec.getOutDta(outHdrFileName, outDtaFileName);
+			if (!outDtaStatus) return;
+			//then compare everything (outBody with outHdr and with in) 
+			fileName = "(unknown)";
+			boolean verificationStatus = checkCodec.checkChannels(verificationMultiplyFactor, testDeltaForSample, testDeltaForSamplingFrequency);
+			if (!verificationStatus) return;
 		} catch (FileNotFoundException e) {
-			if (TestCodec.LOG_ERROR) {
-				System.out.println("Error! Cannot find a file " + fileName + ". Check command-line arguments to the running program.");
-				if (TestCodec.LOG_ERROR) e.printStackTrace();
-			}
+			CheckCodec.logFileOperationException(e, fileName, "Cannot find a", "Check command-line arguments to the running program.");
 		} catch (IOException e) {
-			if (TestCodec.LOG_ERROR) {
-				System.out.println("Error! I/O error during reading the file" + fileName + ". Please verify that it is a proper file.");
-				if (TestCodec.LOG_ERROR) e.printStackTrace();
-			}
+			CheckCodec.logFileOperationException(e, fileName, "I/O error during reading the", "Please verify that it is a proper file.");
 		} finally {
-			if (outDtaFis != null)
-				try {
-					outDtaFis.close();
-				} catch (IOException e) {
-					if (TestCodec.LOG_ERROR) e.printStackTrace();
-				}
+			checkCodec.close();
 		}
 	}
 	
