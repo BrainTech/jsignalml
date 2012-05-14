@@ -28,7 +28,7 @@ public class Builtins extends ASTNode {
 	}
 
 	private static Builtins instance;
-	public static Builtins instance() {
+	public static synchronized Builtins instance() {
 		if (instance==null)
 			instance = new Builtins();
 		return instance;
