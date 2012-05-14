@@ -167,7 +167,7 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 		try {
 			klass = this.model._class(theid);
 		} catch(JClassAlreadyExistsException e) {
-			throw new RuntimeException("WTF?");
+			throw new SyntaxError(format("duplicate name: '%s'", theid));
 		}
 		klass._extends(jsignalml.codec.Signalml.class);
 		comment_stamp(klass);
@@ -826,7 +826,7 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 		try {
 			klass = parent._class("File_" + id);
 		} catch(JClassAlreadyExistsException e) {
-			throw new RuntimeException("WTF?");
+			throw new SyntaxError(format("duplicate name: '%s'", id));
 		}
 		klass._extends(jsignalml.codec.Signalml.FileClass.class);
 		comment_stamp(klass);
@@ -1012,7 +1012,7 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 		try {
 			klass = parent._class("Loop_" + id);
 		} catch(JClassAlreadyExistsException e) {
-			throw new RuntimeException("WTF?");
+			throw new SyntaxError(format("duplicate name: '%s'", id));
 		}
 		klass._extends(jsignalml.codec.OuterLoopClass.class);
 
@@ -1065,7 +1065,7 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 		try {
 			klass = parent._class(id);
 		} catch(JClassAlreadyExistsException e) {
-			throw new RuntimeException("WTF?");
+			throw new SyntaxError(format("duplicate name: '%s'", id));
 		}
 		klass._extends(jsignalml.codec.OuterLoopClass.LoopClass.class);
 		comment_stamp(klass);
@@ -1102,7 +1102,7 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 		try {
 			klass = parent._class("If_" + id);
 		} catch(JClassAlreadyExistsException e) {
-			throw new RuntimeException("WTF?");
+			throw new SyntaxError(format("duplicate name: '%s'", id));
 		}
 		klass._extends(jsignalml.codec.ConditionalClass.class);
 		comment_stamp(klass);
@@ -1156,7 +1156,7 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 		try {
 			klass = parent._class("Else_" + id);
 		} catch(JClassAlreadyExistsException e) {
-			throw new RuntimeException("WTF?");
+			throw new SyntaxError(format("duplicate name: '%s'", id));
 		}
 		if (parent.metadata instanceof MetadataIfBranch) {
 			MetadataIfBranch metadata = (MetadataIfBranch) parent.metadata;
@@ -1202,7 +1202,7 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 		try {
 			klass = parent._class("ElseIf_" + id);
 		} catch(JClassAlreadyExistsException e) {
-			throw new RuntimeException("WTF?");
+			throw new SyntaxError(format("duplicate name: '%s'", id));
 		}
 		klass._extends(jsignalml.codec.ConditionalClass.ElseIfBranchClass.class);
 		comment_stamp(klass);
@@ -1244,7 +1244,7 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 		try {
 			klass = parent._class(id);
 		} catch(JClassAlreadyExistsException e) {
-			throw new RuntimeException("WTF?");
+			throw new SyntaxError(format("duplicate name: '%s'", id));
 		}
 		final Type nodetype = nodeType(node);
 		final JClass javatype = convertTypeToJClass(nodetype);
@@ -1304,7 +1304,7 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 		try {
 			klass = parent._class("ChannelSet_" + id);
 		} catch(JClassAlreadyExistsException e) {
-			throw new RuntimeException("WTF?");
+			throw new SyntaxError(format("duplicate name: '%s'", id));
 		}
 		klass._extends(jsignalml.codec.ChannelSetClass.class);
 		comment_stamp(klass);
@@ -1353,7 +1353,7 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 		try {
 			klass = parent._class("Channel_" + id);
 		} catch(JClassAlreadyExistsException e) {
-			throw new RuntimeException("WTF?");
+			throw new SyntaxError(format("duplicate name: '%s'", id));
 		}
 		klass._extends(jsignalml.codec.ChannelClass.class);
 		comment_stamp(klass);
@@ -1795,7 +1795,8 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 			final JDefinedClass klass = (JDefinedClass) where;
 			klass.javadoc().append("\n" + out);
 		} else {
-			throw new RuntimeException("wtf?");
+			throw new SyntaxError("Comment not applicable for object of class " +
+					where.getClass().getCanonicalName());
 		}
 	}
 
