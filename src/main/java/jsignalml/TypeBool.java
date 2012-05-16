@@ -176,6 +176,14 @@ public class TypeBool extends Type {
 	}
 
 	/**
+	 * @see jsignalml.Type#_binaryOpType(jsignalml.Type.BinaryOp, jsignalml.TypeInt)
+	 */
+	@Override
+	public Type _binaryOpType(BinaryOp op, TypeInt other) {
+		throw new ExpressionFault.TypeError(other, this);
+	}
+
+	/**
 	 * Allows to obtain information about this instance type (
 	 * <code>TypeFloat</code>).
 	 * 
@@ -185,7 +193,7 @@ public class TypeBool extends Type {
 	 * @return instance for type check
 	 */
 	@Override
-	public Type _binaryOpType(BinaryOp op, TypeInt other) {
+	public Type _binaryOpType(BinaryOp op, TypeBool other) {
 		return this.binaryOp(op, other);
 	}
 
