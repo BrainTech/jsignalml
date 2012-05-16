@@ -3,7 +3,6 @@ package jsignalml;
 import java.util.Map;
 import java.util.List;
 import java.util.Arrays;
-import java.util.Iterator;
 import static java.lang.String.format;
 
 import jsignalml.logging.Logger;
@@ -127,15 +126,18 @@ public abstract class Type implements Comparable<Type> {
 		assert other != null;
 		if (other instanceof TypeInt)
 			return this.binaryOp(op, (TypeInt) other);
-		if (other instanceof TypeFloat)
+		else if (other instanceof TypeFloat)
 			return this.binaryOp(op, (TypeFloat) other);
-		if (other instanceof TypeString)
+		else if (other instanceof TypeString)
 			return this.binaryOp(op, (TypeString) other);
-		if (other instanceof TypeList)
+		else if (other instanceof TypeList)
 			return this.binaryOp(op, (TypeList) other);
-		if (other instanceof TypeMap)
+		else if (other instanceof TypeMap)
 			return this.binaryOp(op, (TypeMap) other);
-		throw new RuntimeException("unknown type in expression: " + other.getClass());
+		else if (other instanceof TypeBool)
+			return this.binaryOp(op, (TypeBool) other);
+		else
+			throw new RuntimeException("unknown type in expression: " + other.getClass());
 	}
 
 	public Type binaryOp(BinaryOp op, TypeInt other)
@@ -265,15 +267,18 @@ public abstract class Type implements Comparable<Type> {
 
 		if (other instanceof TypeInt)
 			return this._binaryOpType(op, (TypeInt) other);
-		if (other instanceof TypeFloat)
+		else if (other instanceof TypeFloat)
 			return this._binaryOpType(op, (TypeFloat) other);
-		if (other instanceof TypeString)
+		else if (other instanceof TypeString)
 			return this._binaryOpType(op, (TypeString) other);
-		if (other instanceof TypeList)
+		else if (other instanceof TypeList)
 			return this._binaryOpType(op, (TypeList) other);
-		if (other instanceof TypeMap)
+		else if (other instanceof TypeMap)
 			return this._binaryOpType(op, (TypeMap) other);
-		throw new RuntimeException("unknown type in expression: " + other);
+		else if (other instanceof TypeBool)
+			return this._binaryOpType(op, (TypeBool) other);
+		else
+			throw new RuntimeException("unknown type in expression: " + other);
 	}
 
 	/*
@@ -306,6 +311,10 @@ public abstract class Type implements Comparable<Type> {
 		throw new ExpressionFault.TypeError();
 	}
 
+	public Type _binaryOpType(BinaryOp op, TypeBool other) {
+		throw new ExpressionFault.TypeError();
+	}
+
 
 	public Type unaryOp(UnaryOp op)
 	{
@@ -316,11 +325,15 @@ public abstract class Type implements Comparable<Type> {
 	{
 		switch(op){
 		case LOG_NOT:
-			return new TypeInt();
+			if (this instanceof TypeBool)
+				return this;
+			else
+				return new TypeInt();
 		case POS:
 		case NEG:
-			if (this.getClass().equals(TypeInt.class) ||
-			    this.getClass().equals(TypeFloat.class))
+			if (this instanceof TypeInt ||
+			    this instanceof TypeFloat ||
+			    this instanceof TypeBool)
 				return this;
 			else
 				return unsupported("unary " + op);
@@ -436,6 +449,7 @@ public abstract class Type implements Comparable<Type> {
 		registerType("str", new TypeString());
 		registerType("list", new TypeList());
 		registerType("map", new TypeMap());
+		registerType("bool", new TypeBool());
 	}
 
 	public static String typename(Type type) {
