@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import jsignalml.AsciiScanner;
 import jsignalml.ChannelSet;
 import jsignalml.ContextVisitor;
+import jsignalml.EmptyStringParam;
 import jsignalml.ExpressionFault;
 import jsignalml.MyBuffer;
 import jsignalml.TextBuffer;
@@ -115,4 +116,8 @@ public abstract class Signalml extends Context implements jsignalml.Source {
 	private static boolean _prim =
 			System.getProperties().getProperty("jsignalml.primitive", "").length() > 0
 				&& System.getProperties().getProperty("jsignalml.primitive").equals("1");
+
+	public EmptyStringParam get_channel_name(){
+		return new EmptyStringParam();
+	}
 }
