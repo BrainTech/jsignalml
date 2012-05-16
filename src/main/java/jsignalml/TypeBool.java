@@ -184,8 +184,7 @@ public class TypeBool extends Type {
 	}
 
 	/**
-	 * Allows to obtain information about this instance type (
-	 * <code>TypeFloat</code>).
+	 * Allows to obtain information about this instance type.
 	 * 
 	 * @see jsignalml.Type#_binaryOpType(jsignalml.Type.BinaryOp,
 	 *      jsignalml.TypeInt)
