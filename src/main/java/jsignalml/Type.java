@@ -192,6 +192,32 @@ public abstract class Type implements Comparable<Type> {
 		}
 	}
 
+	public Type binaryOp(BinaryOp op, TypeBool other)
+	{
+		switch (op) {
+		case ADD: return this.add(other);
+		case SUB: return this.sub(other);
+		case MUL: return this.mul(other);
+		case DIV: return this.div(other);
+		case FLOORDIV: return this.floordiv(other);
+		case MOD: return this.mod(other);
+		case BIN_AND: return this.bin_and(other);
+		case BIN_OR: return this.bin_or(other);
+		case BIN_XOR: return this.bin_xor(other);
+		case POW: return this.pow(other);
+		case EQ: return new TypeBool(this.compareTo(other) == 0);
+		case NE: return new TypeBool(this.compareTo(other) != 0);
+		case LT: return new TypeBool(this.compareTo(other) < 0);
+		case GT: return new TypeBool(this.compareTo(other) > 0);
+		case LE: return new TypeBool(this.compareTo(other) <= 0);
+		case GE: return new TypeBool(this.compareTo(other) >= 0);
+		case LOG_AND: return this.bin_and(other);
+		case LOG_OR: return this.bin_or(other);
+		default:
+			throw new ExpressionFault.TypeError(this, other);
+		}
+	}
+
 	public Type binaryOp(BinaryOp op, TypeString other)
 	{
 		throw new ExpressionFault.TypeError(this, other);
