@@ -97,7 +97,7 @@
 				<!-- body items -->
 				<file id='channel_file' type='binary' filename='channel_filename'>
 				</file>
-				<channel mapping='mapping' format='sample_format' length='number_of_samples' data='channel_file' fast='1'>
+				<channel mapping='mapping' format='sample_format' length='number_of_samples' data='channel_file'>
 					<param id='mapping' type='int'>
 						<arg type='int' name='sample_nr' />
 						<expr>sample_nr * sample_size</expr>

@@ -144,15 +144,13 @@ public abstract class ASTNode {
 	}
 
 	public static class Channel extends ASTNode {
-		public final Expression mapping, format, length, fast, data;
+		public final Expression mapping, format, length, data;
 
 		public Channel(ASTNode parent, Expression id, 
 			       Expression mapping, Expression format,
-			       Expression length, Expression fast, Expression data)
+			       Expression length, Expression data)
 		{
 			super(parent, id);
-
-			this.fast = fast != null ? fast : Processor.parse("0");
 
 			this.mapping = mapping;
 			this.format = format;
@@ -179,8 +177,8 @@ public abstract class ASTNode {
 		@Override
 		public String toString()
 		{
-			return format("ASTNode.Channel %s mapping=%s format=%s fast=%s",
-					id, mapping, format, fast);
+			return format("ASTNode.Channel %s mapping=%s format=%s",
+					id, mapping, format);
 		}
 
 		@Override
@@ -223,19 +221,16 @@ public abstract class ASTNode {
 	}
 
 	public static class BinaryParam extends ReadParam {
-		final Expression format, offset, fast;
+		final Expression format, offset;
 
 		// XXX: move this somewhere proper?
 		Type _read_type = null;
 
 		public BinaryParam(ASTNode parent, Expression id, Type type,
-		                   Expression format, Expression offset,
-		                   Expression fast)
+		                   Expression format, Expression offset)
 			throws SyntaxError
 		{
 			super(parent, id, type);
-
-			this.fast = fast != null ? fast : Processor.parse("0");
 
 			this.format = format;
 			this.offset = offset;
@@ -290,20 +285,19 @@ public abstract class ASTNode {
 	}	
 
 	public static class ExprParam extends Param {
-		final Expression expr, fast;
+		final Expression expr;
 
 		public ExprParam(ASTNode parent, Expression id, Type type,
-				Expression expr, Expression fast)
+				Expression expr)
 		{
 			super(parent, id, type);
 			this.expr = expr;
-
-			this.fast = fast != null ? fast : Processor.parse("0");
 		}
+
 		public ExprParam(ASTNode parent, String id, Type type,
-				Expression expr, Expression fast)
+				Expression expr)
 		{
-			this(parent, Expression.Const.make(id), type, expr, fast);
+			this(parent, Expression.Const.make(id), type, expr);
 		}
 
 		@Override

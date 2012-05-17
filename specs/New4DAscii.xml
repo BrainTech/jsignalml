@@ -207,7 +207,7 @@
 						<expr>channel_sensitivity</expr>
 					</param>
 					<channel id='channel' mapping='mapping' format='sample_format'
-								length='number_of_samples' data='data_file' fast='1'>
+								length='number_of_samples' data='data_file'>
 						<param id='mapping' type='int'>
 							<arg type='int' name='sample' />
 							<expr>sample * (total_number_of_channels+1) + line_nr + 1</expr>

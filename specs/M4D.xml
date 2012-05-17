@@ -126,7 +126,7 @@
 			<for-each id='channels' var='index' sequence='range(number_of_channels)'
 				type='int'>
 				<channel mapping='mapping' format='sample_format' length='number_of_samples'
-					data='data_file' fast='1' />
+					data='data_file' />
 
 
 				<param id='channel_name' type='str'>

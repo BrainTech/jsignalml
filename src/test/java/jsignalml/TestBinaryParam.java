@@ -29,8 +29,7 @@ public class TestBinaryParam {
 		ASTNode.Param p = new ASTNode.BinaryParam(handle,
 							  Expression.Const.make("p"),
 							  new TypeInt(),
-							  const_format, const_offset,
-							  null);
+							  const_format, const_offset);
 		// TODO: write eval visitor for ASTNodes
 		// assertThat(p.eval(reader), equalTo((Type)new TypeInt('2')));
 	}

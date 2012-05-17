@@ -1412,7 +1412,6 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 
 	public JMethod getSampleMethod(JDefinedClass klass, ASTNode.Channel node)
 	{
-		final Expression fastSet = Processor.parse("1");
 		final JMethod method = klass.method(JMod.PUBLIC, this.model.FLOAT, "getSample");
 		comment_stamp(method.body());
 
@@ -1439,7 +1438,7 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 			buffer = body.decl(ByteBuffer_t, "buffer", JExpr.invoke("_buffer").ref("source"));
 		}
 
-		if (isPrimGeneration() && node.fast.equals(fastSet)) {
+		if (isPrimGeneration()) {
 			// Primitive types code variant
 
 			final JExpression mapping_call = JExpr.cast(model.INT,
@@ -1517,7 +1516,7 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 					JExpr.invoke("_buffer").ref("source"));
 		}
 
-		if (isPrimGeneration() && node.fast.equals(fastSet)) {
+		if (isPrimGeneration()) {
 			// Primitive types code variant
 			final JVar count = body.decl(this.model.INT, "count",
 					JExpr.invoke(dst, "remaining"));
@@ -1749,17 +1748,17 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 
 		final String field_name = "duration_of_data_record";
 		final ASTNode signalml = new ASTNode.Signalml("Test");
-		new ASTNode.ExprParam(signalml, field_name, new TypeInt(), expr, null);
+		new ASTNode.ExprParam(signalml, field_name, new TypeInt(), expr);
 
 		final Expression expr2 = Processor.parse(field_name + "() + 1");
-		new ASTNode.ExprParam(signalml, field_name+"2", new TypeInt(), expr2, null);
+		new ASTNode.ExprParam(signalml, field_name+"2", new TypeInt(), expr2);
 
 		ASTNode.FileHandle<?> thefile = new ASTNode.FileHandle(signalml, "thefile", null, true);
 
 		new ASTNode.BinaryParam(thefile, Processor.parse("'readTest'"), new TypeInt(),
-					Expression.Const.make("<i4"), Expression.Const.make(25), null);
+					Expression.Const.make("<i4"), Expression.Const.make(25));
 		new ASTNode.BinaryParam(thefile, Processor.parse("'readTestConv'"), new TypeInt(),
-					Expression.Const.make("|S8"), Expression.Const.make(0), null);
+					Expression.Const.make("|S8"), Expression.Const.make(0));
 
 		final NameCheck check = new NameCheck();
 		signalml.accept(check, null);

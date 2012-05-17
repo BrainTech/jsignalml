@@ -147,8 +147,7 @@
 					<if id='if_record_channel_names' test='record_mnemonic == "CN"'>
 						<for-each id='channels' var='index' sequence='range(number_of_channels)'
 							type='int'>
-							<channel mapping='mapping' format='"&lt;i2"' length='number_of_samples'
-								fast='1' />
+							<channel mapping='mapping' format='"&lt;i2"' length='number_of_samples'/>
 							<param id='channel_name_ASCIIZ' type='str'>
 								<format>'|S4'</format>
 								<offset>offset + 4 + index * 4</offset>
