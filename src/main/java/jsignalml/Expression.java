@@ -389,6 +389,9 @@ public abstract class Expression {
 		public static Expression make(double real) {
 			return new Const(new TypeFloat(real));
 		}
+		public static Expression make(boolean bool) {
+			return new Const(new TypeBool(bool));
+		}
 
 		@Override
 		public <T> T accept(ExpressionVisitor<T> v)
