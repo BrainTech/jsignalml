@@ -9,6 +9,14 @@ import java.math.BigInteger;
  */
 public class TypeBool extends Type {
 
+	/**
+	 * Static reference
+	 */
+	public static final TypeBool I = new TypeBool();
+
+	/**
+	 * Value
+	 */
 	private final Boolean value;
 
 	/**

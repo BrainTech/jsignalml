@@ -102,8 +102,12 @@ public class JavaPrimitiveGen extends JavaExprGen {
 			repr = JExpr.lit(((TypeFloat)val.value).getValue());
 		} else if (val.value instanceof TypeString) {
 			repr = JExpr.lit(((TypeString)val.value).getValue());
+		} else if (val.value instanceof TypeBool) {
+			repr = JExpr.lit(((TypeBool)val.value).getValue());
 		} else {
-			throw new RuntimeException();
+			throw new ExpressionFault.Unsupported(val.getType().getClass(),
+				"primitive evaluation. Type was not specified correctly, evaluation cannot be used"
+				+" for unspecified or wrong types. Please check content of the constans: " + val + ".");
 		}
 
 		return repr;
@@ -118,11 +122,15 @@ public class JavaPrimitiveGen extends JavaExprGen {
 
 		if (type instanceof TypeInt)
 			return this.model.LONG;
-		if (type instanceof TypeFloat)
+		else if (type instanceof TypeFloat)
 			return this.model.DOUBLE;
-		if (type instanceof TypeString)
+		else if (type instanceof TypeString)
 			return this.model.ref(String.class);
-
-		throw new RuntimeException("not implemented");
+		else if (type instanceof TypeBool)
+			return this.model.BOOLEAN;
+		else
+			throw new ExpressionFault.Unsupported(type.getClass(),
+				"primitive evaluation. Type was not specified correctly, evaluation cannot be used"
+				+" for unspecified or wrong types. Please check content of the expresion: " + node + ".");
 	}
 }

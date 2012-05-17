@@ -26,6 +26,7 @@ public class JavaExprGen extends ExpressionVisitor<JExpression> {
 	final JClass TypeString_t;
 	final JClass TypeList_t;
 	final JClass TypeMap_t;
+	final JClass TypeBool_t;
 
 	JavaExprGen(JCodeModel model, JavaNameResolver context)
 	{
@@ -38,6 +39,7 @@ public class JavaExprGen extends ExpressionVisitor<JExpression> {
 		this.TypeString_t = model.ref(TypeString.class);
 		this.TypeList_t = model.ref(TypeList.class);
 		this.TypeMap_t = model.ref(TypeMap.class);
+		this.TypeBool_t = model.ref(TypeBool.class);
 	}
 
 	JavaExprGen(ASTNode context)
@@ -189,6 +191,9 @@ public class JavaExprGen extends ExpressionVisitor<JExpression> {
 		} else if (val.value instanceof TypeString) {
 			type = TypeString.class;
 			repr = JExpr.lit(((TypeString)val.value).getValue());
+		} else if (val.value instanceof TypeBool) {
+			type = TypeBool.class;
+			repr = JExpr.lit(((TypeBool)val.value).getValue());
 		} else {
 			throw new RuntimeException();
 		}
