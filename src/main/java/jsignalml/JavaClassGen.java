@@ -64,6 +64,11 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 		GET_P = "get_p",
 		CALL_P = "call_p";
 
+	public boolean calibrGainPresent = false;
+	public boolean calibOffsPresent = false;
+	public boolean channelNamePresent = false;
+	public boolean channelTypePresent = false;
+
 	public static final boolean _comments =
 		System.getProperties().getProperty("jsignalml.comments", "1").equals("1");
 
@@ -228,6 +233,20 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 			final JBlock block = this.create_params.block();
 			comment_stamp(block);
 			block.add(JExpr.invoke("register").arg(name).arg(param_inv));
+
+			if (name.equals("calibration_gain")) {
+				log.info("calibration_gain present");
+				calibrGainPresent = true;
+			} else if (name.equals("calibration_offset")) {
+				log.info("calibration_offset present");
+				calibOffsPresent = true;
+			} else if (name.equals("channel_name")) {
+				log.info("channel_name present");
+				channelNamePresent = true;
+			} else if (name.equals("channel_type_name")) {
+				log.info("channel_type_name present");
+				channelTypePresent = true;
+			}
 		}
 
 		void registerContext(String name, JDefinedClass context_class, JExpression get)
@@ -329,7 +348,7 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 		{
 			final JForLoop for_ =  body._for();
 			final JVar i = for_.init(this.model.INT, "i", JExpr.lit(1));
-			for_.test(i.lt(nrOfChannelsToShow));
+			for_.test(i.lte(nrOfChannelsToShow));
 			for_.update(i.incr());
 			final JBlock forbody = for_.body();
 			
@@ -1629,7 +1648,12 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 		final JMethod method = klass.method(JMod.PUBLIC, String_t, "getChannelName");
 		comment_stamp(method.body());
 
-		JInvocation ji = JExpr.invoke("get_channel_name").invoke("get");
+		JInvocation ji = null;
+		if (channelNamePresent) {
+			ji = JExpr.invoke("get_channel_name").invoke("get");
+		} else {
+			ji = JExpr._new(TypeString_t).arg("");
+		}
 		final JVar value = method.body().decl(Type_t, "value", ji);
 		final JInvocation jiji = method.body().decl(TypeString_t, "stringValue",
 				JExpr.cast(TypeString_t, value)).invoke("getValue");
@@ -1643,8 +1667,12 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 		final JMethod method = klass.method(JMod.PUBLIC, String_t, "getChannelTypeName");
 		comment_stamp(method.body());
 
-		JInvocation ji = JExpr.invoke("get_channel_type_name").invoke("get");
-
+		JInvocation ji = null;
+		if (channelTypePresent) {
+			ji = JExpr.invoke("get_channel_type_name").invoke("get");
+		} else {
+			ji = JExpr._new(TypeString_t).arg("");
+		}
 		final JVar value = method.body().decl(Type_t, "value", ji);
 		final JInvocation jiji = method.body().decl(TypeString_t, "stringValue",
 				JExpr.cast(TypeString_t, value)).invoke("getValue");
@@ -1659,10 +1687,14 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 				"getCalibrationGain");
 		comment_stamp(method.body());
 
-		final JVar value = method.body().decl(Type_t, "value",
+		JInvocation ji = null;
+		if (calibrGainPresent) {
+			final JVar value = method.body().decl(Type_t, "value",
 					JExpr.invoke("get_calibration_gain").invoke("get"));
-		JInvocation	ji = TypeFloat_I.invoke("make").arg(value);
-
+			ji = TypeFloat_I.invoke("make").arg(value);
+		} else {
+			ji = JExpr._new(TypeFloat_t).arg("1");
+		}
 		final JVar cast = method.body().decl(TypeFloat_t, "cast", ji);
 		method.body()._return(cast);
 
@@ -1675,10 +1707,14 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 				"getCalibrationOffset");
 		comment_stamp(method.body());
 
-		final JVar value = method.body().decl(Type_t, "value",
+		JInvocation ji = null;
+		if (calibOffsPresent) {
+			final JVar value = method.body().decl(Type_t, "value",
 					JExpr.invoke("get_calibration_offset").invoke("get"));
-		JInvocation	ji = TypeFloat_I.invoke("make").arg(value);
-
+			ji = TypeFloat_I.invoke("make").arg(value);
+		} else {
+			 ji = JExpr._new(TypeFloat_t).arg("0");
+		}
 		final JVar cast = method.body().decl(TypeFloat_t, "cast", ji);
 		method.body()._return(cast);
 		

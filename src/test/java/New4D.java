@@ -28,7 +28,7 @@ import org.apache.log4j.BasicConfigurator;
 /**
  * 
  * jsignalml.ASTNode$Signalml._accept(ASTNode.java:122)
- * jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+ * jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
  * jsignalml.JavaClassGen.visit(JavaClassGen.java:173)
  * 
  */
@@ -41,19 +41,19 @@ public class New4D
 
     public void createParams() {
         // jsignalml.ASTNode$Signalml._accept(ASTNode.java:122)
-        // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+        // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
         // jsignalml.JavaClassGen.visit(JavaClassGen.java:178)
         // jsignalml.JavaClassGen$Metadata.<init>(JavaClassGen.java:227)
         // jsignalml.JavaClassGen$Metadata.<init>(JavaClassGen.java:204)
-        // jsignalml.JavaClassGen.access$12(JavaClassGen.java:1809)
+        // jsignalml.JavaClassGen.access$000(JavaClassGen.java:39)
         log.debug("New4D.createParams()");
         {
             // jsignalml.ASTNode$FileHandle._accept(ASTNode.java:435)
-            // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+            // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
             // jsignalml.JavaClassGen.visit(JavaClassGen.java:819)
             // jsignalml.JavaClassGen.fileClass(JavaClassGen.java:896)
             // jsignalml.JavaClassGen$Metadata.registerContext(JavaClassGen.java:257)
-            // jsignalml.JavaClassGen.access$12(JavaClassGen.java:1809)
+            // jsignalml.JavaClassGen.access$000(JavaClassGen.java:39)
             New4D.File_main obj = get_main();
             register("main", obj);
             obj.createParams();
@@ -62,19 +62,19 @@ public class New4D
 
     public void createChannels() {
         // jsignalml.ASTNode$Signalml._accept(ASTNode.java:122)
-        // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+        // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
         // jsignalml.JavaClassGen.visit(JavaClassGen.java:178)
         // jsignalml.JavaClassGen$Metadata.<init>(JavaClassGen.java:227)
         // jsignalml.JavaClassGen$Metadata.<init>(JavaClassGen.java:216)
-        // jsignalml.JavaClassGen.access$12(JavaClassGen.java:1809)
+        // jsignalml.JavaClassGen.access$000(JavaClassGen.java:39)
         log.debug("New4D.createChannels()");
         {
             // jsignalml.ASTNode$FileHandle._accept(ASTNode.java:435)
-            // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+            // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
             // jsignalml.JavaClassGen.visit(JavaClassGen.java:819)
             // jsignalml.JavaClassGen.fileClass(JavaClassGen.java:896)
             // jsignalml.JavaClassGen$Metadata.registerContext(JavaClassGen.java:264)
-            // jsignalml.JavaClassGen.access$12(JavaClassGen.java:1809)
+            // jsignalml.JavaClassGen.access$000(JavaClassGen.java:39)
             New4D.File_main obj = get_main();
             obj.createChannels();
         }
@@ -82,7 +82,7 @@ public class New4D
 
     public String id() {
         // jsignalml.ASTNode$Signalml._accept(ASTNode.java:122)
-        // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+        // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
         // jsignalml.JavaClassGen.visit(JavaClassGen.java:181)
         // jsignalml.JavaClassGen.idMethod(JavaClassGen.java:525)
         return "New4D";
@@ -90,7 +90,7 @@ public class New4D
 
     public static void main(String... args) {
         // jsignalml.ASTNode$Signalml._accept(ASTNode.java:122)
-        // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+        // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
         // jsignalml.JavaClassGen.visit(JavaClassGen.java:182)
         // jsignalml.JavaClassGen.mainMethod(JavaClassGen.java:306)
         int argc = args.length;
@@ -112,7 +112,7 @@ public class New4D
         if (argc > 1) {
             nrOfChannelsToShow = argc;
         }
-        for (int i = 1; (i<nrOfChannelsToShow); i ++) {
+        for (int i = 1; (i<= nrOfChannelsToShow); i ++) {
             int channelNr = (i- 1);
             if (argc > 1) {
                 channelNr = Integer.decode(args[i]).intValue();
@@ -132,7 +132,7 @@ public class New4D
 
     public File getCurrentFilename() {
         // jsignalml.ASTNode$Signalml._accept(ASTNode.java:122)
-        // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+        // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
         // jsignalml.JavaClassGen.visit(JavaClassGen.java:183)
         // jsignalml.JavaClassGen.getCurrentFilenameMethod(JavaClassGen.java:420)
         return null;
@@ -140,7 +140,7 @@ public class New4D
 
     public String getFormatDescription() {
         // jsignalml.ASTNode$Signalml._accept(ASTNode.java:122)
-        // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+        // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
         // jsignalml.JavaClassGen.visit(JavaClassGen.java:184)
         // jsignalml.JavaClassGen.getFormatDescriptionMethod(JavaClassGen.java:429)
         return null;
@@ -148,7 +148,7 @@ public class New4D
 
     public String getFormatID() {
         // jsignalml.ASTNode$Signalml._accept(ASTNode.java:122)
-        // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+        // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
         // jsignalml.JavaClassGen.visit(JavaClassGen.java:185)
         // jsignalml.JavaClassGen.getFormatIDMethod(JavaClassGen.java:438)
         return null;
@@ -156,7 +156,7 @@ public class New4D
 
     public void open(File filename) {
         // jsignalml.ASTNode$Signalml._accept(ASTNode.java:122)
-        // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+        // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
         // jsignalml.JavaClassGen.visit(JavaClassGen.java:186)
         // jsignalml.JavaClassGen.codecOpenMethod(JavaClassGen.java:410)
         this.default_filename = filename;
@@ -164,14 +164,14 @@ public class New4D
 
     public void close() {
         // jsignalml.ASTNode$Signalml._accept(ASTNode.java:122)
-        // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+        // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
         // jsignalml.JavaClassGen.visit(JavaClassGen.java:187)
         // jsignalml.JavaClassGen.closeMethod(JavaClassGen.java:447)
     }
 
     public New4D.File_main get_main() {
         // jsignalml.ASTNode$FileHandle._accept(ASTNode.java:435)
-        // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+        // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
         // jsignalml.JavaClassGen.visit(JavaClassGen.java:819)
         // jsignalml.JavaClassGen.fileClass(JavaClassGen.java:893)
         // jsignalml.JavaClassGen.classCacheMethod(JavaClassGen.java:954)
@@ -186,7 +186,7 @@ public class New4D
     /**
      * 
      * jsignalml.ASTNode$FileHandle._accept(ASTNode.java:435)
-     * jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+     * jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
      * jsignalml.JavaClassGen.visit(JavaClassGen.java:819)
      * jsignalml.JavaClassGen.fileClass(JavaClassGen.java:834)
      * parent paramClass=_param_number_of_blocks
@@ -268,7 +268,7 @@ public class New4D
 
         public Type access(String name) {
             // jsignalml.ASTNode$FileHandle._accept(ASTNode.java:435)
-            // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+            // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
             // jsignalml.JavaClassGen.visit(JavaClassGen.java:819)
             // jsignalml.JavaClassGen.fileClass(JavaClassGen.java:875)
             return super.access(name);
@@ -276,7 +276,7 @@ public class New4D
 
         public void register(String name, Context child) {
             // jsignalml.ASTNode$FileHandle._accept(ASTNode.java:435)
-            // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+            // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
             // jsignalml.JavaClassGen.visit(JavaClassGen.java:819)
             // jsignalml.JavaClassGen.fileClass(JavaClassGen.java:883)
             super.register(name, child);
@@ -284,270 +284,270 @@ public class New4D
 
         public void createParams() {
             // jsignalml.ASTNode$FileHandle._accept(ASTNode.java:435)
-            // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+            // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
             // jsignalml.JavaClassGen.visit(JavaClassGen.java:819)
             // jsignalml.JavaClassGen.fileClass(JavaClassGen.java:890)
             // jsignalml.JavaClassGen$Metadata.<init>(JavaClassGen.java:227)
             // jsignalml.JavaClassGen$Metadata.<init>(JavaClassGen.java:204)
-            // jsignalml.JavaClassGen.access$12(JavaClassGen.java:1809)
+            // jsignalml.JavaClassGen.access$000(JavaClassGen.java:39)
             log.debug("File_main.createParams()");
             // jsignalml.ASTNode$ExprParam._accept(ASTNode.java:319)
-            // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+            // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
             // jsignalml.JavaClassGen.visit(JavaClassGen.java:457)
             // jsignalml.JavaClassGen.paramClass(JavaClassGen.java:517)
             // jsignalml.JavaClassGen$Metadata.registerParam(JavaClassGen.java:234)
-            // jsignalml.JavaClassGen.access$12(JavaClassGen.java:1809)
+            // jsignalml.JavaClassGen.access$000(JavaClassGen.java:39)
             register("number_of_blocks", get_number_of_blocks());
             // jsignalml.ASTNode$ExprParam._accept(ASTNode.java:319)
-            // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+            // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
             // jsignalml.JavaClassGen.visit(JavaClassGen.java:457)
             // jsignalml.JavaClassGen.paramClass(JavaClassGen.java:517)
             // jsignalml.JavaClassGen$Metadata.registerParam(JavaClassGen.java:234)
-            // jsignalml.JavaClassGen.access$12(JavaClassGen.java:1809)
+            // jsignalml.JavaClassGen.access$000(JavaClassGen.java:39)
             register("data_filename", get_data_filename());
             // jsignalml.ASTNode$TextParam._accept(ASTNode.java:289)
-            // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+            // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
             // jsignalml.JavaClassGen.visit(JavaClassGen.java:488)
             // jsignalml.JavaClassGen.paramClass(JavaClassGen.java:517)
             // jsignalml.JavaClassGen$Metadata.registerParam(JavaClassGen.java:234)
-            // jsignalml.JavaClassGen.access$12(JavaClassGen.java:1809)
+            // jsignalml.JavaClassGen.access$000(JavaClassGen.java:39)
             register("acquisition_mode", get_acquisition_mode());
             // jsignalml.ASTNode$TextParam._accept(ASTNode.java:289)
-            // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+            // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
             // jsignalml.JavaClassGen.visit(JavaClassGen.java:488)
             // jsignalml.JavaClassGen.paramClass(JavaClassGen.java:517)
             // jsignalml.JavaClassGen$Metadata.registerParam(JavaClassGen.java:234)
-            // jsignalml.JavaClassGen.access$12(JavaClassGen.java:1809)
+            // jsignalml.JavaClassGen.access$000(JavaClassGen.java:39)
             register("file_type", get_file_type());
             // jsignalml.ASTNode$ExprParam._accept(ASTNode.java:319)
-            // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+            // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
             // jsignalml.JavaClassGen.visit(JavaClassGen.java:457)
             // jsignalml.JavaClassGen.paramClass(JavaClassGen.java:517)
             // jsignalml.JavaClassGen$Metadata.registerParam(JavaClassGen.java:234)
-            // jsignalml.JavaClassGen.access$12(JavaClassGen.java:1809)
+            // jsignalml.JavaClassGen.access$000(JavaClassGen.java:39)
             register("channel_name", get_channel_name());
             // jsignalml.ASTNode$ExprParam._accept(ASTNode.java:319)
-            // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+            // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
             // jsignalml.JavaClassGen.visit(JavaClassGen.java:457)
             // jsignalml.JavaClassGen.paramClass(JavaClassGen.java:517)
             // jsignalml.JavaClassGen$Metadata.registerParam(JavaClassGen.java:234)
-            // jsignalml.JavaClassGen.access$12(JavaClassGen.java:1809)
+            // jsignalml.JavaClassGen.access$000(JavaClassGen.java:39)
             register("channel_type_name", get_channel_type_name());
             // jsignalml.ASTNode$TextParam._accept(ASTNode.java:289)
-            // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+            // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
             // jsignalml.JavaClassGen.visit(JavaClassGen.java:488)
             // jsignalml.JavaClassGen.paramClass(JavaClassGen.java:517)
             // jsignalml.JavaClassGen$Metadata.registerParam(JavaClassGen.java:234)
-            // jsignalml.JavaClassGen.access$12(JavaClassGen.java:1809)
+            // jsignalml.JavaClassGen.access$000(JavaClassGen.java:39)
             register("sample_period", get_sample_period());
             // jsignalml.ASTNode$TextParam._accept(ASTNode.java:289)
-            // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+            // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
             // jsignalml.JavaClassGen.visit(JavaClassGen.java:488)
             // jsignalml.JavaClassGen.paramClass(JavaClassGen.java:517)
             // jsignalml.JavaClassGen$Metadata.registerParam(JavaClassGen.java:234)
-            // jsignalml.JavaClassGen.access$12(JavaClassGen.java:1809)
+            // jsignalml.JavaClassGen.access$000(JavaClassGen.java:39)
             register("period_hex_float", get_period_hex_float());
             // jsignalml.ASTNode$TextParam._accept(ASTNode.java:289)
-            // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+            // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
             // jsignalml.JavaClassGen.visit(JavaClassGen.java:488)
             // jsignalml.JavaClassGen.paramClass(JavaClassGen.java:517)
             // jsignalml.JavaClassGen$Metadata.registerParam(JavaClassGen.java:234)
-            // jsignalml.JavaClassGen.access$12(JavaClassGen.java:1809)
+            // jsignalml.JavaClassGen.access$000(JavaClassGen.java:39)
             register("sampling_frequency", get_sampling_frequency());
             // jsignalml.ASTNode$TextParam._accept(ASTNode.java:289)
-            // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+            // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
             // jsignalml.JavaClassGen.visit(JavaClassGen.java:488)
             // jsignalml.JavaClassGen.paramClass(JavaClassGen.java:517)
             // jsignalml.JavaClassGen$Metadata.registerParam(JavaClassGen.java:234)
-            // jsignalml.JavaClassGen.access$12(JavaClassGen.java:1809)
+            // jsignalml.JavaClassGen.access$000(JavaClassGen.java:39)
             register("total_epochs", get_total_epochs());
             // jsignalml.ASTNode$TextParam._accept(ASTNode.java:289)
-            // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+            // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
             // jsignalml.JavaClassGen.visit(JavaClassGen.java:488)
             // jsignalml.JavaClassGen.paramClass(JavaClassGen.java:517)
             // jsignalml.JavaClassGen$Metadata.registerParam(JavaClassGen.java:234)
-            // jsignalml.JavaClassGen.access$12(JavaClassGen.java:1809)
+            // jsignalml.JavaClassGen.access$000(JavaClassGen.java:39)
             register("data_format", get_data_format());
             // jsignalml.ASTNode$TextParam._accept(ASTNode.java:289)
-            // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+            // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
             // jsignalml.JavaClassGen.visit(JavaClassGen.java:488)
             // jsignalml.JavaClassGen.paramClass(JavaClassGen.java:517)
             // jsignalml.JavaClassGen$Metadata.registerParam(JavaClassGen.java:234)
-            // jsignalml.JavaClassGen.access$12(JavaClassGen.java:1809)
+            // jsignalml.JavaClassGen.access$000(JavaClassGen.java:39)
             register("total_number_of_channels", get_total_number_of_channels());
             // jsignalml.ASTNode$TextParam._accept(ASTNode.java:289)
-            // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+            // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
             // jsignalml.JavaClassGen.visit(JavaClassGen.java:488)
             // jsignalml.JavaClassGen.paramClass(JavaClassGen.java:517)
             // jsignalml.JavaClassGen$Metadata.registerParam(JavaClassGen.java:234)
-            // jsignalml.JavaClassGen.access$12(JavaClassGen.java:1809)
+            // jsignalml.JavaClassGen.access$000(JavaClassGen.java:39)
             register("MEG_number_of_channels", get_MEG_number_of_channels());
             // jsignalml.ASTNode$TextParam._accept(ASTNode.java:289)
-            // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+            // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
             // jsignalml.JavaClassGen.visit(JavaClassGen.java:488)
             // jsignalml.JavaClassGen.paramClass(JavaClassGen.java:517)
             // jsignalml.JavaClassGen$Metadata.registerParam(JavaClassGen.java:234)
-            // jsignalml.JavaClassGen.access$12(JavaClassGen.java:1809)
+            // jsignalml.JavaClassGen.access$000(JavaClassGen.java:39)
             register("MEG_channel_group", get_MEG_channel_group());
             // jsignalml.ASTNode$TextParam._accept(ASTNode.java:289)
-            // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+            // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
             // jsignalml.JavaClassGen.visit(JavaClassGen.java:488)
             // jsignalml.JavaClassGen.paramClass(JavaClassGen.java:517)
             // jsignalml.JavaClassGen$Metadata.registerParam(JavaClassGen.java:234)
-            // jsignalml.JavaClassGen.access$12(JavaClassGen.java:1809)
+            // jsignalml.JavaClassGen.access$000(JavaClassGen.java:39)
             register("REFERENCE_number_of_channels", get_REFERENCE_number_of_channels());
             // jsignalml.ASTNode$TextParam._accept(ASTNode.java:289)
-            // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+            // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
             // jsignalml.JavaClassGen.visit(JavaClassGen.java:488)
             // jsignalml.JavaClassGen.paramClass(JavaClassGen.java:517)
             // jsignalml.JavaClassGen$Metadata.registerParam(JavaClassGen.java:234)
-            // jsignalml.JavaClassGen.access$12(JavaClassGen.java:1809)
+            // jsignalml.JavaClassGen.access$000(JavaClassGen.java:39)
             register("REFERENCE_channel_group", get_REFERENCE_channel_group());
             // jsignalml.ASTNode$TextParam._accept(ASTNode.java:289)
-            // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+            // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
             // jsignalml.JavaClassGen.visit(JavaClassGen.java:488)
             // jsignalml.JavaClassGen.paramClass(JavaClassGen.java:517)
             // jsignalml.JavaClassGen$Metadata.registerParam(JavaClassGen.java:234)
-            // jsignalml.JavaClassGen.access$12(JavaClassGen.java:1809)
+            // jsignalml.JavaClassGen.access$000(JavaClassGen.java:39)
             register("EEG_number_of_channels", get_EEG_number_of_channels());
             // jsignalml.ASTNode$TextParam._accept(ASTNode.java:289)
-            // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+            // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
             // jsignalml.JavaClassGen.visit(JavaClassGen.java:488)
             // jsignalml.JavaClassGen.paramClass(JavaClassGen.java:517)
             // jsignalml.JavaClassGen$Metadata.registerParam(JavaClassGen.java:234)
-            // jsignalml.JavaClassGen.access$12(JavaClassGen.java:1809)
+            // jsignalml.JavaClassGen.access$000(JavaClassGen.java:39)
             register("EEG_channel_group", get_EEG_channel_group());
             // jsignalml.ASTNode$TextParam._accept(ASTNode.java:289)
-            // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+            // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
             // jsignalml.JavaClassGen.visit(JavaClassGen.java:488)
             // jsignalml.JavaClassGen.paramClass(JavaClassGen.java:517)
             // jsignalml.JavaClassGen$Metadata.registerParam(JavaClassGen.java:234)
-            // jsignalml.JavaClassGen.access$12(JavaClassGen.java:1809)
+            // jsignalml.JavaClassGen.access$000(JavaClassGen.java:39)
             register("TRIGGER_number_of_channels", get_TRIGGER_number_of_channels());
             // jsignalml.ASTNode$TextParam._accept(ASTNode.java:289)
-            // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+            // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
             // jsignalml.JavaClassGen.visit(JavaClassGen.java:488)
             // jsignalml.JavaClassGen.paramClass(JavaClassGen.java:517)
             // jsignalml.JavaClassGen$Metadata.registerParam(JavaClassGen.java:234)
-            // jsignalml.JavaClassGen.access$12(JavaClassGen.java:1809)
+            // jsignalml.JavaClassGen.access$000(JavaClassGen.java:39)
             register("TRIGGER_channel_group", get_TRIGGER_channel_group());
             // jsignalml.ASTNode$TextParam._accept(ASTNode.java:289)
-            // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+            // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
             // jsignalml.JavaClassGen.visit(JavaClassGen.java:488)
             // jsignalml.JavaClassGen.paramClass(JavaClassGen.java:517)
             // jsignalml.JavaClassGen$Metadata.registerParam(JavaClassGen.java:234)
-            // jsignalml.JavaClassGen.access$12(JavaClassGen.java:1809)
+            // jsignalml.JavaClassGen.access$000(JavaClassGen.java:39)
             register("UTILITY_number_of_channels", get_UTILITY_number_of_channels());
             // jsignalml.ASTNode$TextParam._accept(ASTNode.java:289)
-            // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+            // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
             // jsignalml.JavaClassGen.visit(JavaClassGen.java:488)
             // jsignalml.JavaClassGen.paramClass(JavaClassGen.java:517)
             // jsignalml.JavaClassGen$Metadata.registerParam(JavaClassGen.java:234)
-            // jsignalml.JavaClassGen.access$12(JavaClassGen.java:1809)
+            // jsignalml.JavaClassGen.access$000(JavaClassGen.java:39)
             register("UTILITY_channel_group", get_UTILITY_channel_group());
             // jsignalml.ASTNode$ExprParam._accept(ASTNode.java:319)
-            // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+            // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
             // jsignalml.JavaClassGen.visit(JavaClassGen.java:457)
             // jsignalml.JavaClassGen.paramClass(JavaClassGen.java:517)
             // jsignalml.JavaClassGen$Metadata.registerParam(JavaClassGen.java:234)
-            // jsignalml.JavaClassGen.access$12(JavaClassGen.java:1809)
+            // jsignalml.JavaClassGen.access$000(JavaClassGen.java:39)
             register("line_pattern_for_channel_sensitivities", get_line_pattern_for_channel_sensitivities());
             // jsignalml.ASTNode$ExprParam._accept(ASTNode.java:319)
-            // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+            // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
             // jsignalml.JavaClassGen.visit(JavaClassGen.java:457)
             // jsignalml.JavaClassGen.paramClass(JavaClassGen.java:517)
             // jsignalml.JavaClassGen$Metadata.registerParam(JavaClassGen.java:234)
-            // jsignalml.JavaClassGen.access$12(JavaClassGen.java:1809)
+            // jsignalml.JavaClassGen.access$000(JavaClassGen.java:39)
             register("line_number_with_channel_sensitivities", get_line_number_with_channel_sensitivities());
             // jsignalml.ASTNode$TextParam._accept(ASTNode.java:289)
-            // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+            // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
             // jsignalml.JavaClassGen.visit(JavaClassGen.java:488)
             // jsignalml.JavaClassGen.paramClass(JavaClassGen.java:517)
             // jsignalml.JavaClassGen$Metadata.registerParam(JavaClassGen.java:234)
-            // jsignalml.JavaClassGen.access$12(JavaClassGen.java:1809)
+            // jsignalml.JavaClassGen.access$000(JavaClassGen.java:39)
             register("longest_epoch_nr", get_longest_epoch_nr());
             // jsignalml.ASTNode$TextParam._accept(ASTNode.java:289)
-            // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+            // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
             // jsignalml.JavaClassGen.visit(JavaClassGen.java:488)
             // jsignalml.JavaClassGen.paramClass(JavaClassGen.java:517)
             // jsignalml.JavaClassGen$Metadata.registerParam(JavaClassGen.java:234)
-            // jsignalml.JavaClassGen.access$12(JavaClassGen.java:1809)
+            // jsignalml.JavaClassGen.access$000(JavaClassGen.java:39)
             register("number_of_samples", get_number_of_samples());
             // jsignalml.ASTNode$TextParam._accept(ASTNode.java:289)
-            // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+            // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
             // jsignalml.JavaClassGen.visit(JavaClassGen.java:488)
             // jsignalml.JavaClassGen.paramClass(JavaClassGen.java:517)
             // jsignalml.JavaClassGen$Metadata.registerParam(JavaClassGen.java:234)
-            // jsignalml.JavaClassGen.access$12(JavaClassGen.java:1809)
+            // jsignalml.JavaClassGen.access$000(JavaClassGen.java:39)
             register("longest_epoch_duration", get_longest_epoch_duration());
             // jsignalml.ASTNode$ExprParam._accept(ASTNode.java:319)
-            // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+            // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
             // jsignalml.JavaClassGen.visit(JavaClassGen.java:457)
             // jsignalml.JavaClassGen.paramClass(JavaClassGen.java:517)
             // jsignalml.JavaClassGen$Metadata.registerParam(JavaClassGen.java:234)
-            // jsignalml.JavaClassGen.access$12(JavaClassGen.java:1809)
+            // jsignalml.JavaClassGen.access$000(JavaClassGen.java:39)
             register("msi_format", get_msi_format());
             {
                 // jsignalml.ASTNode$Conditional._accept(ASTNode.java:580)
-                // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                 // jsignalml.JavaClassGen.visit(JavaClassGen.java:1094)
                 // jsignalml.JavaClassGen.conditionalClass(JavaClassGen.java:1123)
                 // jsignalml.JavaClassGen$Metadata.registerContext(JavaClassGen.java:257)
-                // jsignalml.JavaClassGen.access$12(JavaClassGen.java:1809)
+                // jsignalml.JavaClassGen.access$000(JavaClassGen.java:39)
                 New4D.File_main.If_size obj = get_size();
                 register("size", obj);
                 obj.createParams();
             }
             {
                 // jsignalml.ASTNode$Conditional._accept(ASTNode.java:580)
-                // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                 // jsignalml.JavaClassGen.visit(JavaClassGen.java:1094)
                 // jsignalml.JavaClassGen.conditionalClass(JavaClassGen.java:1123)
                 // jsignalml.JavaClassGen$Metadata.registerContext(JavaClassGen.java:257)
-                // jsignalml.JavaClassGen.access$12(JavaClassGen.java:1809)
+                // jsignalml.JavaClassGen.access$000(JavaClassGen.java:39)
                 New4D.File_main.If_format obj = get_format();
                 register("format", obj);
                 obj.createParams();
             }
             // jsignalml.ASTNode$ExprParam._accept(ASTNode.java:319)
-            // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+            // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
             // jsignalml.JavaClassGen.visit(JavaClassGen.java:457)
             // jsignalml.JavaClassGen.paramClass(JavaClassGen.java:517)
             // jsignalml.JavaClassGen$Metadata.registerParam(JavaClassGen.java:234)
-            // jsignalml.JavaClassGen.access$12(JavaClassGen.java:1809)
+            // jsignalml.JavaClassGen.access$000(JavaClassGen.java:39)
             register("sample_size", get_sample_size());
             // jsignalml.ASTNode$ExprParam._accept(ASTNode.java:319)
-            // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+            // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
             // jsignalml.JavaClassGen.visit(JavaClassGen.java:457)
             // jsignalml.JavaClassGen.paramClass(JavaClassGen.java:517)
             // jsignalml.JavaClassGen$Metadata.registerParam(JavaClassGen.java:234)
-            // jsignalml.JavaClassGen.access$12(JavaClassGen.java:1809)
+            // jsignalml.JavaClassGen.access$000(JavaClassGen.java:39)
             register("sample_format", get_sample_format());
             // jsignalml.ASTNode$ExprParam._accept(ASTNode.java:319)
-            // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+            // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
             // jsignalml.JavaClassGen.visit(JavaClassGen.java:457)
             // jsignalml.JavaClassGen.paramClass(JavaClassGen.java:517)
             // jsignalml.JavaClassGen$Metadata.registerParam(JavaClassGen.java:234)
-            // jsignalml.JavaClassGen.access$12(JavaClassGen.java:1809)
+            // jsignalml.JavaClassGen.access$000(JavaClassGen.java:39)
             register("sample_unit", get_sample_unit());
             {
                 // jsignalml.ASTNode$FileHandle._accept(ASTNode.java:435)
-                // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                 // jsignalml.JavaClassGen.visit(JavaClassGen.java:819)
                 // jsignalml.JavaClassGen.fileClass(JavaClassGen.java:896)
                 // jsignalml.JavaClassGen$Metadata.registerContext(JavaClassGen.java:257)
-                // jsignalml.JavaClassGen.access$12(JavaClassGen.java:1809)
+                // jsignalml.JavaClassGen.access$000(JavaClassGen.java:39)
                 New4D.File_main.File_data_file obj = get_data_file();
                 register("data_file", obj);
                 obj.createParams();
             }
             {
                 // jsignalml.ASTNode$ChannelSet._accept(ASTNode.java:141)
-                // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                 // jsignalml.JavaClassGen.visit(JavaClassGen.java:1297)
                 // jsignalml.JavaClassGen.channelSetClass(JavaClassGen.java:1320)
                 // jsignalml.JavaClassGen$Metadata.registerContext(JavaClassGen.java:257)
-                // jsignalml.JavaClassGen.access$12(JavaClassGen.java:1809)
+                // jsignalml.JavaClassGen.access$000(JavaClassGen.java:39)
                 New4D.File_main.ChannelSet_data_test obj = get_data_test();
                 register("data_test", obj);
                 obj.createParams();
@@ -556,50 +556,50 @@ public class New4D
 
         public void createChannels() {
             // jsignalml.ASTNode$FileHandle._accept(ASTNode.java:435)
-            // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+            // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
             // jsignalml.JavaClassGen.visit(JavaClassGen.java:819)
             // jsignalml.JavaClassGen.fileClass(JavaClassGen.java:890)
             // jsignalml.JavaClassGen$Metadata.<init>(JavaClassGen.java:227)
             // jsignalml.JavaClassGen$Metadata.<init>(JavaClassGen.java:216)
-            // jsignalml.JavaClassGen.access$12(JavaClassGen.java:1809)
+            // jsignalml.JavaClassGen.access$000(JavaClassGen.java:39)
             log.debug("File_main.createChannels()");
             {
                 // jsignalml.ASTNode$Conditional._accept(ASTNode.java:580)
-                // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                 // jsignalml.JavaClassGen.visit(JavaClassGen.java:1094)
                 // jsignalml.JavaClassGen.conditionalClass(JavaClassGen.java:1123)
                 // jsignalml.JavaClassGen$Metadata.registerContext(JavaClassGen.java:264)
-                // jsignalml.JavaClassGen.access$12(JavaClassGen.java:1809)
+                // jsignalml.JavaClassGen.access$000(JavaClassGen.java:39)
                 New4D.File_main.If_size obj = get_size();
                 obj.createChannels();
             }
             {
                 // jsignalml.ASTNode$Conditional._accept(ASTNode.java:580)
-                // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                 // jsignalml.JavaClassGen.visit(JavaClassGen.java:1094)
                 // jsignalml.JavaClassGen.conditionalClass(JavaClassGen.java:1123)
                 // jsignalml.JavaClassGen$Metadata.registerContext(JavaClassGen.java:264)
-                // jsignalml.JavaClassGen.access$12(JavaClassGen.java:1809)
+                // jsignalml.JavaClassGen.access$000(JavaClassGen.java:39)
                 New4D.File_main.If_format obj = get_format();
                 obj.createChannels();
             }
             {
                 // jsignalml.ASTNode$FileHandle._accept(ASTNode.java:435)
-                // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                 // jsignalml.JavaClassGen.visit(JavaClassGen.java:819)
                 // jsignalml.JavaClassGen.fileClass(JavaClassGen.java:896)
                 // jsignalml.JavaClassGen$Metadata.registerContext(JavaClassGen.java:264)
-                // jsignalml.JavaClassGen.access$12(JavaClassGen.java:1809)
+                // jsignalml.JavaClassGen.access$000(JavaClassGen.java:39)
                 New4D.File_main.File_data_file obj = get_data_file();
                 obj.createChannels();
             }
             {
                 // jsignalml.ASTNode$ChannelSet._accept(ASTNode.java:141)
-                // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                 // jsignalml.JavaClassGen.visit(JavaClassGen.java:1297)
                 // jsignalml.JavaClassGen.channelSetClass(JavaClassGen.java:1320)
                 // jsignalml.JavaClassGen$Metadata.registerContext(JavaClassGen.java:264)
-                // jsignalml.JavaClassGen.access$12(JavaClassGen.java:1809)
+                // jsignalml.JavaClassGen.access$000(JavaClassGen.java:39)
                 New4D.File_main.ChannelSet_data_test obj = get_data_test();
                 obj.createChannels();
             }
@@ -608,7 +608,7 @@ public class New4D
 
         public String id() {
             // jsignalml.ASTNode$FileHandle._accept(ASTNode.java:435)
-            // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+            // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
             // jsignalml.JavaClassGen.visit(JavaClassGen.java:820)
             // jsignalml.JavaClassGen.idMethod(JavaClassGen.java:525)
             return "main";
@@ -616,7 +616,7 @@ public class New4D
 
         public New4D.File_main._param_number_of_blocks get_number_of_blocks() {
             // jsignalml.ASTNode$ExprParam._accept(ASTNode.java:319)
-            // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+            // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
             // jsignalml.JavaClassGen.visit(JavaClassGen.java:457)
             // jsignalml.JavaClassGen.paramClass(JavaClassGen.java:514)
             // jsignalml.JavaClassGen.classCacheMethod(JavaClassGen.java:954)
@@ -629,7 +629,7 @@ public class New4D
 
         public New4D.File_main._param_data_filename get_data_filename() {
             // jsignalml.ASTNode$ExprParam._accept(ASTNode.java:319)
-            // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+            // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
             // jsignalml.JavaClassGen.visit(JavaClassGen.java:457)
             // jsignalml.JavaClassGen.paramClass(JavaClassGen.java:514)
             // jsignalml.JavaClassGen.classCacheMethod(JavaClassGen.java:954)
@@ -642,7 +642,7 @@ public class New4D
 
         public New4D.File_main._param_acquisition_mode get_acquisition_mode() {
             // jsignalml.ASTNode$TextParam._accept(ASTNode.java:289)
-            // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+            // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
             // jsignalml.JavaClassGen.visit(JavaClassGen.java:488)
             // jsignalml.JavaClassGen.paramClass(JavaClassGen.java:514)
             // jsignalml.JavaClassGen.classCacheMethod(JavaClassGen.java:954)
@@ -655,7 +655,7 @@ public class New4D
 
         public New4D.File_main._param_file_type get_file_type() {
             // jsignalml.ASTNode$TextParam._accept(ASTNode.java:289)
-            // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+            // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
             // jsignalml.JavaClassGen.visit(JavaClassGen.java:488)
             // jsignalml.JavaClassGen.paramClass(JavaClassGen.java:514)
             // jsignalml.JavaClassGen.classCacheMethod(JavaClassGen.java:954)
@@ -668,7 +668,7 @@ public class New4D
 
         public New4D.File_main._param_channel_name get_channel_name() {
             // jsignalml.ASTNode$ExprParam._accept(ASTNode.java:319)
-            // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+            // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
             // jsignalml.JavaClassGen.visit(JavaClassGen.java:457)
             // jsignalml.JavaClassGen.paramClass(JavaClassGen.java:514)
             // jsignalml.JavaClassGen.classCacheMethod(JavaClassGen.java:954)
@@ -681,7 +681,7 @@ public class New4D
 
         public New4D.File_main._param_channel_type_name get_channel_type_name() {
             // jsignalml.ASTNode$ExprParam._accept(ASTNode.java:319)
-            // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+            // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
             // jsignalml.JavaClassGen.visit(JavaClassGen.java:457)
             // jsignalml.JavaClassGen.paramClass(JavaClassGen.java:514)
             // jsignalml.JavaClassGen.classCacheMethod(JavaClassGen.java:954)
@@ -694,7 +694,7 @@ public class New4D
 
         public New4D.File_main._param_sample_period get_sample_period() {
             // jsignalml.ASTNode$TextParam._accept(ASTNode.java:289)
-            // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+            // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
             // jsignalml.JavaClassGen.visit(JavaClassGen.java:488)
             // jsignalml.JavaClassGen.paramClass(JavaClassGen.java:514)
             // jsignalml.JavaClassGen.classCacheMethod(JavaClassGen.java:954)
@@ -707,7 +707,7 @@ public class New4D
 
         public New4D.File_main._param_period_hex_float get_period_hex_float() {
             // jsignalml.ASTNode$TextParam._accept(ASTNode.java:289)
-            // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+            // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
             // jsignalml.JavaClassGen.visit(JavaClassGen.java:488)
             // jsignalml.JavaClassGen.paramClass(JavaClassGen.java:514)
             // jsignalml.JavaClassGen.classCacheMethod(JavaClassGen.java:954)
@@ -720,7 +720,7 @@ public class New4D
 
         public New4D.File_main._param_sampling_frequency get_sampling_frequency() {
             // jsignalml.ASTNode$TextParam._accept(ASTNode.java:289)
-            // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+            // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
             // jsignalml.JavaClassGen.visit(JavaClassGen.java:488)
             // jsignalml.JavaClassGen.paramClass(JavaClassGen.java:514)
             // jsignalml.JavaClassGen.classCacheMethod(JavaClassGen.java:954)
@@ -733,7 +733,7 @@ public class New4D
 
         public New4D.File_main._param_total_epochs get_total_epochs() {
             // jsignalml.ASTNode$TextParam._accept(ASTNode.java:289)
-            // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+            // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
             // jsignalml.JavaClassGen.visit(JavaClassGen.java:488)
             // jsignalml.JavaClassGen.paramClass(JavaClassGen.java:514)
             // jsignalml.JavaClassGen.classCacheMethod(JavaClassGen.java:954)
@@ -746,7 +746,7 @@ public class New4D
 
         public New4D.File_main._param_data_format get_data_format() {
             // jsignalml.ASTNode$TextParam._accept(ASTNode.java:289)
-            // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+            // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
             // jsignalml.JavaClassGen.visit(JavaClassGen.java:488)
             // jsignalml.JavaClassGen.paramClass(JavaClassGen.java:514)
             // jsignalml.JavaClassGen.classCacheMethod(JavaClassGen.java:954)
@@ -759,7 +759,7 @@ public class New4D
 
         public New4D.File_main._param_total_number_of_channels get_total_number_of_channels() {
             // jsignalml.ASTNode$TextParam._accept(ASTNode.java:289)
-            // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+            // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
             // jsignalml.JavaClassGen.visit(JavaClassGen.java:488)
             // jsignalml.JavaClassGen.paramClass(JavaClassGen.java:514)
             // jsignalml.JavaClassGen.classCacheMethod(JavaClassGen.java:954)
@@ -772,7 +772,7 @@ public class New4D
 
         public New4D.File_main._param_MEG_number_of_channels get_MEG_number_of_channels() {
             // jsignalml.ASTNode$TextParam._accept(ASTNode.java:289)
-            // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+            // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
             // jsignalml.JavaClassGen.visit(JavaClassGen.java:488)
             // jsignalml.JavaClassGen.paramClass(JavaClassGen.java:514)
             // jsignalml.JavaClassGen.classCacheMethod(JavaClassGen.java:954)
@@ -785,7 +785,7 @@ public class New4D
 
         public New4D.File_main._param_MEG_channel_group get_MEG_channel_group() {
             // jsignalml.ASTNode$TextParam._accept(ASTNode.java:289)
-            // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+            // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
             // jsignalml.JavaClassGen.visit(JavaClassGen.java:488)
             // jsignalml.JavaClassGen.paramClass(JavaClassGen.java:514)
             // jsignalml.JavaClassGen.classCacheMethod(JavaClassGen.java:954)
@@ -798,7 +798,7 @@ public class New4D
 
         public New4D.File_main._param_REFERENCE_number_of_channels get_REFERENCE_number_of_channels() {
             // jsignalml.ASTNode$TextParam._accept(ASTNode.java:289)
-            // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+            // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
             // jsignalml.JavaClassGen.visit(JavaClassGen.java:488)
             // jsignalml.JavaClassGen.paramClass(JavaClassGen.java:514)
             // jsignalml.JavaClassGen.classCacheMethod(JavaClassGen.java:954)
@@ -811,7 +811,7 @@ public class New4D
 
         public New4D.File_main._param_REFERENCE_channel_group get_REFERENCE_channel_group() {
             // jsignalml.ASTNode$TextParam._accept(ASTNode.java:289)
-            // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+            // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
             // jsignalml.JavaClassGen.visit(JavaClassGen.java:488)
             // jsignalml.JavaClassGen.paramClass(JavaClassGen.java:514)
             // jsignalml.JavaClassGen.classCacheMethod(JavaClassGen.java:954)
@@ -824,7 +824,7 @@ public class New4D
 
         public New4D.File_main._param_EEG_number_of_channels get_EEG_number_of_channels() {
             // jsignalml.ASTNode$TextParam._accept(ASTNode.java:289)
-            // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+            // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
             // jsignalml.JavaClassGen.visit(JavaClassGen.java:488)
             // jsignalml.JavaClassGen.paramClass(JavaClassGen.java:514)
             // jsignalml.JavaClassGen.classCacheMethod(JavaClassGen.java:954)
@@ -837,7 +837,7 @@ public class New4D
 
         public New4D.File_main._param_EEG_channel_group get_EEG_channel_group() {
             // jsignalml.ASTNode$TextParam._accept(ASTNode.java:289)
-            // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+            // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
             // jsignalml.JavaClassGen.visit(JavaClassGen.java:488)
             // jsignalml.JavaClassGen.paramClass(JavaClassGen.java:514)
             // jsignalml.JavaClassGen.classCacheMethod(JavaClassGen.java:954)
@@ -850,7 +850,7 @@ public class New4D
 
         public New4D.File_main._param_TRIGGER_number_of_channels get_TRIGGER_number_of_channels() {
             // jsignalml.ASTNode$TextParam._accept(ASTNode.java:289)
-            // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+            // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
             // jsignalml.JavaClassGen.visit(JavaClassGen.java:488)
             // jsignalml.JavaClassGen.paramClass(JavaClassGen.java:514)
             // jsignalml.JavaClassGen.classCacheMethod(JavaClassGen.java:954)
@@ -863,7 +863,7 @@ public class New4D
 
         public New4D.File_main._param_TRIGGER_channel_group get_TRIGGER_channel_group() {
             // jsignalml.ASTNode$TextParam._accept(ASTNode.java:289)
-            // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+            // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
             // jsignalml.JavaClassGen.visit(JavaClassGen.java:488)
             // jsignalml.JavaClassGen.paramClass(JavaClassGen.java:514)
             // jsignalml.JavaClassGen.classCacheMethod(JavaClassGen.java:954)
@@ -876,7 +876,7 @@ public class New4D
 
         public New4D.File_main._param_UTILITY_number_of_channels get_UTILITY_number_of_channels() {
             // jsignalml.ASTNode$TextParam._accept(ASTNode.java:289)
-            // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+            // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
             // jsignalml.JavaClassGen.visit(JavaClassGen.java:488)
             // jsignalml.JavaClassGen.paramClass(JavaClassGen.java:514)
             // jsignalml.JavaClassGen.classCacheMethod(JavaClassGen.java:954)
@@ -889,7 +889,7 @@ public class New4D
 
         public New4D.File_main._param_UTILITY_channel_group get_UTILITY_channel_group() {
             // jsignalml.ASTNode$TextParam._accept(ASTNode.java:289)
-            // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+            // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
             // jsignalml.JavaClassGen.visit(JavaClassGen.java:488)
             // jsignalml.JavaClassGen.paramClass(JavaClassGen.java:514)
             // jsignalml.JavaClassGen.classCacheMethod(JavaClassGen.java:954)
@@ -902,7 +902,7 @@ public class New4D
 
         public New4D.File_main._param_line_pattern_for_channel_sensitivities get_line_pattern_for_channel_sensitivities() {
             // jsignalml.ASTNode$ExprParam._accept(ASTNode.java:319)
-            // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+            // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
             // jsignalml.JavaClassGen.visit(JavaClassGen.java:457)
             // jsignalml.JavaClassGen.paramClass(JavaClassGen.java:514)
             // jsignalml.JavaClassGen.classCacheMethod(JavaClassGen.java:954)
@@ -915,7 +915,7 @@ public class New4D
 
         public New4D.File_main._param_line_number_with_channel_sensitivities get_line_number_with_channel_sensitivities() {
             // jsignalml.ASTNode$ExprParam._accept(ASTNode.java:319)
-            // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+            // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
             // jsignalml.JavaClassGen.visit(JavaClassGen.java:457)
             // jsignalml.JavaClassGen.paramClass(JavaClassGen.java:514)
             // jsignalml.JavaClassGen.classCacheMethod(JavaClassGen.java:954)
@@ -928,7 +928,7 @@ public class New4D
 
         public New4D.File_main._param_longest_epoch_nr get_longest_epoch_nr() {
             // jsignalml.ASTNode$TextParam._accept(ASTNode.java:289)
-            // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+            // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
             // jsignalml.JavaClassGen.visit(JavaClassGen.java:488)
             // jsignalml.JavaClassGen.paramClass(JavaClassGen.java:514)
             // jsignalml.JavaClassGen.classCacheMethod(JavaClassGen.java:954)
@@ -941,7 +941,7 @@ public class New4D
 
         public New4D.File_main._param_number_of_samples get_number_of_samples() {
             // jsignalml.ASTNode$TextParam._accept(ASTNode.java:289)
-            // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+            // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
             // jsignalml.JavaClassGen.visit(JavaClassGen.java:488)
             // jsignalml.JavaClassGen.paramClass(JavaClassGen.java:514)
             // jsignalml.JavaClassGen.classCacheMethod(JavaClassGen.java:954)
@@ -954,7 +954,7 @@ public class New4D
 
         public New4D.File_main._param_longest_epoch_duration get_longest_epoch_duration() {
             // jsignalml.ASTNode$TextParam._accept(ASTNode.java:289)
-            // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+            // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
             // jsignalml.JavaClassGen.visit(JavaClassGen.java:488)
             // jsignalml.JavaClassGen.paramClass(JavaClassGen.java:514)
             // jsignalml.JavaClassGen.classCacheMethod(JavaClassGen.java:954)
@@ -967,7 +967,7 @@ public class New4D
 
         public New4D.File_main._param_msi_format get_msi_format() {
             // jsignalml.ASTNode$ExprParam._accept(ASTNode.java:319)
-            // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+            // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
             // jsignalml.JavaClassGen.visit(JavaClassGen.java:457)
             // jsignalml.JavaClassGen.paramClass(JavaClassGen.java:514)
             // jsignalml.JavaClassGen.classCacheMethod(JavaClassGen.java:954)
@@ -980,7 +980,7 @@ public class New4D
 
         public New4D.File_main.If_size get_size() {
             // jsignalml.ASTNode$Conditional._accept(ASTNode.java:580)
-            // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+            // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
             // jsignalml.JavaClassGen.visit(JavaClassGen.java:1094)
             // jsignalml.JavaClassGen.conditionalClass(JavaClassGen.java:1115)
             // jsignalml.JavaClassGen.classCacheMethod(JavaClassGen.java:954)
@@ -993,7 +993,7 @@ public class New4D
 
         public New4D.File_main.If_format get_format() {
             // jsignalml.ASTNode$Conditional._accept(ASTNode.java:580)
-            // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+            // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
             // jsignalml.JavaClassGen.visit(JavaClassGen.java:1094)
             // jsignalml.JavaClassGen.conditionalClass(JavaClassGen.java:1115)
             // jsignalml.JavaClassGen.classCacheMethod(JavaClassGen.java:954)
@@ -1006,7 +1006,7 @@ public class New4D
 
         public New4D.File_main._param_sample_size get_sample_size() {
             // jsignalml.ASTNode$ExprParam._accept(ASTNode.java:319)
-            // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+            // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
             // jsignalml.JavaClassGen.visit(JavaClassGen.java:457)
             // jsignalml.JavaClassGen.paramClass(JavaClassGen.java:514)
             // jsignalml.JavaClassGen.classCacheMethod(JavaClassGen.java:954)
@@ -1019,7 +1019,7 @@ public class New4D
 
         public New4D.File_main._param_sample_format get_sample_format() {
             // jsignalml.ASTNode$ExprParam._accept(ASTNode.java:319)
-            // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+            // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
             // jsignalml.JavaClassGen.visit(JavaClassGen.java:457)
             // jsignalml.JavaClassGen.paramClass(JavaClassGen.java:514)
             // jsignalml.JavaClassGen.classCacheMethod(JavaClassGen.java:954)
@@ -1032,7 +1032,7 @@ public class New4D
 
         public New4D.File_main._param_sample_unit get_sample_unit() {
             // jsignalml.ASTNode$ExprParam._accept(ASTNode.java:319)
-            // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+            // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
             // jsignalml.JavaClassGen.visit(JavaClassGen.java:457)
             // jsignalml.JavaClassGen.paramClass(JavaClassGen.java:514)
             // jsignalml.JavaClassGen.classCacheMethod(JavaClassGen.java:954)
@@ -1045,7 +1045,7 @@ public class New4D
 
         public New4D.File_main.File_data_file get_data_file() {
             // jsignalml.ASTNode$FileHandle._accept(ASTNode.java:435)
-            // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+            // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
             // jsignalml.JavaClassGen.visit(JavaClassGen.java:819)
             // jsignalml.JavaClassGen.fileClass(JavaClassGen.java:893)
             // jsignalml.JavaClassGen.classCacheMethod(JavaClassGen.java:954)
@@ -1058,7 +1058,7 @@ public class New4D
 
         public New4D.File_main.ChannelSet_data_test get_data_test() {
             // jsignalml.ASTNode$ChannelSet._accept(ASTNode.java:141)
-            // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+            // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
             // jsignalml.JavaClassGen.visit(JavaClassGen.java:1297)
             // jsignalml.JavaClassGen.channelSetClass(JavaClassGen.java:1317)
             // jsignalml.JavaClassGen.classCacheMethod(JavaClassGen.java:954)
@@ -1073,11 +1073,11 @@ public class New4D
         /**
          * 
          * jsignalml.ASTNode$ChannelSet._accept(ASTNode.java:141)
-         * jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+         * jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
          * jsignalml.JavaClassGen.visit(JavaClassGen.java:1297)
          * jsignalml.JavaClassGen.channelSetClass(JavaClassGen.java:1312)
          * jsignalml.ASTNode$ChannelSet._accept(ASTNode.java:141)
-         * jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+         * jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
          * jsignalml.JavaClassGen.visit(JavaClassGen.java:1298)
          * 
          */
@@ -1089,20 +1089,20 @@ public class New4D
 
             public void createParams() {
                 // jsignalml.ASTNode$ChannelSet._accept(ASTNode.java:141)
-                // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                 // jsignalml.JavaClassGen.visit(JavaClassGen.java:1297)
                 // jsignalml.JavaClassGen.channelSetClass(JavaClassGen.java:1314)
                 // jsignalml.JavaClassGen$Metadata.<init>(JavaClassGen.java:227)
                 // jsignalml.JavaClassGen$Metadata.<init>(JavaClassGen.java:204)
-                // jsignalml.JavaClassGen.access$12(JavaClassGen.java:1809)
+                // jsignalml.JavaClassGen.access$000(JavaClassGen.java:39)
                 log.debug("ChannelSet_data_test.createParams()");
                 {
                     // jsignalml.ASTNode$ForLoop._accept(ASTNode.java:526)
-                    // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                    // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                     // jsignalml.JavaClassGen.visit(JavaClassGen.java:999)
                     // jsignalml.JavaClassGen.outerLoopClass(JavaClassGen.java:1028)
                     // jsignalml.JavaClassGen$Metadata.registerContext(JavaClassGen.java:257)
-                    // jsignalml.JavaClassGen.access$12(JavaClassGen.java:1809)
+                    // jsignalml.JavaClassGen.access$000(JavaClassGen.java:39)
                     New4D.File_main.ChannelSet_data_test.Loop_channels obj = get_channels();
                     register("channels", obj);
                     obj.createParams();
@@ -1111,20 +1111,20 @@ public class New4D
 
             public void createChannels() {
                 // jsignalml.ASTNode$ChannelSet._accept(ASTNode.java:141)
-                // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                 // jsignalml.JavaClassGen.visit(JavaClassGen.java:1297)
                 // jsignalml.JavaClassGen.channelSetClass(JavaClassGen.java:1314)
                 // jsignalml.JavaClassGen$Metadata.<init>(JavaClassGen.java:227)
                 // jsignalml.JavaClassGen$Metadata.<init>(JavaClassGen.java:216)
-                // jsignalml.JavaClassGen.access$12(JavaClassGen.java:1809)
+                // jsignalml.JavaClassGen.access$000(JavaClassGen.java:39)
                 log.debug("ChannelSet_data_test.createChannels()");
                 {
                     // jsignalml.ASTNode$ForLoop._accept(ASTNode.java:526)
-                    // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                    // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                     // jsignalml.JavaClassGen.visit(JavaClassGen.java:999)
                     // jsignalml.JavaClassGen.outerLoopClass(JavaClassGen.java:1028)
                     // jsignalml.JavaClassGen$Metadata.registerContext(JavaClassGen.java:264)
-                    // jsignalml.JavaClassGen.access$12(JavaClassGen.java:1809)
+                    // jsignalml.JavaClassGen.access$000(JavaClassGen.java:39)
                     New4D.File_main.ChannelSet_data_test.Loop_channels obj = get_channels();
                     obj.createChannels();
                     obj.createLoopChannels();
@@ -1133,7 +1133,7 @@ public class New4D
 
             public String id() {
                 // jsignalml.ASTNode$ChannelSet._accept(ASTNode.java:141)
-                // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                 // jsignalml.JavaClassGen.visit(JavaClassGen.java:1299)
                 // jsignalml.JavaClassGen.idMethod(JavaClassGen.java:525)
                 return "data_test";
@@ -1141,7 +1141,7 @@ public class New4D
 
             public New4D.File_main.ChannelSet_data_test.Loop_channels get_channels() {
                 // jsignalml.ASTNode$ForLoop._accept(ASTNode.java:526)
-                // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                 // jsignalml.JavaClassGen.visit(JavaClassGen.java:999)
                 // jsignalml.JavaClassGen.outerLoopClass(JavaClassGen.java:1024)
                 // jsignalml.JavaClassGen.classCacheMethod(JavaClassGen.java:954)
@@ -1151,7 +1151,7 @@ public class New4D
                 }
                 return get_channels;
                 // jsignalml.ASTNode$ForLoop._accept(ASTNode.java:526)
-                // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                 // jsignalml.JavaClassGen.visit(JavaClassGen.java:999)
                 // jsignalml.JavaClassGen.outerLoopClass(JavaClassGen.java:1025)
             }
@@ -1160,7 +1160,7 @@ public class New4D
             /**
              * 
              * jsignalml.ASTNode$ForLoop._accept(ASTNode.java:526)
-             * jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+             * jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
              * jsignalml.JavaClassGen.visit(JavaClassGen.java:1000)
              * 
              */
@@ -1171,29 +1171,29 @@ public class New4D
 
                 public void createParams() {
                     // jsignalml.ASTNode$ForLoop._accept(ASTNode.java:526)
-                    // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                    // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                     // jsignalml.JavaClassGen.visit(JavaClassGen.java:999)
                     // jsignalml.JavaClassGen.outerLoopClass(JavaClassGen.java:1021)
                     // jsignalml.JavaClassGen$Metadata.<init>(JavaClassGen.java:227)
                     // jsignalml.JavaClassGen$Metadata.<init>(JavaClassGen.java:204)
-                    // jsignalml.JavaClassGen.access$12(JavaClassGen.java:1809)
+                    // jsignalml.JavaClassGen.access$000(JavaClassGen.java:39)
                     log.debug("Loop_channels.createParams()");
                 }
 
                 public void createChannels() {
                     // jsignalml.ASTNode$ForLoop._accept(ASTNode.java:526)
-                    // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                    // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                     // jsignalml.JavaClassGen.visit(JavaClassGen.java:999)
                     // jsignalml.JavaClassGen.outerLoopClass(JavaClassGen.java:1021)
                     // jsignalml.JavaClassGen$Metadata.<init>(JavaClassGen.java:227)
                     // jsignalml.JavaClassGen$Metadata.<init>(JavaClassGen.java:216)
-                    // jsignalml.JavaClassGen.access$12(JavaClassGen.java:1809)
+                    // jsignalml.JavaClassGen.access$000(JavaClassGen.java:39)
                     log.debug("Loop_channels.createChannels()");
                 }
 
                 public String id() {
                     // jsignalml.ASTNode$ForLoop._accept(ASTNode.java:526)
-                    // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                    // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                     // jsignalml.JavaClassGen.visit(JavaClassGen.java:1001)
                     // jsignalml.JavaClassGen.idMethod(JavaClassGen.java:525)
                     return "channels";
@@ -1201,7 +1201,7 @@ public class New4D
 
                 protected TypeList getSequence() {
                     // jsignalml.ASTNode$ForLoop._accept(ASTNode.java:526)
-                    // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                    // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                     // jsignalml.JavaClassGen.visit(JavaClassGen.java:1002)
                     // jsignalml.JavaClassGen.sequenceMethod(JavaClassGen.java:1037)
                     TypeList range = ((TypeList) Builtins.range().call(get_total_number_of_channels().get()));
@@ -1210,7 +1210,7 @@ public class New4D
 
                 protected New4D.File_main.ChannelSet_data_test.Loop_channels.channels_inner createLoop(Type index) {
                     // jsignalml.ASTNode$Itername._accept(ASTNode.java:498)
-                    // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                    // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                     // jsignalml.JavaClassGen.visit(JavaClassGen.java:978)
                     // jsignalml.JavaClassGen.indexClass(JavaClassGen.java:1265)
                     // jsignalml.JavaClassGen.createLoopMethod(JavaClassGen.java:1054)
@@ -1221,11 +1221,11 @@ public class New4D
                 /**
                  * 
                  * jsignalml.ASTNode$ForLoop._accept(ASTNode.java:526)
-                 * jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                 * jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                  * jsignalml.JavaClassGen.visit(JavaClassGen.java:1004)
                  * jsignalml.JavaClassGen.loopClass(JavaClassGen.java:1073)
                  * jsignalml.ASTNode$ForLoop._accept(ASTNode.java:526)
-                 * jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                 * jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                  * jsignalml.JavaClassGen.visit(JavaClassGen.java:1005)
                  * parent paramClass=_param_line_nr_channel_sensitivities
                  * parent paramClass=_param_channel_group
@@ -1242,7 +1242,7 @@ public class New4D
 
                     channels_inner(TypeInt line_nr) {
                         // jsignalml.ASTNode$Itername._accept(ASTNode.java:498)
-                        // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                        // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                         // jsignalml.JavaClassGen.visit(JavaClassGen.java:978)
                         // jsignalml.JavaClassGen.indexClass(JavaClassGen.java:1263)
                         // jsignalml.JavaClassGen.loopClassConstructor(JavaClassGen.java:1283)
@@ -1251,41 +1251,41 @@ public class New4D
 
                     public void createParams() {
                         // jsignalml.ASTNode$ForLoop._accept(ASTNode.java:526)
-                        // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                        // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                         // jsignalml.JavaClassGen.visit(JavaClassGen.java:1004)
                         // jsignalml.JavaClassGen.loopClass(JavaClassGen.java:1075)
                         // jsignalml.JavaClassGen$Metadata.<init>(JavaClassGen.java:227)
                         // jsignalml.JavaClassGen$Metadata.<init>(JavaClassGen.java:204)
-                        // jsignalml.JavaClassGen.access$12(JavaClassGen.java:1809)
+                        // jsignalml.JavaClassGen.access$000(JavaClassGen.java:39)
                         log.debug("channels_inner.createParams()");
                         // jsignalml.ASTNode$Itername._accept(ASTNode.java:498)
-                        // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                        // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                         // jsignalml.JavaClassGen.visit(JavaClassGen.java:979)
                         // jsignalml.JavaClassGen.iternameGetter(JavaClassGen.java:990)
                         // jsignalml.JavaClassGen$Metadata.registerParam(JavaClassGen.java:234)
-                        // jsignalml.JavaClassGen.access$12(JavaClassGen.java:1809)
+                        // jsignalml.JavaClassGen.access$000(JavaClassGen.java:39)
                         register("line_nr", this.index);
                         // jsignalml.ASTNode$ExprParam._accept(ASTNode.java:319)
-                        // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                        // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                         // jsignalml.JavaClassGen.visit(JavaClassGen.java:457)
                         // jsignalml.JavaClassGen.paramClass(JavaClassGen.java:517)
                         // jsignalml.JavaClassGen$Metadata.registerParam(JavaClassGen.java:234)
-                        // jsignalml.JavaClassGen.access$12(JavaClassGen.java:1809)
+                        // jsignalml.JavaClassGen.access$000(JavaClassGen.java:39)
                         register("line_nr_channel_sensitivities", get_line_nr_channel_sensitivities());
                         // jsignalml.ASTNode$TextParam._accept(ASTNode.java:289)
-                        // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                        // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                         // jsignalml.JavaClassGen.visit(JavaClassGen.java:488)
                         // jsignalml.JavaClassGen.paramClass(JavaClassGen.java:517)
                         // jsignalml.JavaClassGen$Metadata.registerParam(JavaClassGen.java:234)
-                        // jsignalml.JavaClassGen.access$12(JavaClassGen.java:1809)
+                        // jsignalml.JavaClassGen.access$000(JavaClassGen.java:39)
                         register("channel_group", get_channel_group());
                         {
                             // jsignalml.ASTNode$Conditional._accept(ASTNode.java:580)
-                            // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                            // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                             // jsignalml.JavaClassGen.visit(JavaClassGen.java:1094)
                             // jsignalml.JavaClassGen.conditionalClass(JavaClassGen.java:1123)
                             // jsignalml.JavaClassGen$Metadata.registerContext(JavaClassGen.java:257)
-                            // jsignalml.JavaClassGen.access$12(JavaClassGen.java:1809)
+                            // jsignalml.JavaClassGen.access$000(JavaClassGen.java:39)
                             New4D.File_main.ChannelSet_data_test.Loop_channels.channels_inner.If_gen_id_6 obj = get_gen_id_6();
                             register("gen_id_6", obj);
                             obj.createParams();
@@ -1294,20 +1294,20 @@ public class New4D
 
                     public void createChannels() {
                         // jsignalml.ASTNode$ForLoop._accept(ASTNode.java:526)
-                        // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                        // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                         // jsignalml.JavaClassGen.visit(JavaClassGen.java:1004)
                         // jsignalml.JavaClassGen.loopClass(JavaClassGen.java:1075)
                         // jsignalml.JavaClassGen$Metadata.<init>(JavaClassGen.java:227)
                         // jsignalml.JavaClassGen$Metadata.<init>(JavaClassGen.java:216)
-                        // jsignalml.JavaClassGen.access$12(JavaClassGen.java:1809)
+                        // jsignalml.JavaClassGen.access$000(JavaClassGen.java:39)
                         log.debug("channels_inner.createChannels()");
                         {
                             // jsignalml.ASTNode$Conditional._accept(ASTNode.java:580)
-                            // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                            // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                             // jsignalml.JavaClassGen.visit(JavaClassGen.java:1094)
                             // jsignalml.JavaClassGen.conditionalClass(JavaClassGen.java:1123)
                             // jsignalml.JavaClassGen$Metadata.registerContext(JavaClassGen.java:264)
-                            // jsignalml.JavaClassGen.access$12(JavaClassGen.java:1809)
+                            // jsignalml.JavaClassGen.access$000(JavaClassGen.java:39)
                             New4D.File_main.ChannelSet_data_test.Loop_channels.channels_inner.If_gen_id_6 obj = get_gen_id_6();
                             obj.createChannels();
                         }
@@ -1315,7 +1315,7 @@ public class New4D
 
                     public String id() {
                         // jsignalml.ASTNode$ForLoop._accept(ASTNode.java:526)
-                        // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                        // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                         // jsignalml.JavaClassGen.visit(JavaClassGen.java:1006)
                         // jsignalml.JavaClassGen.idMethod(JavaClassGen.java:525)
                         return "channels";
@@ -1323,7 +1323,7 @@ public class New4D
 
                     public New4D.File_main.ChannelSet_data_test.Loop_channels.channels_inner.line_nr get_line_nr() {
                         // jsignalml.ASTNode$Itername._accept(ASTNode.java:498)
-                        // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                        // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                         // jsignalml.JavaClassGen.visit(JavaClassGen.java:979)
                         // jsignalml.JavaClassGen.iternameGetter(JavaClassGen.java:986)
                         return this.index;
@@ -1331,7 +1331,7 @@ public class New4D
 
                     public New4D.File_main.ChannelSet_data_test.Loop_channels.channels_inner._param_line_nr_channel_sensitivities get_line_nr_channel_sensitivities() {
                         // jsignalml.ASTNode$ExprParam._accept(ASTNode.java:319)
-                        // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                        // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                         // jsignalml.JavaClassGen.visit(JavaClassGen.java:457)
                         // jsignalml.JavaClassGen.paramClass(JavaClassGen.java:514)
                         // jsignalml.JavaClassGen.classCacheMethod(JavaClassGen.java:954)
@@ -1344,7 +1344,7 @@ public class New4D
 
                     public New4D.File_main.ChannelSet_data_test.Loop_channels.channels_inner._param_channel_group get_channel_group() {
                         // jsignalml.ASTNode$TextParam._accept(ASTNode.java:289)
-                        // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                        // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                         // jsignalml.JavaClassGen.visit(JavaClassGen.java:488)
                         // jsignalml.JavaClassGen.paramClass(JavaClassGen.java:514)
                         // jsignalml.JavaClassGen.classCacheMethod(JavaClassGen.java:954)
@@ -1357,7 +1357,7 @@ public class New4D
 
                     public New4D.File_main.ChannelSet_data_test.Loop_channels.channels_inner.If_gen_id_6 get_gen_id_6() {
                         // jsignalml.ASTNode$Conditional._accept(ASTNode.java:580)
-                        // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                        // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                         // jsignalml.JavaClassGen.visit(JavaClassGen.java:1094)
                         // jsignalml.JavaClassGen.conditionalClass(JavaClassGen.java:1115)
                         // jsignalml.JavaClassGen.classCacheMethod(JavaClassGen.java:954)
@@ -1372,11 +1372,11 @@ public class New4D
                     /**
                      * 
                      * jsignalml.ASTNode$Conditional._accept(ASTNode.java:580)
-                     * jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                     * jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                      * jsignalml.JavaClassGen.visit(JavaClassGen.java:1094)
                      * jsignalml.JavaClassGen.conditionalClass(JavaClassGen.java:1110)
                      * jsignalml.ASTNode$Conditional._accept(ASTNode.java:580)
-                     * jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                     * jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                      * jsignalml.JavaClassGen.visit(JavaClassGen.java:1095)
                      * parent paramClass=_param_channel_name
                      * parent paramClass=_param_channel_type_name
@@ -1398,55 +1398,55 @@ public class New4D
 
                         public void createParamsIf() {
                             // jsignalml.ASTNode$Conditional._accept(ASTNode.java:580)
-                            // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                            // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                             // jsignalml.JavaClassGen.visit(JavaClassGen.java:1094)
                             // jsignalml.JavaClassGen.conditionalClass(JavaClassGen.java:1112)
                             // jsignalml.JavaClassGen$MetadataIfBranch.<init>(JavaClassGen.java:296)
                             // jsignalml.JavaClassGen$Metadata.<init>(JavaClassGen.java:204)
-                            // jsignalml.JavaClassGen.access$12(JavaClassGen.java:1809)
+                            // jsignalml.JavaClassGen.access$000(JavaClassGen.java:39)
                             log.debug("If_gen_id_6.createParamsIf()");
                             // jsignalml.ASTNode$TextParam._accept(ASTNode.java:289)
-                            // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                            // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                             // jsignalml.JavaClassGen.visit(JavaClassGen.java:488)
                             // jsignalml.JavaClassGen.paramClass(JavaClassGen.java:517)
                             // jsignalml.JavaClassGen$Metadata.registerParam(JavaClassGen.java:234)
-                            // jsignalml.JavaClassGen.access$12(JavaClassGen.java:1809)
+                            // jsignalml.JavaClassGen.access$000(JavaClassGen.java:39)
                             register("channel_name", get_channel_name());
                             // jsignalml.ASTNode$ExprParam._accept(ASTNode.java:319)
-                            // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                            // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                             // jsignalml.JavaClassGen.visit(JavaClassGen.java:457)
                             // jsignalml.JavaClassGen.paramClass(JavaClassGen.java:517)
                             // jsignalml.JavaClassGen$Metadata.registerParam(JavaClassGen.java:234)
-                            // jsignalml.JavaClassGen.access$12(JavaClassGen.java:1809)
+                            // jsignalml.JavaClassGen.access$000(JavaClassGen.java:39)
                             register("channel_type_name", get_channel_type_name());
                             // jsignalml.ASTNode$TextParam._accept(ASTNode.java:289)
-                            // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                            // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                             // jsignalml.JavaClassGen.visit(JavaClassGen.java:488)
                             // jsignalml.JavaClassGen.paramClass(JavaClassGen.java:517)
                             // jsignalml.JavaClassGen$Metadata.registerParam(JavaClassGen.java:234)
-                            // jsignalml.JavaClassGen.access$12(JavaClassGen.java:1809)
+                            // jsignalml.JavaClassGen.access$000(JavaClassGen.java:39)
                             register("channel_sensitivity", get_channel_sensitivity());
                             // jsignalml.ASTNode$TextParam._accept(ASTNode.java:289)
-                            // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                            // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                             // jsignalml.JavaClassGen.visit(JavaClassGen.java:488)
                             // jsignalml.JavaClassGen.paramClass(JavaClassGen.java:517)
                             // jsignalml.JavaClassGen$Metadata.registerParam(JavaClassGen.java:234)
-                            // jsignalml.JavaClassGen.access$12(JavaClassGen.java:1809)
+                            // jsignalml.JavaClassGen.access$000(JavaClassGen.java:39)
                             register("channel_sensitivity_unit", get_channel_sensitivity_unit());
                             // jsignalml.ASTNode$ExprParam._accept(ASTNode.java:319)
-                            // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                            // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                             // jsignalml.JavaClassGen.visit(JavaClassGen.java:457)
                             // jsignalml.JavaClassGen.paramClass(JavaClassGen.java:517)
                             // jsignalml.JavaClassGen$Metadata.registerParam(JavaClassGen.java:234)
-                            // jsignalml.JavaClassGen.access$12(JavaClassGen.java:1809)
+                            // jsignalml.JavaClassGen.access$000(JavaClassGen.java:39)
                             register("calibration_gain", get_calibration_gain());
                             {
                                 // jsignalml.ASTNode$Channel._accept(ASTNode.java:189)
-                                // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                                // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                                 // jsignalml.JavaClassGen.visit(JavaClassGen.java:1331)
                                 // jsignalml.JavaClassGen.channelClass(JavaClassGen.java:1369)
                                 // jsignalml.JavaClassGen$Metadata.registerContext(JavaClassGen.java:257)
-                                // jsignalml.JavaClassGen.access$12(JavaClassGen.java:1809)
+                                // jsignalml.JavaClassGen.access$000(JavaClassGen.java:39)
                                 New4D.File_main.ChannelSet_data_test.Loop_channels.channels_inner.If_gen_id_6 .Channel_channel obj = get_channel();
                                 register("channel", obj);
                                 obj.createParams();
@@ -1455,20 +1455,20 @@ public class New4D
 
                         public void createChannelsIf() {
                             // jsignalml.ASTNode$Conditional._accept(ASTNode.java:580)
-                            // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                            // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                             // jsignalml.JavaClassGen.visit(JavaClassGen.java:1094)
                             // jsignalml.JavaClassGen.conditionalClass(JavaClassGen.java:1112)
                             // jsignalml.JavaClassGen$MetadataIfBranch.<init>(JavaClassGen.java:296)
                             // jsignalml.JavaClassGen$Metadata.<init>(JavaClassGen.java:216)
-                            // jsignalml.JavaClassGen.access$12(JavaClassGen.java:1809)
+                            // jsignalml.JavaClassGen.access$000(JavaClassGen.java:39)
                             log.debug("If_gen_id_6.createChannelsIf()");
                             {
                                 // jsignalml.ASTNode$Channel._accept(ASTNode.java:189)
-                                // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                                // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                                 // jsignalml.JavaClassGen.visit(JavaClassGen.java:1331)
                                 // jsignalml.JavaClassGen.channelClass(JavaClassGen.java:1369)
                                 // jsignalml.JavaClassGen$Metadata.registerContext(JavaClassGen.java:264)
-                                // jsignalml.JavaClassGen.access$12(JavaClassGen.java:1809)
+                                // jsignalml.JavaClassGen.access$000(JavaClassGen.java:39)
                                 New4D.File_main.ChannelSet_data_test.Loop_channels.channels_inner.If_gen_id_6 .Channel_channel obj = get_channel();
                                 obj.createChannels();
                             }
@@ -1477,45 +1477,45 @@ public class New4D
 
                         public void createParamsElseIf() {
                             // jsignalml.ASTNode$Conditional._accept(ASTNode.java:580)
-                            // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                            // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                             // jsignalml.JavaClassGen.visit(JavaClassGen.java:1094)
                             // jsignalml.JavaClassGen.conditionalClass(JavaClassGen.java:1112)
                             // jsignalml.JavaClassGen$MetadataIfBranch.<init>(JavaClassGen.java:297)
                             // jsignalml.JavaClassGen$Metadata.<init>(JavaClassGen.java:204)
-                            // jsignalml.JavaClassGen.access$12(JavaClassGen.java:1809)
+                            // jsignalml.JavaClassGen.access$000(JavaClassGen.java:39)
                             log.debug("If_gen_id_6.createParamsElseIf()");
                         }
 
                         public void createChannelsElseIf() {
                             // jsignalml.ASTNode$Conditional._accept(ASTNode.java:580)
-                            // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                            // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                             // jsignalml.JavaClassGen.visit(JavaClassGen.java:1094)
                             // jsignalml.JavaClassGen.conditionalClass(JavaClassGen.java:1112)
                             // jsignalml.JavaClassGen$MetadataIfBranch.<init>(JavaClassGen.java:297)
                             // jsignalml.JavaClassGen$Metadata.<init>(JavaClassGen.java:216)
-                            // jsignalml.JavaClassGen.access$12(JavaClassGen.java:1809)
+                            // jsignalml.JavaClassGen.access$000(JavaClassGen.java:39)
                             log.debug("If_gen_id_6.createChannelsElseIf()");
                         }
 
                         public void createParamsElse() {
                             // jsignalml.ASTNode$Conditional._accept(ASTNode.java:580)
-                            // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                            // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                             // jsignalml.JavaClassGen.visit(JavaClassGen.java:1094)
                             // jsignalml.JavaClassGen.conditionalClass(JavaClassGen.java:1112)
                             // jsignalml.JavaClassGen$MetadataIfBranch.<init>(JavaClassGen.java:298)
                             // jsignalml.JavaClassGen$Metadata.<init>(JavaClassGen.java:204)
-                            // jsignalml.JavaClassGen.access$12(JavaClassGen.java:1809)
+                            // jsignalml.JavaClassGen.access$000(JavaClassGen.java:39)
                             log.debug("If_gen_id_6.createParamsElse()");
                         }
 
                         public void createChannelsElse() {
                             // jsignalml.ASTNode$Conditional._accept(ASTNode.java:580)
-                            // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                            // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                             // jsignalml.JavaClassGen.visit(JavaClassGen.java:1094)
                             // jsignalml.JavaClassGen.conditionalClass(JavaClassGen.java:1112)
                             // jsignalml.JavaClassGen$MetadataIfBranch.<init>(JavaClassGen.java:298)
                             // jsignalml.JavaClassGen$Metadata.<init>(JavaClassGen.java:216)
-                            // jsignalml.JavaClassGen.access$12(JavaClassGen.java:1809)
+                            // jsignalml.JavaClassGen.access$000(JavaClassGen.java:39)
                             log.debug("If_gen_id_6.createChannelsElse()");
                         }
 
@@ -1525,7 +1525,7 @@ public class New4D
 
                         public String id() {
                             // jsignalml.ASTNode$Conditional._accept(ASTNode.java:580)
-                            // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                            // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                             // jsignalml.JavaClassGen.visit(JavaClassGen.java:1096)
                             // jsignalml.JavaClassGen.idMethod(JavaClassGen.java:525)
                             return "gen_id_6";
@@ -1533,7 +1533,7 @@ public class New4D
 
                         public Type getCondition() {
                             // jsignalml.ASTNode$Conditional._accept(ASTNode.java:580)
-                            // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                            // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                             // jsignalml.JavaClassGen.visit(JavaClassGen.java:1097)
                             // jsignalml.JavaClassGen.conditionMethod(JavaClassGen.java:1136)
                             Type test = ((get_channel_group().get().compareTo(get_MEG_channel_group().get()) == 0)?TypeInt.True:TypeInt.False);
@@ -1542,7 +1542,7 @@ public class New4D
 
                         public New4D.File_main.ChannelSet_data_test.Loop_channels.channels_inner.If_gen_id_6 ._param_channel_name get_channel_name() {
                             // jsignalml.ASTNode$TextParam._accept(ASTNode.java:289)
-                            // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                            // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                             // jsignalml.JavaClassGen.visit(JavaClassGen.java:488)
                             // jsignalml.JavaClassGen.paramClass(JavaClassGen.java:514)
                             // jsignalml.JavaClassGen.classCacheMethod(JavaClassGen.java:954)
@@ -1555,7 +1555,7 @@ public class New4D
 
                         public New4D.File_main.ChannelSet_data_test.Loop_channels.channels_inner.If_gen_id_6 ._param_channel_type_name get_channel_type_name() {
                             // jsignalml.ASTNode$ExprParam._accept(ASTNode.java:319)
-                            // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                            // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                             // jsignalml.JavaClassGen.visit(JavaClassGen.java:457)
                             // jsignalml.JavaClassGen.paramClass(JavaClassGen.java:514)
                             // jsignalml.JavaClassGen.classCacheMethod(JavaClassGen.java:954)
@@ -1568,7 +1568,7 @@ public class New4D
 
                         public New4D.File_main.ChannelSet_data_test.Loop_channels.channels_inner.If_gen_id_6 ._param_channel_sensitivity get_channel_sensitivity() {
                             // jsignalml.ASTNode$TextParam._accept(ASTNode.java:289)
-                            // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                            // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                             // jsignalml.JavaClassGen.visit(JavaClassGen.java:488)
                             // jsignalml.JavaClassGen.paramClass(JavaClassGen.java:514)
                             // jsignalml.JavaClassGen.classCacheMethod(JavaClassGen.java:954)
@@ -1581,7 +1581,7 @@ public class New4D
 
                         public New4D.File_main.ChannelSet_data_test.Loop_channels.channels_inner.If_gen_id_6 ._param_channel_sensitivity_unit get_channel_sensitivity_unit() {
                             // jsignalml.ASTNode$TextParam._accept(ASTNode.java:289)
-                            // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                            // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                             // jsignalml.JavaClassGen.visit(JavaClassGen.java:488)
                             // jsignalml.JavaClassGen.paramClass(JavaClassGen.java:514)
                             // jsignalml.JavaClassGen.classCacheMethod(JavaClassGen.java:954)
@@ -1594,7 +1594,7 @@ public class New4D
 
                         public New4D.File_main.ChannelSet_data_test.Loop_channels.channels_inner.If_gen_id_6 ._param_calibration_gain get_calibration_gain() {
                             // jsignalml.ASTNode$ExprParam._accept(ASTNode.java:319)
-                            // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                            // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                             // jsignalml.JavaClassGen.visit(JavaClassGen.java:457)
                             // jsignalml.JavaClassGen.paramClass(JavaClassGen.java:514)
                             // jsignalml.JavaClassGen.classCacheMethod(JavaClassGen.java:954)
@@ -1607,7 +1607,7 @@ public class New4D
 
                         public New4D.File_main.ChannelSet_data_test.Loop_channels.channels_inner.If_gen_id_6 .Channel_channel get_channel() {
                             // jsignalml.ASTNode$Channel._accept(ASTNode.java:189)
-                            // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                            // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                             // jsignalml.JavaClassGen.visit(JavaClassGen.java:1331)
                             // jsignalml.JavaClassGen.channelClass(JavaClassGen.java:1366)
                             // jsignalml.JavaClassGen.classCacheMethod(JavaClassGen.java:954)
@@ -1622,11 +1622,11 @@ public class New4D
                         /**
                          * 
                          * jsignalml.ASTNode$Channel._accept(ASTNode.java:189)
-                         * jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                         * jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                          * jsignalml.JavaClassGen.visit(JavaClassGen.java:1331)
                          * jsignalml.JavaClassGen.channelClass(JavaClassGen.java:1361)
                          * jsignalml.ASTNode$Channel._accept(ASTNode.java:189)
-                         * jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                         * jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                          * jsignalml.JavaClassGen.visit(JavaClassGen.java:1332)
                          * parent paramClass=_param_mapping
                          * 
@@ -1639,36 +1639,36 @@ public class New4D
 
                             public void createParams() {
                                 // jsignalml.ASTNode$Channel._accept(ASTNode.java:189)
-                                // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                                // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                                 // jsignalml.JavaClassGen.visit(JavaClassGen.java:1331)
                                 // jsignalml.JavaClassGen.channelClass(JavaClassGen.java:1363)
                                 // jsignalml.JavaClassGen$Metadata.<init>(JavaClassGen.java:227)
                                 // jsignalml.JavaClassGen$Metadata.<init>(JavaClassGen.java:204)
-                                // jsignalml.JavaClassGen.access$12(JavaClassGen.java:1809)
+                                // jsignalml.JavaClassGen.access$000(JavaClassGen.java:39)
                                 log.debug("Channel_channel.createParams()");
                                 // jsignalml.ASTNode$ExprParam._accept(ASTNode.java:319)
-                                // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                                // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                                 // jsignalml.JavaClassGen.visit(JavaClassGen.java:457)
                                 // jsignalml.JavaClassGen.paramClass(JavaClassGen.java:517)
                                 // jsignalml.JavaClassGen$Metadata.registerParam(JavaClassGen.java:234)
-                                // jsignalml.JavaClassGen.access$12(JavaClassGen.java:1809)
+                                // jsignalml.JavaClassGen.access$000(JavaClassGen.java:39)
                                 register("mapping", get_mapping());
                             }
 
                             public void createChannels() {
                                 // jsignalml.ASTNode$Channel._accept(ASTNode.java:189)
-                                // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                                // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                                 // jsignalml.JavaClassGen.visit(JavaClassGen.java:1331)
                                 // jsignalml.JavaClassGen.channelClass(JavaClassGen.java:1363)
                                 // jsignalml.JavaClassGen$Metadata.<init>(JavaClassGen.java:227)
                                 // jsignalml.JavaClassGen$Metadata.<init>(JavaClassGen.java:216)
-                                // jsignalml.JavaClassGen.access$12(JavaClassGen.java:1809)
+                                // jsignalml.JavaClassGen.access$000(JavaClassGen.java:39)
                                 log.debug("Channel_channel.createChannels()");
                             }
 
                             public String id() {
                                 // jsignalml.ASTNode$Channel._accept(ASTNode.java:189)
-                                // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                                // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                                 // jsignalml.JavaClassGen.visit(JavaClassGen.java:1334)
                                 // jsignalml.JavaClassGen.idMethod(JavaClassGen.java:525)
                                 return "channel";
@@ -1676,7 +1676,7 @@ public class New4D
 
                             protected MyBuffer _buffer() {
                                 // jsignalml.ASTNode$Channel._accept(ASTNode.java:189)
-                                // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                                // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                                 // jsignalml.JavaClassGen.visit(JavaClassGen.java:1335)
                                 // jsignalml.JavaClassGen.underBufferMethod(JavaClassGen.java:1378)
                                 return buffer();
@@ -1684,7 +1684,7 @@ public class New4D
 
                             public TypeString getSampleFormat() {
                                 // jsignalml.ASTNode$Channel._accept(ASTNode.java:189)
-                                // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                                // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                                 // jsignalml.JavaClassGen.visit(JavaClassGen.java:1336)
                                 // jsignalml.JavaClassGen.sampleFormatMethod(JavaClassGen.java:1390)
                                 // node.format.type=TypeString
@@ -1694,7 +1694,7 @@ public class New4D
 
                             public TypeInt mapSample(long sample) {
                                 // jsignalml.ASTNode$Channel._accept(ASTNode.java:189)
-                                // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                                // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                                 // jsignalml.JavaClassGen.visit(JavaClassGen.java:1337)
                                 // jsignalml.JavaClassGen.mapSampleMethod(JavaClassGen.java:1403)
                                 Type value = get_mapping().get();
@@ -1703,7 +1703,7 @@ public class New4D
 
                             public float getSample(long sample) {
                                 // jsignalml.ASTNode$Channel._accept(ASTNode.java:189)
-                                // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                                // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                                 // jsignalml.JavaClassGen.visit(JavaClassGen.java:1338)
                                 // jsignalml.JavaClassGen.getSampleMethod(JavaClassGen.java:1419)
                                 TypeString format_ = this.getSampleFormat();
@@ -1726,7 +1726,7 @@ public class New4D
 
                             public void getSamples(FloatBuffer dst, long sample) {
                                 // jsignalml.ASTNode$Channel._accept(ASTNode.java:189)
-                                // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                                // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                                 // jsignalml.JavaClassGen.visit(JavaClassGen.java:1339)
                                 // jsignalml.JavaClassGen.getSamplesMethod(JavaClassGen.java:1496)
                                 TypeString format_ = this.getSampleFormat();
@@ -1754,7 +1754,7 @@ public class New4D
 
                             private float applyLinearTransformation(float rawValue) {
                                 // jsignalml.ASTNode$Channel._accept(ASTNode.java:189)
-                                // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                                // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                                 // jsignalml.JavaClassGen.visit(JavaClassGen.java:1340)
                                 // jsignalml.JavaClassGen.applyLinearTransformationMethod(JavaClassGen.java:1580)
                                 float calibGain = getCalibrationGain().getValue().floatValue();
@@ -1765,7 +1765,7 @@ public class New4D
 
                             public double getSamplingFrequency() {
                                 // jsignalml.ASTNode$Channel._accept(ASTNode.java:189)
-                                // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                                // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                                 // jsignalml.JavaClassGen.visit(JavaClassGen.java:1341)
                                 // jsignalml.JavaClassGen.getSamplingFrequencyMethod(JavaClassGen.java:1613)
                                 Type value = get_sampling_frequency().get();
@@ -1775,7 +1775,7 @@ public class New4D
 
                             public long getNumberOfSamples() {
                                 // jsignalml.ASTNode$Channel._accept(ASTNode.java:189)
-                                // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                                // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                                 // jsignalml.JavaClassGen.visit(JavaClassGen.java:1342)
                                 // jsignalml.JavaClassGen.getNumberOfSamplesMethod(JavaClassGen.java:1626)
                                 Type value = get_number_of_samples().get();
@@ -1785,7 +1785,7 @@ public class New4D
 
                             public String getChannelName() {
                                 // jsignalml.ASTNode$Channel._accept(ASTNode.java:189)
-                                // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                                // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                                 // jsignalml.JavaClassGen.visit(JavaClassGen.java:1343)
                                 // jsignalml.JavaClassGen.getChannelNameMethod(JavaClassGen.java:1652)
                                 Type value = get_channel_name().get();
@@ -1795,7 +1795,7 @@ public class New4D
 
                             public String getChannelTypeName() {
                                 // jsignalml.ASTNode$Channel._accept(ASTNode.java:189)
-                                // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                                // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                                 // jsignalml.JavaClassGen.visit(JavaClassGen.java:1344)
                                 // jsignalml.JavaClassGen.getChannelTypeNameMethod(JavaClassGen.java:1671)
                                 Type value = get_channel_type_name().get();
@@ -1805,7 +1805,7 @@ public class New4D
 
                             public TypeFloat getCalibrationGain() {
                                 // jsignalml.ASTNode$Channel._accept(ASTNode.java:189)
-                                // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                                // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                                 // jsignalml.JavaClassGen.visit(JavaClassGen.java:1345)
                                 // jsignalml.JavaClassGen.getCalibrationGainMethod(JavaClassGen.java:1691)
                                 Type value = get_calibration_gain().get();
@@ -1815,7 +1815,7 @@ public class New4D
 
                             public TypeFloat getCalibrationOffset() {
                                 // jsignalml.ASTNode$Channel._accept(ASTNode.java:189)
-                                // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                                // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                                 // jsignalml.JavaClassGen.visit(JavaClassGen.java:1346)
                                 // jsignalml.JavaClassGen.getCalibrationOffsetMethod(JavaClassGen.java:1711)
                                 TypeFloat cast = new TypeFloat("0");
@@ -1824,7 +1824,7 @@ public class New4D
 
                             public TypeFloat getSampleUnit() {
                                 // jsignalml.ASTNode$Channel._accept(ASTNode.java:189)
-                                // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                                // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                                 // jsignalml.JavaClassGen.visit(JavaClassGen.java:1347)
                                 // jsignalml.JavaClassGen.getSampleUnitMethod(JavaClassGen.java:1640)
                                 Type value = get_sample_unit().get();
@@ -1834,7 +1834,7 @@ public class New4D
 
                             public New4D.File_main.ChannelSet_data_test.Loop_channels.channels_inner.If_gen_id_6 .Channel_channel._param_mapping get_mapping() {
                                 // jsignalml.ASTNode$ExprParam._accept(ASTNode.java:319)
-                                // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                                // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                                 // jsignalml.JavaClassGen.visit(JavaClassGen.java:457)
                                 // jsignalml.JavaClassGen.paramClass(JavaClassGen.java:514)
                                 // jsignalml.JavaClassGen.classCacheMethod(JavaClassGen.java:954)
@@ -1849,7 +1849,7 @@ public class New4D
                             /**
                              * 
                              * jsignalml.ASTNode$ExprParam._accept(ASTNode.java:319)
-                             * jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                             * jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                              * jsignalml.JavaClassGen.visit(JavaClassGen.java:457)
                              * jsignalml.JavaClassGen.paramClass(JavaClassGen.java:510)
                              * node.type=TypeInt
@@ -1863,7 +1863,7 @@ public class New4D
 
                                 public String id() {
                                     // jsignalml.ASTNode$ExprParam._accept(ASTNode.java:319)
-                                    // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                                    // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                                     // jsignalml.JavaClassGen.visit(JavaClassGen.java:458)
                                     // jsignalml.JavaClassGen.idMethod(JavaClassGen.java:525)
                                     return "mapping";
@@ -1871,7 +1871,7 @@ public class New4D
 
                                 public New4D.File_main.ChannelSet_data_test.Loop_channels.channels_inner.If_gen_id_6 .Channel_channel._param_mapping get() {
                                     // jsignalml.ASTNode$ExprParam._accept(ASTNode.java:319)
-                                    // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                                    // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                                     // jsignalml.JavaClassGen.visit(JavaClassGen.java:462)
                                     // jsignalml.JavaClassGen.getThisMethod(JavaClassGen.java:718)
                                     return this;
@@ -1879,7 +1879,7 @@ public class New4D
 
                                 public TypeInt call(TypeInt sample) {
                                     // jsignalml.ASTNode$ExprParam._accept(ASTNode.java:319)
-                                    // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                                    // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                                     // jsignalml.JavaClassGen.visit(JavaClassGen.java:463)
                                     // jsignalml.JavaClassGen.callExprMethod(JavaClassGen.java:745)
                                     // node.type=TypeInt
@@ -1891,7 +1891,7 @@ public class New4D
 
                                 public TypeInt call(List<Type> args) {
                                     // jsignalml.ASTNode$ExprParam._accept(ASTNode.java:319)
-                                    // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                                    // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                                     // jsignalml.JavaClassGen.visit(JavaClassGen.java:463)
                                     // jsignalml.JavaClassGen.callExprMethod(JavaClassGen.java:755)
                                     if (args.size()!= 1) {
@@ -1902,7 +1902,7 @@ public class New4D
 
                                 public long call_p(long sample) {
                                     // jsignalml.ASTNode$ExprParam._accept(ASTNode.java:319)
-                                    // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                                    // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                                     // jsignalml.JavaClassGen.visit(JavaClassGen.java:465)
                                     // jsignalml.JavaClassGen.callExprMethod_p(JavaClassGen.java:793)
                                     // node.type=TypeInt
@@ -1920,7 +1920,7 @@ public class New4D
                         /**
                          * 
                          * jsignalml.ASTNode$ExprParam._accept(ASTNode.java:319)
-                         * jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                         * jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                          * jsignalml.JavaClassGen.visit(JavaClassGen.java:457)
                          * jsignalml.JavaClassGen.paramClass(JavaClassGen.java:510)
                          * node.type=TypeFloat
@@ -1935,7 +1935,7 @@ public class New4D
 
                             public String id() {
                                 // jsignalml.ASTNode$ExprParam._accept(ASTNode.java:319)
-                                // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                                // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                                 // jsignalml.JavaClassGen.visit(JavaClassGen.java:458)
                                 // jsignalml.JavaClassGen.idMethod(JavaClassGen.java:525)
                                 return "calibration_gain";
@@ -1943,7 +1943,7 @@ public class New4D
 
                             protected TypeFloat _get() {
                                 // jsignalml.ASTNode$ExprParam._accept(ASTNode.java:319)
-                                // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                                // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                                 // jsignalml.JavaClassGen.visit(JavaClassGen.java:460)
                                 // jsignalml.JavaClassGen.getExprMethod(JavaClassGen.java:696)
                                 // node.type=TypeFloat
@@ -1954,7 +1954,7 @@ public class New4D
 
                             public Double get_p() {
                                 // jsignalml.ASTNode$ExprParam._accept(ASTNode.java:319)
-                                // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                                // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                                 // jsignalml.JavaClassGen.visit(JavaClassGen.java:460)
                                 // jsignalml.JavaClassGen.getExprMethod(JavaClassGen.java:705)
                                 // jsignalml.JavaClassGen.getMethod_p(JavaClassGen.java:737)
@@ -1971,7 +1971,7 @@ public class New4D
                         /**
                          * 
                          * jsignalml.ASTNode$TextParam._accept(ASTNode.java:289)
-                         * jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                         * jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                          * jsignalml.JavaClassGen.visit(JavaClassGen.java:488)
                          * jsignalml.JavaClassGen.paramClass(JavaClassGen.java:510)
                          * node.type=TypeString
@@ -1985,7 +1985,7 @@ public class New4D
 
                             public String id() {
                                 // jsignalml.ASTNode$TextParam._accept(ASTNode.java:289)
-                                // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                                // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                                 // jsignalml.JavaClassGen.visit(JavaClassGen.java:489)
                                 // jsignalml.JavaClassGen.idMethod(JavaClassGen.java:525)
                                 return "channel_name";
@@ -1993,7 +1993,7 @@ public class New4D
 
                             protected TypeString _get() {
                                 // jsignalml.ASTNode$TextParam._accept(ASTNode.java:289)
-                                // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                                // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                                 // jsignalml.JavaClassGen.visit(JavaClassGen.java:490)
                                 // jsignalml.JavaClassGen.readParamFunction(JavaClassGen.java:609)
                                 // node.type=TypeString
@@ -2022,7 +2022,7 @@ public class New4D
                         /**
                          * 
                          * jsignalml.ASTNode$TextParam._accept(ASTNode.java:289)
-                         * jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                         * jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                          * jsignalml.JavaClassGen.visit(JavaClassGen.java:488)
                          * jsignalml.JavaClassGen.paramClass(JavaClassGen.java:510)
                          * node.type=TypeFloat
@@ -2037,7 +2037,7 @@ public class New4D
 
                             public String id() {
                                 // jsignalml.ASTNode$TextParam._accept(ASTNode.java:289)
-                                // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                                // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                                 // jsignalml.JavaClassGen.visit(JavaClassGen.java:489)
                                 // jsignalml.JavaClassGen.idMethod(JavaClassGen.java:525)
                                 return "channel_sensitivity";
@@ -2045,7 +2045,7 @@ public class New4D
 
                             protected TypeFloat _get() {
                                 // jsignalml.ASTNode$TextParam._accept(ASTNode.java:289)
-                                // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                                // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                                 // jsignalml.JavaClassGen.visit(JavaClassGen.java:490)
                                 // jsignalml.JavaClassGen.readParamFunction(JavaClassGen.java:609)
                                 // node.type=TypeFloat
@@ -2070,7 +2070,7 @@ public class New4D
 
                             public Double get_p() {
                                 // jsignalml.ASTNode$TextParam._accept(ASTNode.java:289)
-                                // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                                // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                                 // jsignalml.JavaClassGen.visit(JavaClassGen.java:490)
                                 // jsignalml.JavaClassGen.readParamFunction(JavaClassGen.java:639)
                                 // jsignalml.JavaClassGen.getMethod_p(JavaClassGen.java:737)
@@ -2087,7 +2087,7 @@ public class New4D
                         /**
                          * 
                          * jsignalml.ASTNode$TextParam._accept(ASTNode.java:289)
-                         * jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                         * jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                          * jsignalml.JavaClassGen.visit(JavaClassGen.java:488)
                          * jsignalml.JavaClassGen.paramClass(JavaClassGen.java:510)
                          * node.type=TypeString
@@ -2101,7 +2101,7 @@ public class New4D
 
                             public String id() {
                                 // jsignalml.ASTNode$TextParam._accept(ASTNode.java:289)
-                                // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                                // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                                 // jsignalml.JavaClassGen.visit(JavaClassGen.java:489)
                                 // jsignalml.JavaClassGen.idMethod(JavaClassGen.java:525)
                                 return "channel_sensitivity_unit";
@@ -2109,7 +2109,7 @@ public class New4D
 
                             protected TypeString _get() {
                                 // jsignalml.ASTNode$TextParam._accept(ASTNode.java:289)
-                                // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                                // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                                 // jsignalml.JavaClassGen.visit(JavaClassGen.java:490)
                                 // jsignalml.JavaClassGen.readParamFunction(JavaClassGen.java:609)
                                 // node.type=TypeString
@@ -2138,7 +2138,7 @@ public class New4D
                         /**
                          * 
                          * jsignalml.ASTNode$ExprParam._accept(ASTNode.java:319)
-                         * jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                         * jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                          * jsignalml.JavaClassGen.visit(JavaClassGen.java:457)
                          * jsignalml.JavaClassGen.paramClass(JavaClassGen.java:510)
                          * node.type=TypeString
@@ -2152,7 +2152,7 @@ public class New4D
 
                             public String id() {
                                 // jsignalml.ASTNode$ExprParam._accept(ASTNode.java:319)
-                                // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                                // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                                 // jsignalml.JavaClassGen.visit(JavaClassGen.java:458)
                                 // jsignalml.JavaClassGen.idMethod(JavaClassGen.java:525)
                                 return "channel_type_name";
@@ -2160,7 +2160,7 @@ public class New4D
 
                             protected TypeString _get() {
                                 // jsignalml.ASTNode$ExprParam._accept(ASTNode.java:319)
-                                // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                                // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                                 // jsignalml.JavaClassGen.visit(JavaClassGen.java:460)
                                 // jsignalml.JavaClassGen.getExprMethod(JavaClassGen.java:696)
                                 // node.type=TypeString
@@ -2177,7 +2177,7 @@ public class New4D
                     /**
                      * 
                      * jsignalml.ASTNode$TextParam._accept(ASTNode.java:289)
-                     * jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                     * jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                      * jsignalml.JavaClassGen.visit(JavaClassGen.java:488)
                      * jsignalml.JavaClassGen.paramClass(JavaClassGen.java:510)
                      * node.type=TypeInt
@@ -2192,7 +2192,7 @@ public class New4D
 
                         public String id() {
                             // jsignalml.ASTNode$TextParam._accept(ASTNode.java:289)
-                            // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                            // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                             // jsignalml.JavaClassGen.visit(JavaClassGen.java:489)
                             // jsignalml.JavaClassGen.idMethod(JavaClassGen.java:525)
                             return "channel_group";
@@ -2200,7 +2200,7 @@ public class New4D
 
                         protected TypeInt _get() {
                             // jsignalml.ASTNode$TextParam._accept(ASTNode.java:289)
-                            // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                            // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                             // jsignalml.JavaClassGen.visit(JavaClassGen.java:490)
                             // jsignalml.JavaClassGen.readParamFunction(JavaClassGen.java:609)
                             // node.type=TypeInt
@@ -2225,7 +2225,7 @@ public class New4D
 
                         public Long get_p() {
                             // jsignalml.ASTNode$TextParam._accept(ASTNode.java:289)
-                            // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                            // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                             // jsignalml.JavaClassGen.visit(JavaClassGen.java:490)
                             // jsignalml.JavaClassGen.readParamFunction(JavaClassGen.java:639)
                             // jsignalml.JavaClassGen.getMethod_p(JavaClassGen.java:737)
@@ -2242,7 +2242,7 @@ public class New4D
                     /**
                      * 
                      * jsignalml.ASTNode$ExprParam._accept(ASTNode.java:319)
-                     * jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                     * jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                      * jsignalml.JavaClassGen.visit(JavaClassGen.java:457)
                      * jsignalml.JavaClassGen.paramClass(JavaClassGen.java:510)
                      * node.type=TypeInt
@@ -2256,7 +2256,7 @@ public class New4D
 
                         public String id() {
                             // jsignalml.ASTNode$ExprParam._accept(ASTNode.java:319)
-                            // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                            // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                             // jsignalml.JavaClassGen.visit(JavaClassGen.java:458)
                             // jsignalml.JavaClassGen.idMethod(JavaClassGen.java:525)
                             return "line_nr_channel_sensitivities";
@@ -2264,7 +2264,7 @@ public class New4D
 
                         protected Type _get() {
                             // jsignalml.ASTNode$ExprParam._accept(ASTNode.java:319)
-                            // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                            // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                             // jsignalml.JavaClassGen.visit(JavaClassGen.java:460)
                             // jsignalml.JavaClassGen.getExprMethod(JavaClassGen.java:696)
                             // node.type=TypeInt
@@ -2279,7 +2279,7 @@ public class New4D
                     /**
                      * 
                      * jsignalml.ASTNode$Itername._accept(ASTNode.java:498)
-                     * jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                     * jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                      * jsignalml.JavaClassGen.visit(JavaClassGen.java:978)
                      * jsignalml.JavaClassGen.indexClass(JavaClassGen.java:1254)
                      * 
@@ -2292,7 +2292,7 @@ public class New4D
 
                         line_nr(TypeInt index) {
                             // jsignalml.ASTNode$Itername._accept(ASTNode.java:498)
-                            // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                            // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                             // jsignalml.JavaClassGen.visit(JavaClassGen.java:978)
                             // jsignalml.JavaClassGen.indexClass(JavaClassGen.java:1258)
                             this.cache = index;
@@ -2300,7 +2300,7 @@ public class New4D
 
                         public String id() {
                             // jsignalml.ASTNode$Itername._accept(ASTNode.java:498)
-                            // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                            // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                             // jsignalml.JavaClassGen.visit(JavaClassGen.java:978)
                             // jsignalml.JavaClassGen.indexClass(JavaClassGen.java:1261)
                             // jsignalml.JavaClassGen.idMethod(JavaClassGen.java:525)
@@ -2309,7 +2309,7 @@ public class New4D
 
                         protected TypeInt _get() {
                             // jsignalml.ASTNode$Itername._accept(ASTNode.java:498)
-                            // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                            // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                             // jsignalml.JavaClassGen.visit(JavaClassGen.java:978)
                             // jsignalml.JavaClassGen.indexClass(JavaClassGen.java:1268)
                             throw new RuntimeException();
@@ -2317,7 +2317,7 @@ public class New4D
 
                         public Long get_p() {
                             // jsignalml.ASTNode$Itername._accept(ASTNode.java:498)
-                            // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                            // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                             // jsignalml.JavaClassGen.visit(JavaClassGen.java:978)
                             // jsignalml.JavaClassGen.indexClass(JavaClassGen.java:1272)
                             // jsignalml.JavaClassGen.getMethod_p(JavaClassGen.java:737)
@@ -2340,7 +2340,7 @@ public class New4D
         /**
          * 
          * jsignalml.ASTNode$FileHandle._accept(ASTNode.java:435)
-         * jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+         * jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
          * jsignalml.JavaClassGen.visit(JavaClassGen.java:819)
          * jsignalml.JavaClassGen.fileClass(JavaClassGen.java:834)
          * 
@@ -2356,12 +2356,11 @@ public class New4D
                 String dirname = main.getAbsolutePath().substring(0, endIndex);
                 String filename = (dirname + get_data_filename().get().value);
                 currentFilename = new File(filename);
-                isBinary = false;
             }
 
             public Type access(String name) {
                 // jsignalml.ASTNode$FileHandle._accept(ASTNode.java:435)
-                // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                 // jsignalml.JavaClassGen.visit(JavaClassGen.java:819)
                 // jsignalml.JavaClassGen.fileClass(JavaClassGen.java:875)
                 return super.access(name);
@@ -2369,7 +2368,7 @@ public class New4D
 
             public void register(String name, Context child) {
                 // jsignalml.ASTNode$FileHandle._accept(ASTNode.java:435)
-                // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                 // jsignalml.JavaClassGen.visit(JavaClassGen.java:819)
                 // jsignalml.JavaClassGen.fileClass(JavaClassGen.java:883)
                 super.register(name, child);
@@ -2377,29 +2376,29 @@ public class New4D
 
             public void createParams() {
                 // jsignalml.ASTNode$FileHandle._accept(ASTNode.java:435)
-                // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                 // jsignalml.JavaClassGen.visit(JavaClassGen.java:819)
                 // jsignalml.JavaClassGen.fileClass(JavaClassGen.java:890)
                 // jsignalml.JavaClassGen$Metadata.<init>(JavaClassGen.java:227)
                 // jsignalml.JavaClassGen$Metadata.<init>(JavaClassGen.java:204)
-                // jsignalml.JavaClassGen.access$12(JavaClassGen.java:1809)
+                // jsignalml.JavaClassGen.access$000(JavaClassGen.java:39)
                 log.debug("File_data_file.createParams()");
             }
 
             public void createChannels() {
                 // jsignalml.ASTNode$FileHandle._accept(ASTNode.java:435)
-                // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                 // jsignalml.JavaClassGen.visit(JavaClassGen.java:819)
                 // jsignalml.JavaClassGen.fileClass(JavaClassGen.java:890)
                 // jsignalml.JavaClassGen$Metadata.<init>(JavaClassGen.java:227)
                 // jsignalml.JavaClassGen$Metadata.<init>(JavaClassGen.java:216)
-                // jsignalml.JavaClassGen.access$12(JavaClassGen.java:1809)
+                // jsignalml.JavaClassGen.access$000(JavaClassGen.java:39)
                 log.debug("File_data_file.createChannels()");
             }
 
             public String id() {
                 // jsignalml.ASTNode$FileHandle._accept(ASTNode.java:435)
-                // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                 // jsignalml.JavaClassGen.visit(JavaClassGen.java:820)
                 // jsignalml.JavaClassGen.idMethod(JavaClassGen.java:525)
                 return "data_file";
@@ -2411,11 +2410,11 @@ public class New4D
         /**
          * 
          * jsignalml.ASTNode$Conditional._accept(ASTNode.java:580)
-         * jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+         * jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
          * jsignalml.JavaClassGen.visit(JavaClassGen.java:1094)
          * jsignalml.JavaClassGen.conditionalClass(JavaClassGen.java:1110)
          * jsignalml.ASTNode$Conditional._accept(ASTNode.java:580)
-         * jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+         * jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
          * jsignalml.JavaClassGen.visit(JavaClassGen.java:1095)
          * parent paramClass=_param_sample_format_1
          * 
@@ -2429,49 +2428,49 @@ public class New4D
 
             public void createParamsIf() {
                 // jsignalml.ASTNode$Conditional._accept(ASTNode.java:580)
-                // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                 // jsignalml.JavaClassGen.visit(JavaClassGen.java:1094)
                 // jsignalml.JavaClassGen.conditionalClass(JavaClassGen.java:1112)
                 // jsignalml.JavaClassGen$MetadataIfBranch.<init>(JavaClassGen.java:296)
                 // jsignalml.JavaClassGen$Metadata.<init>(JavaClassGen.java:204)
-                // jsignalml.JavaClassGen.access$12(JavaClassGen.java:1809)
+                // jsignalml.JavaClassGen.access$000(JavaClassGen.java:39)
                 log.debug("If_format.createParamsIf()");
                 // jsignalml.ASTNode$ExprParam._accept(ASTNode.java:319)
-                // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                 // jsignalml.JavaClassGen.visit(JavaClassGen.java:457)
                 // jsignalml.JavaClassGen.paramClass(JavaClassGen.java:517)
                 // jsignalml.JavaClassGen$Metadata.registerParam(JavaClassGen.java:234)
-                // jsignalml.JavaClassGen.access$12(JavaClassGen.java:1809)
+                // jsignalml.JavaClassGen.access$000(JavaClassGen.java:39)
                 register("sample_format_1", get_sample_format_1());
             }
 
             public void createChannelsIf() {
                 // jsignalml.ASTNode$Conditional._accept(ASTNode.java:580)
-                // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                 // jsignalml.JavaClassGen.visit(JavaClassGen.java:1094)
                 // jsignalml.JavaClassGen.conditionalClass(JavaClassGen.java:1112)
                 // jsignalml.JavaClassGen$MetadataIfBranch.<init>(JavaClassGen.java:296)
                 // jsignalml.JavaClassGen$Metadata.<init>(JavaClassGen.java:216)
-                // jsignalml.JavaClassGen.access$12(JavaClassGen.java:1809)
+                // jsignalml.JavaClassGen.access$000(JavaClassGen.java:39)
                 log.debug("If_format.createChannelsIf()");
             }
 
             public void createParamsElseIf() {
                 // jsignalml.ASTNode$Conditional._accept(ASTNode.java:580)
-                // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                 // jsignalml.JavaClassGen.visit(JavaClassGen.java:1094)
                 // jsignalml.JavaClassGen.conditionalClass(JavaClassGen.java:1112)
                 // jsignalml.JavaClassGen$MetadataIfBranch.<init>(JavaClassGen.java:297)
                 // jsignalml.JavaClassGen$Metadata.<init>(JavaClassGen.java:204)
-                // jsignalml.JavaClassGen.access$12(JavaClassGen.java:1809)
+                // jsignalml.JavaClassGen.access$000(JavaClassGen.java:39)
                 log.debug("If_format.createParamsElseIf()");
                 {
                     // jsignalml.ASTNode$ElseIfBranch._accept(ASTNode.java:620)
-                    // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                    // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                     // jsignalml.JavaClassGen.visit(JavaClassGen.java:1194)
                     // jsignalml.JavaClassGen.elseIfBranchClass(JavaClassGen.java:1222)
                     // jsignalml.JavaClassGen$Metadata.registerContext(JavaClassGen.java:257)
-                    // jsignalml.JavaClassGen.access$12(JavaClassGen.java:1809)
+                    // jsignalml.JavaClassGen.access$000(JavaClassGen.java:39)
                     New4D.File_main.If_format.ElseIf_gen_id_3 obj = get_gen_id_3();
                     register("gen_id_3", obj);
                     obj.createParams();
@@ -2480,20 +2479,20 @@ public class New4D
 
             public void createChannelsElseIf() {
                 // jsignalml.ASTNode$Conditional._accept(ASTNode.java:580)
-                // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                 // jsignalml.JavaClassGen.visit(JavaClassGen.java:1094)
                 // jsignalml.JavaClassGen.conditionalClass(JavaClassGen.java:1112)
                 // jsignalml.JavaClassGen$MetadataIfBranch.<init>(JavaClassGen.java:297)
                 // jsignalml.JavaClassGen$Metadata.<init>(JavaClassGen.java:216)
-                // jsignalml.JavaClassGen.access$12(JavaClassGen.java:1809)
+                // jsignalml.JavaClassGen.access$000(JavaClassGen.java:39)
                 log.debug("If_format.createChannelsElseIf()");
                 {
                     // jsignalml.ASTNode$ElseIfBranch._accept(ASTNode.java:620)
-                    // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                    // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                     // jsignalml.JavaClassGen.visit(JavaClassGen.java:1194)
                     // jsignalml.JavaClassGen.elseIfBranchClass(JavaClassGen.java:1222)
                     // jsignalml.JavaClassGen$Metadata.registerContext(JavaClassGen.java:264)
-                    // jsignalml.JavaClassGen.access$12(JavaClassGen.java:1809)
+                    // jsignalml.JavaClassGen.access$000(JavaClassGen.java:39)
                     New4D.File_main.If_format.ElseIf_gen_id_3 obj = get_gen_id_3();
                     obj.createChannels();
                 }
@@ -2501,23 +2500,23 @@ public class New4D
 
             public void createParamsElse() {
                 // jsignalml.ASTNode$Conditional._accept(ASTNode.java:580)
-                // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                 // jsignalml.JavaClassGen.visit(JavaClassGen.java:1094)
                 // jsignalml.JavaClassGen.conditionalClass(JavaClassGen.java:1112)
                 // jsignalml.JavaClassGen$MetadataIfBranch.<init>(JavaClassGen.java:298)
                 // jsignalml.JavaClassGen$Metadata.<init>(JavaClassGen.java:204)
-                // jsignalml.JavaClassGen.access$12(JavaClassGen.java:1809)
+                // jsignalml.JavaClassGen.access$000(JavaClassGen.java:39)
                 log.debug("If_format.createParamsElse()");
             }
 
             public void createChannelsElse() {
                 // jsignalml.ASTNode$Conditional._accept(ASTNode.java:580)
-                // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                 // jsignalml.JavaClassGen.visit(JavaClassGen.java:1094)
                 // jsignalml.JavaClassGen.conditionalClass(JavaClassGen.java:1112)
                 // jsignalml.JavaClassGen$MetadataIfBranch.<init>(JavaClassGen.java:298)
                 // jsignalml.JavaClassGen$Metadata.<init>(JavaClassGen.java:216)
-                // jsignalml.JavaClassGen.access$12(JavaClassGen.java:1809)
+                // jsignalml.JavaClassGen.access$000(JavaClassGen.java:39)
                 log.debug("If_format.createChannelsElse()");
             }
 
@@ -2527,7 +2526,7 @@ public class New4D
 
             public String id() {
                 // jsignalml.ASTNode$Conditional._accept(ASTNode.java:580)
-                // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                 // jsignalml.JavaClassGen.visit(JavaClassGen.java:1096)
                 // jsignalml.JavaClassGen.idMethod(JavaClassGen.java:525)
                 return "format";
@@ -2535,7 +2534,7 @@ public class New4D
 
             public Type getCondition() {
                 // jsignalml.ASTNode$Conditional._accept(ASTNode.java:580)
-                // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                 // jsignalml.JavaClassGen.visit(JavaClassGen.java:1097)
                 // jsignalml.JavaClassGen.conditionMethod(JavaClassGen.java:1136)
                 Type test = ((get_msi_format().get().compareTo(new TypeString("bigendian,short")) == 0)?TypeInt.True:TypeInt.False);
@@ -2544,7 +2543,7 @@ public class New4D
 
             public New4D.File_main.If_format._param_sample_format_1 get_sample_format_1() {
                 // jsignalml.ASTNode$ExprParam._accept(ASTNode.java:319)
-                // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                 // jsignalml.JavaClassGen.visit(JavaClassGen.java:457)
                 // jsignalml.JavaClassGen.paramClass(JavaClassGen.java:514)
                 // jsignalml.JavaClassGen.classCacheMethod(JavaClassGen.java:954)
@@ -2557,7 +2556,7 @@ public class New4D
 
             public New4D.File_main.If_format.ElseIf_gen_id_3 get_gen_id_3() {
                 // jsignalml.ASTNode$ElseIfBranch._accept(ASTNode.java:620)
-                // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                 // jsignalml.JavaClassGen.visit(JavaClassGen.java:1194)
                 // jsignalml.JavaClassGen.elseIfBranchClass(JavaClassGen.java:1218)
                 // jsignalml.JavaClassGen.classCacheMethod(JavaClassGen.java:954)
@@ -2572,11 +2571,11 @@ public class New4D
             /**
              * 
              * jsignalml.ASTNode$ElseIfBranch._accept(ASTNode.java:620)
-             * jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+             * jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
              * jsignalml.JavaClassGen.visit(JavaClassGen.java:1194)
              * jsignalml.JavaClassGen.elseIfBranchClass(JavaClassGen.java:1210)
              * jsignalml.ASTNode$ElseIfBranch._accept(ASTNode.java:620)
-             * jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+             * jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
              * jsignalml.JavaClassGen.visit(JavaClassGen.java:1195)
              * parent paramClass=_param_sample_format_1
              * 
@@ -2594,49 +2593,49 @@ public class New4D
 
                 public void createParamsIf() {
                     // jsignalml.ASTNode$ElseIfBranch._accept(ASTNode.java:620)
-                    // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                    // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                     // jsignalml.JavaClassGen.visit(JavaClassGen.java:1194)
                     // jsignalml.JavaClassGen.elseIfBranchClass(JavaClassGen.java:1215)
                     // jsignalml.JavaClassGen$MetadataIfBranch.<init>(JavaClassGen.java:296)
                     // jsignalml.JavaClassGen$Metadata.<init>(JavaClassGen.java:204)
-                    // jsignalml.JavaClassGen.access$12(JavaClassGen.java:1809)
+                    // jsignalml.JavaClassGen.access$000(JavaClassGen.java:39)
                     log.debug("ElseIf_gen_id_3.createParamsIf()");
                     // jsignalml.ASTNode$ExprParam._accept(ASTNode.java:319)
-                    // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                    // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                     // jsignalml.JavaClassGen.visit(JavaClassGen.java:457)
                     // jsignalml.JavaClassGen.paramClass(JavaClassGen.java:517)
                     // jsignalml.JavaClassGen$Metadata.registerParam(JavaClassGen.java:234)
-                    // jsignalml.JavaClassGen.access$12(JavaClassGen.java:1809)
+                    // jsignalml.JavaClassGen.access$000(JavaClassGen.java:39)
                     register("sample_format_1", get_sample_format_1());
                 }
 
                 public void createChannelsIf() {
                     // jsignalml.ASTNode$ElseIfBranch._accept(ASTNode.java:620)
-                    // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                    // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                     // jsignalml.JavaClassGen.visit(JavaClassGen.java:1194)
                     // jsignalml.JavaClassGen.elseIfBranchClass(JavaClassGen.java:1215)
                     // jsignalml.JavaClassGen$MetadataIfBranch.<init>(JavaClassGen.java:296)
                     // jsignalml.JavaClassGen$Metadata.<init>(JavaClassGen.java:216)
-                    // jsignalml.JavaClassGen.access$12(JavaClassGen.java:1809)
+                    // jsignalml.JavaClassGen.access$000(JavaClassGen.java:39)
                     log.debug("ElseIf_gen_id_3.createChannelsIf()");
                 }
 
                 public void createParamsElseIf() {
                     // jsignalml.ASTNode$ElseIfBranch._accept(ASTNode.java:620)
-                    // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                    // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                     // jsignalml.JavaClassGen.visit(JavaClassGen.java:1194)
                     // jsignalml.JavaClassGen.elseIfBranchClass(JavaClassGen.java:1215)
                     // jsignalml.JavaClassGen$MetadataIfBranch.<init>(JavaClassGen.java:297)
                     // jsignalml.JavaClassGen$Metadata.<init>(JavaClassGen.java:204)
-                    // jsignalml.JavaClassGen.access$12(JavaClassGen.java:1809)
+                    // jsignalml.JavaClassGen.access$000(JavaClassGen.java:39)
                     log.debug("ElseIf_gen_id_3.createParamsElseIf()");
                     {
                         // jsignalml.ASTNode$ElseIfBranch._accept(ASTNode.java:620)
-                        // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                        // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                         // jsignalml.JavaClassGen.visit(JavaClassGen.java:1194)
                         // jsignalml.JavaClassGen.elseIfBranchClass(JavaClassGen.java:1222)
                         // jsignalml.JavaClassGen$Metadata.registerContext(JavaClassGen.java:257)
-                        // jsignalml.JavaClassGen.access$12(JavaClassGen.java:1809)
+                        // jsignalml.JavaClassGen.access$000(JavaClassGen.java:39)
                         New4D.File_main.If_format.ElseIf_gen_id_3 .ElseIf_gen_id_4 obj = get_gen_id_4();
                         register("gen_id_4", obj);
                         obj.createParams();
@@ -2645,20 +2644,20 @@ public class New4D
 
                 public void createChannelsElseIf() {
                     // jsignalml.ASTNode$ElseIfBranch._accept(ASTNode.java:620)
-                    // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                    // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                     // jsignalml.JavaClassGen.visit(JavaClassGen.java:1194)
                     // jsignalml.JavaClassGen.elseIfBranchClass(JavaClassGen.java:1215)
                     // jsignalml.JavaClassGen$MetadataIfBranch.<init>(JavaClassGen.java:297)
                     // jsignalml.JavaClassGen$Metadata.<init>(JavaClassGen.java:216)
-                    // jsignalml.JavaClassGen.access$12(JavaClassGen.java:1809)
+                    // jsignalml.JavaClassGen.access$000(JavaClassGen.java:39)
                     log.debug("ElseIf_gen_id_3.createChannelsElseIf()");
                     {
                         // jsignalml.ASTNode$ElseIfBranch._accept(ASTNode.java:620)
-                        // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                        // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                         // jsignalml.JavaClassGen.visit(JavaClassGen.java:1194)
                         // jsignalml.JavaClassGen.elseIfBranchClass(JavaClassGen.java:1222)
                         // jsignalml.JavaClassGen$Metadata.registerContext(JavaClassGen.java:264)
-                        // jsignalml.JavaClassGen.access$12(JavaClassGen.java:1809)
+                        // jsignalml.JavaClassGen.access$000(JavaClassGen.java:39)
                         New4D.File_main.If_format.ElseIf_gen_id_3 .ElseIf_gen_id_4 obj = get_gen_id_4();
                         obj.createChannels();
                     }
@@ -2666,29 +2665,29 @@ public class New4D
 
                 public void createParamsElse() {
                     // jsignalml.ASTNode$ElseIfBranch._accept(ASTNode.java:620)
-                    // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                    // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                     // jsignalml.JavaClassGen.visit(JavaClassGen.java:1194)
                     // jsignalml.JavaClassGen.elseIfBranchClass(JavaClassGen.java:1215)
                     // jsignalml.JavaClassGen$MetadataIfBranch.<init>(JavaClassGen.java:298)
                     // jsignalml.JavaClassGen$Metadata.<init>(JavaClassGen.java:204)
-                    // jsignalml.JavaClassGen.access$12(JavaClassGen.java:1809)
+                    // jsignalml.JavaClassGen.access$000(JavaClassGen.java:39)
                     log.debug("ElseIf_gen_id_3.createParamsElse()");
                 }
 
                 public void createChannelsElse() {
                     // jsignalml.ASTNode$ElseIfBranch._accept(ASTNode.java:620)
-                    // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                    // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                     // jsignalml.JavaClassGen.visit(JavaClassGen.java:1194)
                     // jsignalml.JavaClassGen.elseIfBranchClass(JavaClassGen.java:1215)
                     // jsignalml.JavaClassGen$MetadataIfBranch.<init>(JavaClassGen.java:298)
                     // jsignalml.JavaClassGen$Metadata.<init>(JavaClassGen.java:216)
-                    // jsignalml.JavaClassGen.access$12(JavaClassGen.java:1809)
+                    // jsignalml.JavaClassGen.access$000(JavaClassGen.java:39)
                     log.debug("ElseIf_gen_id_3.createChannelsElse()");
                 }
 
                 public String id() {
                     // jsignalml.ASTNode$ElseIfBranch._accept(ASTNode.java:620)
-                    // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                    // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                     // jsignalml.JavaClassGen.visit(JavaClassGen.java:1196)
                     // jsignalml.JavaClassGen.idMethod(JavaClassGen.java:525)
                     return "gen_id_3";
@@ -2696,7 +2695,7 @@ public class New4D
 
                 public Type getCondition() {
                     // jsignalml.ASTNode$ElseIfBranch._accept(ASTNode.java:620)
-                    // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                    // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                     // jsignalml.JavaClassGen.visit(JavaClassGen.java:1197)
                     // jsignalml.JavaClassGen.conditionMethod(JavaClassGen.java:1235)
                     Type test = ((get_msi_format().get().compareTo(new TypeString("bigendian,float")) == 0)?TypeInt.True:TypeInt.False);
@@ -2705,7 +2704,7 @@ public class New4D
 
                 public New4D.File_main.If_format.ElseIf_gen_id_3 ._param_sample_format_1 get_sample_format_1() {
                     // jsignalml.ASTNode$ExprParam._accept(ASTNode.java:319)
-                    // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                    // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                     // jsignalml.JavaClassGen.visit(JavaClassGen.java:457)
                     // jsignalml.JavaClassGen.paramClass(JavaClassGen.java:514)
                     // jsignalml.JavaClassGen.classCacheMethod(JavaClassGen.java:954)
@@ -2718,7 +2717,7 @@ public class New4D
 
                 public New4D.File_main.If_format.ElseIf_gen_id_3 .ElseIf_gen_id_4 get_gen_id_4() {
                     // jsignalml.ASTNode$ElseIfBranch._accept(ASTNode.java:620)
-                    // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                    // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                     // jsignalml.JavaClassGen.visit(JavaClassGen.java:1194)
                     // jsignalml.JavaClassGen.elseIfBranchClass(JavaClassGen.java:1218)
                     // jsignalml.JavaClassGen.classCacheMethod(JavaClassGen.java:954)
@@ -2733,11 +2732,11 @@ public class New4D
                 /**
                  * 
                  * jsignalml.ASTNode$ElseIfBranch._accept(ASTNode.java:620)
-                 * jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                 * jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                  * jsignalml.JavaClassGen.visit(JavaClassGen.java:1194)
                  * jsignalml.JavaClassGen.elseIfBranchClass(JavaClassGen.java:1210)
                  * jsignalml.ASTNode$ElseIfBranch._accept(ASTNode.java:620)
-                 * jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                 * jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                  * jsignalml.JavaClassGen.visit(JavaClassGen.java:1195)
                  * parent paramClass=_param_sample_format_1
                  * 
@@ -2754,71 +2753,71 @@ public class New4D
 
                     public void createParamsIf() {
                         // jsignalml.ASTNode$ElseIfBranch._accept(ASTNode.java:620)
-                        // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                        // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                         // jsignalml.JavaClassGen.visit(JavaClassGen.java:1194)
                         // jsignalml.JavaClassGen.elseIfBranchClass(JavaClassGen.java:1215)
                         // jsignalml.JavaClassGen$MetadataIfBranch.<init>(JavaClassGen.java:296)
                         // jsignalml.JavaClassGen$Metadata.<init>(JavaClassGen.java:204)
-                        // jsignalml.JavaClassGen.access$12(JavaClassGen.java:1809)
+                        // jsignalml.JavaClassGen.access$000(JavaClassGen.java:39)
                         log.debug("ElseIf_gen_id_4.createParamsIf()");
                         // jsignalml.ASTNode$ExprParam._accept(ASTNode.java:319)
-                        // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                        // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                         // jsignalml.JavaClassGen.visit(JavaClassGen.java:457)
                         // jsignalml.JavaClassGen.paramClass(JavaClassGen.java:517)
                         // jsignalml.JavaClassGen$Metadata.registerParam(JavaClassGen.java:234)
-                        // jsignalml.JavaClassGen.access$12(JavaClassGen.java:1809)
+                        // jsignalml.JavaClassGen.access$000(JavaClassGen.java:39)
                         register("sample_format_1", get_sample_format_1());
                     }
 
                     public void createChannelsIf() {
                         // jsignalml.ASTNode$ElseIfBranch._accept(ASTNode.java:620)
-                        // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                        // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                         // jsignalml.JavaClassGen.visit(JavaClassGen.java:1194)
                         // jsignalml.JavaClassGen.elseIfBranchClass(JavaClassGen.java:1215)
                         // jsignalml.JavaClassGen$MetadataIfBranch.<init>(JavaClassGen.java:296)
                         // jsignalml.JavaClassGen$Metadata.<init>(JavaClassGen.java:216)
-                        // jsignalml.JavaClassGen.access$12(JavaClassGen.java:1809)
+                        // jsignalml.JavaClassGen.access$000(JavaClassGen.java:39)
                         log.debug("ElseIf_gen_id_4.createChannelsIf()");
                     }
 
                     public void createParamsElseIf() {
                         // jsignalml.ASTNode$ElseIfBranch._accept(ASTNode.java:620)
-                        // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                        // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                         // jsignalml.JavaClassGen.visit(JavaClassGen.java:1194)
                         // jsignalml.JavaClassGen.elseIfBranchClass(JavaClassGen.java:1215)
                         // jsignalml.JavaClassGen$MetadataIfBranch.<init>(JavaClassGen.java:297)
                         // jsignalml.JavaClassGen$Metadata.<init>(JavaClassGen.java:204)
-                        // jsignalml.JavaClassGen.access$12(JavaClassGen.java:1809)
+                        // jsignalml.JavaClassGen.access$000(JavaClassGen.java:39)
                         log.debug("ElseIf_gen_id_4.createParamsElseIf()");
                     }
 
                     public void createChannelsElseIf() {
                         // jsignalml.ASTNode$ElseIfBranch._accept(ASTNode.java:620)
-                        // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                        // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                         // jsignalml.JavaClassGen.visit(JavaClassGen.java:1194)
                         // jsignalml.JavaClassGen.elseIfBranchClass(JavaClassGen.java:1215)
                         // jsignalml.JavaClassGen$MetadataIfBranch.<init>(JavaClassGen.java:297)
                         // jsignalml.JavaClassGen$Metadata.<init>(JavaClassGen.java:216)
-                        // jsignalml.JavaClassGen.access$12(JavaClassGen.java:1809)
+                        // jsignalml.JavaClassGen.access$000(JavaClassGen.java:39)
                         log.debug("ElseIf_gen_id_4.createChannelsElseIf()");
                     }
 
                     public void createParamsElse() {
                         // jsignalml.ASTNode$ElseIfBranch._accept(ASTNode.java:620)
-                        // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                        // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                         // jsignalml.JavaClassGen.visit(JavaClassGen.java:1194)
                         // jsignalml.JavaClassGen.elseIfBranchClass(JavaClassGen.java:1215)
                         // jsignalml.JavaClassGen$MetadataIfBranch.<init>(JavaClassGen.java:298)
                         // jsignalml.JavaClassGen$Metadata.<init>(JavaClassGen.java:204)
-                        // jsignalml.JavaClassGen.access$12(JavaClassGen.java:1809)
+                        // jsignalml.JavaClassGen.access$000(JavaClassGen.java:39)
                         log.debug("ElseIf_gen_id_4.createParamsElse()");
                         {
                             // jsignalml.ASTNode$ElseBranch._accept(ASTNode.java:653)
-                            // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                            // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                             // jsignalml.JavaClassGen.visit(JavaClassGen.java:1149)
                             // jsignalml.JavaClassGen.elseBranchClass(JavaClassGen.java:1165)
                             // jsignalml.JavaClassGen$Metadata.registerContext(JavaClassGen.java:257)
-                            // jsignalml.JavaClassGen.access$12(JavaClassGen.java:1809)
+                            // jsignalml.JavaClassGen.access$000(JavaClassGen.java:39)
                             New4D.File_main.If_format.ElseIf_gen_id_3 .ElseIf_gen_id_4 .Else_gen_id_5 obj = new New4D.File_main.If_format.ElseIf_gen_id_3 .ElseIf_gen_id_4 .Else_gen_id_5();
                             register("gen_id_5", obj);
                             obj.createParams();
@@ -2827,20 +2826,20 @@ public class New4D
 
                     public void createChannelsElse() {
                         // jsignalml.ASTNode$ElseIfBranch._accept(ASTNode.java:620)
-                        // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                        // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                         // jsignalml.JavaClassGen.visit(JavaClassGen.java:1194)
                         // jsignalml.JavaClassGen.elseIfBranchClass(JavaClassGen.java:1215)
                         // jsignalml.JavaClassGen$MetadataIfBranch.<init>(JavaClassGen.java:298)
                         // jsignalml.JavaClassGen$Metadata.<init>(JavaClassGen.java:216)
-                        // jsignalml.JavaClassGen.access$12(JavaClassGen.java:1809)
+                        // jsignalml.JavaClassGen.access$000(JavaClassGen.java:39)
                         log.debug("ElseIf_gen_id_4.createChannelsElse()");
                         {
                             // jsignalml.ASTNode$ElseBranch._accept(ASTNode.java:653)
-                            // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                            // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                             // jsignalml.JavaClassGen.visit(JavaClassGen.java:1149)
                             // jsignalml.JavaClassGen.elseBranchClass(JavaClassGen.java:1165)
                             // jsignalml.JavaClassGen$Metadata.registerContext(JavaClassGen.java:264)
-                            // jsignalml.JavaClassGen.access$12(JavaClassGen.java:1809)
+                            // jsignalml.JavaClassGen.access$000(JavaClassGen.java:39)
                             New4D.File_main.If_format.ElseIf_gen_id_3 .ElseIf_gen_id_4 .Else_gen_id_5 obj = new New4D.File_main.If_format.ElseIf_gen_id_3 .ElseIf_gen_id_4 .Else_gen_id_5();
                             obj.createChannels();
                         }
@@ -2848,7 +2847,7 @@ public class New4D
 
                     public String id() {
                         // jsignalml.ASTNode$ElseIfBranch._accept(ASTNode.java:620)
-                        // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                        // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                         // jsignalml.JavaClassGen.visit(JavaClassGen.java:1196)
                         // jsignalml.JavaClassGen.idMethod(JavaClassGen.java:525)
                         return "gen_id_4";
@@ -2856,7 +2855,7 @@ public class New4D
 
                     public Type getCondition() {
                         // jsignalml.ASTNode$ElseIfBranch._accept(ASTNode.java:620)
-                        // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                        // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                         // jsignalml.JavaClassGen.visit(JavaClassGen.java:1197)
                         // jsignalml.JavaClassGen.conditionMethod(JavaClassGen.java:1235)
                         Type test = ((get_msi_format().get().compareTo(new TypeString("ASCII")) == 0)?TypeInt.True:TypeInt.False);
@@ -2865,7 +2864,7 @@ public class New4D
 
                     public New4D.File_main.If_format.ElseIf_gen_id_3 .ElseIf_gen_id_4 ._param_sample_format_1 get_sample_format_1() {
                         // jsignalml.ASTNode$ExprParam._accept(ASTNode.java:319)
-                        // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                        // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                         // jsignalml.JavaClassGen.visit(JavaClassGen.java:457)
                         // jsignalml.JavaClassGen.paramClass(JavaClassGen.java:514)
                         // jsignalml.JavaClassGen.classCacheMethod(JavaClassGen.java:954)
@@ -2880,11 +2879,11 @@ public class New4D
                     /**
                      * 
                      * jsignalml.ASTNode$ElseBranch._accept(ASTNode.java:653)
-                     * jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                     * jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                      * jsignalml.JavaClassGen.visit(JavaClassGen.java:1149)
                      * jsignalml.JavaClassGen.elseBranchClass(JavaClassGen.java:1167)
                      * jsignalml.ASTNode$ElseBranch._accept(ASTNode.java:653)
-                     * jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                     * jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                      * jsignalml.JavaClassGen.visit(JavaClassGen.java:1150)
                      * parent paramClass=_param_sample_format_1
                      * 
@@ -2897,36 +2896,36 @@ public class New4D
 
                         public void createParams() {
                             // jsignalml.ASTNode$ElseBranch._accept(ASTNode.java:653)
-                            // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                            // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                             // jsignalml.JavaClassGen.visit(JavaClassGen.java:1149)
                             // jsignalml.JavaClassGen.elseBranchClass(JavaClassGen.java:1168)
                             // jsignalml.JavaClassGen$Metadata.<init>(JavaClassGen.java:227)
                             // jsignalml.JavaClassGen$Metadata.<init>(JavaClassGen.java:204)
-                            // jsignalml.JavaClassGen.access$12(JavaClassGen.java:1809)
+                            // jsignalml.JavaClassGen.access$000(JavaClassGen.java:39)
                             log.debug("Else_gen_id_5.createParams()");
                             // jsignalml.ASTNode$ExprParam._accept(ASTNode.java:319)
-                            // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                            // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                             // jsignalml.JavaClassGen.visit(JavaClassGen.java:457)
                             // jsignalml.JavaClassGen.paramClass(JavaClassGen.java:517)
                             // jsignalml.JavaClassGen$Metadata.registerParam(JavaClassGen.java:234)
-                            // jsignalml.JavaClassGen.access$12(JavaClassGen.java:1809)
+                            // jsignalml.JavaClassGen.access$000(JavaClassGen.java:39)
                             register("sample_format_1", get_sample_format_1());
                         }
 
                         public void createChannels() {
                             // jsignalml.ASTNode$ElseBranch._accept(ASTNode.java:653)
-                            // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                            // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                             // jsignalml.JavaClassGen.visit(JavaClassGen.java:1149)
                             // jsignalml.JavaClassGen.elseBranchClass(JavaClassGen.java:1168)
                             // jsignalml.JavaClassGen$Metadata.<init>(JavaClassGen.java:227)
                             // jsignalml.JavaClassGen$Metadata.<init>(JavaClassGen.java:216)
-                            // jsignalml.JavaClassGen.access$12(JavaClassGen.java:1809)
+                            // jsignalml.JavaClassGen.access$000(JavaClassGen.java:39)
                             log.debug("Else_gen_id_5.createChannels()");
                         }
 
                         public String id() {
                             // jsignalml.ASTNode$ElseBranch._accept(ASTNode.java:653)
-                            // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                            // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                             // jsignalml.JavaClassGen.visit(JavaClassGen.java:1151)
                             // jsignalml.JavaClassGen.idMethod(JavaClassGen.java:525)
                             return "gen_id_5";
@@ -2934,7 +2933,7 @@ public class New4D
 
                         public New4D.File_main.If_format.ElseIf_gen_id_3 .ElseIf_gen_id_4 .Else_gen_id_5 ._param_sample_format_1 get_sample_format_1() {
                             // jsignalml.ASTNode$ExprParam._accept(ASTNode.java:319)
-                            // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                            // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                             // jsignalml.JavaClassGen.visit(JavaClassGen.java:457)
                             // jsignalml.JavaClassGen.paramClass(JavaClassGen.java:514)
                             // jsignalml.JavaClassGen.classCacheMethod(JavaClassGen.java:954)
@@ -2949,7 +2948,7 @@ public class New4D
                         /**
                          * 
                          * jsignalml.ASTNode$ExprParam._accept(ASTNode.java:319)
-                         * jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                         * jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                          * jsignalml.JavaClassGen.visit(JavaClassGen.java:457)
                          * jsignalml.JavaClassGen.paramClass(JavaClassGen.java:510)
                          * node.type=TypeString
@@ -2963,7 +2962,7 @@ public class New4D
 
                             public String id() {
                                 // jsignalml.ASTNode$ExprParam._accept(ASTNode.java:319)
-                                // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                                // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                                 // jsignalml.JavaClassGen.visit(JavaClassGen.java:458)
                                 // jsignalml.JavaClassGen.idMethod(JavaClassGen.java:525)
                                 return "sample_format_1";
@@ -2971,7 +2970,7 @@ public class New4D
 
                             protected TypeString _get() {
                                 // jsignalml.ASTNode$ExprParam._accept(ASTNode.java:319)
-                                // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                                // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                                 // jsignalml.JavaClassGen.visit(JavaClassGen.java:460)
                                 // jsignalml.JavaClassGen.getExprMethod(JavaClassGen.java:696)
                                 // node.type=TypeString
@@ -2988,7 +2987,7 @@ public class New4D
                     /**
                      * 
                      * jsignalml.ASTNode$ExprParam._accept(ASTNode.java:319)
-                     * jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                     * jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                      * jsignalml.JavaClassGen.visit(JavaClassGen.java:457)
                      * jsignalml.JavaClassGen.paramClass(JavaClassGen.java:510)
                      * node.type=TypeString
@@ -3002,7 +3001,7 @@ public class New4D
 
                         public String id() {
                             // jsignalml.ASTNode$ExprParam._accept(ASTNode.java:319)
-                            // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                            // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                             // jsignalml.JavaClassGen.visit(JavaClassGen.java:458)
                             // jsignalml.JavaClassGen.idMethod(JavaClassGen.java:525)
                             return "sample_format_1";
@@ -3010,7 +3009,7 @@ public class New4D
 
                         protected TypeString _get() {
                             // jsignalml.ASTNode$ExprParam._accept(ASTNode.java:319)
-                            // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                            // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                             // jsignalml.JavaClassGen.visit(JavaClassGen.java:460)
                             // jsignalml.JavaClassGen.getExprMethod(JavaClassGen.java:696)
                             // node.type=TypeString
@@ -3027,7 +3026,7 @@ public class New4D
                 /**
                  * 
                  * jsignalml.ASTNode$ExprParam._accept(ASTNode.java:319)
-                 * jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                 * jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                  * jsignalml.JavaClassGen.visit(JavaClassGen.java:457)
                  * jsignalml.JavaClassGen.paramClass(JavaClassGen.java:510)
                  * node.type=TypeString
@@ -3041,7 +3040,7 @@ public class New4D
 
                     public String id() {
                         // jsignalml.ASTNode$ExprParam._accept(ASTNode.java:319)
-                        // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                        // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                         // jsignalml.JavaClassGen.visit(JavaClassGen.java:458)
                         // jsignalml.JavaClassGen.idMethod(JavaClassGen.java:525)
                         return "sample_format_1";
@@ -3049,7 +3048,7 @@ public class New4D
 
                     protected TypeString _get() {
                         // jsignalml.ASTNode$ExprParam._accept(ASTNode.java:319)
-                        // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                        // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                         // jsignalml.JavaClassGen.visit(JavaClassGen.java:460)
                         // jsignalml.JavaClassGen.getExprMethod(JavaClassGen.java:696)
                         // node.type=TypeString
@@ -3066,7 +3065,7 @@ public class New4D
             /**
              * 
              * jsignalml.ASTNode$ExprParam._accept(ASTNode.java:319)
-             * jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+             * jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
              * jsignalml.JavaClassGen.visit(JavaClassGen.java:457)
              * jsignalml.JavaClassGen.paramClass(JavaClassGen.java:510)
              * node.type=TypeString
@@ -3080,7 +3079,7 @@ public class New4D
 
                 public String id() {
                     // jsignalml.ASTNode$ExprParam._accept(ASTNode.java:319)
-                    // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                    // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                     // jsignalml.JavaClassGen.visit(JavaClassGen.java:458)
                     // jsignalml.JavaClassGen.idMethod(JavaClassGen.java:525)
                     return "sample_format_1";
@@ -3088,7 +3087,7 @@ public class New4D
 
                 protected TypeString _get() {
                     // jsignalml.ASTNode$ExprParam._accept(ASTNode.java:319)
-                    // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                    // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                     // jsignalml.JavaClassGen.visit(JavaClassGen.java:460)
                     // jsignalml.JavaClassGen.getExprMethod(JavaClassGen.java:696)
                     // node.type=TypeString
@@ -3105,11 +3104,11 @@ public class New4D
         /**
          * 
          * jsignalml.ASTNode$Conditional._accept(ASTNode.java:580)
-         * jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+         * jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
          * jsignalml.JavaClassGen.visit(JavaClassGen.java:1094)
          * jsignalml.JavaClassGen.conditionalClass(JavaClassGen.java:1110)
          * jsignalml.ASTNode$Conditional._accept(ASTNode.java:580)
-         * jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+         * jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
          * jsignalml.JavaClassGen.visit(JavaClassGen.java:1095)
          * parent paramClass=_param_sample_size_1
          * 
@@ -3123,49 +3122,49 @@ public class New4D
 
             public void createParamsIf() {
                 // jsignalml.ASTNode$Conditional._accept(ASTNode.java:580)
-                // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                 // jsignalml.JavaClassGen.visit(JavaClassGen.java:1094)
                 // jsignalml.JavaClassGen.conditionalClass(JavaClassGen.java:1112)
                 // jsignalml.JavaClassGen$MetadataIfBranch.<init>(JavaClassGen.java:296)
                 // jsignalml.JavaClassGen$Metadata.<init>(JavaClassGen.java:204)
-                // jsignalml.JavaClassGen.access$12(JavaClassGen.java:1809)
+                // jsignalml.JavaClassGen.access$000(JavaClassGen.java:39)
                 log.debug("If_size.createParamsIf()");
                 // jsignalml.ASTNode$ExprParam._accept(ASTNode.java:319)
-                // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                 // jsignalml.JavaClassGen.visit(JavaClassGen.java:457)
                 // jsignalml.JavaClassGen.paramClass(JavaClassGen.java:517)
                 // jsignalml.JavaClassGen$Metadata.registerParam(JavaClassGen.java:234)
-                // jsignalml.JavaClassGen.access$12(JavaClassGen.java:1809)
+                // jsignalml.JavaClassGen.access$000(JavaClassGen.java:39)
                 register("sample_size_1", get_sample_size_1());
             }
 
             public void createChannelsIf() {
                 // jsignalml.ASTNode$Conditional._accept(ASTNode.java:580)
-                // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                 // jsignalml.JavaClassGen.visit(JavaClassGen.java:1094)
                 // jsignalml.JavaClassGen.conditionalClass(JavaClassGen.java:1112)
                 // jsignalml.JavaClassGen$MetadataIfBranch.<init>(JavaClassGen.java:296)
                 // jsignalml.JavaClassGen$Metadata.<init>(JavaClassGen.java:216)
-                // jsignalml.JavaClassGen.access$12(JavaClassGen.java:1809)
+                // jsignalml.JavaClassGen.access$000(JavaClassGen.java:39)
                 log.debug("If_size.createChannelsIf()");
             }
 
             public void createParamsElseIf() {
                 // jsignalml.ASTNode$Conditional._accept(ASTNode.java:580)
-                // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                 // jsignalml.JavaClassGen.visit(JavaClassGen.java:1094)
                 // jsignalml.JavaClassGen.conditionalClass(JavaClassGen.java:1112)
                 // jsignalml.JavaClassGen$MetadataIfBranch.<init>(JavaClassGen.java:297)
                 // jsignalml.JavaClassGen$Metadata.<init>(JavaClassGen.java:204)
-                // jsignalml.JavaClassGen.access$12(JavaClassGen.java:1809)
+                // jsignalml.JavaClassGen.access$000(JavaClassGen.java:39)
                 log.debug("If_size.createParamsElseIf()");
                 {
                     // jsignalml.ASTNode$ElseIfBranch._accept(ASTNode.java:620)
-                    // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                    // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                     // jsignalml.JavaClassGen.visit(JavaClassGen.java:1194)
                     // jsignalml.JavaClassGen.elseIfBranchClass(JavaClassGen.java:1222)
                     // jsignalml.JavaClassGen$Metadata.registerContext(JavaClassGen.java:257)
-                    // jsignalml.JavaClassGen.access$12(JavaClassGen.java:1809)
+                    // jsignalml.JavaClassGen.access$000(JavaClassGen.java:39)
                     New4D.File_main.If_size.ElseIf_gen_id_0 obj = get_gen_id_0();
                     register("gen_id_0", obj);
                     obj.createParams();
@@ -3174,20 +3173,20 @@ public class New4D
 
             public void createChannelsElseIf() {
                 // jsignalml.ASTNode$Conditional._accept(ASTNode.java:580)
-                // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                 // jsignalml.JavaClassGen.visit(JavaClassGen.java:1094)
                 // jsignalml.JavaClassGen.conditionalClass(JavaClassGen.java:1112)
                 // jsignalml.JavaClassGen$MetadataIfBranch.<init>(JavaClassGen.java:297)
                 // jsignalml.JavaClassGen$Metadata.<init>(JavaClassGen.java:216)
-                // jsignalml.JavaClassGen.access$12(JavaClassGen.java:1809)
+                // jsignalml.JavaClassGen.access$000(JavaClassGen.java:39)
                 log.debug("If_size.createChannelsElseIf()");
                 {
                     // jsignalml.ASTNode$ElseIfBranch._accept(ASTNode.java:620)
-                    // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                    // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                     // jsignalml.JavaClassGen.visit(JavaClassGen.java:1194)
                     // jsignalml.JavaClassGen.elseIfBranchClass(JavaClassGen.java:1222)
                     // jsignalml.JavaClassGen$Metadata.registerContext(JavaClassGen.java:264)
-                    // jsignalml.JavaClassGen.access$12(JavaClassGen.java:1809)
+                    // jsignalml.JavaClassGen.access$000(JavaClassGen.java:39)
                     New4D.File_main.If_size.ElseIf_gen_id_0 obj = get_gen_id_0();
                     obj.createChannels();
                 }
@@ -3195,23 +3194,23 @@ public class New4D
 
             public void createParamsElse() {
                 // jsignalml.ASTNode$Conditional._accept(ASTNode.java:580)
-                // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                 // jsignalml.JavaClassGen.visit(JavaClassGen.java:1094)
                 // jsignalml.JavaClassGen.conditionalClass(JavaClassGen.java:1112)
                 // jsignalml.JavaClassGen$MetadataIfBranch.<init>(JavaClassGen.java:298)
                 // jsignalml.JavaClassGen$Metadata.<init>(JavaClassGen.java:204)
-                // jsignalml.JavaClassGen.access$12(JavaClassGen.java:1809)
+                // jsignalml.JavaClassGen.access$000(JavaClassGen.java:39)
                 log.debug("If_size.createParamsElse()");
             }
 
             public void createChannelsElse() {
                 // jsignalml.ASTNode$Conditional._accept(ASTNode.java:580)
-                // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                 // jsignalml.JavaClassGen.visit(JavaClassGen.java:1094)
                 // jsignalml.JavaClassGen.conditionalClass(JavaClassGen.java:1112)
                 // jsignalml.JavaClassGen$MetadataIfBranch.<init>(JavaClassGen.java:298)
                 // jsignalml.JavaClassGen$Metadata.<init>(JavaClassGen.java:216)
-                // jsignalml.JavaClassGen.access$12(JavaClassGen.java:1809)
+                // jsignalml.JavaClassGen.access$000(JavaClassGen.java:39)
                 log.debug("If_size.createChannelsElse()");
             }
 
@@ -3221,7 +3220,7 @@ public class New4D
 
             public String id() {
                 // jsignalml.ASTNode$Conditional._accept(ASTNode.java:580)
-                // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                 // jsignalml.JavaClassGen.visit(JavaClassGen.java:1096)
                 // jsignalml.JavaClassGen.idMethod(JavaClassGen.java:525)
                 return "size";
@@ -3229,7 +3228,7 @@ public class New4D
 
             public Type getCondition() {
                 // jsignalml.ASTNode$Conditional._accept(ASTNode.java:580)
-                // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                 // jsignalml.JavaClassGen.visit(JavaClassGen.java:1097)
                 // jsignalml.JavaClassGen.conditionMethod(JavaClassGen.java:1136)
                 Type test = ((get_msi_format().get().compareTo(new TypeString("bigendian,short")) == 0)?TypeInt.True:TypeInt.False);
@@ -3238,7 +3237,7 @@ public class New4D
 
             public New4D.File_main.If_size._param_sample_size_1 get_sample_size_1() {
                 // jsignalml.ASTNode$ExprParam._accept(ASTNode.java:319)
-                // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                 // jsignalml.JavaClassGen.visit(JavaClassGen.java:457)
                 // jsignalml.JavaClassGen.paramClass(JavaClassGen.java:514)
                 // jsignalml.JavaClassGen.classCacheMethod(JavaClassGen.java:954)
@@ -3251,7 +3250,7 @@ public class New4D
 
             public New4D.File_main.If_size.ElseIf_gen_id_0 get_gen_id_0() {
                 // jsignalml.ASTNode$ElseIfBranch._accept(ASTNode.java:620)
-                // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                 // jsignalml.JavaClassGen.visit(JavaClassGen.java:1194)
                 // jsignalml.JavaClassGen.elseIfBranchClass(JavaClassGen.java:1218)
                 // jsignalml.JavaClassGen.classCacheMethod(JavaClassGen.java:954)
@@ -3266,11 +3265,11 @@ public class New4D
             /**
              * 
              * jsignalml.ASTNode$ElseIfBranch._accept(ASTNode.java:620)
-             * jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+             * jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
              * jsignalml.JavaClassGen.visit(JavaClassGen.java:1194)
              * jsignalml.JavaClassGen.elseIfBranchClass(JavaClassGen.java:1210)
              * jsignalml.ASTNode$ElseIfBranch._accept(ASTNode.java:620)
-             * jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+             * jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
              * jsignalml.JavaClassGen.visit(JavaClassGen.java:1195)
              * parent paramClass=_param_sample_size_1
              * 
@@ -3288,49 +3287,49 @@ public class New4D
 
                 public void createParamsIf() {
                     // jsignalml.ASTNode$ElseIfBranch._accept(ASTNode.java:620)
-                    // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                    // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                     // jsignalml.JavaClassGen.visit(JavaClassGen.java:1194)
                     // jsignalml.JavaClassGen.elseIfBranchClass(JavaClassGen.java:1215)
                     // jsignalml.JavaClassGen$MetadataIfBranch.<init>(JavaClassGen.java:296)
                     // jsignalml.JavaClassGen$Metadata.<init>(JavaClassGen.java:204)
-                    // jsignalml.JavaClassGen.access$12(JavaClassGen.java:1809)
+                    // jsignalml.JavaClassGen.access$000(JavaClassGen.java:39)
                     log.debug("ElseIf_gen_id_0.createParamsIf()");
                     // jsignalml.ASTNode$ExprParam._accept(ASTNode.java:319)
-                    // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                    // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                     // jsignalml.JavaClassGen.visit(JavaClassGen.java:457)
                     // jsignalml.JavaClassGen.paramClass(JavaClassGen.java:517)
                     // jsignalml.JavaClassGen$Metadata.registerParam(JavaClassGen.java:234)
-                    // jsignalml.JavaClassGen.access$12(JavaClassGen.java:1809)
+                    // jsignalml.JavaClassGen.access$000(JavaClassGen.java:39)
                     register("sample_size_1", get_sample_size_1());
                 }
 
                 public void createChannelsIf() {
                     // jsignalml.ASTNode$ElseIfBranch._accept(ASTNode.java:620)
-                    // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                    // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                     // jsignalml.JavaClassGen.visit(JavaClassGen.java:1194)
                     // jsignalml.JavaClassGen.elseIfBranchClass(JavaClassGen.java:1215)
                     // jsignalml.JavaClassGen$MetadataIfBranch.<init>(JavaClassGen.java:296)
                     // jsignalml.JavaClassGen$Metadata.<init>(JavaClassGen.java:216)
-                    // jsignalml.JavaClassGen.access$12(JavaClassGen.java:1809)
+                    // jsignalml.JavaClassGen.access$000(JavaClassGen.java:39)
                     log.debug("ElseIf_gen_id_0.createChannelsIf()");
                 }
 
                 public void createParamsElseIf() {
                     // jsignalml.ASTNode$ElseIfBranch._accept(ASTNode.java:620)
-                    // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                    // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                     // jsignalml.JavaClassGen.visit(JavaClassGen.java:1194)
                     // jsignalml.JavaClassGen.elseIfBranchClass(JavaClassGen.java:1215)
                     // jsignalml.JavaClassGen$MetadataIfBranch.<init>(JavaClassGen.java:297)
                     // jsignalml.JavaClassGen$Metadata.<init>(JavaClassGen.java:204)
-                    // jsignalml.JavaClassGen.access$12(JavaClassGen.java:1809)
+                    // jsignalml.JavaClassGen.access$000(JavaClassGen.java:39)
                     log.debug("ElseIf_gen_id_0.createParamsElseIf()");
                     {
                         // jsignalml.ASTNode$ElseIfBranch._accept(ASTNode.java:620)
-                        // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                        // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                         // jsignalml.JavaClassGen.visit(JavaClassGen.java:1194)
                         // jsignalml.JavaClassGen.elseIfBranchClass(JavaClassGen.java:1222)
                         // jsignalml.JavaClassGen$Metadata.registerContext(JavaClassGen.java:257)
-                        // jsignalml.JavaClassGen.access$12(JavaClassGen.java:1809)
+                        // jsignalml.JavaClassGen.access$000(JavaClassGen.java:39)
                         New4D.File_main.If_size.ElseIf_gen_id_0 .ElseIf_gen_id_1 obj = get_gen_id_1();
                         register("gen_id_1", obj);
                         obj.createParams();
@@ -3339,20 +3338,20 @@ public class New4D
 
                 public void createChannelsElseIf() {
                     // jsignalml.ASTNode$ElseIfBranch._accept(ASTNode.java:620)
-                    // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                    // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                     // jsignalml.JavaClassGen.visit(JavaClassGen.java:1194)
                     // jsignalml.JavaClassGen.elseIfBranchClass(JavaClassGen.java:1215)
                     // jsignalml.JavaClassGen$MetadataIfBranch.<init>(JavaClassGen.java:297)
                     // jsignalml.JavaClassGen$Metadata.<init>(JavaClassGen.java:216)
-                    // jsignalml.JavaClassGen.access$12(JavaClassGen.java:1809)
+                    // jsignalml.JavaClassGen.access$000(JavaClassGen.java:39)
                     log.debug("ElseIf_gen_id_0.createChannelsElseIf()");
                     {
                         // jsignalml.ASTNode$ElseIfBranch._accept(ASTNode.java:620)
-                        // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                        // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                         // jsignalml.JavaClassGen.visit(JavaClassGen.java:1194)
                         // jsignalml.JavaClassGen.elseIfBranchClass(JavaClassGen.java:1222)
                         // jsignalml.JavaClassGen$Metadata.registerContext(JavaClassGen.java:264)
-                        // jsignalml.JavaClassGen.access$12(JavaClassGen.java:1809)
+                        // jsignalml.JavaClassGen.access$000(JavaClassGen.java:39)
                         New4D.File_main.If_size.ElseIf_gen_id_0 .ElseIf_gen_id_1 obj = get_gen_id_1();
                         obj.createChannels();
                     }
@@ -3360,29 +3359,29 @@ public class New4D
 
                 public void createParamsElse() {
                     // jsignalml.ASTNode$ElseIfBranch._accept(ASTNode.java:620)
-                    // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                    // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                     // jsignalml.JavaClassGen.visit(JavaClassGen.java:1194)
                     // jsignalml.JavaClassGen.elseIfBranchClass(JavaClassGen.java:1215)
                     // jsignalml.JavaClassGen$MetadataIfBranch.<init>(JavaClassGen.java:298)
                     // jsignalml.JavaClassGen$Metadata.<init>(JavaClassGen.java:204)
-                    // jsignalml.JavaClassGen.access$12(JavaClassGen.java:1809)
+                    // jsignalml.JavaClassGen.access$000(JavaClassGen.java:39)
                     log.debug("ElseIf_gen_id_0.createParamsElse()");
                 }
 
                 public void createChannelsElse() {
                     // jsignalml.ASTNode$ElseIfBranch._accept(ASTNode.java:620)
-                    // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                    // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                     // jsignalml.JavaClassGen.visit(JavaClassGen.java:1194)
                     // jsignalml.JavaClassGen.elseIfBranchClass(JavaClassGen.java:1215)
                     // jsignalml.JavaClassGen$MetadataIfBranch.<init>(JavaClassGen.java:298)
                     // jsignalml.JavaClassGen$Metadata.<init>(JavaClassGen.java:216)
-                    // jsignalml.JavaClassGen.access$12(JavaClassGen.java:1809)
+                    // jsignalml.JavaClassGen.access$000(JavaClassGen.java:39)
                     log.debug("ElseIf_gen_id_0.createChannelsElse()");
                 }
 
                 public String id() {
                     // jsignalml.ASTNode$ElseIfBranch._accept(ASTNode.java:620)
-                    // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                    // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                     // jsignalml.JavaClassGen.visit(JavaClassGen.java:1196)
                     // jsignalml.JavaClassGen.idMethod(JavaClassGen.java:525)
                     return "gen_id_0";
@@ -3390,7 +3389,7 @@ public class New4D
 
                 public Type getCondition() {
                     // jsignalml.ASTNode$ElseIfBranch._accept(ASTNode.java:620)
-                    // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                    // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                     // jsignalml.JavaClassGen.visit(JavaClassGen.java:1197)
                     // jsignalml.JavaClassGen.conditionMethod(JavaClassGen.java:1235)
                     Type test = ((get_msi_format().get().compareTo(new TypeString("bigendian,float")) == 0)?TypeInt.True:TypeInt.False);
@@ -3399,7 +3398,7 @@ public class New4D
 
                 public New4D.File_main.If_size.ElseIf_gen_id_0 ._param_sample_size_1 get_sample_size_1() {
                     // jsignalml.ASTNode$ExprParam._accept(ASTNode.java:319)
-                    // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                    // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                     // jsignalml.JavaClassGen.visit(JavaClassGen.java:457)
                     // jsignalml.JavaClassGen.paramClass(JavaClassGen.java:514)
                     // jsignalml.JavaClassGen.classCacheMethod(JavaClassGen.java:954)
@@ -3412,7 +3411,7 @@ public class New4D
 
                 public New4D.File_main.If_size.ElseIf_gen_id_0 .ElseIf_gen_id_1 get_gen_id_1() {
                     // jsignalml.ASTNode$ElseIfBranch._accept(ASTNode.java:620)
-                    // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                    // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                     // jsignalml.JavaClassGen.visit(JavaClassGen.java:1194)
                     // jsignalml.JavaClassGen.elseIfBranchClass(JavaClassGen.java:1218)
                     // jsignalml.JavaClassGen.classCacheMethod(JavaClassGen.java:954)
@@ -3427,11 +3426,11 @@ public class New4D
                 /**
                  * 
                  * jsignalml.ASTNode$ElseIfBranch._accept(ASTNode.java:620)
-                 * jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                 * jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                  * jsignalml.JavaClassGen.visit(JavaClassGen.java:1194)
                  * jsignalml.JavaClassGen.elseIfBranchClass(JavaClassGen.java:1210)
                  * jsignalml.ASTNode$ElseIfBranch._accept(ASTNode.java:620)
-                 * jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                 * jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                  * jsignalml.JavaClassGen.visit(JavaClassGen.java:1195)
                  * parent paramClass=_param_sample_size_1
                  * 
@@ -3448,71 +3447,71 @@ public class New4D
 
                     public void createParamsIf() {
                         // jsignalml.ASTNode$ElseIfBranch._accept(ASTNode.java:620)
-                        // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                        // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                         // jsignalml.JavaClassGen.visit(JavaClassGen.java:1194)
                         // jsignalml.JavaClassGen.elseIfBranchClass(JavaClassGen.java:1215)
                         // jsignalml.JavaClassGen$MetadataIfBranch.<init>(JavaClassGen.java:296)
                         // jsignalml.JavaClassGen$Metadata.<init>(JavaClassGen.java:204)
-                        // jsignalml.JavaClassGen.access$12(JavaClassGen.java:1809)
+                        // jsignalml.JavaClassGen.access$000(JavaClassGen.java:39)
                         log.debug("ElseIf_gen_id_1.createParamsIf()");
                         // jsignalml.ASTNode$ExprParam._accept(ASTNode.java:319)
-                        // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                        // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                         // jsignalml.JavaClassGen.visit(JavaClassGen.java:457)
                         // jsignalml.JavaClassGen.paramClass(JavaClassGen.java:517)
                         // jsignalml.JavaClassGen$Metadata.registerParam(JavaClassGen.java:234)
-                        // jsignalml.JavaClassGen.access$12(JavaClassGen.java:1809)
+                        // jsignalml.JavaClassGen.access$000(JavaClassGen.java:39)
                         register("sample_size_1", get_sample_size_1());
                     }
 
                     public void createChannelsIf() {
                         // jsignalml.ASTNode$ElseIfBranch._accept(ASTNode.java:620)
-                        // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                        // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                         // jsignalml.JavaClassGen.visit(JavaClassGen.java:1194)
                         // jsignalml.JavaClassGen.elseIfBranchClass(JavaClassGen.java:1215)
                         // jsignalml.JavaClassGen$MetadataIfBranch.<init>(JavaClassGen.java:296)
                         // jsignalml.JavaClassGen$Metadata.<init>(JavaClassGen.java:216)
-                        // jsignalml.JavaClassGen.access$12(JavaClassGen.java:1809)
+                        // jsignalml.JavaClassGen.access$000(JavaClassGen.java:39)
                         log.debug("ElseIf_gen_id_1.createChannelsIf()");
                     }
 
                     public void createParamsElseIf() {
                         // jsignalml.ASTNode$ElseIfBranch._accept(ASTNode.java:620)
-                        // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                        // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                         // jsignalml.JavaClassGen.visit(JavaClassGen.java:1194)
                         // jsignalml.JavaClassGen.elseIfBranchClass(JavaClassGen.java:1215)
                         // jsignalml.JavaClassGen$MetadataIfBranch.<init>(JavaClassGen.java:297)
                         // jsignalml.JavaClassGen$Metadata.<init>(JavaClassGen.java:204)
-                        // jsignalml.JavaClassGen.access$12(JavaClassGen.java:1809)
+                        // jsignalml.JavaClassGen.access$000(JavaClassGen.java:39)
                         log.debug("ElseIf_gen_id_1.createParamsElseIf()");
                     }
 
                     public void createChannelsElseIf() {
                         // jsignalml.ASTNode$ElseIfBranch._accept(ASTNode.java:620)
-                        // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                        // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                         // jsignalml.JavaClassGen.visit(JavaClassGen.java:1194)
                         // jsignalml.JavaClassGen.elseIfBranchClass(JavaClassGen.java:1215)
                         // jsignalml.JavaClassGen$MetadataIfBranch.<init>(JavaClassGen.java:297)
                         // jsignalml.JavaClassGen$Metadata.<init>(JavaClassGen.java:216)
-                        // jsignalml.JavaClassGen.access$12(JavaClassGen.java:1809)
+                        // jsignalml.JavaClassGen.access$000(JavaClassGen.java:39)
                         log.debug("ElseIf_gen_id_1.createChannelsElseIf()");
                     }
 
                     public void createParamsElse() {
                         // jsignalml.ASTNode$ElseIfBranch._accept(ASTNode.java:620)
-                        // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                        // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                         // jsignalml.JavaClassGen.visit(JavaClassGen.java:1194)
                         // jsignalml.JavaClassGen.elseIfBranchClass(JavaClassGen.java:1215)
                         // jsignalml.JavaClassGen$MetadataIfBranch.<init>(JavaClassGen.java:298)
                         // jsignalml.JavaClassGen$Metadata.<init>(JavaClassGen.java:204)
-                        // jsignalml.JavaClassGen.access$12(JavaClassGen.java:1809)
+                        // jsignalml.JavaClassGen.access$000(JavaClassGen.java:39)
                         log.debug("ElseIf_gen_id_1.createParamsElse()");
                         {
                             // jsignalml.ASTNode$ElseBranch._accept(ASTNode.java:653)
-                            // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                            // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                             // jsignalml.JavaClassGen.visit(JavaClassGen.java:1149)
                             // jsignalml.JavaClassGen.elseBranchClass(JavaClassGen.java:1165)
                             // jsignalml.JavaClassGen$Metadata.registerContext(JavaClassGen.java:257)
-                            // jsignalml.JavaClassGen.access$12(JavaClassGen.java:1809)
+                            // jsignalml.JavaClassGen.access$000(JavaClassGen.java:39)
                             New4D.File_main.If_size.ElseIf_gen_id_0 .ElseIf_gen_id_1 .Else_gen_id_2 obj = new New4D.File_main.If_size.ElseIf_gen_id_0 .ElseIf_gen_id_1 .Else_gen_id_2();
                             register("gen_id_2", obj);
                             obj.createParams();
@@ -3521,20 +3520,20 @@ public class New4D
 
                     public void createChannelsElse() {
                         // jsignalml.ASTNode$ElseIfBranch._accept(ASTNode.java:620)
-                        // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                        // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                         // jsignalml.JavaClassGen.visit(JavaClassGen.java:1194)
                         // jsignalml.JavaClassGen.elseIfBranchClass(JavaClassGen.java:1215)
                         // jsignalml.JavaClassGen$MetadataIfBranch.<init>(JavaClassGen.java:298)
                         // jsignalml.JavaClassGen$Metadata.<init>(JavaClassGen.java:216)
-                        // jsignalml.JavaClassGen.access$12(JavaClassGen.java:1809)
+                        // jsignalml.JavaClassGen.access$000(JavaClassGen.java:39)
                         log.debug("ElseIf_gen_id_1.createChannelsElse()");
                         {
                             // jsignalml.ASTNode$ElseBranch._accept(ASTNode.java:653)
-                            // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                            // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                             // jsignalml.JavaClassGen.visit(JavaClassGen.java:1149)
                             // jsignalml.JavaClassGen.elseBranchClass(JavaClassGen.java:1165)
                             // jsignalml.JavaClassGen$Metadata.registerContext(JavaClassGen.java:264)
-                            // jsignalml.JavaClassGen.access$12(JavaClassGen.java:1809)
+                            // jsignalml.JavaClassGen.access$000(JavaClassGen.java:39)
                             New4D.File_main.If_size.ElseIf_gen_id_0 .ElseIf_gen_id_1 .Else_gen_id_2 obj = new New4D.File_main.If_size.ElseIf_gen_id_0 .ElseIf_gen_id_1 .Else_gen_id_2();
                             obj.createChannels();
                         }
@@ -3542,7 +3541,7 @@ public class New4D
 
                     public String id() {
                         // jsignalml.ASTNode$ElseIfBranch._accept(ASTNode.java:620)
-                        // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                        // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                         // jsignalml.JavaClassGen.visit(JavaClassGen.java:1196)
                         // jsignalml.JavaClassGen.idMethod(JavaClassGen.java:525)
                         return "gen_id_1";
@@ -3550,7 +3549,7 @@ public class New4D
 
                     public Type getCondition() {
                         // jsignalml.ASTNode$ElseIfBranch._accept(ASTNode.java:620)
-                        // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                        // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                         // jsignalml.JavaClassGen.visit(JavaClassGen.java:1197)
                         // jsignalml.JavaClassGen.conditionMethod(JavaClassGen.java:1235)
                         Type test = ((get_msi_format().get().compareTo(new TypeString("ASCII")) == 0)?TypeInt.True:TypeInt.False);
@@ -3559,7 +3558,7 @@ public class New4D
 
                     public New4D.File_main.If_size.ElseIf_gen_id_0 .ElseIf_gen_id_1 ._param_sample_size_1 get_sample_size_1() {
                         // jsignalml.ASTNode$ExprParam._accept(ASTNode.java:319)
-                        // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                        // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                         // jsignalml.JavaClassGen.visit(JavaClassGen.java:457)
                         // jsignalml.JavaClassGen.paramClass(JavaClassGen.java:514)
                         // jsignalml.JavaClassGen.classCacheMethod(JavaClassGen.java:954)
@@ -3574,11 +3573,11 @@ public class New4D
                     /**
                      * 
                      * jsignalml.ASTNode$ElseBranch._accept(ASTNode.java:653)
-                     * jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                     * jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                      * jsignalml.JavaClassGen.visit(JavaClassGen.java:1149)
                      * jsignalml.JavaClassGen.elseBranchClass(JavaClassGen.java:1167)
                      * jsignalml.ASTNode$ElseBranch._accept(ASTNode.java:653)
-                     * jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                     * jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                      * jsignalml.JavaClassGen.visit(JavaClassGen.java:1150)
                      * parent paramClass=_param_sample_size_1
                      * 
@@ -3591,36 +3590,36 @@ public class New4D
 
                         public void createParams() {
                             // jsignalml.ASTNode$ElseBranch._accept(ASTNode.java:653)
-                            // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                            // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                             // jsignalml.JavaClassGen.visit(JavaClassGen.java:1149)
                             // jsignalml.JavaClassGen.elseBranchClass(JavaClassGen.java:1168)
                             // jsignalml.JavaClassGen$Metadata.<init>(JavaClassGen.java:227)
                             // jsignalml.JavaClassGen$Metadata.<init>(JavaClassGen.java:204)
-                            // jsignalml.JavaClassGen.access$12(JavaClassGen.java:1809)
+                            // jsignalml.JavaClassGen.access$000(JavaClassGen.java:39)
                             log.debug("Else_gen_id_2.createParams()");
                             // jsignalml.ASTNode$ExprParam._accept(ASTNode.java:319)
-                            // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                            // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                             // jsignalml.JavaClassGen.visit(JavaClassGen.java:457)
                             // jsignalml.JavaClassGen.paramClass(JavaClassGen.java:517)
                             // jsignalml.JavaClassGen$Metadata.registerParam(JavaClassGen.java:234)
-                            // jsignalml.JavaClassGen.access$12(JavaClassGen.java:1809)
+                            // jsignalml.JavaClassGen.access$000(JavaClassGen.java:39)
                             register("sample_size_1", get_sample_size_1());
                         }
 
                         public void createChannels() {
                             // jsignalml.ASTNode$ElseBranch._accept(ASTNode.java:653)
-                            // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                            // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                             // jsignalml.JavaClassGen.visit(JavaClassGen.java:1149)
                             // jsignalml.JavaClassGen.elseBranchClass(JavaClassGen.java:1168)
                             // jsignalml.JavaClassGen$Metadata.<init>(JavaClassGen.java:227)
                             // jsignalml.JavaClassGen$Metadata.<init>(JavaClassGen.java:216)
-                            // jsignalml.JavaClassGen.access$12(JavaClassGen.java:1809)
+                            // jsignalml.JavaClassGen.access$000(JavaClassGen.java:39)
                             log.debug("Else_gen_id_2.createChannels()");
                         }
 
                         public String id() {
                             // jsignalml.ASTNode$ElseBranch._accept(ASTNode.java:653)
-                            // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                            // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                             // jsignalml.JavaClassGen.visit(JavaClassGen.java:1151)
                             // jsignalml.JavaClassGen.idMethod(JavaClassGen.java:525)
                             return "gen_id_2";
@@ -3628,7 +3627,7 @@ public class New4D
 
                         public New4D.File_main.If_size.ElseIf_gen_id_0 .ElseIf_gen_id_1 .Else_gen_id_2 ._param_sample_size_1 get_sample_size_1() {
                             // jsignalml.ASTNode$ExprParam._accept(ASTNode.java:319)
-                            // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                            // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                             // jsignalml.JavaClassGen.visit(JavaClassGen.java:457)
                             // jsignalml.JavaClassGen.paramClass(JavaClassGen.java:514)
                             // jsignalml.JavaClassGen.classCacheMethod(JavaClassGen.java:954)
@@ -3643,7 +3642,7 @@ public class New4D
                         /**
                          * 
                          * jsignalml.ASTNode$ExprParam._accept(ASTNode.java:319)
-                         * jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                         * jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                          * jsignalml.JavaClassGen.visit(JavaClassGen.java:457)
                          * jsignalml.JavaClassGen.paramClass(JavaClassGen.java:510)
                          * node.type=TypeInt
@@ -3658,7 +3657,7 @@ public class New4D
 
                             public String id() {
                                 // jsignalml.ASTNode$ExprParam._accept(ASTNode.java:319)
-                                // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                                // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                                 // jsignalml.JavaClassGen.visit(JavaClassGen.java:458)
                                 // jsignalml.JavaClassGen.idMethod(JavaClassGen.java:525)
                                 return "sample_size_1";
@@ -3666,7 +3665,7 @@ public class New4D
 
                             protected TypeInt _get() {
                                 // jsignalml.ASTNode$ExprParam._accept(ASTNode.java:319)
-                                // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                                // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                                 // jsignalml.JavaClassGen.visit(JavaClassGen.java:460)
                                 // jsignalml.JavaClassGen.getExprMethod(JavaClassGen.java:696)
                                 // node.type=TypeInt
@@ -3677,7 +3676,7 @@ public class New4D
 
                             public Long get_p() {
                                 // jsignalml.ASTNode$ExprParam._accept(ASTNode.java:319)
-                                // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                                // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                                 // jsignalml.JavaClassGen.visit(JavaClassGen.java:460)
                                 // jsignalml.JavaClassGen.getExprMethod(JavaClassGen.java:705)
                                 // jsignalml.JavaClassGen.getMethod_p(JavaClassGen.java:737)
@@ -3696,7 +3695,7 @@ public class New4D
                     /**
                      * 
                      * jsignalml.ASTNode$ExprParam._accept(ASTNode.java:319)
-                     * jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                     * jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                      * jsignalml.JavaClassGen.visit(JavaClassGen.java:457)
                      * jsignalml.JavaClassGen.paramClass(JavaClassGen.java:510)
                      * node.type=TypeInt
@@ -3711,7 +3710,7 @@ public class New4D
 
                         public String id() {
                             // jsignalml.ASTNode$ExprParam._accept(ASTNode.java:319)
-                            // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                            // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                             // jsignalml.JavaClassGen.visit(JavaClassGen.java:458)
                             // jsignalml.JavaClassGen.idMethod(JavaClassGen.java:525)
                             return "sample_size_1";
@@ -3719,7 +3718,7 @@ public class New4D
 
                         protected TypeInt _get() {
                             // jsignalml.ASTNode$ExprParam._accept(ASTNode.java:319)
-                            // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                            // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                             // jsignalml.JavaClassGen.visit(JavaClassGen.java:460)
                             // jsignalml.JavaClassGen.getExprMethod(JavaClassGen.java:696)
                             // node.type=TypeInt
@@ -3730,7 +3729,7 @@ public class New4D
 
                         public Long get_p() {
                             // jsignalml.ASTNode$ExprParam._accept(ASTNode.java:319)
-                            // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                            // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                             // jsignalml.JavaClassGen.visit(JavaClassGen.java:460)
                             // jsignalml.JavaClassGen.getExprMethod(JavaClassGen.java:705)
                             // jsignalml.JavaClassGen.getMethod_p(JavaClassGen.java:737)
@@ -3749,7 +3748,7 @@ public class New4D
                 /**
                  * 
                  * jsignalml.ASTNode$ExprParam._accept(ASTNode.java:319)
-                 * jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                 * jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                  * jsignalml.JavaClassGen.visit(JavaClassGen.java:457)
                  * jsignalml.JavaClassGen.paramClass(JavaClassGen.java:510)
                  * node.type=TypeInt
@@ -3764,7 +3763,7 @@ public class New4D
 
                     public String id() {
                         // jsignalml.ASTNode$ExprParam._accept(ASTNode.java:319)
-                        // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                        // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                         // jsignalml.JavaClassGen.visit(JavaClassGen.java:458)
                         // jsignalml.JavaClassGen.idMethod(JavaClassGen.java:525)
                         return "sample_size_1";
@@ -3772,7 +3771,7 @@ public class New4D
 
                     protected TypeInt _get() {
                         // jsignalml.ASTNode$ExprParam._accept(ASTNode.java:319)
-                        // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                        // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                         // jsignalml.JavaClassGen.visit(JavaClassGen.java:460)
                         // jsignalml.JavaClassGen.getExprMethod(JavaClassGen.java:696)
                         // node.type=TypeInt
@@ -3783,7 +3782,7 @@ public class New4D
 
                     public Long get_p() {
                         // jsignalml.ASTNode$ExprParam._accept(ASTNode.java:319)
-                        // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                        // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                         // jsignalml.JavaClassGen.visit(JavaClassGen.java:460)
                         // jsignalml.JavaClassGen.getExprMethod(JavaClassGen.java:705)
                         // jsignalml.JavaClassGen.getMethod_p(JavaClassGen.java:737)
@@ -3802,7 +3801,7 @@ public class New4D
             /**
              * 
              * jsignalml.ASTNode$ExprParam._accept(ASTNode.java:319)
-             * jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+             * jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
              * jsignalml.JavaClassGen.visit(JavaClassGen.java:457)
              * jsignalml.JavaClassGen.paramClass(JavaClassGen.java:510)
              * node.type=TypeInt
@@ -3817,7 +3816,7 @@ public class New4D
 
                 public String id() {
                     // jsignalml.ASTNode$ExprParam._accept(ASTNode.java:319)
-                    // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                    // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                     // jsignalml.JavaClassGen.visit(JavaClassGen.java:458)
                     // jsignalml.JavaClassGen.idMethod(JavaClassGen.java:525)
                     return "sample_size_1";
@@ -3825,7 +3824,7 @@ public class New4D
 
                 protected TypeInt _get() {
                     // jsignalml.ASTNode$ExprParam._accept(ASTNode.java:319)
-                    // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                    // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                     // jsignalml.JavaClassGen.visit(JavaClassGen.java:460)
                     // jsignalml.JavaClassGen.getExprMethod(JavaClassGen.java:696)
                     // node.type=TypeInt
@@ -3836,7 +3835,7 @@ public class New4D
 
                 public Long get_p() {
                     // jsignalml.ASTNode$ExprParam._accept(ASTNode.java:319)
-                    // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                    // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                     // jsignalml.JavaClassGen.visit(JavaClassGen.java:460)
                     // jsignalml.JavaClassGen.getExprMethod(JavaClassGen.java:705)
                     // jsignalml.JavaClassGen.getMethod_p(JavaClassGen.java:737)
@@ -3855,7 +3854,7 @@ public class New4D
         /**
          * 
          * jsignalml.ASTNode$TextParam._accept(ASTNode.java:289)
-         * jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+         * jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
          * jsignalml.JavaClassGen.visit(JavaClassGen.java:488)
          * jsignalml.JavaClassGen.paramClass(JavaClassGen.java:510)
          * node.type=TypeInt
@@ -3870,7 +3869,7 @@ public class New4D
 
             public String id() {
                 // jsignalml.ASTNode$TextParam._accept(ASTNode.java:289)
-                // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                 // jsignalml.JavaClassGen.visit(JavaClassGen.java:489)
                 // jsignalml.JavaClassGen.idMethod(JavaClassGen.java:525)
                 return "EEG_channel_group";
@@ -3878,7 +3877,7 @@ public class New4D
 
             protected TypeInt _get() {
                 // jsignalml.ASTNode$TextParam._accept(ASTNode.java:289)
-                // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                 // jsignalml.JavaClassGen.visit(JavaClassGen.java:490)
                 // jsignalml.JavaClassGen.readParamFunction(JavaClassGen.java:609)
                 // node.type=TypeInt
@@ -3903,7 +3902,7 @@ public class New4D
 
             public Long get_p() {
                 // jsignalml.ASTNode$TextParam._accept(ASTNode.java:289)
-                // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                 // jsignalml.JavaClassGen.visit(JavaClassGen.java:490)
                 // jsignalml.JavaClassGen.readParamFunction(JavaClassGen.java:639)
                 // jsignalml.JavaClassGen.getMethod_p(JavaClassGen.java:737)
@@ -3920,7 +3919,7 @@ public class New4D
         /**
          * 
          * jsignalml.ASTNode$TextParam._accept(ASTNode.java:289)
-         * jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+         * jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
          * jsignalml.JavaClassGen.visit(JavaClassGen.java:488)
          * jsignalml.JavaClassGen.paramClass(JavaClassGen.java:510)
          * node.type=TypeInt
@@ -3935,7 +3934,7 @@ public class New4D
 
             public String id() {
                 // jsignalml.ASTNode$TextParam._accept(ASTNode.java:289)
-                // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                 // jsignalml.JavaClassGen.visit(JavaClassGen.java:489)
                 // jsignalml.JavaClassGen.idMethod(JavaClassGen.java:525)
                 return "EEG_number_of_channels";
@@ -3943,7 +3942,7 @@ public class New4D
 
             protected TypeInt _get() {
                 // jsignalml.ASTNode$TextParam._accept(ASTNode.java:289)
-                // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                 // jsignalml.JavaClassGen.visit(JavaClassGen.java:490)
                 // jsignalml.JavaClassGen.readParamFunction(JavaClassGen.java:609)
                 // node.type=TypeInt
@@ -3968,7 +3967,7 @@ public class New4D
 
             public Long get_p() {
                 // jsignalml.ASTNode$TextParam._accept(ASTNode.java:289)
-                // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                 // jsignalml.JavaClassGen.visit(JavaClassGen.java:490)
                 // jsignalml.JavaClassGen.readParamFunction(JavaClassGen.java:639)
                 // jsignalml.JavaClassGen.getMethod_p(JavaClassGen.java:737)
@@ -3985,7 +3984,7 @@ public class New4D
         /**
          * 
          * jsignalml.ASTNode$TextParam._accept(ASTNode.java:289)
-         * jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+         * jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
          * jsignalml.JavaClassGen.visit(JavaClassGen.java:488)
          * jsignalml.JavaClassGen.paramClass(JavaClassGen.java:510)
          * node.type=TypeInt
@@ -4000,7 +3999,7 @@ public class New4D
 
             public String id() {
                 // jsignalml.ASTNode$TextParam._accept(ASTNode.java:289)
-                // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                 // jsignalml.JavaClassGen.visit(JavaClassGen.java:489)
                 // jsignalml.JavaClassGen.idMethod(JavaClassGen.java:525)
                 return "MEG_channel_group";
@@ -4008,7 +4007,7 @@ public class New4D
 
             protected TypeInt _get() {
                 // jsignalml.ASTNode$TextParam._accept(ASTNode.java:289)
-                // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                 // jsignalml.JavaClassGen.visit(JavaClassGen.java:490)
                 // jsignalml.JavaClassGen.readParamFunction(JavaClassGen.java:609)
                 // node.type=TypeInt
@@ -4033,7 +4032,7 @@ public class New4D
 
             public Long get_p() {
                 // jsignalml.ASTNode$TextParam._accept(ASTNode.java:289)
-                // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                 // jsignalml.JavaClassGen.visit(JavaClassGen.java:490)
                 // jsignalml.JavaClassGen.readParamFunction(JavaClassGen.java:639)
                 // jsignalml.JavaClassGen.getMethod_p(JavaClassGen.java:737)
@@ -4050,7 +4049,7 @@ public class New4D
         /**
          * 
          * jsignalml.ASTNode$TextParam._accept(ASTNode.java:289)
-         * jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+         * jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
          * jsignalml.JavaClassGen.visit(JavaClassGen.java:488)
          * jsignalml.JavaClassGen.paramClass(JavaClassGen.java:510)
          * node.type=TypeInt
@@ -4065,7 +4064,7 @@ public class New4D
 
             public String id() {
                 // jsignalml.ASTNode$TextParam._accept(ASTNode.java:289)
-                // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                 // jsignalml.JavaClassGen.visit(JavaClassGen.java:489)
                 // jsignalml.JavaClassGen.idMethod(JavaClassGen.java:525)
                 return "MEG_number_of_channels";
@@ -4073,7 +4072,7 @@ public class New4D
 
             protected TypeInt _get() {
                 // jsignalml.ASTNode$TextParam._accept(ASTNode.java:289)
-                // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                 // jsignalml.JavaClassGen.visit(JavaClassGen.java:490)
                 // jsignalml.JavaClassGen.readParamFunction(JavaClassGen.java:609)
                 // node.type=TypeInt
@@ -4098,7 +4097,7 @@ public class New4D
 
             public Long get_p() {
                 // jsignalml.ASTNode$TextParam._accept(ASTNode.java:289)
-                // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                 // jsignalml.JavaClassGen.visit(JavaClassGen.java:490)
                 // jsignalml.JavaClassGen.readParamFunction(JavaClassGen.java:639)
                 // jsignalml.JavaClassGen.getMethod_p(JavaClassGen.java:737)
@@ -4115,7 +4114,7 @@ public class New4D
         /**
          * 
          * jsignalml.ASTNode$TextParam._accept(ASTNode.java:289)
-         * jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+         * jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
          * jsignalml.JavaClassGen.visit(JavaClassGen.java:488)
          * jsignalml.JavaClassGen.paramClass(JavaClassGen.java:510)
          * node.type=TypeInt
@@ -4130,7 +4129,7 @@ public class New4D
 
             public String id() {
                 // jsignalml.ASTNode$TextParam._accept(ASTNode.java:289)
-                // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                 // jsignalml.JavaClassGen.visit(JavaClassGen.java:489)
                 // jsignalml.JavaClassGen.idMethod(JavaClassGen.java:525)
                 return "REFERENCE_channel_group";
@@ -4138,7 +4137,7 @@ public class New4D
 
             protected TypeInt _get() {
                 // jsignalml.ASTNode$TextParam._accept(ASTNode.java:289)
-                // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                 // jsignalml.JavaClassGen.visit(JavaClassGen.java:490)
                 // jsignalml.JavaClassGen.readParamFunction(JavaClassGen.java:609)
                 // node.type=TypeInt
@@ -4163,7 +4162,7 @@ public class New4D
 
             public Long get_p() {
                 // jsignalml.ASTNode$TextParam._accept(ASTNode.java:289)
-                // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                 // jsignalml.JavaClassGen.visit(JavaClassGen.java:490)
                 // jsignalml.JavaClassGen.readParamFunction(JavaClassGen.java:639)
                 // jsignalml.JavaClassGen.getMethod_p(JavaClassGen.java:737)
@@ -4180,7 +4179,7 @@ public class New4D
         /**
          * 
          * jsignalml.ASTNode$TextParam._accept(ASTNode.java:289)
-         * jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+         * jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
          * jsignalml.JavaClassGen.visit(JavaClassGen.java:488)
          * jsignalml.JavaClassGen.paramClass(JavaClassGen.java:510)
          * node.type=TypeInt
@@ -4195,7 +4194,7 @@ public class New4D
 
             public String id() {
                 // jsignalml.ASTNode$TextParam._accept(ASTNode.java:289)
-                // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                 // jsignalml.JavaClassGen.visit(JavaClassGen.java:489)
                 // jsignalml.JavaClassGen.idMethod(JavaClassGen.java:525)
                 return "REFERENCE_number_of_channels";
@@ -4203,7 +4202,7 @@ public class New4D
 
             protected TypeInt _get() {
                 // jsignalml.ASTNode$TextParam._accept(ASTNode.java:289)
-                // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                 // jsignalml.JavaClassGen.visit(JavaClassGen.java:490)
                 // jsignalml.JavaClassGen.readParamFunction(JavaClassGen.java:609)
                 // node.type=TypeInt
@@ -4228,7 +4227,7 @@ public class New4D
 
             public Long get_p() {
                 // jsignalml.ASTNode$TextParam._accept(ASTNode.java:289)
-                // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                 // jsignalml.JavaClassGen.visit(JavaClassGen.java:490)
                 // jsignalml.JavaClassGen.readParamFunction(JavaClassGen.java:639)
                 // jsignalml.JavaClassGen.getMethod_p(JavaClassGen.java:737)
@@ -4245,7 +4244,7 @@ public class New4D
         /**
          * 
          * jsignalml.ASTNode$TextParam._accept(ASTNode.java:289)
-         * jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+         * jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
          * jsignalml.JavaClassGen.visit(JavaClassGen.java:488)
          * jsignalml.JavaClassGen.paramClass(JavaClassGen.java:510)
          * node.type=TypeInt
@@ -4260,7 +4259,7 @@ public class New4D
 
             public String id() {
                 // jsignalml.ASTNode$TextParam._accept(ASTNode.java:289)
-                // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                 // jsignalml.JavaClassGen.visit(JavaClassGen.java:489)
                 // jsignalml.JavaClassGen.idMethod(JavaClassGen.java:525)
                 return "TRIGGER_channel_group";
@@ -4268,7 +4267,7 @@ public class New4D
 
             protected TypeInt _get() {
                 // jsignalml.ASTNode$TextParam._accept(ASTNode.java:289)
-                // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                 // jsignalml.JavaClassGen.visit(JavaClassGen.java:490)
                 // jsignalml.JavaClassGen.readParamFunction(JavaClassGen.java:609)
                 // node.type=TypeInt
@@ -4293,7 +4292,7 @@ public class New4D
 
             public Long get_p() {
                 // jsignalml.ASTNode$TextParam._accept(ASTNode.java:289)
-                // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                 // jsignalml.JavaClassGen.visit(JavaClassGen.java:490)
                 // jsignalml.JavaClassGen.readParamFunction(JavaClassGen.java:639)
                 // jsignalml.JavaClassGen.getMethod_p(JavaClassGen.java:737)
@@ -4310,7 +4309,7 @@ public class New4D
         /**
          * 
          * jsignalml.ASTNode$TextParam._accept(ASTNode.java:289)
-         * jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+         * jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
          * jsignalml.JavaClassGen.visit(JavaClassGen.java:488)
          * jsignalml.JavaClassGen.paramClass(JavaClassGen.java:510)
          * node.type=TypeInt
@@ -4325,7 +4324,7 @@ public class New4D
 
             public String id() {
                 // jsignalml.ASTNode$TextParam._accept(ASTNode.java:289)
-                // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                 // jsignalml.JavaClassGen.visit(JavaClassGen.java:489)
                 // jsignalml.JavaClassGen.idMethod(JavaClassGen.java:525)
                 return "TRIGGER_number_of_channels";
@@ -4333,7 +4332,7 @@ public class New4D
 
             protected TypeInt _get() {
                 // jsignalml.ASTNode$TextParam._accept(ASTNode.java:289)
-                // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                 // jsignalml.JavaClassGen.visit(JavaClassGen.java:490)
                 // jsignalml.JavaClassGen.readParamFunction(JavaClassGen.java:609)
                 // node.type=TypeInt
@@ -4358,7 +4357,7 @@ public class New4D
 
             public Long get_p() {
                 // jsignalml.ASTNode$TextParam._accept(ASTNode.java:289)
-                // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                 // jsignalml.JavaClassGen.visit(JavaClassGen.java:490)
                 // jsignalml.JavaClassGen.readParamFunction(JavaClassGen.java:639)
                 // jsignalml.JavaClassGen.getMethod_p(JavaClassGen.java:737)
@@ -4375,7 +4374,7 @@ public class New4D
         /**
          * 
          * jsignalml.ASTNode$TextParam._accept(ASTNode.java:289)
-         * jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+         * jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
          * jsignalml.JavaClassGen.visit(JavaClassGen.java:488)
          * jsignalml.JavaClassGen.paramClass(JavaClassGen.java:510)
          * node.type=TypeInt
@@ -4390,7 +4389,7 @@ public class New4D
 
             public String id() {
                 // jsignalml.ASTNode$TextParam._accept(ASTNode.java:289)
-                // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                 // jsignalml.JavaClassGen.visit(JavaClassGen.java:489)
                 // jsignalml.JavaClassGen.idMethod(JavaClassGen.java:525)
                 return "UTILITY_channel_group";
@@ -4398,7 +4397,7 @@ public class New4D
 
             protected TypeInt _get() {
                 // jsignalml.ASTNode$TextParam._accept(ASTNode.java:289)
-                // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                 // jsignalml.JavaClassGen.visit(JavaClassGen.java:490)
                 // jsignalml.JavaClassGen.readParamFunction(JavaClassGen.java:609)
                 // node.type=TypeInt
@@ -4423,7 +4422,7 @@ public class New4D
 
             public Long get_p() {
                 // jsignalml.ASTNode$TextParam._accept(ASTNode.java:289)
-                // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                 // jsignalml.JavaClassGen.visit(JavaClassGen.java:490)
                 // jsignalml.JavaClassGen.readParamFunction(JavaClassGen.java:639)
                 // jsignalml.JavaClassGen.getMethod_p(JavaClassGen.java:737)
@@ -4440,7 +4439,7 @@ public class New4D
         /**
          * 
          * jsignalml.ASTNode$TextParam._accept(ASTNode.java:289)
-         * jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+         * jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
          * jsignalml.JavaClassGen.visit(JavaClassGen.java:488)
          * jsignalml.JavaClassGen.paramClass(JavaClassGen.java:510)
          * node.type=TypeInt
@@ -4455,7 +4454,7 @@ public class New4D
 
             public String id() {
                 // jsignalml.ASTNode$TextParam._accept(ASTNode.java:289)
-                // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                 // jsignalml.JavaClassGen.visit(JavaClassGen.java:489)
                 // jsignalml.JavaClassGen.idMethod(JavaClassGen.java:525)
                 return "UTILITY_number_of_channels";
@@ -4463,7 +4462,7 @@ public class New4D
 
             protected TypeInt _get() {
                 // jsignalml.ASTNode$TextParam._accept(ASTNode.java:289)
-                // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                 // jsignalml.JavaClassGen.visit(JavaClassGen.java:490)
                 // jsignalml.JavaClassGen.readParamFunction(JavaClassGen.java:609)
                 // node.type=TypeInt
@@ -4488,7 +4487,7 @@ public class New4D
 
             public Long get_p() {
                 // jsignalml.ASTNode$TextParam._accept(ASTNode.java:289)
-                // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                 // jsignalml.JavaClassGen.visit(JavaClassGen.java:490)
                 // jsignalml.JavaClassGen.readParamFunction(JavaClassGen.java:639)
                 // jsignalml.JavaClassGen.getMethod_p(JavaClassGen.java:737)
@@ -4505,7 +4504,7 @@ public class New4D
         /**
          * 
          * jsignalml.ASTNode$TextParam._accept(ASTNode.java:289)
-         * jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+         * jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
          * jsignalml.JavaClassGen.visit(JavaClassGen.java:488)
          * jsignalml.JavaClassGen.paramClass(JavaClassGen.java:510)
          * node.type=TypeString
@@ -4519,7 +4518,7 @@ public class New4D
 
             public String id() {
                 // jsignalml.ASTNode$TextParam._accept(ASTNode.java:289)
-                // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                 // jsignalml.JavaClassGen.visit(JavaClassGen.java:489)
                 // jsignalml.JavaClassGen.idMethod(JavaClassGen.java:525)
                 return "acquisition_mode";
@@ -4527,7 +4526,7 @@ public class New4D
 
             protected TypeString _get() {
                 // jsignalml.ASTNode$TextParam._accept(ASTNode.java:289)
-                // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                 // jsignalml.JavaClassGen.visit(JavaClassGen.java:490)
                 // jsignalml.JavaClassGen.readParamFunction(JavaClassGen.java:609)
                 // node.type=TypeString
@@ -4556,7 +4555,7 @@ public class New4D
         /**
          * 
          * jsignalml.ASTNode$ExprParam._accept(ASTNode.java:319)
-         * jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+         * jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
          * jsignalml.JavaClassGen.visit(JavaClassGen.java:457)
          * jsignalml.JavaClassGen.paramClass(JavaClassGen.java:510)
          * node.type=TypeString
@@ -4570,7 +4569,7 @@ public class New4D
 
             public String id() {
                 // jsignalml.ASTNode$ExprParam._accept(ASTNode.java:319)
-                // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                 // jsignalml.JavaClassGen.visit(JavaClassGen.java:458)
                 // jsignalml.JavaClassGen.idMethod(JavaClassGen.java:525)
                 return "channel_name";
@@ -4578,7 +4577,7 @@ public class New4D
 
             protected TypeString _get() {
                 // jsignalml.ASTNode$ExprParam._accept(ASTNode.java:319)
-                // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                 // jsignalml.JavaClassGen.visit(JavaClassGen.java:460)
                 // jsignalml.JavaClassGen.getExprMethod(JavaClassGen.java:696)
                 // node.type=TypeString
@@ -4593,7 +4592,7 @@ public class New4D
         /**
          * 
          * jsignalml.ASTNode$ExprParam._accept(ASTNode.java:319)
-         * jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+         * jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
          * jsignalml.JavaClassGen.visit(JavaClassGen.java:457)
          * jsignalml.JavaClassGen.paramClass(JavaClassGen.java:510)
          * node.type=TypeString
@@ -4607,7 +4606,7 @@ public class New4D
 
             public String id() {
                 // jsignalml.ASTNode$ExprParam._accept(ASTNode.java:319)
-                // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                 // jsignalml.JavaClassGen.visit(JavaClassGen.java:458)
                 // jsignalml.JavaClassGen.idMethod(JavaClassGen.java:525)
                 return "channel_type_name";
@@ -4615,7 +4614,7 @@ public class New4D
 
             protected TypeString _get() {
                 // jsignalml.ASTNode$ExprParam._accept(ASTNode.java:319)
-                // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                 // jsignalml.JavaClassGen.visit(JavaClassGen.java:460)
                 // jsignalml.JavaClassGen.getExprMethod(JavaClassGen.java:696)
                 // node.type=TypeString
@@ -4630,7 +4629,7 @@ public class New4D
         /**
          * 
          * jsignalml.ASTNode$ExprParam._accept(ASTNode.java:319)
-         * jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+         * jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
          * jsignalml.JavaClassGen.visit(JavaClassGen.java:457)
          * jsignalml.JavaClassGen.paramClass(JavaClassGen.java:510)
          * node.type=TypeString
@@ -4644,7 +4643,7 @@ public class New4D
 
             public String id() {
                 // jsignalml.ASTNode$ExprParam._accept(ASTNode.java:319)
-                // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                 // jsignalml.JavaClassGen.visit(JavaClassGen.java:458)
                 // jsignalml.JavaClassGen.idMethod(JavaClassGen.java:525)
                 return "data_filename";
@@ -4652,7 +4651,7 @@ public class New4D
 
             protected TypeString _get() {
                 // jsignalml.ASTNode$ExprParam._accept(ASTNode.java:319)
-                // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                 // jsignalml.JavaClassGen.visit(JavaClassGen.java:460)
                 // jsignalml.JavaClassGen.getExprMethod(JavaClassGen.java:696)
                 // node.type=TypeString
@@ -4667,7 +4666,7 @@ public class New4D
         /**
          * 
          * jsignalml.ASTNode$TextParam._accept(ASTNode.java:289)
-         * jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+         * jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
          * jsignalml.JavaClassGen.visit(JavaClassGen.java:488)
          * jsignalml.JavaClassGen.paramClass(JavaClassGen.java:510)
          * node.type=TypeString
@@ -4681,7 +4680,7 @@ public class New4D
 
             public String id() {
                 // jsignalml.ASTNode$TextParam._accept(ASTNode.java:289)
-                // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                 // jsignalml.JavaClassGen.visit(JavaClassGen.java:489)
                 // jsignalml.JavaClassGen.idMethod(JavaClassGen.java:525)
                 return "data_format";
@@ -4689,7 +4688,7 @@ public class New4D
 
             protected TypeString _get() {
                 // jsignalml.ASTNode$TextParam._accept(ASTNode.java:289)
-                // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                 // jsignalml.JavaClassGen.visit(JavaClassGen.java:490)
                 // jsignalml.JavaClassGen.readParamFunction(JavaClassGen.java:609)
                 // node.type=TypeString
@@ -4718,7 +4717,7 @@ public class New4D
         /**
          * 
          * jsignalml.ASTNode$TextParam._accept(ASTNode.java:289)
-         * jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+         * jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
          * jsignalml.JavaClassGen.visit(JavaClassGen.java:488)
          * jsignalml.JavaClassGen.paramClass(JavaClassGen.java:510)
          * node.type=TypeString
@@ -4732,7 +4731,7 @@ public class New4D
 
             public String id() {
                 // jsignalml.ASTNode$TextParam._accept(ASTNode.java:289)
-                // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                 // jsignalml.JavaClassGen.visit(JavaClassGen.java:489)
                 // jsignalml.JavaClassGen.idMethod(JavaClassGen.java:525)
                 return "file_type";
@@ -4740,7 +4739,7 @@ public class New4D
 
             protected TypeString _get() {
                 // jsignalml.ASTNode$TextParam._accept(ASTNode.java:289)
-                // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                 // jsignalml.JavaClassGen.visit(JavaClassGen.java:490)
                 // jsignalml.JavaClassGen.readParamFunction(JavaClassGen.java:609)
                 // node.type=TypeString
@@ -4769,7 +4768,7 @@ public class New4D
         /**
          * 
          * jsignalml.ASTNode$ExprParam._accept(ASTNode.java:319)
-         * jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+         * jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
          * jsignalml.JavaClassGen.visit(JavaClassGen.java:457)
          * jsignalml.JavaClassGen.paramClass(JavaClassGen.java:510)
          * node.type=TypeInt
@@ -4784,7 +4783,7 @@ public class New4D
 
             public String id() {
                 // jsignalml.ASTNode$ExprParam._accept(ASTNode.java:319)
-                // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                 // jsignalml.JavaClassGen.visit(JavaClassGen.java:458)
                 // jsignalml.JavaClassGen.idMethod(JavaClassGen.java:525)
                 return "line_number_with_channel_sensitivities";
@@ -4792,7 +4791,7 @@ public class New4D
 
             protected TypeInt _get() {
                 // jsignalml.ASTNode$ExprParam._accept(ASTNode.java:319)
-                // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                 // jsignalml.JavaClassGen.visit(JavaClassGen.java:460)
                 // jsignalml.JavaClassGen.getExprMethod(JavaClassGen.java:696)
                 // node.type=TypeInt
@@ -4803,7 +4802,7 @@ public class New4D
 
             public Long get_p() {
                 // jsignalml.ASTNode$ExprParam._accept(ASTNode.java:319)
-                // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                 // jsignalml.JavaClassGen.visit(JavaClassGen.java:460)
                 // jsignalml.JavaClassGen.getExprMethod(JavaClassGen.java:705)
                 // jsignalml.JavaClassGen.getMethod_p(JavaClassGen.java:737)
@@ -4820,7 +4819,7 @@ public class New4D
         /**
          * 
          * jsignalml.ASTNode$ExprParam._accept(ASTNode.java:319)
-         * jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+         * jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
          * jsignalml.JavaClassGen.visit(JavaClassGen.java:457)
          * jsignalml.JavaClassGen.paramClass(JavaClassGen.java:510)
          * node.type=TypeString
@@ -4834,7 +4833,7 @@ public class New4D
 
             public String id() {
                 // jsignalml.ASTNode$ExprParam._accept(ASTNode.java:319)
-                // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                 // jsignalml.JavaClassGen.visit(JavaClassGen.java:458)
                 // jsignalml.JavaClassGen.idMethod(JavaClassGen.java:525)
                 return "line_pattern_for_channel_sensitivities";
@@ -4842,7 +4841,7 @@ public class New4D
 
             protected TypeString _get() {
                 // jsignalml.ASTNode$ExprParam._accept(ASTNode.java:319)
-                // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                 // jsignalml.JavaClassGen.visit(JavaClassGen.java:460)
                 // jsignalml.JavaClassGen.getExprMethod(JavaClassGen.java:696)
                 // node.type=TypeString
@@ -4857,7 +4856,7 @@ public class New4D
         /**
          * 
          * jsignalml.ASTNode$TextParam._accept(ASTNode.java:289)
-         * jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+         * jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
          * jsignalml.JavaClassGen.visit(JavaClassGen.java:488)
          * jsignalml.JavaClassGen.paramClass(JavaClassGen.java:510)
          * node.type=TypeFloat
@@ -4872,7 +4871,7 @@ public class New4D
 
             public String id() {
                 // jsignalml.ASTNode$TextParam._accept(ASTNode.java:289)
-                // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                 // jsignalml.JavaClassGen.visit(JavaClassGen.java:489)
                 // jsignalml.JavaClassGen.idMethod(JavaClassGen.java:525)
                 return "longest_epoch_duration";
@@ -4880,7 +4879,7 @@ public class New4D
 
             protected TypeFloat _get() {
                 // jsignalml.ASTNode$TextParam._accept(ASTNode.java:289)
-                // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                 // jsignalml.JavaClassGen.visit(JavaClassGen.java:490)
                 // jsignalml.JavaClassGen.readParamFunction(JavaClassGen.java:609)
                 // node.type=TypeFloat
@@ -4905,7 +4904,7 @@ public class New4D
 
             public Double get_p() {
                 // jsignalml.ASTNode$TextParam._accept(ASTNode.java:289)
-                // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                 // jsignalml.JavaClassGen.visit(JavaClassGen.java:490)
                 // jsignalml.JavaClassGen.readParamFunction(JavaClassGen.java:639)
                 // jsignalml.JavaClassGen.getMethod_p(JavaClassGen.java:737)
@@ -4922,7 +4921,7 @@ public class New4D
         /**
          * 
          * jsignalml.ASTNode$TextParam._accept(ASTNode.java:289)
-         * jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+         * jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
          * jsignalml.JavaClassGen.visit(JavaClassGen.java:488)
          * jsignalml.JavaClassGen.paramClass(JavaClassGen.java:510)
          * node.type=TypeInt
@@ -4937,7 +4936,7 @@ public class New4D
 
             public String id() {
                 // jsignalml.ASTNode$TextParam._accept(ASTNode.java:289)
-                // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                 // jsignalml.JavaClassGen.visit(JavaClassGen.java:489)
                 // jsignalml.JavaClassGen.idMethod(JavaClassGen.java:525)
                 return "longest_epoch_nr";
@@ -4945,7 +4944,7 @@ public class New4D
 
             protected TypeInt _get() {
                 // jsignalml.ASTNode$TextParam._accept(ASTNode.java:289)
-                // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                 // jsignalml.JavaClassGen.visit(JavaClassGen.java:490)
                 // jsignalml.JavaClassGen.readParamFunction(JavaClassGen.java:609)
                 // node.type=TypeInt
@@ -4970,7 +4969,7 @@ public class New4D
 
             public Long get_p() {
                 // jsignalml.ASTNode$TextParam._accept(ASTNode.java:289)
-                // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                 // jsignalml.JavaClassGen.visit(JavaClassGen.java:490)
                 // jsignalml.JavaClassGen.readParamFunction(JavaClassGen.java:639)
                 // jsignalml.JavaClassGen.getMethod_p(JavaClassGen.java:737)
@@ -4987,7 +4986,7 @@ public class New4D
         /**
          * 
          * jsignalml.ASTNode$ExprParam._accept(ASTNode.java:319)
-         * jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+         * jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
          * jsignalml.JavaClassGen.visit(JavaClassGen.java:457)
          * jsignalml.JavaClassGen.paramClass(JavaClassGen.java:510)
          * node.type=TypeString
@@ -5001,7 +5000,7 @@ public class New4D
 
             public String id() {
                 // jsignalml.ASTNode$ExprParam._accept(ASTNode.java:319)
-                // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                 // jsignalml.JavaClassGen.visit(JavaClassGen.java:458)
                 // jsignalml.JavaClassGen.idMethod(JavaClassGen.java:525)
                 return "msi_format";
@@ -5009,7 +5008,7 @@ public class New4D
 
             protected TypeString _get() {
                 // jsignalml.ASTNode$ExprParam._accept(ASTNode.java:319)
-                // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                 // jsignalml.JavaClassGen.visit(JavaClassGen.java:460)
                 // jsignalml.JavaClassGen.getExprMethod(JavaClassGen.java:696)
                 // node.type=TypeString
@@ -5024,7 +5023,7 @@ public class New4D
         /**
          * 
          * jsignalml.ASTNode$ExprParam._accept(ASTNode.java:319)
-         * jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+         * jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
          * jsignalml.JavaClassGen.visit(JavaClassGen.java:457)
          * jsignalml.JavaClassGen.paramClass(JavaClassGen.java:510)
          * node.type=TypeInt
@@ -5039,7 +5038,7 @@ public class New4D
 
             public String id() {
                 // jsignalml.ASTNode$ExprParam._accept(ASTNode.java:319)
-                // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                 // jsignalml.JavaClassGen.visit(JavaClassGen.java:458)
                 // jsignalml.JavaClassGen.idMethod(JavaClassGen.java:525)
                 return "number_of_blocks";
@@ -5047,7 +5046,7 @@ public class New4D
 
             protected TypeInt _get() {
                 // jsignalml.ASTNode$ExprParam._accept(ASTNode.java:319)
-                // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                 // jsignalml.JavaClassGen.visit(JavaClassGen.java:460)
                 // jsignalml.JavaClassGen.getExprMethod(JavaClassGen.java:696)
                 // node.type=TypeInt
@@ -5058,7 +5057,7 @@ public class New4D
 
             public Long get_p() {
                 // jsignalml.ASTNode$ExprParam._accept(ASTNode.java:319)
-                // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                 // jsignalml.JavaClassGen.visit(JavaClassGen.java:460)
                 // jsignalml.JavaClassGen.getExprMethod(JavaClassGen.java:705)
                 // jsignalml.JavaClassGen.getMethod_p(JavaClassGen.java:737)
@@ -5075,7 +5074,7 @@ public class New4D
         /**
          * 
          * jsignalml.ASTNode$TextParam._accept(ASTNode.java:289)
-         * jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+         * jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
          * jsignalml.JavaClassGen.visit(JavaClassGen.java:488)
          * jsignalml.JavaClassGen.paramClass(JavaClassGen.java:510)
          * node.type=TypeInt
@@ -5090,7 +5089,7 @@ public class New4D
 
             public String id() {
                 // jsignalml.ASTNode$TextParam._accept(ASTNode.java:289)
-                // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                 // jsignalml.JavaClassGen.visit(JavaClassGen.java:489)
                 // jsignalml.JavaClassGen.idMethod(JavaClassGen.java:525)
                 return "number_of_samples";
@@ -5098,7 +5097,7 @@ public class New4D
 
             protected TypeInt _get() {
                 // jsignalml.ASTNode$TextParam._accept(ASTNode.java:289)
-                // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                 // jsignalml.JavaClassGen.visit(JavaClassGen.java:490)
                 // jsignalml.JavaClassGen.readParamFunction(JavaClassGen.java:609)
                 // node.type=TypeInt
@@ -5123,7 +5122,7 @@ public class New4D
 
             public Long get_p() {
                 // jsignalml.ASTNode$TextParam._accept(ASTNode.java:289)
-                // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                 // jsignalml.JavaClassGen.visit(JavaClassGen.java:490)
                 // jsignalml.JavaClassGen.readParamFunction(JavaClassGen.java:639)
                 // jsignalml.JavaClassGen.getMethod_p(JavaClassGen.java:737)
@@ -5140,7 +5139,7 @@ public class New4D
         /**
          * 
          * jsignalml.ASTNode$TextParam._accept(ASTNode.java:289)
-         * jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+         * jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
          * jsignalml.JavaClassGen.visit(JavaClassGen.java:488)
          * jsignalml.JavaClassGen.paramClass(JavaClassGen.java:510)
          * node.type=TypeInt
@@ -5155,7 +5154,7 @@ public class New4D
 
             public String id() {
                 // jsignalml.ASTNode$TextParam._accept(ASTNode.java:289)
-                // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                 // jsignalml.JavaClassGen.visit(JavaClassGen.java:489)
                 // jsignalml.JavaClassGen.idMethod(JavaClassGen.java:525)
                 return "period_hex_float";
@@ -5163,7 +5162,7 @@ public class New4D
 
             protected TypeInt _get() {
                 // jsignalml.ASTNode$TextParam._accept(ASTNode.java:289)
-                // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                 // jsignalml.JavaClassGen.visit(JavaClassGen.java:490)
                 // jsignalml.JavaClassGen.readParamFunction(JavaClassGen.java:609)
                 // node.type=TypeInt
@@ -5188,7 +5187,7 @@ public class New4D
 
             public Long get_p() {
                 // jsignalml.ASTNode$TextParam._accept(ASTNode.java:289)
-                // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                 // jsignalml.JavaClassGen.visit(JavaClassGen.java:490)
                 // jsignalml.JavaClassGen.readParamFunction(JavaClassGen.java:639)
                 // jsignalml.JavaClassGen.getMethod_p(JavaClassGen.java:737)
@@ -5205,7 +5204,7 @@ public class New4D
         /**
          * 
          * jsignalml.ASTNode$ExprParam._accept(ASTNode.java:319)
-         * jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+         * jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
          * jsignalml.JavaClassGen.visit(JavaClassGen.java:457)
          * jsignalml.JavaClassGen.paramClass(JavaClassGen.java:510)
          * node.type=TypeString
@@ -5219,7 +5218,7 @@ public class New4D
 
             public String id() {
                 // jsignalml.ASTNode$ExprParam._accept(ASTNode.java:319)
-                // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                 // jsignalml.JavaClassGen.visit(JavaClassGen.java:458)
                 // jsignalml.JavaClassGen.idMethod(JavaClassGen.java:525)
                 return "sample_format";
@@ -5227,7 +5226,7 @@ public class New4D
 
             protected TypeString _get() {
                 // jsignalml.ASTNode$ExprParam._accept(ASTNode.java:319)
-                // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                 // jsignalml.JavaClassGen.visit(JavaClassGen.java:460)
                 // jsignalml.JavaClassGen.getExprMethod(JavaClassGen.java:696)
                 // node.type=TypeString
@@ -5242,7 +5241,7 @@ public class New4D
         /**
          * 
          * jsignalml.ASTNode$TextParam._accept(ASTNode.java:289)
-         * jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+         * jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
          * jsignalml.JavaClassGen.visit(JavaClassGen.java:488)
          * jsignalml.JavaClassGen.paramClass(JavaClassGen.java:510)
          * node.type=TypeFloat
@@ -5257,7 +5256,7 @@ public class New4D
 
             public String id() {
                 // jsignalml.ASTNode$TextParam._accept(ASTNode.java:289)
-                // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                 // jsignalml.JavaClassGen.visit(JavaClassGen.java:489)
                 // jsignalml.JavaClassGen.idMethod(JavaClassGen.java:525)
                 return "sample_period";
@@ -5265,7 +5264,7 @@ public class New4D
 
             protected TypeFloat _get() {
                 // jsignalml.ASTNode$TextParam._accept(ASTNode.java:289)
-                // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                 // jsignalml.JavaClassGen.visit(JavaClassGen.java:490)
                 // jsignalml.JavaClassGen.readParamFunction(JavaClassGen.java:609)
                 // node.type=TypeFloat
@@ -5290,7 +5289,7 @@ public class New4D
 
             public Double get_p() {
                 // jsignalml.ASTNode$TextParam._accept(ASTNode.java:289)
-                // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                 // jsignalml.JavaClassGen.visit(JavaClassGen.java:490)
                 // jsignalml.JavaClassGen.readParamFunction(JavaClassGen.java:639)
                 // jsignalml.JavaClassGen.getMethod_p(JavaClassGen.java:737)
@@ -5307,7 +5306,7 @@ public class New4D
         /**
          * 
          * jsignalml.ASTNode$ExprParam._accept(ASTNode.java:319)
-         * jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+         * jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
          * jsignalml.JavaClassGen.visit(JavaClassGen.java:457)
          * jsignalml.JavaClassGen.paramClass(JavaClassGen.java:510)
          * node.type=TypeInt
@@ -5322,7 +5321,7 @@ public class New4D
 
             public String id() {
                 // jsignalml.ASTNode$ExprParam._accept(ASTNode.java:319)
-                // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                 // jsignalml.JavaClassGen.visit(JavaClassGen.java:458)
                 // jsignalml.JavaClassGen.idMethod(JavaClassGen.java:525)
                 return "sample_size";
@@ -5330,7 +5329,7 @@ public class New4D
 
             protected TypeInt _get() {
                 // jsignalml.ASTNode$ExprParam._accept(ASTNode.java:319)
-                // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                 // jsignalml.JavaClassGen.visit(JavaClassGen.java:460)
                 // jsignalml.JavaClassGen.getExprMethod(JavaClassGen.java:696)
                 // node.type=TypeInt
@@ -5341,7 +5340,7 @@ public class New4D
 
             public Long get_p() {
                 // jsignalml.ASTNode$ExprParam._accept(ASTNode.java:319)
-                // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                 // jsignalml.JavaClassGen.visit(JavaClassGen.java:460)
                 // jsignalml.JavaClassGen.getExprMethod(JavaClassGen.java:705)
                 // jsignalml.JavaClassGen.getMethod_p(JavaClassGen.java:737)
@@ -5358,7 +5357,7 @@ public class New4D
         /**
          * 
          * jsignalml.ASTNode$ExprParam._accept(ASTNode.java:319)
-         * jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+         * jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
          * jsignalml.JavaClassGen.visit(JavaClassGen.java:457)
          * jsignalml.JavaClassGen.paramClass(JavaClassGen.java:510)
          * node.type=TypeFloat
@@ -5373,7 +5372,7 @@ public class New4D
 
             public String id() {
                 // jsignalml.ASTNode$ExprParam._accept(ASTNode.java:319)
-                // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                 // jsignalml.JavaClassGen.visit(JavaClassGen.java:458)
                 // jsignalml.JavaClassGen.idMethod(JavaClassGen.java:525)
                 return "sample_unit";
@@ -5381,7 +5380,7 @@ public class New4D
 
             protected TypeInt _get() {
                 // jsignalml.ASTNode$ExprParam._accept(ASTNode.java:319)
-                // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                 // jsignalml.JavaClassGen.visit(JavaClassGen.java:460)
                 // jsignalml.JavaClassGen.getExprMethod(JavaClassGen.java:696)
                 // node.type=TypeFloat
@@ -5392,7 +5391,7 @@ public class New4D
 
             public Long get_p() {
                 // jsignalml.ASTNode$ExprParam._accept(ASTNode.java:319)
-                // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                 // jsignalml.JavaClassGen.visit(JavaClassGen.java:460)
                 // jsignalml.JavaClassGen.getExprMethod(JavaClassGen.java:705)
                 // jsignalml.JavaClassGen.getMethod_p(JavaClassGen.java:737)
@@ -5409,7 +5408,7 @@ public class New4D
         /**
          * 
          * jsignalml.ASTNode$TextParam._accept(ASTNode.java:289)
-         * jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+         * jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
          * jsignalml.JavaClassGen.visit(JavaClassGen.java:488)
          * jsignalml.JavaClassGen.paramClass(JavaClassGen.java:510)
          * node.type=TypeFloat
@@ -5424,7 +5423,7 @@ public class New4D
 
             public String id() {
                 // jsignalml.ASTNode$TextParam._accept(ASTNode.java:289)
-                // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                 // jsignalml.JavaClassGen.visit(JavaClassGen.java:489)
                 // jsignalml.JavaClassGen.idMethod(JavaClassGen.java:525)
                 return "sampling_frequency";
@@ -5432,7 +5431,7 @@ public class New4D
 
             protected TypeFloat _get() {
                 // jsignalml.ASTNode$TextParam._accept(ASTNode.java:289)
-                // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                 // jsignalml.JavaClassGen.visit(JavaClassGen.java:490)
                 // jsignalml.JavaClassGen.readParamFunction(JavaClassGen.java:609)
                 // node.type=TypeFloat
@@ -5457,7 +5456,7 @@ public class New4D
 
             public Double get_p() {
                 // jsignalml.ASTNode$TextParam._accept(ASTNode.java:289)
-                // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                 // jsignalml.JavaClassGen.visit(JavaClassGen.java:490)
                 // jsignalml.JavaClassGen.readParamFunction(JavaClassGen.java:639)
                 // jsignalml.JavaClassGen.getMethod_p(JavaClassGen.java:737)
@@ -5474,7 +5473,7 @@ public class New4D
         /**
          * 
          * jsignalml.ASTNode$TextParam._accept(ASTNode.java:289)
-         * jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+         * jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
          * jsignalml.JavaClassGen.visit(JavaClassGen.java:488)
          * jsignalml.JavaClassGen.paramClass(JavaClassGen.java:510)
          * node.type=TypeInt
@@ -5489,7 +5488,7 @@ public class New4D
 
             public String id() {
                 // jsignalml.ASTNode$TextParam._accept(ASTNode.java:289)
-                // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                 // jsignalml.JavaClassGen.visit(JavaClassGen.java:489)
                 // jsignalml.JavaClassGen.idMethod(JavaClassGen.java:525)
                 return "total_epochs";
@@ -5497,7 +5496,7 @@ public class New4D
 
             protected TypeInt _get() {
                 // jsignalml.ASTNode$TextParam._accept(ASTNode.java:289)
-                // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                 // jsignalml.JavaClassGen.visit(JavaClassGen.java:490)
                 // jsignalml.JavaClassGen.readParamFunction(JavaClassGen.java:609)
                 // node.type=TypeInt
@@ -5522,7 +5521,7 @@ public class New4D
 
             public Long get_p() {
                 // jsignalml.ASTNode$TextParam._accept(ASTNode.java:289)
-                // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                 // jsignalml.JavaClassGen.visit(JavaClassGen.java:490)
                 // jsignalml.JavaClassGen.readParamFunction(JavaClassGen.java:639)
                 // jsignalml.JavaClassGen.getMethod_p(JavaClassGen.java:737)
@@ -5539,7 +5538,7 @@ public class New4D
         /**
          * 
          * jsignalml.ASTNode$TextParam._accept(ASTNode.java:289)
-         * jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+         * jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
          * jsignalml.JavaClassGen.visit(JavaClassGen.java:488)
          * jsignalml.JavaClassGen.paramClass(JavaClassGen.java:510)
          * node.type=TypeInt
@@ -5554,7 +5553,7 @@ public class New4D
 
             public String id() {
                 // jsignalml.ASTNode$TextParam._accept(ASTNode.java:289)
-                // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                 // jsignalml.JavaClassGen.visit(JavaClassGen.java:489)
                 // jsignalml.JavaClassGen.idMethod(JavaClassGen.java:525)
                 return "total_number_of_channels";
@@ -5562,7 +5561,7 @@ public class New4D
 
             protected TypeInt _get() {
                 // jsignalml.ASTNode$TextParam._accept(ASTNode.java:289)
-                // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                 // jsignalml.JavaClassGen.visit(JavaClassGen.java:490)
                 // jsignalml.JavaClassGen.readParamFunction(JavaClassGen.java:609)
                 // node.type=TypeInt
@@ -5587,7 +5586,7 @@ public class New4D
 
             public Long get_p() {
                 // jsignalml.ASTNode$TextParam._accept(ASTNode.java:289)
-                // jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
+                // jsignalml.JavaClassGen.visit(JavaClassGen.java:39)
                 // jsignalml.JavaClassGen.visit(JavaClassGen.java:490)
                 // jsignalml.JavaClassGen.readParamFunction(JavaClassGen.java:639)
                 // jsignalml.JavaClassGen.getMethod_p(JavaClassGen.java:737)

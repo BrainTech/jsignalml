@@ -111,7 +111,7 @@ public class ALT
         if (argc > 1) {
             nrOfChannelsToShow = argc;
         }
-        for (int i = 1; (i<nrOfChannelsToShow); i ++) {
+        for (int i = 1; (i<=nrOfChannelsToShow); i ++) {
             int channelNr = (i- 1);
             if (argc > 1) {
                 channelNr = Integer.decode(args[i]).intValue();
