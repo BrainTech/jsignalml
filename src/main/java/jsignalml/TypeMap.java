@@ -7,8 +7,6 @@ import java.util.Map;
 import java.util.HashMap;
 import java.util.Set;
 
-import org.apache.commons.lang.NotImplementedException;
-
 public class TypeMap extends Type /* implements Map<Type, Type>  */ {
 	public static final TypeMap I = new TypeMap();
 
@@ -20,7 +18,7 @@ public class TypeMap extends Type /* implements Map<Type, Type>  */ {
 	}
 
 	public TypeMap(List<Map.Entry<Type, Type>> list) {
-		this.map = new HashMap(list.size());
+		this.map = new HashMap<Type, Type>(list.size());
 		for(Map.Entry<Type, Type> entry: list)
 			this.map.put(entry.getKey(), entry.getValue());
 	}
@@ -28,7 +26,7 @@ public class TypeMap extends Type /* implements Map<Type, Type>  */ {
 	public TypeMap(Type...items) {
 		if(items.length % 2 != 0)
 			throw new ExpressionFault.ArgMismatch();
-		this.map = new HashMap(items.length / 2);
+		this.map = new HashMap<Type, Type>(items.length / 2);
 		for(int i=0; i<items.length; i+=2)
 			this.map.put(items[i], items[i+1]);
 	}
@@ -44,14 +42,16 @@ public class TypeMap extends Type /* implements Map<Type, Type>  */ {
 		Type typed[] = new Type[items.length];
 		for (int i=0; i<items.length; i++) {
 			Object item = items[i];
-			if (item instanceof java.lang.Integer) {
-				typed[i] = new TypeInt((java.lang.Integer)item);;
-			} else if (item instanceof java.lang.Double) {
-				typed[i] = new TypeFloat((java.lang.Double)item);
-			} else if (item instanceof java.lang.Float) {
-				typed[i] = new TypeFloat((java.lang.Float)item);
-			} else if (item instanceof java.lang.String) {
-				typed[i] = new TypeString((java.lang.String)item);
+			if (item instanceof Integer) {
+				typed[i] = new TypeInt((Integer) item);;
+			} else if (item instanceof Double) {
+				typed[i] = new TypeFloat((Double) item);
+			} else if (item instanceof Float) {
+				typed[i] = new TypeFloat((Float) item);
+			} else if (item instanceof String) {
+				typed[i] = new TypeString((String) item);
+			} else if (item instanceof Boolean) {
+				typed[i] = new TypeBool((Boolean) item);
 			} else {
 				throw new RuntimeException();
 			}
@@ -64,7 +64,7 @@ public class TypeMap extends Type /* implements Map<Type, Type>  */ {
 		return this.map;
 	}
 
-	public java.lang.String repr() {
+	public String repr() {
 		StringBuilder repr = new StringBuilder("{");
 		boolean first = true;
 		for (Map.Entry<Type, Type> entry: this.map.entrySet()) {
@@ -235,7 +235,7 @@ public class TypeMap extends Type /* implements Map<Type, Type>  */ {
 	public TypeInt bin_neg() {
 		throw new ExpressionFault.TypeError();
 	}
-	
+
 	@Override
 	public String toString() {
 		String result = "TypeMap [";

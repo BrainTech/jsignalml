@@ -3,15 +3,11 @@ package jsignalml;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.LinkedList;
 import java.util.Iterator;
 import static java.util.Collections.unmodifiableList;
-import static java.lang.String.format;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.NotImplementedException;
-
-import jsignalml.logging.Logger;
 
 public class TypeList extends Type implements Iterable<Type> {
 	public static final TypeList I = new TypeList();
@@ -38,14 +34,14 @@ public class TypeList extends Type implements Iterable<Type> {
 	public static TypeList make(Object... items) {
 		java.util.List<Type> list = util.newLinkedList();
 		for (Object item: items) {
-			if (item instanceof java.lang.Integer) {
-				list.add(new TypeInt((java.lang.Integer)item));
-			} else if (item instanceof java.lang.Double) {
-				list.add(new TypeFloat((java.lang.Double)item));
-			} else if (item instanceof java.lang.Float) {
-				list.add(new TypeFloat((java.lang.Float)item));
-			} else if (item instanceof java.lang.String) {
-				list.add(new TypeString((java.lang.String)item));
+			if (item instanceof Integer) {
+				list.add(new TypeInt((Integer) item));
+			} else if (item instanceof Double) {
+				list.add(new TypeFloat((Double) item));
+			} else if (item instanceof Float) {
+				list.add(new TypeFloat((Float) item));
+			} else if (item instanceof String) {
+				list.add(new TypeString((String) item));
 			} else {
 				throw new RuntimeException();
 			}
