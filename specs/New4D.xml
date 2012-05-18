@@ -181,7 +181,7 @@
 			<expr>1</expr>
 		</param>
 
-		<file id='data_file' type='text' filename='data_filename' />
+		<file id='data_file' type='binary' filename='data_filename' />
 
 		<channelset id='data_test'>
 			<for-each id='channels' var='line_nr' sequence='range(total_number_of_channels)' type='int'>
