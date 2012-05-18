@@ -72,8 +72,10 @@ public class CheckCodec {
 
 	private Signalml             codec = null;
 
-	public  final static float   precisionFloat = 0.001f;
-	public  final static double  precisionDouble = 0.000001d;
+	public  final static int     precisionFloat = 5;
+	public  final static int     precisionDouble = 7;
+	public  final static float   deltaFloat = 0.01f; //0.001f;
+	public  final static double  deltaDouble = 0.0001d; //0.000001d;
 
 	private final static boolean LOG_DEBUG = false;
 	private final static boolean LOG_INFO = true;
@@ -701,7 +703,7 @@ public class CheckCodec {
 			int bigBufSize, int smallBufSize) throws FileNotFoundException, IOException {
 		byte[] buffer = CheckCodec.readFileUsingParts(fileName, bigBufSize, smallBufSize);
 		String bufStr = new String(buffer, charset);
-		String[] lines = bufStr.split(lineDelimiter);
+		String[] lines = bufStr.split(lineDelimiter, 0);
 		return lines;
 	}
 	
@@ -735,7 +737,7 @@ public class CheckCodec {
 	public static final String[] getValuesOfItemFromLine(String line, int lineNr, String item) {
 		String valueStr = getValueOfItemFromLine(line, lineNr, item);
 		if (valueStr == null) return null;
-		String[] valueArrayStr = valueStr.replaceAll("[\t ]+", "").split(",");
+		String[] valueArrayStr = valueStr.replaceAll("[\t ]+", "").split(",", -1);
 		return valueArrayStr;
 	}
 	
@@ -856,7 +858,7 @@ public class CheckCodec {
 	 */
 	public static final Object convertValueOrValuesFromStringToSpecifiedType(String fileName, int lineNr,
 			String item, String valueStr, Object type) {
-		String[] valueArrayStr = valueStr.replaceAll("[\t ]+", "").split(",");
+		String[] valueArrayStr = valueStr.replaceAll("[\t ]+", "").split(",", -1);
 		if (valueArrayStr.length < 2) {
 			return convertValueFromStringToSpecifiedType(fileName, lineNr, item, valueStr, type);
 		} else {
@@ -924,7 +926,7 @@ public class CheckCodec {
 	 * @return
 	 */
 	public static final boolean greaterThan(float left, float right, float delta) {
-		boolean result = Math.abs(left - right) > delta;
+		boolean result = left - right > delta;
 		return result;
 	}
 	
@@ -937,10 +939,128 @@ public class CheckCodec {
 	 * @return
 	 */
 	public static final boolean greaterThan(double left, double right, double delta) {
-		boolean result = Math.abs(left - right) > delta;
+		boolean result = left - right > delta;
 		return result;
 	}
 
+	/**
+	 * lesserThan
+	 * 
+	 * @param left
+	 * @param right
+	 * @param delta
+	 * @return
+	 */
+	public static final boolean lesserThan(float left, float right, float delta) {
+		boolean result = left - right < delta;
+		return result;
+	}
+	
+	/**
+	 * lesserThan
+	 * 
+	 * @param left
+	 * @param right
+	 * @param delta
+	 * @return
+	 */
+	public static final boolean lesserThan(double left, double right, double delta) {
+		boolean result = left - right < delta;
+		return result;
+	}
+
+	/**
+	 * equalTo
+	 * 
+	 * @param left
+	 * @param right
+	 * @param precision, i.e. 5
+	 * @return
+	 */
+	public static final boolean equalTo(float left, float right, int precision) {
+		if (left == right) return true;
+		if (left < 0 && right > 0 || left > 0 && right < 0 || left == 0 || right == 0) return false;
+		int leftInt = Float.floatToIntBits(left);
+		int rightInt = Float.floatToIntBits(right);
+		int absSub = Math.abs(leftInt - rightInt);
+		boolean result = false;
+		if (precision > 5 && precision < 8) {
+			result = absSub < ((precision == 6) ? 125 : 10);
+			return result;
+		}
+		//Float.compare(left, right);
+		double logAbsSub = Math.log10(absSub);
+		if (logAbsSub == 0.0f) return true;
+		double floorLogAbsSub = Math.floor(logAbsSub);
+		double restLogAbsSub = logAbsSub - floorLogAbsSub;
+		double powFloorLogAbsSub = Math.pow(10.d, floorLogAbsSub);
+		double powRestLogAbsSub = Math.pow(10.d, restLogAbsSub);
+		double floorPowRestLogAbsSub = Math.floor(powRestLogAbsSub);
+		int unbiasedExponentAbsSub = Math.getExponent(absSub);
+		float min = Math.min(left, right);
+		float max = Math.max(left, right);
+		result = precision > floorPowRestLogAbsSub - unbiasedExponentAbsSub && precision < powRestLogAbsSub;
+		return result;
+	}
+	
+	/**
+	 * equalTo
+	 * 
+	 * @param left
+	 * @param right
+	 * @param epsilon, i.e. 0.0001
+	 * @return
+	 */
+	public static final boolean equalTo(float left, float right, float epsilon) {
+		boolean result = Math.abs(left - right) < epsilon;
+		return result;
+	}
+	
+	/**
+	 * equalToRel
+	 * 
+	 * @param left
+	 * @param right
+	 * @param gain, i.e. 0.01
+	 * @return
+	 */
+	public static final boolean equalToRel(float left, float right, float gain) {
+		boolean result = Math.abs(left - right) < gain;
+		return result;
+	}
+	
+	/**
+	 * equalTo
+	 * 
+	 * @param left
+	 * @param right
+	 * @param precision, i.e. 7
+	 * @return
+	 */
+	public static final boolean equalTo(double left, double right, int precision) {
+		if (left == right) return true;
+		if (left < 0 && right > 0 || left > 0 && right < 0 || left == 0 || right == 0) return false;
+		long leftInt = Double.doubleToLongBits(left);
+		long rightInt = Double.doubleToLongBits(right);
+		long absSub = Math.abs(leftInt - rightInt);
+		double pow = Math.pow(10.0d, precision - 1);
+		boolean result = absSub < pow;
+		return result;
+	}
+	
+	/**
+	 * equalTo
+	 * 
+	 * @param left
+	 * @param right
+	 * @param epsilon, i.e. 0.00000001
+	 * @return
+	 */
+	public static final boolean equalTo(double left, double right, double epsilon) {
+		boolean result = Math.abs(left - right) < epsilon;
+		return result;
+	}
+	
 	/**
 	 * logFileOperationException
 	 * 
@@ -1107,19 +1227,20 @@ public class CheckCodec {
 	 * @return
 	 */
 	public final boolean checkSampleUnitAtPos(final float outDtaFisSampleUnitValue, final Channel inDtaChannelObject,
-			final int channelNr, final int sampleUnitNr,
-			final int sampleUnitNrInCurrentBuffer, final float testDeltaForSample) {
+			final int channelNr, final int sampleUnitNr, final int sampleUnitNrInCurrentBuffer,
+			final int testPrecisionForSample, final float testDeltaForSample) {
 		if (CheckCodec.LOG_DEBUG) System.out.print(" " + outDtaFisSampleUnitValue); //System.out.format(" %.3f", outDtaFisSampleUnitValue);
 		int fullSampleNr = sampleUnitNr + sampleUnitNrInCurrentBuffer;
 		float inDtaCodecSampleUnitValue = inDtaChannelObject.getSample(fullSampleNr);
-		boolean error = greaterThan(inDtaCodecSampleUnitValue, outDtaFisSampleUnitValue, testDeltaForSample);
+		boolean error = !(equalTo(inDtaCodecSampleUnitValue, outDtaFisSampleUnitValue, testPrecisionForSample)
+			|| equalTo(inDtaCodecSampleUnitValue, outDtaFisSampleUnitValue, testDeltaForSample));
 		if (error) {
 			if (howMuchErrorsFound < howMuchErrorsToRemember) {
 				rememberedErrorsValueShouldBe[howMuchErrorsFound] = outDtaFisSampleUnitValue;
 				rememberedErrorsValueThereIs[howMuchErrorsFound] = inDtaCodecSampleUnitValue;
 				if (CheckCodec.LOG_TEST) System.out.println("\nCODEC TEST RESULT: ERROR. Details: Value of the sample #" + fullSampleNr
 					+ " of the channel #" + channelNr + " taken from the codec (" + inDtaCodecSampleUnitValue + ")"
-					+ "differs from that specified in output file .float (" + outDtaFisSampleUnitValue + ").");
+					+ " differs from that specified in output file .float (" + outDtaFisSampleUnitValue + ").");
 			}
 			//increment offset -- if only we break it, but my last decision is not to break the flow
 			//continue samplesBig; //break channels; //return;
@@ -1150,14 +1271,16 @@ public class CheckCodec {
 	 */
 	public final void checkSampleUnitsAtPos(final FileChannel outDtaFisChannel, final long outDtaFisOffset, final long bytesToRead,
 			final int outDtaFisLengthSampleUnitValue, final float verificationMultiplyFactor, final Channel inDtaChannelObject,
-			final int channelNr, final int sampleUnitNr, final float testDeltaForSample) throws IOException {
+			final int channelNr, final int sampleUnitNr, final int testPrecisionForSample, final float testDeltaForSample)
+			throws IOException {
 		MappedByteBuffer outDtaFisMapBuffer = outDtaFisChannel.map(FileChannel.MapMode.READ_ONLY, outDtaFisOffset, bytesToRead);
 		int sampleUnitPosInCurrentBuffer = 0;
 		int sampleUnitNrInCurrentBuffer = 0;
 		/*samplesSmall:*/
 		for (; sampleUnitPosInCurrentBuffer < bytesToRead; sampleUnitNrInCurrentBuffer ++, sampleUnitPosInCurrentBuffer += outDtaFisLengthSampleUnitValue) {
 			final float outDtaFisSampleUnitValue = outDtaFisMapBuffer.getFloat((int) sampleUnitPosInCurrentBuffer) * verificationMultiplyFactor;
-			checkSampleUnitAtPos(outDtaFisSampleUnitValue, inDtaChannelObject, channelNr, sampleUnitNr, sampleUnitNrInCurrentBuffer, testDeltaForSample);
+			checkSampleUnitAtPos(outDtaFisSampleUnitValue, inDtaChannelObject, channelNr, sampleUnitNr,
+				sampleUnitNrInCurrentBuffer, testPrecisionForSample, testDeltaForSample);
 		}
 	}
 	
@@ -1177,9 +1300,11 @@ public class CheckCodec {
 	 * @return
 	 * @throws IOException
 	 */
-	public final boolean checkSamples(boolean gotoNextChannel, boolean gotoNextSamplePortionBig, final long outDtaFisOffsetStart,
-			final int outDtaFisLengthSampleUnitValue, final long outDtaFisNrOfSamplesPerChannel, final FileChannel outDtaFisChannel,
-			final float verificationMultiplyFactor, final Channel inDtaChannelObject, final int channelNr, final float testDeltaForSample)
+	public final boolean checkSamples(boolean gotoNextChannel, boolean gotoNextSamplePortionBig,
+			final long outDtaFisOffsetStart, final int outDtaFisLengthSampleUnitValue,
+			final long outDtaFisNrOfSamplesPerChannel, final FileChannel outDtaFisChannel,
+			final float verificationMultiplyFactor, final Channel inDtaChannelObject,
+			final int channelNr, final int testPrecisionForSample, final float testDeltaForSample)
 			throws IOException {
 		long samplesBytesAlreadyRead = outDtaFisOffset - outDtaFisOffsetStart;
 		long samplesAlreadyRead = samplesBytesAlreadyRead / outDtaFisLengthSampleUnitValue;
@@ -1195,8 +1320,9 @@ public class CheckCodec {
 			samplesToRead = Math.min(samplesToReadMax, samplesToReadAllRest);
 			bytesToRead = samplesToRead * outDtaFisLengthSampleUnitValue;
 			if (gotoNextChannel == false && gotoNextSamplePortionBig == false) {
-				checkSampleUnitsAtPos(outDtaFisChannel, outDtaFisOffsetStart, bytesToRead, outDtaFisLengthSampleUnitValue,
-					verificationMultiplyFactor, inDtaChannelObject, channelNr, sampleUnitNr, testDeltaForSample);
+				checkSampleUnitsAtPos(outDtaFisChannel, outDtaFisOffset, bytesToRead,
+					outDtaFisLengthSampleUnitValue, verificationMultiplyFactor, inDtaChannelObject,
+					channelNr, sampleUnitNr, testPrecisionForSample, testDeltaForSample);
 			}
 			outDtaFisOffset += bytesToRead;
 			sampleUnitNr += samplesToRead;
@@ -1226,7 +1352,9 @@ public class CheckCodec {
 	public final void checkChannel(final long outDtaFisOffsetStart, final int outDtaFisLengthSampleUnitValue,
 			final long outDtaFisNrOfSamplesPerChannel, final FileChannel outDtaFisChannel,
 			final float verificationMultiplyFactor, final Channel inDtaChannelObject, final int channelNr,
-			final float testDeltaForSample, final double testDeltaForSamplingFrequency) throws IOException {
+			final int testPrecisionForSample, final int testPrecisionForSamplingFrequency,
+			final float testDeltaForSample, final double testDeltaForSamplingFrequency)
+			throws IOException {
 		long inDtaChannelObjectNumberOfSamplesPerChannel = inDtaChannelObject.getNumberOfSamples();
 		String inDtaChannelObjectChannelName = inDtaChannelObject.getChannelName();
 		String inDtaChannelObjectChannelTypeName = inDtaChannelObject.getChannelTypeName();
@@ -1244,13 +1372,14 @@ public class CheckCodec {
 		}
 		if (!inDtaChannelObjectChannelTypeName.equals(outHdrTypesOfChannels[channelNr])) {
 			if (CheckCodec.LOG_TEST) System.out.println("\nCODEC TEST RESULT: ERROR. Details: Type of the channel #"
-				+ channelNr + " get from codec (" + inDtaChannelObjectChannelName
-				+ ") differs from that specified in output file .hdr (" + outHdrLabelsOfChannels[channelNr] + ").");
+				+ channelNr + " get from codec (" + inDtaChannelObjectChannelTypeName
+				+ ") differs from that specified in output file .hdr (" + outHdrTypesOfChannels[channelNr] + ").");
 			////TODO increment offset
 			//break channels; //return;
 		}
 		double outHdrSamplingFrequencyPerChannel = ((outHdrSamplingFrequency == null) ? outHdrSamplingFrequencies[channelNr] : outHdrSamplingFrequency);
-		if (greaterThan(inDtaChannelObjectSamplingFrequency, outHdrSamplingFrequencyPerChannel, testDeltaForSamplingFrequency)) {
+		if (!equalTo(inDtaChannelObjectSamplingFrequency, outHdrSamplingFrequencyPerChannel, testPrecisionForSamplingFrequency)
+				|| !equalTo(inDtaChannelObjectSamplingFrequency, outHdrSamplingFrequencyPerChannel, testDeltaForSamplingFrequency)) {
 			if (CheckCodec.LOG_TEST) System.out.println("\nCODEC TEST RESULT: ERROR. Details: Sampling frequency of the channel #"
 				+ channelNr + " get from codec (" + inDtaChannelObjectSamplingFrequency + ") differs from that specified in output file .hdr ("
 				+ outHdrSamplingFrequencyPerChannel + ").");
@@ -1265,23 +1394,97 @@ public class CheckCodec {
 			gotoNextChannel = true; //continue channels; //return;
 		}
 		//comparing data info
-		gotoNextChannel = checkSamples(gotoNextChannel, gotoNextSamplePortionBig, outDtaFisOffsetStart, outDtaFisLengthSampleUnitValue,
-			outDtaFisNrOfSamplesPerChannel, outDtaFisChannel, verificationMultiplyFactor, inDtaChannelObject, channelNr, testDeltaForSample);
+		gotoNextChannel = checkSamples(gotoNextChannel, gotoNextSamplePortionBig, outDtaFisOffsetStart,
+			outDtaFisLengthSampleUnitValue, outDtaFisNrOfSamplesPerChannel, outDtaFisChannel,
+			verificationMultiplyFactor, inDtaChannelObject, channelNr, testPrecisionForSample, testDeltaForSample);
+	}
+	
+	/**
+	 * checkChannels
+	 * 
+	 * @return
+	 * @throws IOException
+	 */
+	public final boolean checkChannels() throws IOException {
+		final float verificationMultiplyFactor = 1.0f;
+		return checkChannels(verificationMultiplyFactor);
 	}
 	
 	/**
 	 * checkChannels
 	 * 
 	 * @param verificationMultiplyFactor
+	 * @return
+	 * @throws IOException
+	 */
+	public final boolean checkChannels(final float verificationMultiplyFactor) throws IOException {
+		final int testPrecisionForSample = precisionFloat;
+		final int testPrecisionForSamplingFrequency = precisionDouble;
+		return checkChannels(verificationMultiplyFactor, testPrecisionForSample, testPrecisionForSamplingFrequency);
+	}
+	
+	/**
+	 * checkChannels
+	 * 
+	 * @param verificationMultiplyFactor
+	 * @param testPrecisionForSample
+	 * @param testPrecisionForSamplingFrequency
+	 * @return
+	 * @throws IOException
+	 */
+	public final boolean checkChannels(final float verificationMultiplyFactor,
+			final int testPrecisionForSample, final int testPrecisionForSamplingFrequency)
+			throws IOException {
+		final float testDeltaForSample = deltaFloat;
+		final double testDeltaForSamplingFrequency = deltaDouble;
+		return checkChannels(verificationMultiplyFactor, testPrecisionForSample, testPrecisionForSamplingFrequency,
+			testDeltaForSample, testDeltaForSamplingFrequency);
+	}
+	
+	/**
+	 * checkChannels
+	 * 
+	 * @param verificationMultiplyFactor
+	 * @param testPrecisionForSample
+	 * @param testPrecisionForSamplingFrequency
 	 * @param testDeltaForSample
 	 * @param testDeltaForSamplingFrequency
 	 * @return
 	 * @throws IOException
 	 */
 	public final boolean checkChannels(final float verificationMultiplyFactor,
-			final float testDeltaForSample, final double testDeltaForSamplingFrequency) throws IOException {
+			final int testPrecisionForSample, final int testPrecisionForSamplingFrequency,
+			final float testDeltaForSample, final double testDeltaForSamplingFrequency)
+			throws IOException {
+		final int startAtLeastFromChannel = Integer.MIN_VALUE;
+		final int finishAtMostBeforeChannel = Integer.MAX_VALUE;
+		return checkChannels(verificationMultiplyFactor, testPrecisionForSample, testPrecisionForSamplingFrequency,
+			testDeltaForSample, testDeltaForSamplingFrequency, startAtLeastFromChannel, finishAtMostBeforeChannel);
+	}
+	
+	/**
+	 * checkChannels
+	 * 
+	 * @param verificationMultiplyFactor
+	 * @param testPrecisionForSample
+	 * @param testPrecisionForSamplingFrequency
+	 * @param testDeltaForSample
+	 * @param testDeltaForSamplingFrequency
+	 * @param startAtLeastFromChannel
+	 * @param finishAtMostBeforeChannel
+	 * @return
+	 * @throws IOException
+	 */
+	public final boolean checkChannels(final float verificationMultiplyFactor,
+			final int testPrecisionForSample, final int testPrecisionForSamplingFrequency,
+			final float testDeltaForSample, final double testDeltaForSamplingFrequency,
+			final int startAtLeastFromChannel, final int finishAtMostBeforeChannel)
+			throws IOException {
 		/*channels:*/
-		for (int channelNr = 0; channelNr < outDtaFisNrOfChannels && outDtaFisOffset < outDtaFisSize; channelNr ++) {
+		int nrOfChannelsMin = Math.min(Math.min(outDtaFisNrOfChannels, (int) outHdrNrOfChannels.longValue()), inDtaChannelSetNrOfChannels);
+		final int chStart = Math.max(0, startAtLeastFromChannel);
+		final int chFinish = Math.min(nrOfChannelsMin, finishAtMostBeforeChannel);
+		for (int channelNr = chStart; channelNr < chFinish && outDtaFisOffset < outDtaFisSize; channelNr ++) {
 			//info from output
 			if (CheckCodec.LOG_INFO) System.out.print("Channel " + channelNr);
 			MappedByteBuffer outDtaFisMapBuffer = outDtaFisChannel.map(FileChannel.MapMode.READ_ONLY,
@@ -1291,13 +1494,16 @@ public class CheckCodec {
 			if (outHdrNrOfSamples != null) {
 				if (outDtaFisNrOfSamplesPerChannel != outHdrNrOfSamples) {
 					if (CheckCodec.LOG_ERROR) System.out.println("\nError! In output header file there were specified "
-						+ outHdrNrOfSamples + " sample units for every channel. Here is other value, please correct .hdr file or change output data file used!");
+						+ outHdrNrOfSamples + " sample units for every channel. "
+						+ "Output data file has other value: " + outDtaFisNrOfSamplesPerChannel + ". "
+						+ "Please correct .hdr file or change output data file used!");
 					return false;
 				}
 			} else {
 				if (outDtaFisNrOfSamplesPerChannel != outHdrNrsOfSamples[channelNr]) {
 					if (CheckCodec.LOG_WARNING) System.out.println("\nWarning! In output header file there were specified "
-						+ outHdrNrOfSamples + " sample units for channel #" + channelNr + ". Here is other value!");
+						+ outHdrNrsOfSamples[channelNr] + " sample units for channel #" + channelNr + ". "
+						+ "Output data file has other value: " + outDtaFisNrOfSamplesPerChannel + "!");
 				}
 			}
 			if (outDtaFisNrOfSamplesPerChannel * outDtaFisLengthSampleUnitValue >= outDtaFisSize) {
@@ -1308,8 +1514,11 @@ public class CheckCodec {
 			long outDtaFisOffsetStart = outDtaFisOffset;
 			//info from input
 			Channel inDtaChannelObject = inDtaChannelSet.getChannel(channelNr);
-			checkChannel(outDtaFisOffsetStart, outDtaFisLengthSampleUnitValue, outDtaFisNrOfSamplesPerChannel, outDtaFisChannel,
-				verificationMultiplyFactor, inDtaChannelObject, channelNr, testDeltaForSample, testDeltaForSamplingFrequency);
+			checkChannel(outDtaFisOffsetStart, outDtaFisLengthSampleUnitValue,
+				outDtaFisNrOfSamplesPerChannel, outDtaFisChannel,
+				verificationMultiplyFactor, inDtaChannelObject, channelNr,
+				testPrecisionForSample, testPrecisionForSamplingFrequency,
+				testDeltaForSample, testDeltaForSamplingFrequency);
 			//continue with next channel
 		}
 		return true;
@@ -1412,7 +1621,7 @@ public class CheckCodec {
 	 * @return
 	 * @throws IOException
 	 */
-	public final boolean getOutDtaBody(String fileName) throws IOException {
+	public final boolean getOutDtaBody(String fileName, boolean exitOnNrsOfChannelsError) throws IOException {
 		if (CheckCodec.LOG_INFO) System.out.println("Reading and parsing the output data file: " + fileName);
 		if (!fileName.endsWith(".float")) {
 			if (CheckCodec.LOG_WARNING) System.out.println("Warning! File does not have the .float extension!");
@@ -1433,15 +1642,17 @@ public class CheckCodec {
 			return false;
 		}
 		if (outDtaFisNrOfChannels != outHdrNrOfChannels.longValue()) {
-			if (CheckCodec.LOG_ERROR) System.out.println("Error! Number of channels specified in output header file"
-				+ " differs from that specified here. Please correct .hdr file or use another .float file!");
-			return false;
+			if (CheckCodec.LOG_ERROR) System.out.println("Warning! Number of channels specified in output header file (.hdr)"
+				+ " differs from that specified in output data file (.float). Please correct .hdr file or use another .float file!");
+			if (exitOnNrsOfChannelsError) return false;
+			////outHdrNrOfChannels = inDtaChannelSetNrOfChannels;
 		}
 		if (inDtaChannelSetNrOfChannels != outDtaFisNrOfChannels) {
 			if (CheckCodec.LOG_TEST) System.out.println("CODEC TEST RESULT: ERROR. Details: Number of channels get from codec ("
-				+ inDtaChannelSetNrOfChannels + ") differs from that specified in output files .hdr and .float ("
+				+ inDtaChannelSetNrOfChannels + ") differs from that specified in output files .hdr and/or .float ("
 				+ outDtaFisNrOfChannels + ").");
-			return false;
+			if (exitOnNrsOfChannelsError) return false;
+			////outDtaFisNrOfChannels = inDtaChannelSetNrOfChannels;
 		}
 		outDtaFisOffset = outDtaFisOffsetNrOfChannels + outDtaFisLengthNrOfChannels;
 		return true;
@@ -1455,12 +1666,13 @@ public class CheckCodec {
 	 * @return
 	 * @throws IOException
 	 */
-	public final boolean getOutDta(String dataHeaderFileName, String dataBodyFileName) throws IOException {
+	public final boolean getOutDta(String dataHeaderFileName, String dataBodyFileName,
+			boolean exitOnNrsOfChannelsError) throws IOException {
 		//firstly read output header file (.hdr)
 		boolean outDtaHdrStatus = getOutDtaHdr(dataHeaderFileName);
 		if (!outDtaHdrStatus) return false;
 		//secondly read output body file (.float)
-		boolean outDtaBodyStatus = getOutDtaBody(dataBodyFileName);
+		boolean outDtaBodyStatus = getOutDtaBody(dataBodyFileName, exitOnNrsOfChannelsError);
 		if (!outDtaBodyStatus) return false;
 		return true;
 	}
@@ -1494,8 +1706,13 @@ public class CheckCodec {
 		String outDtaFileName = args[3]; //d:/grst/projects/UW/data/for_EASYS_codec/EASYS/inb02-unscaled/inb02.float //d:/grst/projects/UW/data/for_4D_format/m4d/example_data/Art_e,rfhp0.1Hz,n,ccfbp10-40-508-2,cag,c,n,tm,bahe001-1High350,a.float
 		final boolean useContextDumper = false; //true;
 		final boolean usePreCheckingOfTheDataFromCodec = false;
-		final float testDeltaForSample = CheckCodec.precisionFloat;
-		final double testDeltaForSamplingFrequency = CheckCodec.precisionDouble;
+		final boolean exitOnNrsOfChannelsError = false;
+		final int testPrecisionForSample = CheckCodec.precisionFloat;
+		final int testPrecisionForSamplingFrequency = CheckCodec.precisionDouble;
+		final float testDeltaForSample = CheckCodec.deltaFloat;
+		final double testDeltaForSamplingFrequency = CheckCodec.deltaDouble;
+		final int startAtLeastFromChannel = 0; //78;
+		final int finishAtMostBeforeChannel = 80;
 		float verificationMultiplyFactor = 1.0f;
 		if (args.length > 4) {
 			try {
@@ -1539,11 +1756,14 @@ public class CheckCodec {
 			if (!inDtaStatus) return;
 			//read output header file (.hdr) and output body file (.float)
 			fileName = outHdrFileName + " (or) " + outDtaFileName;
-			boolean outDtaStatus = checkCodec.getOutDta(outHdrFileName, outDtaFileName);
+			boolean outDtaStatus = checkCodec.getOutDta(outHdrFileName, outDtaFileName, exitOnNrsOfChannelsError);
 			if (!outDtaStatus) return;
 			//then compare everything (outBody with outHdr and with in) 
 			fileName = "(unknown)";
-			boolean verificationStatus = checkCodec.checkChannels(verificationMultiplyFactor, testDeltaForSample, testDeltaForSamplingFrequency);
+			boolean verificationStatus = checkCodec.checkChannels(verificationMultiplyFactor,
+				testPrecisionForSample, testPrecisionForSamplingFrequency,
+				testDeltaForSample, testDeltaForSamplingFrequency,
+				startAtLeastFromChannel, finishAtMostBeforeChannel);
 			if (!verificationStatus) return;
 		} catch (FileNotFoundException e) {
 			CheckCodec.logFileOperationException(e, fileName, "Cannot find a", "Check command-line arguments to the running program.");
