@@ -1,6 +1,7 @@
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.RandomAccessFile;
+import java.util.ArrayList;
 
 /**
  * @author Grzegorz Stadnik
@@ -22,28 +23,68 @@ public class AsciiFloatToBinaryFloat {
 		}
 		String fi = args[0];
 		String fo = args[1];
+		boolean skipEveryFirstValueInLine = (args.length > 2 && args[2].equalsIgnoreCase("skip"));
+		int rev2 = 2 + ((skipEveryFirstValueInLine) ? 1 : 0);
+		boolean reversedChannelsWithSamples = (args.length > rev2 &&
+			args[rev2].equalsIgnoreCase("reversed")); //false => channels in line, next sample in next line, true => samples in line, next channel in next line
 		RandomAccessFile fir = new RandomAccessFile(fi, "r");
 		RandomAccessFile fow = new RandomAccessFile(fo, "rw");
 		RandomAccessFile[] fows = null;
 		fow.setLength(0);
+		int channelNr = 0;
 		int sampleNr = 0;
 		int numberOfChannels = -1;
+		int numberOfSamples = -1;
 		int fileLinesWithSampleNr = 0;
 		long[] numberOfSamplesPerChannel = null;
 		boolean lineStartsWithNrOfChannels = true;
+		if (reversedChannelsWithSamples) {
+			//ArrayList<RandomAccessFile> fowsList = new ArrayList<RandomAccessFile>();
+			fow.writeInt(numberOfChannels); //it will be overwritten when it will be known the number of channels
+			for (String line = fir.readLine(); (channelNr < 100000000) && (line != null); channelNr ++, line = fir.readLine()) {
+				RandomAccessFile fowTemp = new RandomAccessFile(fo + "." + (channelNr), "rw");
+				fowTemp = new RandomAccessFile(fo + "." + (channelNr), "rw");
+				fowTemp.setLength(0);
+				String[] floatValuesStr = line.split("[ \t]+");
+				numberOfSamples = floatValuesStr.length;
+				fow.writeLong(numberOfSamples);
+				for (sampleNr = 0; sampleNr < numberOfSamples; sampleNr ++) {
+					String floatValueStr = floatValuesStr[sampleNr];
+					float floatValue = Float.parseFloat(floatValueStr);
+					fowTemp.writeFloat(floatValue);
+					fow.writeFloat(floatValue);
+				}
+				//fowsList.add(fowTemp);
+			}
+			numberOfChannels = channelNr;
+			//fows = fowsList.toArray(fows);
+			fow.seek(0);
+			fow.writeInt(numberOfChannels); //overwritten known number of channels
+			fir.close();
+			fow.close();
+			System.out.println("Information found in the file " + fi);
+			System.out.println("\tnumber_of_channels = " + numberOfChannels);
+			System.out.println("\tnumber_of_samples = " + sampleNr);
+			System.out.println("\t" + sampleNr + " x " + numberOfChannels + " = " + (sampleNr*numberOfChannels) + " float numbers");
+			System.out.println("All data saved to the file " + fo);
+			System.out.println("\t" + (sampleNr) + " numbers of channels x 4 bytes = " + ((sampleNr)/256f) + " kB");
+			System.out.println("\t" + (sampleNr*numberOfChannels) + " float numbers x 4 bytes = " + ((sampleNr*numberOfChannels)/256f) + " kB");
+			System.out.println("\tprojected file size = " + ((sampleNr*(numberOfChannels+1))/256f) + " kB = " + sampleNr*(numberOfChannels+1)*4 + " B");
+			return;
+		}
 		for (String line = fir.readLine(); (sampleNr < 100000000) && (line != null); sampleNr ++, line = fir.readLine()) {
-			String[] floatValuesStr = line.split(" ");
+			String[] floatValuesStr = line.split("[ \t]+");
 			if (sampleNr == 0) {
 				numberOfChannels = floatValuesStr.length;
 			} else if (floatValuesStr.length + fileLinesWithSampleNr != numberOfChannels) {
 				System.out.println("Error! Sumarized number of all channels found in the line #" + sampleNr + " of the file " + fi + " (value " + (floatValuesStr.length + fileLinesWithSampleNr) + ") should be equal to the corresponding value from the first line (value " + numberOfChannels + ") of the same file!");
 				return;
 			}
-			for (int channelNr = 0; channelNr < floatValuesStr.length; channelNr ++) {
+			for (channelNr = 0; channelNr < floatValuesStr.length; channelNr ++) {
 				String floatValueStr = floatValuesStr[channelNr];
 				if (channelNr == 0 && lineStartsWithNrOfChannels) {
 					try {
-						int intValue = Integer.parseInt(floatValueStr);
+						int intValue = (skipEveryFirstValueInLine) ? sampleNr : Integer.parseInt(floatValueStr);
 						//int found (sample number)
 						fileLinesWithSampleNr = -1;
 						if (sampleNr == 0) {
@@ -122,7 +163,7 @@ public class AsciiFloatToBinaryFloat {
 			}
 			//end of the sample line, we are now after last channel of that sample
 		}
-		for (int channelNr = - fileLinesWithSampleNr; channelNr < numberOfChannels - fileLinesWithSampleNr; channelNr ++) {
+		for (channelNr = 0 - fileLinesWithSampleNr; channelNr < numberOfChannels - fileLinesWithSampleNr; channelNr ++) {
 			////numberOfSamplesPerChannel[channelNr/* - fileLinesWithSampleNr*/] = sampleNr;
 			//fows[channelNr].writeLong(numberOfSamplesPerChannel[channelNr/* - fileLinesWithSampleNr*/]);
 			//fows[channelNr].close();
