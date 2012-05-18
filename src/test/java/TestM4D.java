@@ -35,6 +35,9 @@ public class TestM4D {
 			final String outDtaFileName = properties.getProperty("outDtaFileName");
 			final boolean useContextDumper = Boolean.parseBoolean(properties.getProperty("useContextDumper", "false"));
 			final boolean usePreCheckingOfTheDataFromCodec = Boolean.parseBoolean(properties.getProperty("usePreCheckingOfTheDataFromCodec", "false"));
+			final boolean exitOnNrsOfChannelsError = Boolean.parseBoolean(properties.getProperty("exitOnNrsOfChannelsError", "false"));;
+			final int testPrecisionForSample = CheckCodec.precisionFloat;
+			final int testPrecisionForSamplingFrequency = CheckCodec.precisionDouble;
 			final float testDeltaForSample = Float.parseFloat(properties.getProperty("testDeltaForSample", String.valueOf(CheckCodec.precisionFloat)));
 			final double testDeltaForSamplingFrequency = Double.parseDouble(properties.getProperty("testDeltaForSamplingFrequency", String.valueOf(CheckCodec.precisionDouble)));
 			float verificationMultiplyFactor = Float.parseFloat(properties.getProperty("verificationMultiplyFactor", "1.0f"));
@@ -45,11 +48,13 @@ public class TestM4D {
 			assertEquals(inDtaStatus, true);
 			//read output header file (.hdr) and output body file (.float)
 			fileName = outHdrFileName + " (or) " + outDtaFileName;
-			boolean outDtaStatus = checkCodec.getOutDta(outHdrFileName, outDtaFileName);
+			boolean outDtaStatus = checkCodec.getOutDta(outHdrFileName, outDtaFileName, exitOnNrsOfChannelsError);
 			assertEquals(outDtaStatus, true);
 			//then compare everything (outBody with outHdr and with in) 
 			fileName = "(unknown)";
-			boolean verificationStatus = checkCodec.checkChannels(verificationMultiplyFactor, testDeltaForSample, testDeltaForSamplingFrequency);
+			boolean verificationStatus = checkCodec.checkChannels(verificationMultiplyFactor,
+				testPrecisionForSample, testPrecisionForSamplingFrequency,
+				testDeltaForSample, testDeltaForSamplingFrequency);
 			assertEquals(verificationStatus, true);
 		} catch (FileNotFoundException e) {
 			CheckCodec.logFileOperationException(e, fileName, "Cannot find a", "Check command-line arguments to the running program.");
