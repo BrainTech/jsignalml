@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import jsignalml.AsciiScanner;
 import jsignalml.ChannelSet;
 import jsignalml.ContextVisitor;
+import jsignalml.DefaultIntParam;
 import jsignalml.EmptyStringParam;
 import jsignalml.ExpressionFault;
 import jsignalml.MyBuffer;
@@ -119,5 +120,17 @@ public abstract class Signalml extends Context implements jsignalml.Source {
 
 	public EmptyStringParam get_channel_name(){
 		return new EmptyStringParam();
+	}
+
+	public EmptyStringParam get_channel_type_name(){
+		return new EmptyStringParam();
+	}
+
+	public DefaultIntParam get_calibration_offset(){
+		return new DefaultIntParam(0);
+	}
+
+	public DefaultIntParam get_calibration_gain(){
+		return new DefaultIntParam(1);
 	}
 }
