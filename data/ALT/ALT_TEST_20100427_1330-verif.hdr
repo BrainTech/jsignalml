@@ -1,0 +1,8 @@
+number_of_channels = 10
+channel_labels = A1,GyxA,A248,E31,GyyA,E32,RESPONSE,GyxA,TRIGGER,UACurrent
+channel_types = MEG,REFERENCE,MEG,EEG,REFERENCE,EEG,TRIGGER,REFERENCE,TRIGGER,UTILITY
+sampling_frequency = 143.21,243.21,343.21,443.21,543.21,643.21,743.21,843.21,943.21,1043.21
+number_of_samples = 3,3,3,4,4,4,5,5,5,6
+scaled = 1
+scaling_gain = 1.0,1.1,1.2,2.0,2.1,2.2,3.0,3.1,3.2,4.0
+scaling_offset = 0.0,0.1,0.2,0.31,0.41,0.51,0.601,0.701,0.801,0.9999
