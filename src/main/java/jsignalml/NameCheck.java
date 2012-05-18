@@ -45,7 +45,18 @@ public class NameCheck extends ASTVisitor<NullType> {
 		node.group.accept(checker);
 		return null;
 	}
-	
+
+	@Override
+	public NullType visit(ASTNode.XmlParam node, NullType parent)
+	{
+		log.debug("checking %s", node);
+		ExpressionNameCheck checker = new ExpressionNameCheck(node);
+		assert node.xpathPattern != null;
+		assert node.xpathEvaluationType != null;
+		node.xpathPattern.accept(checker);
+		return null;
+	}
+
 	@Override
 	public NullType visit(ASTNode.Assert node, NullType parent)
 	{

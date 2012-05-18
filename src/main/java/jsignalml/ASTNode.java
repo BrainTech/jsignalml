@@ -147,7 +147,7 @@ public abstract class ASTNode {
 	public static class Channel extends ASTNode {
 		public final Expression mapping, format, length, data;
 
-		public Channel(ASTNode parent, Expression id, 
+		public Channel(ASTNode parent, Expression id,
 			       Expression mapping, Expression format,
 			       Expression length, Expression data)
 		{
@@ -221,6 +221,31 @@ public abstract class ASTNode {
 		}
 	}
 
+	public static class XmlParam extends ReadParam {
+		final Expression xpathPattern;
+		final String xpathEvaluationType;
+
+		public XmlParam(ASTNode parent, Expression id, Type type,
+				Expression xpathPattern, String xpathEvaluationType)
+				throws SyntaxError {
+			super(parent, id, type);
+			this.xpathPattern = xpathPattern;
+			this.xpathEvaluationType = xpathEvaluationType;
+		}
+
+		@Override
+		public String toString() {
+			return format(
+					"ASTNode.XmlParam %s on %s xpathPattern=%s xpathEvaluationType=%s",
+					id, handle, xpathPattern, xpathEvaluationType);
+		}
+
+		@Override
+		public <T> T _accept(ASTVisitor<T> v, T data) {
+			return v.visit(this, data);
+		}
+	}
+
 	public static class BinaryParam extends ReadParam {
 		final Expression format, offset;
 
@@ -252,8 +277,8 @@ public abstract class ASTNode {
 			return v.visit(this, data);
 		}
 	}
-	
-	
+
+
 	public static class TextParam extends ReadParam {
 		final Expression line, pattern, group;
 
@@ -283,7 +308,7 @@ public abstract class ASTNode {
 		{
 			return v.visit(this, data);
 		}
-	}	
+	}
 
 	public static class ExprParam extends Param {
 		final Expression expr;
@@ -413,9 +438,9 @@ public abstract class ASTNode {
 			else if(type.equals("text")){
 				return new FileHandle<FileType.TextFile>(parent, id, filename, false);
 			} else if (type.equals(XML_FILE_TYPE)){
-				return null;
+				return new FileHandle<FileType.XmlFile>(parent, id, filename, false);
 			}
-			throw new IllegalArgumentException(format("unkown file type '%s'", type));
+			throw new IllegalArgumentException(format("unknown file type '%s'", type));
 		}
 
 		@Override
@@ -580,7 +605,7 @@ public abstract class ASTNode {
 		public final Expression condition;
 		public ElseBranch elsebranch = null;
 		public ElseIfBranch elseifbranch = null;
-		
+
 		public ElseIfBranch(ASTNode parent, Expression id, Expression condition) {
 			super(parent, id);
 			if (parent==null)
@@ -615,7 +640,7 @@ public abstract class ASTNode {
 			return v.visit(this, data);
 		}
 	}
-	
+
 	public static class ElseBranch extends ASTNode {
 		public ElseBranch(ASTNode parent, Expression id) {
 			super(parent, id);

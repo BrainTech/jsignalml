@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE signalml SYSTEM "SignalML_2_0.dtd">
+<signalml>
+	<header>
+		<text_info>SignalML definition for XML header file and binary data
+			file</text_info>
+	</header>
+	<file id='main' type='xml'>
+		<param id='export_file_name' type='str'>
+			<xpath xpath-evaluation-type='node-content-text'>'/rs:rawSignal/rs:exportFileName'</xpath>
+		</param>
+
+		<param id='data_filename' type='str'>
+			<xpath xpath-evaluation-type='node-content-text'>'/rs:rawSignal/rs:sourceFileName'</xpath>
+		</param>
+
+		<param id='source_file_format' type='str'>
+			<xpath xpath-evaluation-type='node-name-local'>'/rs:rawSignal/rs:sourceFileFormat'</xpath>
+		</param>
+
+		<param id='sampling_frequency' type='float' units='Hz'>
+			<xpath xpath-evaluation-type='node-content-float'>'/rs:rawSignal/rs:samplingFrequency'</xpath>
+		</param>
+
+		<param id='total_channels' type='int'>
+			<xpath xpath-evaluation-type='node-content-int'>'/rs:rawSignal/rs:channelCount'</xpath>
+		</param>
+
+		<param id='number_of_samples' type='int'>
+			<xpath xpath-evaluation-type='node-content-int'>'/rs:rawSignal/rs:sampleCount'</xpath>
+		</param>
+
+		<param id='calibration' type='float'>
+			<xpath xpath-evaluation-type='node-content-float'>'/rs:rawSignal/rs:calibration'</xpath>
+		</param>
+
+		<param id='sample_format' type='str'>
+			<xpath xpath-evaluation-type='node-content-text'>'/rs:rawSignal/rs:sampleType'</xpath>
+		</param>
+
+		<param id='byte_order' type='str'>
+			<xpath xpath-evaluation-type='node-content-text'>'/rs:rawSignal/rs:byteOrder'</xpath>
+		</param>
+
+		<param id='page_size' type='float'>
+			<xpath xpath-evaluation-type='node-content-float'>'/rs:rawSignal/rs:pageSize'</xpath>
+		</param>
+
+		<param id='blocks_per_page' type='int'>
+			<xpath xpath-evaluation-type='node-content-int'>'/rs:rawSignal/rs:blocksPerPage'</xpath>
+		</param>
+
+		<param id='first_sample_timestamp' type='str'>
+			<xpath xpath-evaluation-type='node-content-text'>'/rs:rawSignal/rs:firstSampleTimestamp'</xpath>
+		</param>
+
+		<param id='sample_unit' type='float'>
+			<expr>1</expr>
+		</param>
+
+		<file id='data_file' type='binary' filename='data_filename'>
+		</file>
+
+		<if id='order' test='byte_order == "LITTLE_ENDIAN"'>
+			<param id='order_value' type='str'>
+				<expr>"&lt;"</expr>
+			</param>
+			<else-if test='byte_order == "BIG_ENDIAN"'>
+				<param id='order_value' type='str'>
+					<expr>"&gt;"</expr>
+				</param>
+			</else-if>
+		</if>
+
+		<if id='size' test='sample_format == "SHORT"'>
+			<param id='sample_size_value' type='int'>
+				<expr>2</expr>
+			</param>
+			<else-if test='sample_format == "LONG"'>
+				<param id='sample_size_value' type='int'>
+					<expr>4</expr>
+				</param>
+				<else-if test='sample_format == "FLOAT"'>
+					<param id='sample_size_value' type='int'>
+						<expr>4</expr>
+					</param>
+					<else-if test='sample_format == "DOUBLE"'>
+						<param id='sample_size_value' type='int'>
+							<expr>8</expr>
+						</param>
+					</else-if>
+				</else-if>
+			</else-if>
+		</if>
+
+		<if id='format' test='sample_format == "SHORT"'>
+			<param id='sample_format_value' type='str'>
+				<expr>order.order_value + "i2"</expr>
+			</param>
+			<else-if test='sample_format == "LONG"'>
+				<param id='sample_format_value' type='str'>
+					<expr>order.order_value + "i4"</expr>
+				</param>
+
+				<else-if test='sample_format == "FLOAT"'>
+					<param id='sample_format_value' type='str'>
+						<expr>order.order_value + "f4"</expr>
+					</param>
+					<else-if test='sample_format == "DOUBLE"'>
+						<param id='sample_format_value' type='str'>
+							<expr>order.order_value + "f8"</expr>
+						</param>
+					</else-if>
+				</else-if>
+			</else-if>
+
+		</if>
+
+		<param id='sample_size' type='int'>
+			<expr>size.sample_size_value</expr>
+		</param>
+
+		<param id='sample_format_type' type='str'>
+			<expr>str(format.sample_format_value)</expr>
+		</param>
+
+		<channelset id='data_test'>
+
+			<for-each id='channels' var='index' sequence='range(total_channels)'
+				type='int'>
+
+				<param id='channel_name_expr' type='str'>
+					<expr>"(/rs:rawSignal/rs:channelLabels/rs:label)[" + str(index+1) +
+						"]"</expr>
+				</param>
+
+				<param id='channel_name' type='str'>
+					<xpath xpath-evaluation-type='node-content-text'>channel_name_expr</xpath>
+				</param>
+
+				<param id='calibration_gain_expr' type='str'>
+					<expr>"(/rs:rawSignal/rs:calibrationGain/rs:calibrationParam)[" +
+						str(index+1) + "]"</expr>
+				</param>
+
+				<param id='calibration_gain' type='str'>
+					<xpath xpath-evaluation-type='node-content-text'>calibration_gain_expr</xpath>
+				</param>
+
+				<param id='calibration_offset_expr' type='str'>
+					<expr>"(/rs:rawSignal/rs:calibrationOffset/rs:calibrationParam)[" +
+						str(index+1) + "]"</expr>
+				</param>
+
+				<param id='calibration_offset' type='str'>
+					<xpath xpath-evaluation-type='node-content-text'>calibration_offset_expr</xpath>
+				</param>
+
+				<channel mapping='mapping' format='sample_format_type'
+					length='number_of_samples' data='data_file' fast='1' />
+
+				<param id='mapping' type='int'>
+					<arg type='int' name='sample' />
+					<expr>(sample * total_channels + index) * sample_size</expr>
+				</param>
+
+			</for-each>
+		</channelset>
+
+	</file>
+</signalml>

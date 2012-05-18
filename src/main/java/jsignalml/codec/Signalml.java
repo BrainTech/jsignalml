@@ -2,6 +2,7 @@ package jsignalml.codec;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 
 import jsignalml.AsciiScanner;
@@ -12,7 +13,10 @@ import jsignalml.EmptyStringParam;
 import jsignalml.ExpressionFault;
 import jsignalml.MyBuffer;
 import jsignalml.TextBuffer;
+import jsignalml.XmlBuffer;
 import jsignalml.util;
+
+import org.xml.sax.SAXException;
 
 public abstract class Signalml extends Context implements jsignalml.Source {
 	protected File default_filename;
@@ -44,6 +48,7 @@ public abstract class Signalml extends Context implements jsignalml.Source {
 	public abstract class FileClass extends Context {
 		MyBuffer buffer;
 		TextBuffer textBuffer;
+		XmlBuffer xmlBuffer;
 		private AsciiScanner scanner;
 		protected boolean isBinary = true; // this is the default type
 
@@ -82,6 +87,9 @@ public abstract class Signalml extends Context implements jsignalml.Source {
 			}
 			this.buffer = MyBuffer.open(filename);
 			this.textBuffer = TextBuffer.open(filename);
+			if (filename.getName().endsWith(".xml")) {
+				this.xmlBuffer = new XmlBuffer(filename);
+			}
 			this.currentFilename = filename;
 		}
 
@@ -97,6 +105,12 @@ public abstract class Signalml extends Context implements jsignalml.Source {
 			if (this.buffer == null)
 				this.open(null);
 			return this.buffer;
+		}
+
+		public XmlBuffer xmlBuffer(){
+			if (this.xmlBuffer == null)
+				this.open(null);
+			return this.xmlBuffer;
 		}
 
 		@Override

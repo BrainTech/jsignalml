@@ -109,9 +109,9 @@ public class ContextDumper implements ContextVisitor<Integer> {
 		node.accept(dumper, "ROOT", 0);
 		return dumper.dumper.getText();
 	}
-	
+
 	@Override public String toString() {
 		return dumper.getText();
 	}
-	
+
 }

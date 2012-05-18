@@ -96,6 +96,12 @@ public abstract class BitForm {
 		if (description.equals(">f4"))
 			return new Float.Float32.BE();
 
+		if (description.equals("<f8"))
+			return new Float.Float64.LE();
+
+		if (description.equals(">f8"))
+			return new Float.Float64.BE();
+
 		if (description.startsWith("|S"))
 			return new String(Integer.parseInt(description.substring(2)));
 		throw new BadBitForm(description);
@@ -607,6 +613,67 @@ public abstract class BitForm {
 						buffer.order(ByteOrder.BIG_ENDIAN);
 
 						data = buffer.getFloat(offset_);
+					} catch (IndexOutOfBoundsException e) {
+						throw new ExpressionFault.IndexError(offset_, buffer.limit());
+					}
+					return new TypeFloat(data);
+				}
+			}
+		}
+
+		public abstract static class Float64 extends Float {
+			public static class LE extends Float64 {
+				protected static final Logger log = new Logger(Float64.LE.class);
+
+				@Override
+				public float read(ByteBuffer buffer, int offset_) {
+					float data;
+					try {
+						buffer.order(ByteOrder.LITTLE_ENDIAN);
+						data = (float)buffer.getDouble(offset_);
+					} catch (IndexOutOfBoundsException e) {
+						throw new ExpressionFault.IndexError(offset_, buffer.limit());
+					}
+					return data;
+				}
+
+				@Override
+				public TypeFloat read(ByteBuffer buffer, TypeInt offset) {
+					int offset_ = offset.safeIntValue();
+					float data;
+					try {
+						buffer.order(ByteOrder.LITTLE_ENDIAN);
+						data = (float)buffer.getDouble(offset_);
+					} catch (IndexOutOfBoundsException e) {
+						throw new ExpressionFault.IndexError(offset_, buffer.limit());
+					}
+					return new TypeFloat(data);
+				}
+			}
+
+			public static class BE extends Float64 {
+				protected static final Logger log = new Logger(Float64.BE.class);
+
+				@Override
+				public float read(ByteBuffer buffer, int offset_) {
+					float data;
+					try {
+						buffer.order(ByteOrder.BIG_ENDIAN);
+						data = (float)buffer.getDouble(offset_);
+					} catch (IndexOutOfBoundsException e) {
+						throw new ExpressionFault.IndexError(offset_, buffer.limit());
+					}
+					return data;
+				}
+
+				@Override
+				public TypeFloat read(ByteBuffer buffer, TypeInt offset) {
+					int offset_ = offset.safeIntValue();
+					float data;
+					try {
+						buffer.order(ByteOrder.BIG_ENDIAN);
+
+						data = (float)buffer.getDouble(offset_);
 					} catch (IndexOutOfBoundsException e) {
 						throw new ExpressionFault.IndexError(offset_, buffer.limit());
 					}

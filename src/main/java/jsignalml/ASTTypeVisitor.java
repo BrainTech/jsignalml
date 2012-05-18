@@ -200,7 +200,28 @@ public class ASTTypeVisitor extends ASTVisitor<Type> {
 
 		return putCached(node, type);
 	}
-	
+
+	@Override
+	public Type visit(ASTNode.XmlParam node, Type parent)
+	{
+		Type cached = this.getCached(node);
+		if (cached != null)
+			return cached == _null_repl ? null : cached;
+
+		final TypeVisitor checker = _typeVisitor(node);
+
+		{
+			assert node.xpathPattern != null;
+			assert node.xpathEvaluationType != null;
+			final Type t3 = node.xpathPattern.accept(checker);
+			log.info("%s xpath.type=%s", node, typename(t3));
+			assert_type(t3, TypeString.I);
+		}
+
+		final Type type =  node.type;
+		return putCached(node, type);
+	}
+
 	@Override
 	public Type visit(ASTNode.Positional node, Type parent)
 	{

@@ -3,6 +3,9 @@ package jsignalml;
 import java.io.IOException;
 import java.io.FileNotFoundException;
 import java.io.File;
+
+import org.xml.sax.SAXException;
+
 import static java.lang.String.format;
 
 import jsignalml.logging.Logger;
@@ -50,7 +53,16 @@ public abstract class FileType {
 //		}
 	}
 
-	
+	public static class XmlFile extends FileType {
+		final XmlBuffer buffer;
+
+		public XmlFile(File filename){
+			log.info("opening buffer for %s", filename);
+			buffer = new XmlBuffer(filename);
+		}
+	}
+
+
 	public static <T extends FileType>
 	T open(File filename)
 	throws IOException, FileNotFoundException

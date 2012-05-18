@@ -17,6 +17,7 @@ public abstract class ASTVisitor<T> {
 	public T visit(ASTNode.ElseIfBranch node, T parent){ return parent; }
 	public T visit(ASTNode.TextParam node, T parent){ return parent; }
 	public T visit(Builtins node, T parent){ return parent; }
+	public T visit(ASTNode.XmlParam node, T parent){ return parent; }
 
 	public String toString(){ return getClass().getSimpleName(); }
 }

@@ -13,11 +13,14 @@ import org.apache.log4j.BasicConfigurator;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.xml.sax.SAXException;
+import org.w3c.dom.NodeList;
 
 /**
  * Translate an XML DOM into an ASTNode tree.
  */
 public class CodecParser {
+	private static final String XPATH_TAG_NAME = "xpath";
+	private static final String XPATH_EVALUATION_TYPE_ATTRIBUTE_NAME = "xpath-evaluation-type";
 	public static final Logger log = new Logger(CodecParser.class);
 
 	final File filename;
@@ -142,16 +145,18 @@ public class CodecParser {
 		if (expr != null) {
 			if (format == null && offset == null && pattern == null &&
 			                line == null && xpath == null)
-				p = new ASTNode.ExprParam(parent, id, type, expr, fast);
+				p = new ASTNode.ExprParam(parent, id, type, expr);
 		} else if (format != null && offset != null) {
 			if (expr == null && pattern == null && line == null && xpath == null)
-				p = new ASTNode.BinaryParam(parent, id, type, format, offset,
-						fast);
+				p = new ASTNode.BinaryParam(parent, id, type, format, offset);
 		} else if (pattern != null && group != null) {
 			if (offset == null && xpath == null && expr == null && format == null)
 				p = new ASTNode.TextParam(parent, id, type, line, pattern, group);
 		} else if (xpath != null) {
-			throw new UnsupportedOperationException();
+			if ((expr == null) && (pattern == null) && (line == null) && (offset == null)){
+				String xpathEvaluationType = getXpathEvaluationTypeFromParamElement(element);
+				p = new ASTNode.XmlParam(parent, id, type, xpath, xpathEvaluationType);
+			}
 		} else {
 			throw new SyntaxError("not enough attributes: " + element);
 		}
@@ -160,6 +165,24 @@ public class CodecParser {
 			throw new SyntaxError("too many attributes: " + element);
 
 		return p;
+	}
+
+	private String getXpathEvaluationTypeFromParamElement(Element paramElement) {
+		String xpathTypeAttrValue = null;
+		if (paramElement.hasChildNodes()) {
+			NodeList nl = paramElement.getChildNodes();
+			Node node;
+			for (int i = 0; i < nl.getLength(); i++) {
+				node = nl.item(i);
+				String nodeLocalName = node.getLocalName();
+				if ((nodeLocalName != null) && (nodeLocalName.equals(XPATH_TAG_NAME))) {
+					xpathTypeAttrValue = node.getAttributes()
+							.getNamedItem(XPATH_EVALUATION_TYPE_ATTRIBUTE_NAME).getFirstChild()
+							.getNodeValue();
+				}
+			}
+		}
+		return xpathTypeAttrValue;
 	}
 
         static public ASTNode.Positional do_arg(ASTNode parent, Element element)
@@ -214,7 +237,7 @@ public class CodecParser {
 		final Expression data = _null_or_parse(_attribute(element, "data"));
 
 		final ASTNode.Channel node = new ASTNode.Channel(parent, id, mapping, format,
-				length, fast, data);
+				length, data);
 		return node;
 	}
 
@@ -270,7 +293,7 @@ public class CodecParser {
 
 		final Expression id = _identifier(element);
 		final String condition = _attribute(element, "test");
-		
+
 		final Expression expr = _null_or_parse(condition);
 		return new ASTNode.ElseIfBranch(parent, id, expr);
 	}
