@@ -99,6 +99,7 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 	final JClass Channel_t = this.model.ref(Channel.class);
 	final JClass MyBuffer_t = this.model.ref(MyBuffer.class);
 	final JClass TextBuffer_t = this.model.ref(TextBuffer.class);
+	final JClass XmlBuffer_t = this.model.ref(XmlBuffer.class);
 	final JClass BitForm_t = this.model.ref(BitForm.class);
 	final JClass Builtins_t = this.model.ref(Builtins.class);
 	final JClass RuntimeException_t = this.model.ref(RuntimeException.class);
@@ -296,7 +297,7 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 				+ " inputFile channelNr1 channelNr2 ...");
 		_ifBlock.add(System_t.staticRef("out").invoke("println").arg(syntax));
 		_ifBlock._return();
-		
+
 		body.add(BasicConfigurator_t.staticInvoke("configure"));
 
 		final JVar reader = body.decl(klass, "reader", JExpr._new(klass));
@@ -472,6 +473,18 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 		return nested;
 	}
 
+	@Override
+	public JDefinedClass visit(ASTNode.XmlParam node, JDefinedClass klass)
+	{
+		log.info("visit((XmlParam) %s, %s)", node, klass);
+		assert klass != null;
+		final String theid = dynamicID(node, node.id);
+		JDefinedClass nested = paramClass(klass, theid, node);
+		idMethod(nested, node, theid);
+		readParamFunction(nested, node);
+		return nested;
+	}
+
 	JDefinedClass paramClass(JDefinedClass parent, String theid, ASTNode.Param node)
 	{
 		final Type nodetype = this.nodeType(node);
@@ -577,7 +590,7 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 
 		return impl;
 	}
-	
+
 	public JMethod readParamFunction(JDefinedClass klass, ASTNode.TextParam node)
 	{
 		assert klass != null;
@@ -599,24 +612,49 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 		comment(body, "group=(%s)", node.group);
 		comment(body, "group.type=%s", typename(node.group.type));
 
-		
 		final JVar line_ = body.decl(TypeInt_t, "line", JExpr.cast(TypeInt_t, node.line.accept(javagen)));
 		final JVar pattern_ = body.decl(TypeString_t, "pattern", node.pattern.accept(javagen));
 		final JVar group_ = body.decl(TypeInt_t, "group", JExpr.cast(TypeInt_t, node.group.accept(javagen)));
-
-		
 		final JVar textBuf = body.decl(TextBuffer_t, "textBuf", JExpr.invoke("textBuffer"));
 		final JVar _t = body.decl(nodetype_t, "_t", JExpr._null());
-		
-		final JVar value = body.decl(nodetype_t, "value", 
+		final JVar value = body.decl(nodetype_t, "value",
 				textBuf.invoke("read").arg(line_).arg(pattern_).arg(group_).arg(_t));
-		
-
 		body._return(value);
 
 		if (isPrimGeneration())
 			getMethod_p(klass, nodetype);
 
+		return impl;
+	}
+
+	public JMethod readParamFunction(JDefinedClass klass, ASTNode.XmlParam node) {
+		assert klass != null;
+
+		final JavaExprGen javagen = createExprGen(node, null);
+		final Type nodetype = nodeType(node);
+		final JClass nodetype_t = convertTypeToJClass(nodetype);
+		final JMethod impl = klass.method(JMod.PROTECTED, nodetype_t, GET_PRIV);
+		final JBlock body = impl.body();
+		comment_stamp(body);
+
+		comment(body, "node.type=%s", typename(node.type));
+		comment(body, "--> nodetype=%s", typename(nodetype));
+		comment(body, "xpathPattern=(%s)", node.xpathPattern);
+		comment(body, "xpathEvaluationType=(%s)", node.xpathEvaluationType);
+
+		final JVar xpathPattern_ = body.decl(TypeString_t, "xpathPattern",
+				node.xpathPattern.accept(javagen));
+
+		final JVar xmlBuf = body.decl(XmlBuffer_t, "xmlBuf",
+				JExpr.invoke("xmlBuffer"));
+		final JVar _t = body.decl(nodetype_t, "_t", JExpr._null());
+		final JVar value = body.decl(nodetype_t, "value", xmlBuf.invoke("read")
+				.arg(xpathPattern_).arg(node.xpathEvaluationType).arg(_t));
+
+		body._return(value);
+
+		if (isPrimGeneration())
+			getMethod_p(klass, nodetype);
 		return impl;
 	}
 
@@ -826,12 +864,12 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 
 			if(node.filename != null){
 
-				final JVar mainFile = body.decl(File_t, "main", 
+				final JVar mainFile = body.decl(File_t, "main",
 						JExpr.ref("default_filename"));
-				final JVar endIndex = body.decl(Integer_t, "endIndex", 
+				final JVar endIndex = body.decl(Integer_t, "endIndex",
 						mainFile.invoke("getAbsolutePath").invoke("length").
 									minus(mainFile.invoke("getName").invoke("length")));
-				final JVar dirname = body.decl(String_t, "dirname", 
+				final JVar dirname = body.decl(String_t, "dirname",
 						mainFile.invoke("getAbsolutePath").invoke("substring").arg(JExpr.lit(0)).arg(endIndex));
 
 				final JavaExprGen javagen = createExprGen(node, null);
@@ -1159,7 +1197,7 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 	{
 		log.info("visit((ElseIfBranch) %s, %s)", node, parent);
 		final String theid = dynamicID(node, node.id);
-		
+
 		// lets check if there is any else-if inside this node
 		List<ASTNode> children = node.children;
 		boolean conditionalWithElseIf = false;
@@ -1169,7 +1207,7 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 				break;
 			}
 		}
-		
+
 		final JDefinedClass klass = elseIfBranchClass(theid, parent, conditionalWithElseIf);
 		comment_stamp(klass);
 		idMethod(klass, node, theid);
@@ -1187,15 +1225,15 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 		}
 		klass._extends(jsignalml.codec.ConditionalClass.ElseIfBranchClass.class);
 		comment_stamp(klass);
-		
+
 		final JMethod hasElseIf = klass.method(JMod.PUBLIC, this.model.BOOLEAN, "hasElseIf");
 		hasElseIf.body()._return(JExpr.lit(conditionalWithElseIf));
-		
+
 		klass.metadata = new MetadataIfBranch(klass);
 		log.info("%s.metadata/else-if has been set", klass);
-		
+
 		final JMethod getter = classCacheMethod(parent, id, klass);
-		
+
 		if (parent.metadata instanceof MetadataIfBranch) {
 			MetadataIfBranch metadata = (MetadataIfBranch) parent.metadata;
 			metadata.elseIfBranch.registerContext(id, klass, JExpr.invoke(getter));
@@ -1204,7 +1242,7 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 					+ parent.metadata.getClass().getSimpleName());
 			//TODO throw proper exception
 		}
-		
+
 		return klass;
 	}
 
@@ -1681,7 +1719,7 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 
 		final JVar cast = method.body().decl(TypeFloat_t, "cast", ji);
 		method.body()._return(cast);
-		
+
 		return method;
 	}
 
