@@ -11,100 +11,29 @@
 		<param id='data_filename' type='str'>
 			<expr>fetch(get_filename(main), "([a-zA-Z0-9_,.;]+.)hdr", 1) + "data"</expr>
 		</param>
-		<param id='acquisition_mode' type='str'>
-			<line>-1</line>
-			<pattern>"[ ]*Acquisition[ _]*[Mm]{1}ode[ ]*:[ ]*([A-Za-z]*)"</pattern>
-			<group>1</group>
-		</param>
 		<param id='file_type' type='str'>
-			<line>-1</line>
+			<format>'|S0'</format>
 			<pattern>"[ ]*File[ _]*[Tt]{1}ype[ ]*:[ ]*\'([A-Za-z]*)\'"</pattern>
 			<group>1</group>
 		</param>
-		<param id='channel_name' type='str'>
-			<expr>'chNamInit0'</expr>
-		</param>
-		<param id='channel_type_name' type='str'>
-			<expr>'chTypInit0'</expr>
-		</param>
-		<param id='sample_period' type='float' units='s'>
-			<line>-1</line>
-			<pattern>"[ ]*Sample[ _]*[Pp]{1}eriod[ ]*:[ ]*([0-9]+[.0-9e+]*)"</pattern>
-			<group>1</group>
-		</param>
-		<param id='period_hex_float' type='int' units='s'>
-			<line>-1</line>
-			<pattern>"[ ]*Period[ _]*[Hh]{1}ex[ _]*[Ff]{1}loat[ ]*:[ ]*(0x[0-9A-Fa-f]+)"</pattern>
-			<group>1</group>
-		</param>
 		<param id='sampling_frequency' type='float' units='Hz'>
-			<line>-1</line>
+			<format>'&lt;f4'</format>
 			<pattern>"[ ]*Sample[ _]*[Ff]{1}requency[ ]*:[ ]*([0-9]+[.0-9e+]*)"</pattern>
 			<group>1</group>
 		</param>
-		<param id='total_epochs' type='int'>
-			<line>-1</line>
-			<pattern>"[ ]*Total[ _]*[Ee]{1}pochs[ ]*:[ ]*([0-9]*)"</pattern>
-			<group>1</group>
-		</param>
 		<param id='data_format' type='str'>
-			<line>-1</line>
+			<format>'|S1'</format>
 			<pattern>"[ ]*Data[ _]*[Ff]{1}ormat[ ]*:[ ]*([A-Za-z,]*)"</pattern>
 			<group>1</group>
 		</param>
 		<param id='total_number_of_channels' type='int'>
-			<line>-1</line>
+			<format>'|u1'</format>
 			<pattern>"[ ]*([0-9]*)[ ]+channels[ ]*$"</pattern>
 			<group>1</group>
 		</param>
-		<param id='MEG_number_of_channels' type='int'>
-			<line>-1</line>
-			<pattern>"[ ]*([0-9]*)[ ]+MEG[ ]*channels[,]{1}[ ]*group[ ]*([0-9]*)"</pattern>
-			<group>1</group>
-		</param>
 		<param id='MEG_channel_group' type='int'>
-			<line>-1</line>
+			<format>'|u1'</format>
 			<pattern>"[ ]*([0-9]*)[ ]+MEG[ ]*channels[,]{1}[ ]*group[ ]*([0-9]*)"</pattern>
-			<group>2</group>
-		</param>
-		<param id='REFERENCE_number_of_channels' type='int'>
-			<line>-1</line>
-			<pattern>"[ ]*([0-9]*)[ ]+REFERENCE[ ]*channels[,]{1}[ ]*group[ ]*([0-9]*)"</pattern>
-			<group>1</group>
-		</param>
-		<param id='REFERENCE_channel_group' type='int'>
-			<line>-1</line>
-			<pattern>"[ ]*([0-9]*)[ ]+REFERENCE[ ]*channels[,]{1}[ ]*group[ ]*([0-9]*)"</pattern>
-			<group>2</group>
-		</param>
-		<param id='EEG_number_of_channels' type='int'>
-			<line>-1</line>
-			<pattern>"[ ]*([0-9]*)[ ]+EEG[ ]*channels[,]{1}[ ]*group[ ]*([0-9]*)"</pattern>
-			<group>1</group>
-		</param>
-		<param id='EEG_channel_group' type='int'>
-			<line>-1</line>
-			<pattern>"[ ]*([0-9]*)[ ]+EEG[ ]*channels[,]{1}[ ]*group[ ]*([0-9]*)"</pattern>
-			<group>2</group>
-		</param>
-		<param id='TRIGGER_number_of_channels' type='int'>
-			<line>-1</line>
-			<pattern>"[ ]*([0-9]*)[ ]+TRIGGER[ ]*channels[,]{1}[ ]*group[ ]*([0-9]*)"</pattern>
-			<group>1</group>
-		</param>
-		<param id='TRIGGER_channel_group' type='int'>
-			<line>-1</line>
-			<pattern>"[ ]*([0-9]*)[ ]+TRIGGER[ ]*channels[,]{1}[ ]*group[ ]*([0-9]*)"</pattern>
-			<group>2</group>
-		</param>
-		<param id='UTILITY_number_of_channels' type='int'>
-			<line>-1</line>
-			<pattern>"[ ]*([0-9]*)[ ]+UTILITY[ ]*channels[,]{1}[ ]*group[ ]*([0-9]*)"</pattern>
-			<group>1</group>
-		</param>
-		<param id='UTILITY_channel_group' type='int'>
-			<line>-1</line>
-			<pattern>"[ ]*([0-9]*)[ ]+UTILITY[ ]*channels[,]{1}[ ]*group[ ]*([0-9]*)"</pattern>
 			<group>2</group>
 		</param>
 		<param id='line_pattern_for_channel_sensitivities' type='str'>
@@ -114,19 +43,15 @@
 			<expr>get_line_for_pattern(main, line_pattern_for_channel_sensitivities, 0)</expr>
 		</param>
 		<param id='longest_epoch_nr' type='int'>
-			<line>-1</line>
+			<format>'&lt;u4'</format>
+
 			<pattern>"[ ]*Epoch[ _]*([0-9]*)[ ]*:[ ]*([0-9]*)[ ]+slices[,]{1}[ ]*([0-9]+[.]{1}[0-9]*)"</pattern>
 			<group>1</group>
 		</param>
 		<param id='number_of_samples' type='int'>
-			<line>-1</line>
+			<format>'&lt;u4'</format>
 			<pattern>"[ ]*Epoch[ _]*([0-9]*)[ ]*:[ ]*([0-9]*)[ ]+slices[,]{1}[ ]*([0-9]+[.]{1}[0-9]*)"</pattern>
 			<group>2</group>
-		</param>
-		<param id='longest_epoch_duration' type='float' units='s'>
-			<line>-1</line>
-			<pattern>"[ ]*Epoch[ _]*([0-9]*)[ ]*:[ ]*([0-9]*)[ ]+slices[,]{1}[ ]*([0-9]+[.]{1}[0-9]*)"</pattern>
-			<group>3</group>
 		</param>
 		<param id='msi_format' type='str'>
 			<expr>data_format</expr>
@@ -189,12 +114,14 @@
 					<expr>line_number_with_channel_sensitivities + line_nr</expr>
 				</param>
 				<param id='channel_group' type='int'>
+					<format>'&lt;u1'</format>
 					<line type='int'>line_nr_channel_sensitivities</line>
 					<pattern>line_pattern_for_channel_sensitivities</pattern>
 					<group>2</group>
 				</param>
 				<if test='channel_group == MEG_channel_group'>
 					<param id='channel_name' type='str'>
+						<format>'|S0'</format>
 						<line type='int'>line_nr_channel_sensitivities</line>
 						<pattern>line_pattern_for_channel_sensitivities</pattern>
 						<group>1</group>
@@ -203,11 +130,13 @@
 						<expr>'MEG'</expr>
 					</param>
 					<param id='channel_sensitivity' type='float'>
+						<format>'&lt;f4'</format>
 						<line type='int'>line_nr_channel_sensitivities</line>
 						<pattern>line_pattern_for_channel_sensitivities</pattern>
 						<group>3</group>
 					</param>
 					<param id='channel_sensitivity_unit' type='str'>
+						<format>'|S0'</format>
 						<line type='int'>line_nr_channel_sensitivities</line>
 						<pattern>line_pattern_for_channel_sensitivities</pattern>
 						<group>4</group>
@@ -216,7 +145,7 @@
 						<expr>channel_sensitivity</expr>
 					</param>
 					<channel id='channel' mapping='mapping' format='sample_format'
-								length='number_of_samples' data='data_file'>
+								length='number_of_samples' data='data_file' fast='1'>
 						<param id='mapping' type='int'>
 							<arg type='int' name='sample' />
 							<expr>(sample * total_number_of_channels + line_nr) * sample_size</expr>
