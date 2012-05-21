@@ -14,14 +14,17 @@ public class TypeInt extends Type {
 	public TypeInt(BigInteger value){
 		this.value = value;
 	}
+
 	public TypeInt(long value) {
 		this.value = BigInteger.valueOf(value);
 	}
+
 	public TypeInt(double value) {
 		this((long)value);
 		if(value > Long.MAX_VALUE || value < Long.MIN_VALUE)
 			throw new ExpressionFault.ValueError("overflow");
 	}
+
 	public TypeInt(java.lang.String text) {
 
 		int base = 10;
@@ -45,22 +48,31 @@ public class TypeInt extends Type {
 			throw new SyntaxError(e);
 		}
 	}
+
 	public TypeInt(boolean value) {
 		this(value?1:0);
 	}
+
 	public TypeInt() {
 		this(0);
+	}
+
+	public TypeInt(TypeBool value) {
+		this(value.getValue());
 	}
 
 	@Override
 	public TypeInt make(Type other) {
 		if (other instanceof TypeInt)
 			return (TypeInt)other;
-		if (other instanceof TypeFloat)
+		else if (other instanceof TypeFloat)
 			return new TypeInt(((TypeFloat)other).value);
-		if (other instanceof TypeString)
+		else if (other instanceof TypeString)
 			return new TypeInt(((TypeString)other).value);
-		throw new ExpressionFault.TypeError(other, this);
+		else if (other instanceof TypeBool)
+			return new TypeInt(((TypeBool) other).getValue());
+		else
+			throw new ExpressionFault.TypeError(other, this);
 	}
 
 	static TypeInt makeFromUnsignedReadAsSigned(long value) {
@@ -126,7 +138,7 @@ public class TypeInt extends Type {
 		case MUL:
 			return other.binaryOp(op, this);
 		default:
-			throw new ExpressionFault.TypeError();
+			throw new ExpressionFault.TypeError(other, this);
 		}
 	}
 
@@ -137,7 +149,7 @@ public class TypeInt extends Type {
 		case MUL:
 			return other.binaryOp(op, this);
 		default:
-			throw new ExpressionFault.TypeError();
+			throw new ExpressionFault.TypeError(other, this);
 		}
 	}
 
@@ -187,7 +199,7 @@ public class TypeInt extends Type {
 			return this.add((TypeInt)other);
 		if(other instanceof TypeFloat)
 			return this.add((TypeFloat)other);
-		throw new ExpressionFault.TypeError();
+		throw new ExpressionFault.TypeError(other, this);
 	}
 	public TypeInt add(TypeInt other){
 		return new TypeInt(this.value.add(other.value));
@@ -201,7 +213,7 @@ public class TypeInt extends Type {
 			return this.sub((TypeInt)other);
 		if(other instanceof TypeFloat)
 			return this.sub((TypeFloat)other);
-		throw new ExpressionFault.TypeError();
+		throw new ExpressionFault.TypeError(other, this);
 	}
 	public TypeInt sub(TypeInt other){
 		return new TypeInt(this.value.subtract(other.value));
@@ -222,7 +234,7 @@ public class TypeInt extends Type {
 			return this.mul((TypeString)other);
 		if(other instanceof TypeList)
 			return this.mul((TypeList)other);
-		throw new ExpressionFault.TypeError();
+		throw new ExpressionFault.TypeError(other, this);
 	}
 	public TypeInt mul(TypeInt other){
 		return new TypeInt(this.value.multiply(other.value));
@@ -242,7 +254,7 @@ public class TypeInt extends Type {
 			return this.div((TypeInt)other);
 		if(other instanceof TypeFloat)
 			return this.div((TypeFloat)other);
-		throw new ExpressionFault.TypeError();
+		throw new ExpressionFault.TypeError(other, this);
 	}
 	public TypeFloat div(TypeInt other){
 		return new TypeFloat(this.value.doubleValue() / other.value.doubleValue());
@@ -256,7 +268,7 @@ public class TypeInt extends Type {
 			return this.floordiv((TypeInt)other);
 		if(other instanceof TypeFloat)
 			return this.floordiv((TypeFloat)other);
-		throw new ExpressionFault.TypeError();
+		throw new ExpressionFault.TypeError(other, this);
 	}
 	public TypeInt floordiv(TypeInt other){
 		return make(this.sub(this.mod(other)).div(other));
@@ -270,7 +282,7 @@ public class TypeInt extends Type {
 			return this.mod((TypeInt)other);
 		if(other instanceof TypeFloat)
 			return this.mod((TypeFloat)other);
-		throw new ExpressionFault.TypeError();
+		throw new ExpressionFault.TypeError(other, this);
 	}
 	public TypeInt mod(TypeInt other){
 		if(other.compareTo(ZERO) < 0)
@@ -287,7 +299,7 @@ public class TypeInt extends Type {
 	public Type bin_and(Type other){
 		if(other instanceof TypeInt)
 			return this.bin_and((TypeInt)other);
-		throw new ExpressionFault.TypeError();
+		throw new ExpressionFault.TypeError(other, this);
 	}
 	public TypeInt bin_and(TypeInt other){
 		return new TypeInt(this.value.and(other.value));
@@ -296,7 +308,7 @@ public class TypeInt extends Type {
 	public Type bin_or(Type other){
 		if(other instanceof TypeInt)
 			return this.bin_or((TypeInt)other);
-		throw new ExpressionFault.TypeError();
+		throw new ExpressionFault.TypeError(other, this);
 	}
 	public TypeInt bin_or(TypeInt other){
 		return new TypeInt(this.value.or(other.value));
@@ -305,7 +317,7 @@ public class TypeInt extends Type {
 	public Type bin_xor(Type other){
 		if(other instanceof TypeInt)
 			return this.bin_xor((TypeInt)other);
-		throw new ExpressionFault.TypeError();
+		throw new ExpressionFault.TypeError(other, this);
 	}
 	public TypeInt bin_xor(TypeInt other){
 		return new TypeInt(this.value.xor(other.value));
@@ -316,7 +328,7 @@ public class TypeInt extends Type {
 			return this.pow((TypeInt)other);
 		if(other instanceof TypeFloat)
 			return this.pow((TypeFloat)other);
-		throw new ExpressionFault.TypeError();
+		throw new ExpressionFault.TypeError(other, this);
 	}
 	public TypeInt pow(TypeInt other){
 		return new TypeInt(this.value.pow(other.value.intValue()));
@@ -330,7 +342,7 @@ public class TypeInt extends Type {
 			return this.compareTo((TypeInt)other);
 		if(other instanceof TypeFloat)
 			return this.compareTo((TypeFloat)other);
-		throw new ExpressionFault.TypeError();
+		throw new ExpressionFault.TypeError(other, this);
 	}
 	public int compareTo(TypeInt other){
 		return this.value.compareTo(other.value);
@@ -341,7 +353,7 @@ public class TypeInt extends Type {
 	}
 
 	public Type index(Type i){
-		throw new ExpressionFault.TypeError();
+		throw new ExpressionFault.TypeError(i, this);
 	}
 
 	public TypeInt pos() { return this; }

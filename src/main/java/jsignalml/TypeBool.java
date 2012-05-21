@@ -100,6 +100,19 @@ public class TypeBool extends Type {
 	}
 
 	/**
+	 * Constructs instance of class <code>TypeBool</code> based on parsing of
+	 * string. Every string which matches "true" (regardless of lower case/upper
+	 * case letters) gives <code>True</code>, any other gives <code>False</code>
+	 * value.
+	 *
+	 * @param strValue
+	 *            string value for parsing
+	 */
+	public TypeBool(TypeString strValue) {
+		this(strValue.getValue());
+	}
+
+	/**
 	 * Constructs default boolean object, with <code>False</code> value.
 	 */
 	public TypeBool() {

@@ -54,6 +54,12 @@ public class XmlBuffer {
 		return read(xpathPattern, xpathType);
 	}
 
+	public TypeBool read(TypeString xpathPattern, String xpathType,
+			TypeBool t) {
+		String s = read(xpathPattern, xpathType).value;
+		return new TypeBool(s);
+	}
+
 	private TypeString read(TypeString xpathPattern, String xpathType) {
 		String value = null;
 		if (xpathType.equals(XPATH_EVALUATION_TYPE_NODE_NAME_LOCAL)) {

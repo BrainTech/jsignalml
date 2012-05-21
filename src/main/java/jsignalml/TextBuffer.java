@@ -47,6 +47,11 @@ public class TextBuffer {
 		return new TypeString(s);
 	}
 
+	public TypeBool read(TypeInt line, TypeString pattern, TypeInt groupNumber, TypeBool t){
+		String s = read(line.value.intValue(), pattern.value, groupNumber.value.intValue());
+		return new TypeBool(s);
+	}
+
 	public TypeInt get_line_matching_pattern(TypeString pattern, TypeInt groupNumber){
 		Pattern pat = Pattern.compile(pattern.value);
 		log.debug("Searching for match [" + pattern.value + "] in all the lines");

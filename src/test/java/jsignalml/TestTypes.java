@@ -71,4 +71,46 @@ public class TestTypes {
 		assertEquals(new TypeInt(2), new TypeInt("+2"));
 		assertEquals(new TypeInt(3), new TypeInt("+ 3 "));
 	}
+
+	@Test public void test_boolean_make_from_string() {
+		assertEquals(new TypeBool(true), new TypeBool("TRUE"));
+		assertEquals(new TypeBool(true), new TypeBool("TrUe"));
+		assertEquals(new TypeBool(true), new TypeBool("true"));
+		assertEquals(new TypeBool(false), new TypeBool("FALSE"));
+		assertEquals(new TypeBool(false), new TypeBool("False"));
+		assertEquals(new TypeBool(false), new TypeBool("false"));
+		assertEquals(new TypeBool(false), new TypeBool("x"));
+		assertEquals(new TypeBool(false), new TypeBool("0"));
+		assertEquals(new TypeBool(false), new TypeBool("1"));
+	}
+
+	@Test public void test_boolean_make_from_typestring() {
+		assertEquals(new TypeBool(true), new TypeBool(new TypeString("TRUE")));
+		assertEquals(new TypeBool(true), new TypeBool(new TypeString("TrUe")));
+		assertEquals(new TypeBool(true), new TypeBool(new TypeString("true")));
+		assertEquals(new TypeBool(false), new TypeBool(new TypeString("FALSE")));
+		assertEquals(new TypeBool(false), new TypeBool(new TypeString("False")));
+		assertEquals(new TypeBool(false), new TypeBool(new TypeString("false")));
+		assertEquals(new TypeBool(false), new TypeBool(new TypeString("x")));
+		assertEquals(new TypeBool(false), new TypeBool(new TypeString("0")));
+		assertEquals(new TypeBool(false), new TypeBool(new TypeString("1")));
+	}
+
+	@Test public void test_boolean_make_from_float() {
+		assertEquals(new TypeBool(true), new TypeBool(new TypeFloat(1000)));
+		assertEquals(new TypeBool(true), new TypeBool(new TypeFloat(1000.01)));
+		assertEquals(new TypeBool(true), new TypeBool(new TypeFloat(-1.4)));
+		assertEquals(new TypeBool(false), new TypeBool(new TypeFloat(0)));
+		assertEquals(new TypeBool(false), new TypeBool(0.0F));
+		assertEquals(new TypeBool(true), new TypeBool(1.0F));
+	}
+
+	@Test public void test_boolean_make_from_int() {
+		assertEquals(new TypeBool(true), new TypeBool(new TypeInt(1000)));
+		assertEquals(new TypeBool(true), new TypeBool(new TypeInt(-1600)));
+		assertEquals(new TypeBool(true), new TypeBool(new TypeInt(1)));
+		assertEquals(new TypeBool(false), new TypeBool(new TypeInt(0)));
+		assertEquals(new TypeBool(true), new TypeBool(1L));
+		assertEquals(new TypeBool(false), new TypeBool(0L));
+	}
 }

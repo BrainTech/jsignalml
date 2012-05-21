@@ -79,12 +79,14 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 	final JClass Integer_t = this.model.ref(Integer.class);
 	final JClass Long_t = this.model.ref(Long.class);
 	final JClass Double_t = this.model.ref(Double.class);
+	final JClass Boolean_t = this.model.ref(Boolean.class);
 	final JClass Type_t = this.model.ref(Type.class);
 	final JClass TypeInt_t = this.model.ref(TypeInt.class);
 	final JClass TypeFloat_t = this.model.ref(TypeFloat.class);
 	final JClass TypeString_t = this.model.ref(TypeString.class);
 	final JClass TypeList_t = this.model.ref(TypeList.class);
 	final JClass TypeMap_t = this.model.ref(TypeMap.class);
+	final JClass TypeBool_t = this.model.ref(TypeBool.class);
 	final JClass List_of_Type_t = this.model.ref(List.class).narrow(Type.class);
 
 	final JFieldRef TypeInt_I = TypeInt_t.staticRef("I");
@@ -92,6 +94,7 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 	final JFieldRef TypeString_I = TypeString_t.staticRef("I");
 	final JFieldRef TypeList_I = TypeList_t.staticRef("I");
 	final JFieldRef TypeMap_I = TypeMap_t.staticRef("I");
+	final JFieldRef TypeBool_I = TypeBool_t.staticRef("I");
 
 	final JClass ArgMismatch_t = this.model.ref(ExpressionFault.ArgMismatch.class);
 	final JClass ContextDumper_t = this.model.ref(ContextDumper.class);
@@ -747,6 +750,9 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 		} else if (wanted instanceof TypeFloat) {
 			get = get.invoke("getValue");
 			type = Double_t;
+		} else if (wanted instanceof TypeBool) {
+			get = get.invoke("getValue");
+			type = Boolean_t;
 		} else {
 			return null;
 		}
@@ -1507,7 +1513,7 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 
 	public JMethod getSamplesMethod(JDefinedClass klass, ASTNode.Channel node)
 	{
-		final Expression fastSet = Processor.parse("1");
+		//final Expression fastSet = Processor.parse("1");
 		final JMethod method = klass.method(JMod.PUBLIC, this.model.VOID, "getSamples");
 		comment_stamp(method.body());
 		final JVar dst = method.param(FloatBuffer_t, "dst");
