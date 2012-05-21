@@ -1,14 +1,10 @@
 package jsignalml;
 
+import static java.lang.String.format;
+
+import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
-import java.util.List;
-import java.util.Collections;
-import java.util.Iterator;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import org.apache.commons.lang.StringUtils;
-import static java.lang.String.format;
 
 import jsignalml.logging.Logger;
 

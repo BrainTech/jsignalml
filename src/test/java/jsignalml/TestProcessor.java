@@ -1,9 +1,11 @@
 package jsignalml;
 
-import org.junit.Test;
-import static org.junit.Assert.*;
-import java.math.BigInteger;
 import static jsignalml.TestNumberOps.eval;
+import static org.junit.Assert.assertEquals;
+
+import java.math.BigInteger;
+
+import org.junit.Test;
 
 public class TestProcessor {
 	void assertLeqR(String line, Type expected) throws Exception

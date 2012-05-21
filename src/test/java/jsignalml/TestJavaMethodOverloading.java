@@ -1,7 +1,8 @@
 package jsignalml;
 
+import static org.junit.Assert.assertEquals;
+
 import org.junit.Test;
-import static org.junit.Assert.*;
 
 /**
  * This is mostly to test my understanding of method overloading and to serve as

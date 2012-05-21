@@ -9,7 +9,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import jsignalml.ExpressionFault.AttributeError;
 import jsignalml.logging.Logger;
 
 import org.apache.commons.lang.StringUtils;

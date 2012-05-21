@@ -1,12 +1,9 @@
 package jsignalml;
 
+import static org.junit.Assert.assertNotNull;
+
 import org.junit.Before;
 import org.junit.Test;
-import static org.junit.Assert.*;
-import static org.hamcrest.core.IsEqual.equalTo;
-
-import java.util.Map;
-import java.util.TreeMap;
 
 public class TestBinaryParam {
 	static final String file1 = "target/test-classes/file1";

@@ -163,18 +163,18 @@ public class Builtins extends ASTNode {
 		{
 			if(args.size() != 3)
 				throw new ExpressionFault.ArgMismatch(3, args.size());
-			
-			TypeString retValue = call((TypeString)args.get(0), 
+
+			TypeString retValue = call((TypeString)args.get(0),
 					(TypeString)args.get(1), (TypeInt)args.get(2));
 			if(retValue != null){
 				return retValue;
 			}
-			
-			throw new ExpressionFault.NoMatchFoundError(((TypeString)args.get(0)).getValue(), 
+
+			throw new ExpressionFault.NoMatchFoundError(((TypeString)args.get(0)).getValue(),
 					((TypeString)args.get(1)).getValue());
 		}
-	}	
-	
+	}
+
 	private static TypeObject _fetch = new fetch();
 	public static TypeObject fetch(){ return _fetch; }
 
@@ -196,7 +196,7 @@ public class Builtins extends ASTNode {
 			return call(args.get(0));
 		}
 	}
-	
+
 	private static TypeObject _bool = new bool();
 	public static TypeObject bool(){ return _bool; }
 
@@ -240,15 +240,15 @@ public class Builtins extends ASTNode {
 			if (args.size() < 2) {
 				throw new ExpressionFault.ArgMismatch(2, args.size());
 			} else if (args.size() == 2) {
-				TypeInt retValue = call((FileClass) args.get(0), 
+				TypeInt retValue = call((FileClass) args.get(0),
 						(TypeString) args.get(1));
 				if(retValue != null) return retValue;
 			} else if (args.size() == 3) {
-				TypeInt retValue = call((FileClass) args.get(0), 
+				TypeInt retValue = call((FileClass) args.get(0),
 						(TypeString) args.get(1), (TypeInt) args.get(2));
 				if(retValue != null) return retValue;
 			}
-			throw new ExpressionFault.NoMatchFoundError(((TypeString) args.get(0)).getValue(), 
+			throw new ExpressionFault.NoMatchFoundError(((TypeString) args.get(0)).getValue(),
 					((TypeString) args.get(1)).getValue());
 		}
 	}

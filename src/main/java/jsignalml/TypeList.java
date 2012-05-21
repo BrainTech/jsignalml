@@ -1,13 +1,14 @@
 package jsignalml;
 
-import java.util.List;
+import static java.util.Collections.unmodifiableList;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
-import static java.util.Collections.unmodifiableList;
+import java.util.List;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.NotImplementedException;
+import org.apache.commons.lang.StringUtils;
 
 public class TypeList extends Type implements Iterable<Type> {
 	public static final TypeList I = new TypeList();
@@ -190,7 +191,7 @@ public class TypeList extends Type implements Iterable<Type> {
 
 		if(itother.hasNext())
 			return -1;
-		return 0;			
+		return 0;
 	}
 
 	public TypeInt len() {
@@ -267,7 +268,7 @@ public class TypeList extends Type implements Iterable<Type> {
 	public TypeInt bin_neg() {
 		throw new ExpressionFault.TypeError();
 	}
-	
+
 	@Override
 	public String toString() {
 		String result = "TypeList [";

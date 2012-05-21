@@ -1,11 +1,11 @@
 package jsignalml;
 
-import org.junit.Test;
-import static org.junit.Assert.*;
-import static org.hamcrest.core.IsInstanceOf.instanceOf;
-
 import static jsignalml.TestNumberOps.eval;
-import static jsignalml.TestNumberOps.equal;
+import static org.hamcrest.core.IsInstanceOf.instanceOf;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
+
+import org.junit.Test;
 
 public class TestTypes {
 

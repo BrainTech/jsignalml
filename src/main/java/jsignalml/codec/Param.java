@@ -1,7 +1,7 @@
 package jsignalml.codec;
 
-import jsignalml.Type;
 import jsignalml.ContextVisitor;
+import jsignalml.Type;
 
 public abstract class Param<T extends Type> extends Context {
 	public T cache = null; /* This is public so it can be accessed

@@ -20,7 +20,7 @@
 		<param id='channel_type_name' type='str'>
 			<expr>'chTypInit0'</expr>
 		</param>
-							
+
 		<param id='signature'>
 			<format>'|S15'</format>
 			<offset>0</offset>
@@ -173,6 +173,6 @@
 				</if>
 			</for-each>
 		</channelset>
-		
+
 	</file>
 </signalml>

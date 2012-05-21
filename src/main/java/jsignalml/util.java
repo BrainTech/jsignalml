@@ -1,12 +1,12 @@
 package jsignalml;
 
+import java.io.File;
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.TreeMap;
 import java.util.TreeSet;
-import java.io.File;
 
 import org.apache.commons.lang.StringUtils;
 

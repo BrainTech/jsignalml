@@ -80,35 +80,35 @@ public class TextBuffer {
 				line = 1;
 				while (true) { // either some match will be found or exception will be thrown
 					String found = null;
-					
+
 					log.debug("Searching for match [" + pattern + "] in all the lines");
 					String textLine = getLine(line, true);
 					Matcher matcher = pat.matcher(textLine);
 					if (matcher.find()) {
 						found = matcher.group(groupNumber);
 						log.debug("Found match: '" + found + "'");
-						
+
 						return found;
 					}
-					
+
 					line ++;
-					
+
 				}
-				
+
 			} else {
 				log.debug("Searching for match [" + pattern + "] in line " + line);
 				String textLine = getLine(line, /*false*/true);
 				//if (textLine == null) return "";
 
 				String found = null;
-				
+
 				Matcher matcher = pat.matcher(textLine);
 
 				if (matcher.find()) {
 					found = matcher.group((groupNumber < 0) ? REGEXP_GROUP_NUMBER : groupNumber);
 					log.debug("Found match: '" + found + "'");
 				} //else return "";
-																																															
+
 				if (found == null) {
 					throw new ExternalError("No match found for pattern " + pattern + " in line "
 							+ line + " [" + textLine + "]");
@@ -116,7 +116,7 @@ public class TextBuffer {
 
 				return found;
 			}
-			
+
 
 		} catch (IOException e) {
 			throw new ExpressionFault.ValueError("Unable to read data from file: " + e.getMessage());
@@ -126,18 +126,18 @@ public class TextBuffer {
 	/**
 	 * Tries to fetch the given line from the cache. If not found, the cache is
 	 * filled with the lines from file until desired line is met and returned;
-	 * 
+	 *
 	 * @param lineNumber
 	 * @return
 	 * @throws IOException
 	 */
 	private String getLine(int lineNumber, boolean throwExceptionOnEof) throws IOException {
-		log.debug("Looking into line: %d, currentLinesCounter: %d", 
+		log.debug("Looking into line: %d, currentLinesCounter: %d",
 				lineNumber, currentLinesCounter);
 		if (currentLinesCounter >= lineNumber) {
-			log.debug("Line found within cached lines, returning [" 
+			log.debug("Line found within cached lines, returning ["
 					+ linesCache.get(lineNumber-1) + "]");
-			
+
 			return linesCache.get(lineNumber-1);
 		} else {
 			log.debug("Line not found found within cached lines, reading next lines");
@@ -152,8 +152,8 @@ public class TextBuffer {
 				linesCache.add(line);
 				currentLinesCounter++;
 			}
-			
-			log.debug("Returning [" 
+
+			log.debug("Returning ["
 					+ linesCache.get(lineNumber-1) + "]");
 			return linesCache.get(lineNumber-1);
 		}

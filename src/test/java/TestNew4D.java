@@ -1,6 +1,6 @@
 
 /**
- * 
+ *
  */
 
 import static org.junit.Assert.assertEquals;
@@ -17,13 +17,13 @@ import org.junit.Test;
  *
  */
 public class TestNew4D {
-	
+
 	public static void main(java.lang.String[] args) {
 		TestNew4D t = new TestNew4D();
 		t.test();
 	}
-	
-	@Test public void test() {		
+
+	@Test public void test() {
 		CheckCodec checkCodec = null; //place for codec test object
 		Properties properties = new Properties(); //place for properties from the configuration of the codec test
 		String fileName = null; //name of the file currently read -- taken separately because of possible exception occurs
@@ -50,7 +50,7 @@ public class TestNew4D {
 			fileName = outHdrFileName + " (or) " + outDtaFileName;
 			boolean outDtaStatus = checkCodec.getOutDta(outHdrFileName, outDtaFileName, exitOnNrsOfChannelsError);
 			assertEquals(outDtaStatus, true);
-			//then compare everything (outBody with outHdr and with in) 
+			//then compare everything (outBody with outHdr and with in)
 			fileName = "(unknown)";
 			boolean verificationStatus = checkCodec.checkChannels(verificationMultiplyFactor,
 				testPrecisionForSample, testPrecisionForSamplingFrequency,
@@ -64,5 +64,5 @@ public class TestNew4D {
 			checkCodec.close();
 		}
 	}
-	
+
 }

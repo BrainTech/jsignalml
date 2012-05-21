@@ -1,12 +1,8 @@
 package jsignalml;
 
-import java.io.IOException;
-import java.io.FileNotFoundException;
 import java.io.File;
-
-import org.xml.sax.SAXException;
-
-import static java.lang.String.format;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 
 import jsignalml.logging.Logger;
 

@@ -1,11 +1,12 @@
 package jsignalml;
 
-import org.junit.Test;
-import static org.junit.Assert.*;
 import static org.hamcrest.core.IsInstanceOf.instanceOf;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
 
 import java.util.Map;
-import java.util.TreeMap;
+
+import org.junit.Test;
 
 public class TestASTNode {
 	static final Map<String,Type> map, map1;

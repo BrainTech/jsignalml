@@ -116,7 +116,7 @@
 				<channel mapping='mapping' format='sample_format'
 							length='number_of_samples' data='data_file' />
 
-				
+
 				<param id='channel_name' type='str'>
 					<format>'|S1'</format>
 					<line>-1</line>

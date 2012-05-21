@@ -2,13 +2,12 @@ package jsignalml;
 
 import java.util.List;
 import java.util.Map;
-import com.sun.codemodel.JCodeModel;
-import com.sun.codemodel.JType;
+
 import com.sun.codemodel.JClass;
-import com.sun.codemodel.JExpression;
+import com.sun.codemodel.JCodeModel;
 import com.sun.codemodel.JExpr;
+import com.sun.codemodel.JExpression;
 import com.sun.codemodel.JInvocation;
-import com.sun.codemodel.JStringLiteral;
 import com.sun.codemodel.JOp;
 
 /**
@@ -124,7 +123,7 @@ public class JavaExprGen extends ExpressionVisitor<JExpression> {
 	}
 
 	@Override
-	public JExpression visit(Expression.Access accessor, JExpression struct) 
+	public JExpression visit(Expression.Access accessor, JExpression struct)
 	{
 		return struct.invoke("access").arg(accessor.item);
 	}

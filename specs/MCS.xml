@@ -46,7 +46,7 @@
     <assert id='magic_MCSHDR_check'>
       <expr>magic_MCSHDR == "MCSHDR  "</expr>
     </assert>
-    
+
     <param id='size_of_MCSHDR' type='int'>
       <format>'&lt;i8'</format>
       <offset>40</offset>

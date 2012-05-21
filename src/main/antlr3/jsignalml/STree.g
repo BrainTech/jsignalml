@@ -48,7 +48,7 @@ line returns [Expression value]
     ;
 
 
-keyvalue returns [Map.Entry<Expression, Expression> value] 
+keyvalue returns [Map.Entry<Expression, Expression> value]
     : ^(KEYVALUE key=expr val=expr)
 	{ $value = new SimpleImmutableEntry($key.value, $val.value); }
     ;

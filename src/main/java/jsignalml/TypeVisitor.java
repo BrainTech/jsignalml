@@ -1,10 +1,11 @@
 package jsignalml;
 
+import static jsignalml.Type.typename;
+
 import java.util.List;
 import java.util.Map;
 
 import jsignalml.logging.Logger;
-import static jsignalml.Type.typename;
 
 /*
  * Walks the expression tree and tries to set the expression type, i.e. the type

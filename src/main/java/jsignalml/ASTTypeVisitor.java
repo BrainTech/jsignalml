@@ -1,9 +1,10 @@
 package jsignalml;
 
+import static jsignalml.Type.typename;
+
 import java.util.Map;
 
 import jsignalml.logging.Logger;
-import static jsignalml.Type.typename;
 
 public class ASTTypeVisitor extends ASTVisitor<Type> {
 	public static final Logger log = new Logger(ASTTypeVisitor.class);

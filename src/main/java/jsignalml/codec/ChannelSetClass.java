@@ -1,14 +1,13 @@
 package jsignalml.codec;
 
-import jsignalml.util;
+import java.util.ArrayList;
+import java.util.Iterator;
+
 import jsignalml.Channel;
 import jsignalml.ContextVisitor;
 import jsignalml.ExpressionFault;
-import jsignalml.TypeInt;
+import jsignalml.util;
 import jsignalml.logging.Logger;
-
-import java.util.ArrayList;
-import java.util.Iterator;
 
 public abstract class ChannelSetClass extends Context implements jsignalml.ChannelSet {
 	static final Logger log = new Logger(ChannelSetClass.class);

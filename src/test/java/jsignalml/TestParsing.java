@@ -1,9 +1,8 @@
 package jsignalml;
 
-import org.junit.Test;
-import static org.junit.Assert.*;
-
 import static jsignalml.Processor.parse;
+
+import org.junit.Test;
 
 public class TestParsing {
 	@Test public void parse_atoms() throws Exception

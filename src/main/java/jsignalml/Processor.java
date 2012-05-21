@@ -1,25 +1,20 @@
 package jsignalml;
 
-import java.io.*;
-import java.util.Scanner;
-import java.util.NoSuchElementException;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
-
-import com.sun.codemodel.JFormatter;
+import java.io.FileReader;
+import java.io.PrintWriter;
 
 import jline.ConsoleReader;
+import jsignalml.logging.Logger;
 
+import org.antlr.runtime.ANTLRReaderStream;
+import org.antlr.runtime.ANTLRStringStream;
+import org.antlr.runtime.CommonTokenStream;
+import org.antlr.runtime.RecognitionException;
+import org.antlr.runtime.tree.CommonTree;
+import org.antlr.runtime.tree.CommonTreeNodeStream;
 import org.apache.log4j.BasicConfigurator;
 
-import org.antlr.runtime.*;
-import org.antlr.runtime.tree.*;
-import org.antlr.runtime.RecognitionException;
-
-import com.sun.codemodel.JClassAlreadyExistsException;
-
-import jsignalml.logging.Logger;
+import com.sun.codemodel.JFormatter;
 
 public class Processor {
 	static Logger log = new Logger(Processor.class);

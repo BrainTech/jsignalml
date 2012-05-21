@@ -2,11 +2,11 @@ package jsignalml;
 
 import java.util.List;
 
-import com.sun.codemodel.JVar;
-import com.sun.codemodel.JExpression;
 import com.sun.codemodel.JClass;
 import com.sun.codemodel.JDefinedClass;
+import com.sun.codemodel.JExpression;
 import com.sun.codemodel.JMod;
+import com.sun.codemodel.JVar;
 
 public class DynamicJavaNameResolver implements JavaExprGen.JavaNameResolver {
 	final JavaClassGen gen = new JavaClassGen();

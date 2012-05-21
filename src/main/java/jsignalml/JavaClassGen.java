@@ -311,7 +311,7 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 		//final JExpression dumper_dump =
 		//	ContextDumper_t.staticInvoke("dump").arg(reader);
 		//body.add(System_t.staticRef("out").invoke("print").arg(dumper_dump));
-		
+
 		final JVar channelSet = body.decl(ChannelSet_t, "channelSet", reader.invoke("get_set"));
 		final JVar nrOfChannels = body.decl(this.model.INT, "nrOfChannels",
 				channelSet.invoke("getNumberOfChannels"));
@@ -326,21 +326,21 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 		final JConditional _ifArgc = body._if(argc.gt(JExpr.lit(1)));
 		final JBlock _ifBlockArgc = _ifArgc._then();
 		_ifBlockArgc.assign(nrOfChannelsToShow, argc);
-		
+
 		{
 			final JForLoop for_ =  body._for();
 			final JVar i = for_.init(this.model.INT, "i", JExpr.lit(1));
 			for_.test(i.lte(nrOfChannelsToShow));
 			for_.update(i.incr());
 			final JBlock forbody = for_.body();
-			
+
 			final JInvocation channel_num =
 				Integer_t.staticInvoke("decode").arg(args.component(i)).invoke("intValue");
 			final JVar channelNr = forbody.decl(this.model.INT, "channelNr", i.minus(JExpr.lit(1)));
 			final JConditional _ifChannelsArgc = forbody._if(argc.gt(JExpr.lit(1)));
 			final JBlock _ifBlockChannelsArgc = _ifChannelsArgc._then();
 			_ifBlockChannelsArgc.assign(channelNr, channel_num);
-			
+
 			final JVar channel = forbody.decl(Channel_t, "channel",
 					channelSet.invoke("getChannel").arg(channelNr));
 			final JVar nrOfSamples = forbody.decl(this.model.INT, "nrOfSamples",
@@ -355,7 +355,7 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 					.plus(JExpr.lit("[").plus(channelType).plus(JExpr.lit(" ").plus(channelName)))
 					.plus(JExpr.lit("] has ").plus(nrOfSamples).plus(JExpr.lit(" samples:")));
 			forbody.add(System_t.staticRef("out").invoke("println").arg(channelInfo));
-			
+
 			/*
 			 * long count = channelSet.getNumberOfSamples();
 			 * FloatBuffer buffer = FloatBuffer.allocate(((int) count));
@@ -369,13 +369,13 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 			//final JVar buffer = forbody.decl(FloatBuffer_t, "buffer", buffer_init);
 			//forbody.add(channelSet.invoke("getChannel").arg(channelNr)
 			//	    .invoke("getSamples").arg(buffer).arg(JExpr.lit(0)));
-			
+
 			final JForLoop forSamples =  forbody._for();
 			final JVar j = forSamples.init(this.model.INT, "sampleNr", JExpr.lit(0));
 			forSamples.test(j.lt(nrOfSamplesToShow));
 			forSamples.update(j.incr());
 			final JBlock forSamplesBody = forSamples.body();
-			
+
 			final JExpression sampleUnitValue = forSamplesBody.decl(this.model.FLOAT, "sampleUnitValue",
 					channel.invoke("getSample").arg(JExpr.ref("sampleNr")));
 			final JExpression sampleInfo = JExpr.lit("\tSample #").plus(JExpr.ref("sampleNr"))

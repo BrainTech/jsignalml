@@ -1,6 +1,5 @@
 package jsignalml;
 
-import java.nio.FloatBuffer;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;

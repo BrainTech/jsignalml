@@ -4,7 +4,6 @@ import static java.lang.String.format;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.IOException;
 import java.io.InputStream;
 
 import jsignalml.logging.Logger;
@@ -12,8 +11,8 @@ import jsignalml.logging.Logger;
 import org.apache.log4j.BasicConfigurator;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
-import org.xml.sax.SAXException;
 import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
 
 /**
  * Translate an XML DOM into an ASTNode tree.

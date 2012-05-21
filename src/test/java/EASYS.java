@@ -2,6 +2,7 @@ import java.io.File;
 import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 import java.util.List;
+
 import jsignalml.BitForm;
 import jsignalml.Builtins;
 import jsignalml.Channel;
@@ -22,15 +23,16 @@ import jsignalml.codec.OuterLoopClass;
 import jsignalml.codec.Param;
 import jsignalml.codec.Signalml;
 import jsignalml.logging.Logger;
+
 import org.apache.log4j.BasicConfigurator;
 
 
 /**
- * 
+ *
  * jsignalml.ASTNode$Signalml._accept(ASTNode.java:122)
  * jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
  * jsignalml.JavaClassGen.visit(JavaClassGen.java:173)
- * 
+ *
  */
 public class EASYS
     extends Signalml
@@ -184,7 +186,7 @@ public class EASYS
 
 
     /**
-     * 
+     *
      * jsignalml.ASTNode$FileHandle._accept(ASTNode.java:435)
      * jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
      * jsignalml.JavaClassGen.visit(JavaClassGen.java:819)
@@ -210,7 +212,7 @@ public class EASYS
      * parent paramClass=_param_xhdr_org
      * parent paramClass=_param_extended_header_offset
      * parent paramClass=_param_record_name_map
-     * 
+     *
      */
     public class File_main
         extends Signalml.FileClass
@@ -745,7 +747,7 @@ public class EASYS
 
 
         /**
-         * 
+         *
          * jsignalml.ASTNode$ChannelSet._accept(ASTNode.java:141)
          * jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
          * jsignalml.JavaClassGen.visit(JavaClassGen.java:1297)
@@ -753,7 +755,7 @@ public class EASYS
          * jsignalml.ASTNode$ChannelSet._accept(ASTNode.java:141)
          * jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
          * jsignalml.JavaClassGen.visit(JavaClassGen.java:1298)
-         * 
+         *
          */
         public class ChannelSet_data
             extends ChannelSetClass
@@ -832,11 +834,11 @@ public class EASYS
 
 
             /**
-             * 
+             *
              * jsignalml.ASTNode$ForLoop._accept(ASTNode.java:526)
              * jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
              * jsignalml.JavaClassGen.visit(JavaClassGen.java:1000)
-             * 
+             *
              */
             public class Loop_extended_header
                 extends OuterLoopClass
@@ -893,7 +895,7 @@ public class EASYS
 
 
                 /**
-                 * 
+                 *
                  * jsignalml.ASTNode$ForLoop._accept(ASTNode.java:526)
                  * jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
                  * jsignalml.JavaClassGen.visit(JavaClassGen.java:1004)
@@ -901,7 +903,7 @@ public class EASYS
                  * jsignalml.ASTNode$ForLoop._accept(ASTNode.java:526)
                  * jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
                  * jsignalml.JavaClassGen.visit(JavaClassGen.java:1005)
-                 * 
+                 *
                  */
                 public class extended_header_inner
                     extends OuterLoopClass.LoopClass
@@ -1000,7 +1002,7 @@ public class EASYS
 
 
                     /**
-                     * 
+                     *
                      * jsignalml.ASTNode$Conditional._accept(ASTNode.java:580)
                      * jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
                      * jsignalml.JavaClassGen.visit(JavaClassGen.java:1094)
@@ -1011,7 +1013,7 @@ public class EASYS
                      * parent paramClass=_param_offset
                      * parent paramClass=_param_record_mnemonic
                      * parent paramClass=_param_record_size
-                     * 
+                     *
                      */
                     public class If_if_ext_hdr
                         extends ConditionalClass
@@ -1226,7 +1228,7 @@ public class EASYS
 
 
                         /**
-                         * 
+                         *
                          * jsignalml.ASTNode$ElseBranch._accept(ASTNode.java:653)
                          * jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
                          * jsignalml.JavaClassGen.visit(JavaClassGen.java:1149)
@@ -1235,7 +1237,7 @@ public class EASYS
                          * jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
                          * jsignalml.JavaClassGen.visit(JavaClassGen.java:1150)
                          * parent paramClass=_param_record_size
-                         * 
+                         *
                          */
                         public class Else_gen_id_1
                             extends ConditionalClass.ElseBranchClass
@@ -1295,14 +1297,14 @@ public class EASYS
 
 
                             /**
-                             * 
+                             *
                              * jsignalml.ASTNode$ExprParam._accept(ASTNode.java:319)
                              * jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
                              * jsignalml.JavaClassGen.visit(JavaClassGen.java:457)
                              * jsignalml.JavaClassGen.paramClass(JavaClassGen.java:510)
                              * node.type=TypeInt
                              * --> nodetype=TypeInt
-                             * 
+                             *
                              */
                             public class _param_record_size
                                 extends Param<TypeInt>
@@ -1348,7 +1350,7 @@ public class EASYS
 
 
                         /**
-                         * 
+                         *
                          * jsignalml.ASTNode$Conditional._accept(ASTNode.java:580)
                          * jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
                          * jsignalml.JavaClassGen.visit(JavaClassGen.java:1094)
@@ -1356,7 +1358,7 @@ public class EASYS
                          * jsignalml.ASTNode$Conditional._accept(ASTNode.java:580)
                          * jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
                          * jsignalml.JavaClassGen.visit(JavaClassGen.java:1095)
-                         * 
+                         *
                          */
                         public class If_if_record_channel_names
                             extends ConditionalClass
@@ -1492,11 +1494,11 @@ public class EASYS
 
 
                             /**
-                             * 
+                             *
                              * jsignalml.ASTNode$ForLoop._accept(ASTNode.java:526)
                              * jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
                              * jsignalml.JavaClassGen.visit(JavaClassGen.java:1000)
-                             * 
+                             *
                              */
                             public class Loop_channels
                                 extends OuterLoopClass
@@ -1553,7 +1555,7 @@ public class EASYS
 
 
                                 /**
-                                 * 
+                                 *
                                  * jsignalml.ASTNode$ForLoop._accept(ASTNode.java:526)
                                  * jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
                                  * jsignalml.JavaClassGen.visit(JavaClassGen.java:1004)
@@ -1565,7 +1567,7 @@ public class EASYS
                                  * parent paramClass=_param_channel_name
                                  * parent paramClass=_param_channel_type_name
                                  * parent paramClass=_param_mapping
-                                 * 
+                                 *
                                  */
                                 public class channels_inner
                                     extends OuterLoopClass.LoopClass
@@ -1749,7 +1751,7 @@ public class EASYS
 
 
                                     /**
-                                     * 
+                                     *
                                      * jsignalml.ASTNode$Channel._accept(ASTNode.java:189)
                                      * jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
                                      * jsignalml.JavaClassGen.visit(JavaClassGen.java:1331)
@@ -1757,7 +1759,7 @@ public class EASYS
                                      * jsignalml.ASTNode$Channel._accept(ASTNode.java:189)
                                      * jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
                                      * jsignalml.JavaClassGen.visit(JavaClassGen.java:1332)
-                                     * 
+                                     *
                                      */
                                     public class Channel_gen_id_0
                                         extends ChannelClass
@@ -1945,14 +1947,14 @@ public class EASYS
 
 
                                     /**
-                                     * 
+                                     *
                                      * jsignalml.ASTNode$ExprParam._accept(ASTNode.java:319)
                                      * jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
                                      * jsignalml.JavaClassGen.visit(JavaClassGen.java:457)
                                      * jsignalml.JavaClassGen.paramClass(JavaClassGen.java:510)
                                      * node.type=TypeString
                                      * --> nodetype=TypeString
-                                     * 
+                                     *
                                      */
                                     public class _param_channel_name
                                         extends Param<TypeString>
@@ -1982,14 +1984,14 @@ public class EASYS
 
 
                                     /**
-                                     * 
+                                     *
                                      * jsignalml.ASTNode$BinaryParam._accept(ASTNode.java:256)
                                      * jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
                                      * jsignalml.JavaClassGen.visit(JavaClassGen.java:476)
                                      * jsignalml.JavaClassGen.paramClass(JavaClassGen.java:510)
                                      * node.type=TypeString
                                      * --> nodetype=TypeString
-                                     * 
+                                     *
                                      */
                                     public class _param_channel_name_ASCIIZ
                                         extends Param<TypeString>
@@ -2026,14 +2028,14 @@ public class EASYS
 
 
                                     /**
-                                     * 
+                                     *
                                      * jsignalml.ASTNode$ExprParam._accept(ASTNode.java:319)
                                      * jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
                                      * jsignalml.JavaClassGen.visit(JavaClassGen.java:457)
                                      * jsignalml.JavaClassGen.paramClass(JavaClassGen.java:510)
                                      * node.type=TypeString
                                      * --> nodetype=TypeString
-                                     * 
+                                     *
                                      */
                                     public class _param_channel_type_name
                                         extends Param<TypeString>
@@ -2063,14 +2065,14 @@ public class EASYS
 
 
                                     /**
-                                     * 
+                                     *
                                      * jsignalml.ASTNode$ExprParam._accept(ASTNode.java:319)
                                      * jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
                                      * jsignalml.JavaClassGen.visit(JavaClassGen.java:457)
                                      * jsignalml.JavaClassGen.paramClass(JavaClassGen.java:510)
                                      * node.type=TypeInt
                                      * --> nodetype=TypeInt
-                                     * 
+                                     *
                                      */
                                     public class _param_mapping
                                         extends FunctionParam<TypeInt>
@@ -2132,12 +2134,12 @@ public class EASYS
 
 
                                     /**
-                                     * 
+                                     *
                                      * jsignalml.ASTNode$Itername._accept(ASTNode.java:498)
                                      * jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
                                      * jsignalml.JavaClassGen.visit(JavaClassGen.java:978)
                                      * jsignalml.JavaClassGen.indexClass(JavaClassGen.java:1254)
-                                     * 
+                                     *
                                      */
                                     public class index
                                         extends Param<TypeInt>
@@ -2193,14 +2195,14 @@ public class EASYS
 
 
                         /**
-                         * 
+                         *
                          * jsignalml.ASTNode$ExprParam._accept(ASTNode.java:319)
                          * jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
                          * jsignalml.JavaClassGen.visit(JavaClassGen.java:457)
                          * jsignalml.JavaClassGen.paramClass(JavaClassGen.java:510)
                          * node.type=TypeInt
                          * --> nodetype=unknown
-                         * 
+                         *
                          */
                         public class _param_offset
                             extends Param<Type>
@@ -2230,14 +2232,14 @@ public class EASYS
 
 
                         /**
-                         * 
+                         *
                          * jsignalml.ASTNode$BinaryParam._accept(ASTNode.java:256)
                          * jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
                          * jsignalml.JavaClassGen.visit(JavaClassGen.java:476)
                          * jsignalml.JavaClassGen.paramClass(JavaClassGen.java:510)
                          * node.type=TypeString
                          * --> nodetype=TypeString
-                         * 
+                         *
                          */
                         public class _param_record_mnemonic
                             extends Param<TypeString>
@@ -2274,14 +2276,14 @@ public class EASYS
 
 
                         /**
-                         * 
+                         *
                          * jsignalml.ASTNode$BinaryParam._accept(ASTNode.java:256)
                          * jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
                          * jsignalml.JavaClassGen.visit(JavaClassGen.java:476)
                          * jsignalml.JavaClassGen.paramClass(JavaClassGen.java:510)
                          * node.type=TypeInt
                          * --> nodetype=TypeInt
-                         * 
+                         *
                          */
                         public class _param_record_size
                             extends Param<TypeInt>
@@ -2334,12 +2336,12 @@ public class EASYS
 
 
                     /**
-                     * 
+                     *
                      * jsignalml.ASTNode$Itername._accept(ASTNode.java:498)
                      * jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
                      * jsignalml.JavaClassGen.visit(JavaClassGen.java:978)
                      * jsignalml.JavaClassGen.indexClass(JavaClassGen.java:1254)
-                     * 
+                     *
                      */
                     public class indexHdr
                         extends Param<TypeInt>
@@ -2395,14 +2397,14 @@ public class EASYS
 
 
         /**
-         * 
+         *
          * jsignalml.ASTNode$BinaryParam._accept(ASTNode.java:256)
          * jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
          * jsignalml.JavaClassGen.visit(JavaClassGen.java:476)
          * jsignalml.JavaClassGen.paramClass(JavaClassGen.java:510)
          * node.type=unknown
          * --> nodetype=TypeInt
-         * 
+         *
          */
         public class _param__calibration_unit
             extends Param<TypeInt>
@@ -2453,14 +2455,14 @@ public class EASYS
 
 
         /**
-         * 
+         *
          * jsignalml.ASTNode$ExprParam._accept(ASTNode.java:319)
          * jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
          * jsignalml.JavaClassGen.visit(JavaClassGen.java:457)
          * jsignalml.JavaClassGen.paramClass(JavaClassGen.java:510)
          * node.type=TypeFloat
          * --> nodetype=TypeFloat
-         * 
+         *
          */
         public class _param_calibration_gain
             extends Param<TypeFloat>
@@ -2504,14 +2506,14 @@ public class EASYS
 
 
         /**
-         * 
+         *
          * jsignalml.ASTNode$BinaryParam._accept(ASTNode.java:256)
          * jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
          * jsignalml.JavaClassGen.visit(JavaClassGen.java:476)
          * jsignalml.JavaClassGen.paramClass(JavaClassGen.java:510)
          * node.type=unknown
          * --> nodetype=TypeInt
-         * 
+         *
          */
         public class _param_calibration_offset
             extends Param<TypeInt>
@@ -2562,14 +2564,14 @@ public class EASYS
 
 
         /**
-         * 
+         *
          * jsignalml.ASTNode$ExprParam._accept(ASTNode.java:319)
          * jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
          * jsignalml.JavaClassGen.visit(JavaClassGen.java:457)
          * jsignalml.JavaClassGen.paramClass(JavaClassGen.java:510)
          * node.type=TypeString
          * --> nodetype=TypeString
-         * 
+         *
          */
         public class _param_channel_name
             extends Param<TypeString>
@@ -2599,14 +2601,14 @@ public class EASYS
 
 
         /**
-         * 
+         *
          * jsignalml.ASTNode$ExprParam._accept(ASTNode.java:319)
          * jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
          * jsignalml.JavaClassGen.visit(JavaClassGen.java:457)
          * jsignalml.JavaClassGen.paramClass(JavaClassGen.java:510)
          * node.type=TypeString
          * --> nodetype=TypeString
-         * 
+         *
          */
         public class _param_channel_type_name
             extends Param<TypeString>
@@ -2636,14 +2638,14 @@ public class EASYS
 
 
         /**
-         * 
+         *
          * jsignalml.ASTNode$ExprParam._accept(ASTNode.java:319)
          * jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
          * jsignalml.JavaClassGen.visit(JavaClassGen.java:457)
          * jsignalml.JavaClassGen.paramClass(JavaClassGen.java:510)
          * node.type=unknown
          * --> nodetype=TypeInt
-         * 
+         *
          */
         public class _param_data_cell_size
             extends Param<TypeInt>
@@ -2687,14 +2689,14 @@ public class EASYS
 
 
         /**
-         * 
+         *
          * jsignalml.ASTNode$ExprParam._accept(ASTNode.java:319)
          * jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
          * jsignalml.JavaClassGen.visit(JavaClassGen.java:457)
          * jsignalml.JavaClassGen.paramClass(JavaClassGen.java:510)
          * node.type=unknown
          * --> nodetype=TypeInt
-         * 
+         *
          */
         public class _param_data_offset
             extends Param<TypeInt>
@@ -2738,14 +2740,14 @@ public class EASYS
 
 
         /**
-         * 
+         *
          * jsignalml.ASTNode$BinaryParam._accept(ASTNode.java:256)
          * jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
          * jsignalml.JavaClassGen.visit(JavaClassGen.java:476)
          * jsignalml.JavaClassGen.paramClass(JavaClassGen.java:510)
          * node.type=unknown
          * --> nodetype=TypeInt
-         * 
+         *
          */
         public class _param_data_org
             extends Param<TypeInt>
@@ -2796,14 +2798,14 @@ public class EASYS
 
 
         /**
-         * 
+         *
          * jsignalml.ASTNode$BinaryParam._accept(ASTNode.java:256)
          * jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
          * jsignalml.JavaClassGen.visit(JavaClassGen.java:476)
          * jsignalml.JavaClassGen.paramClass(JavaClassGen.java:510)
          * node.type=unknown
          * --> nodetype=TypeInt
-         * 
+         *
          */
         public class _param_data_validation_field
             extends Param<TypeInt>
@@ -2854,14 +2856,14 @@ public class EASYS
 
 
         /**
-         * 
+         *
          * jsignalml.ASTNode$ExprParam._accept(ASTNode.java:319)
          * jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
          * jsignalml.JavaClassGen.visit(JavaClassGen.java:457)
          * jsignalml.JavaClassGen.paramClass(JavaClassGen.java:510)
          * node.type=unknown
          * --> nodetype=TypeInt
-         * 
+         *
          */
         public class _param_extended_header_offset
             extends Param<TypeInt>
@@ -2905,14 +2907,14 @@ public class EASYS
 
 
         /**
-         * 
+         *
          * jsignalml.ASTNode$BinaryParam._accept(ASTNode.java:256)
          * jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
          * jsignalml.JavaClassGen.visit(JavaClassGen.java:476)
          * jsignalml.JavaClassGen.paramClass(JavaClassGen.java:510)
          * node.type=unknown
          * --> nodetype=TypeString
-         * 
+         *
          */
         public class _param_file_type
             extends Param<TypeString>
@@ -2949,14 +2951,14 @@ public class EASYS
 
 
         /**
-         * 
+         *
          * jsignalml.ASTNode$ExprParam._accept(ASTNode.java:319)
          * jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
          * jsignalml.JavaClassGen.visit(JavaClassGen.java:457)
          * jsignalml.JavaClassGen.paramClass(JavaClassGen.java:510)
          * node.type=unknown
          * --> nodetype=TypeString
-         * 
+         *
          */
         public class _param_magic
             extends Param<TypeString>
@@ -2986,14 +2988,14 @@ public class EASYS
 
 
         /**
-         * 
+         *
          * jsignalml.ASTNode$ExprParam._accept(ASTNode.java:319)
          * jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
          * jsignalml.JavaClassGen.visit(JavaClassGen.java:457)
          * jsignalml.JavaClassGen.paramClass(JavaClassGen.java:510)
          * node.type=TypeInt
          * --> nodetype=TypeInt
-         * 
+         *
          */
         public class _param_mapping
             extends FunctionParam<TypeInt>
@@ -3055,14 +3057,14 @@ public class EASYS
 
 
         /**
-         * 
+         *
          * jsignalml.ASTNode$BinaryParam._accept(ASTNode.java:256)
          * jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
          * jsignalml.JavaClassGen.visit(JavaClassGen.java:476)
          * jsignalml.JavaClassGen.paramClass(JavaClassGen.java:510)
          * node.type=unknown
          * --> nodetype=TypeInt
-         * 
+         *
          */
         public class _param_number_of_auxiliary_channels
             extends Param<TypeInt>
@@ -3113,14 +3115,14 @@ public class EASYS
 
 
         /**
-         * 
+         *
          * jsignalml.ASTNode$BinaryParam._accept(ASTNode.java:256)
          * jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
          * jsignalml.JavaClassGen.visit(JavaClassGen.java:476)
          * jsignalml.JavaClassGen.paramClass(JavaClassGen.java:510)
          * node.type=unknown
          * --> nodetype=TypeInt
-         * 
+         *
          */
         public class _param_number_of_channels
             extends Param<TypeInt>
@@ -3171,14 +3173,14 @@ public class EASYS
 
 
         /**
-         * 
+         *
          * jsignalml.ASTNode$BinaryParam._accept(ASTNode.java:256)
          * jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
          * jsignalml.JavaClassGen.visit(JavaClassGen.java:476)
          * jsignalml.JavaClassGen.paramClass(JavaClassGen.java:510)
          * node.type=unknown
          * --> nodetype=TypeInt
-         * 
+         *
          */
         public class _param_number_of_samples
             extends Param<TypeInt>
@@ -3229,14 +3231,14 @@ public class EASYS
 
 
         /**
-         * 
+         *
          * jsignalml.ASTNode$ExprParam._accept(ASTNode.java:319)
          * jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
          * jsignalml.JavaClassGen.visit(JavaClassGen.java:457)
          * jsignalml.JavaClassGen.paramClass(JavaClassGen.java:510)
          * node.type=unknown
          * --> nodetype=TypeMap
-         * 
+         *
          */
         public class _param_record_name_map
             extends Param<TypeMap>
@@ -3266,14 +3268,14 @@ public class EASYS
 
 
         /**
-         * 
+         *
          * jsignalml.ASTNode$ExprParam._accept(ASTNode.java:319)
          * jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
          * jsignalml.JavaClassGen.visit(JavaClassGen.java:457)
          * jsignalml.JavaClassGen.paramClass(JavaClassGen.java:510)
          * node.type=TypeFloat
          * --> nodetype=TypeInt
-         * 
+         *
          */
         public class _param_sample_unit
             extends Param<TypeInt>
@@ -3317,14 +3319,14 @@ public class EASYS
 
 
         /**
-         * 
+         *
          * jsignalml.ASTNode$BinaryParam._accept(ASTNode.java:256)
          * jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
          * jsignalml.JavaClassGen.visit(JavaClassGen.java:476)
          * jsignalml.JavaClassGen.paramClass(JavaClassGen.java:510)
          * node.type=TypeFloat
          * --> nodetype=TypeFloat
-         * 
+         *
          */
         public class _param_sampling_frequency
             extends Param<TypeFloat>
@@ -3375,14 +3377,14 @@ public class EASYS
 
 
         /**
-         * 
+         *
          * jsignalml.ASTNode$BinaryParam._accept(ASTNode.java:256)
          * jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
          * jsignalml.JavaClassGen.visit(JavaClassGen.java:476)
          * jsignalml.JavaClassGen.paramClass(JavaClassGen.java:510)
          * node.type=unknown
          * --> nodetype=TypeString
-         * 
+         *
          */
         public class _param_signature
             extends Param<TypeString>
@@ -3419,14 +3421,14 @@ public class EASYS
 
 
         /**
-         * 
+         *
          * jsignalml.ASTNode$BinaryParam._accept(ASTNode.java:256)
          * jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
          * jsignalml.JavaClassGen.visit(JavaClassGen.java:476)
          * jsignalml.JavaClassGen.paramClass(JavaClassGen.java:510)
          * node.type=TypeInt
          * --> nodetype=TypeInt
-         * 
+         *
          */
         public class _param_xhdr_org
             extends Param<TypeInt>

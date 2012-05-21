@@ -1,18 +1,15 @@
 package jsignalml.codec;
 
-import jsignalml.Type;
-import jsignalml.TypeInt;
-import jsignalml.TypeFloat;
-import jsignalml.TypeString;
-import jsignalml.BitForm;
-import jsignalml.ExpressionFault;
-import jsignalml.MyBuffer;
-import jsignalml.ContextVisitor;
-
-import java.nio.FloatBuffer;
 import java.nio.BufferUnderflowException;
+import java.nio.FloatBuffer;
 
-import java.lang.Double;
+import jsignalml.BitForm;
+import jsignalml.ContextVisitor;
+import jsignalml.MyBuffer;
+import jsignalml.Type;
+import jsignalml.TypeFloat;
+import jsignalml.TypeInt;
+import jsignalml.TypeString;
 
 public abstract class ChannelClass extends Context implements jsignalml.Channel {
 

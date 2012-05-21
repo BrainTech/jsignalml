@@ -86,11 +86,11 @@ public class CheckCodec {
 
 	/**
 	 * CheckCodec constructor. It stores Signalml codec object given as a parameter.
-	 * 
+	 *
 	 * @param reader Signalml codec object to be stored and than used by methods
-	 * 
+	 *
 	 * Note! After running this constructor please invoke also:
-	 * 
+	 *
 	 *  boolean inDtaStatus = getInDta(inDtaFileName, useContextDumper,
 	 *  	usePreCheckingOfTheDataFromCodec);
 	 *  boolean outDtaStatus = getOutDta(outHdrFileName, outDtaFileName);
@@ -103,7 +103,7 @@ public class CheckCodec {
 	public CheckCodec(Signalml reader) {
 		this.codec = reader;
 	}
-	
+
 	/**
 	 * @return the outHdrNrOfChannels
 	 */
@@ -660,7 +660,7 @@ public class CheckCodec {
 
 	/**
 	 * readFileUsingParts
-	 * 
+	 *
 	 * @param fileName
 	 * @param bigBufSize
 	 * @param smallBufSize
@@ -689,7 +689,7 @@ public class CheckCodec {
 
 	/**
 	 * readTextFileUsingParts
-	 * 
+	 *
 	 * @param fileName
 	 * @param charset
 	 * @param lineDelimiter
@@ -706,10 +706,10 @@ public class CheckCodec {
 		String[] lines = bufStr.split(lineDelimiter, 0);
 		return lines;
 	}
-	
+
 	/**
 	 * getValueOfItemFromLine
-	 * 
+	 *
 	 * @param line
 	 * @param lineNr
 	 * @param item
@@ -725,10 +725,10 @@ public class CheckCodec {
 		String valueStr = line.substring(valueIdx + 1).trim();
 		return valueStr;
 	}
-	
+
 	/**
 	 * getValuesOfItemFromLine
-	 * 
+	 *
 	 * @param line
 	 * @param lineNr
 	 * @param item
@@ -740,10 +740,10 @@ public class CheckCodec {
 		String[] valueArrayStr = valueStr.replaceAll("[\t ]+", "").split(",", -1);
 		return valueArrayStr;
 	}
-	
+
 	/**
 	 * convertValueFromStringToSpecifiedType
-	 * 
+	 *
 	 * @param fileName
 	 * @param lineNr
 	 * @param item
@@ -766,7 +766,7 @@ public class CheckCodec {
 			} else if (type instanceof Float) {
 				value = new Float(Float.parseFloat(valueStr));
 			} else {
-				if (CheckCodec.LOG_ERROR) System.out.println("Failed during convertion: value for " + item 
+				if (CheckCodec.LOG_ERROR) System.out.println("Failed during convertion: value for " + item
 					+ " item cannot have not supported type (" + type.getClass().getName() + ")");
 				return null;
 			}
@@ -780,10 +780,10 @@ public class CheckCodec {
 			return null;
 		}
 	}
-	
+
 	/**
 	 * convertValuesFromStringToSpecifiedType
-	 * 
+	 *
 	 * @param fileName
 	 * @param lineNr
 	 * @param item
@@ -840,7 +840,7 @@ public class CheckCodec {
 			}
 			return arrayList.toArray(typeArray);
 		} else {
-			if (CheckCodec.LOG_ERROR) System.out.println("Failed during convertion: values for " + item 
+			if (CheckCodec.LOG_ERROR) System.out.println("Failed during convertion: values for " + item
 				+ " item cannot have not supported type (" + type.getClass().getName() + ")");
 			return null;
 		}
@@ -848,7 +848,7 @@ public class CheckCodec {
 
 	/**
 	 * convertValueOrValuesFromStringToSpecifiedType
-	 * 
+	 *
 	 * @param fileName
 	 * @param lineNr
 	 * @param item
@@ -865,10 +865,10 @@ public class CheckCodec {
 			return convertValuesFromStringToSpecifiedType(fileName, lineNr, item, valueArrayStr, type);
 		}
 	}
-	
+
 	/**
 	 * getValueOfItemFromLineAsSpecifiedType
-	 * 
+	 *
 	 * @param fileName
 	 * @param line
 	 * @param lineNr
@@ -882,10 +882,10 @@ public class CheckCodec {
 		if (valueStr == null) return null;
 		return convertValueFromStringToSpecifiedType(fileName, lineNr, item, valueStr, type);
 	}
-	
+
 	/**
 	 * getValuesOfItemFromLineAsSpecifiedType
-	 * 
+	 *
 	 * @param fileName
 	 * @param line
 	 * @param lineNr
@@ -899,10 +899,10 @@ public class CheckCodec {
 		if (valueArrayStr == null) return null;
 		return convertValuesFromStringToSpecifiedType(fileName, lineNr, item, valueArrayStr, type);
 	}
-	
+
 	/**
 	 * getValueOrValuesOfItemFromLineAsSpecifiedType
-	 * 
+	 *
 	 * @param fileName
 	 * @param line
 	 * @param lineNr
@@ -919,7 +919,7 @@ public class CheckCodec {
 
 	/**
 	 * greaterThan
-	 * 
+	 *
 	 * @param left
 	 * @param right
 	 * @param delta
@@ -929,10 +929,10 @@ public class CheckCodec {
 		boolean result = left - right > delta;
 		return result;
 	}
-	
+
 	/**
 	 * greaterThan
-	 * 
+	 *
 	 * @param left
 	 * @param right
 	 * @param delta
@@ -945,7 +945,7 @@ public class CheckCodec {
 
 	/**
 	 * lesserThan
-	 * 
+	 *
 	 * @param left
 	 * @param right
 	 * @param delta
@@ -955,10 +955,10 @@ public class CheckCodec {
 		boolean result = left - right < delta;
 		return result;
 	}
-	
+
 	/**
 	 * lesserThan
-	 * 
+	 *
 	 * @param left
 	 * @param right
 	 * @param delta
@@ -971,7 +971,7 @@ public class CheckCodec {
 
 	/**
 	 * equalTo
-	 * 
+	 *
 	 * @param left
 	 * @param right
 	 * @param precision, i.e. 5
@@ -1002,10 +1002,10 @@ public class CheckCodec {
 		result = precision > floorPowRestLogAbsSub - unbiasedExponentAbsSub && precision < powRestLogAbsSub;
 		return result;
 	}
-	
+
 	/**
 	 * equalTo
-	 * 
+	 *
 	 * @param left
 	 * @param right
 	 * @param epsilon, i.e. 0.0001
@@ -1015,10 +1015,10 @@ public class CheckCodec {
 		boolean result = Math.abs(left - right) < epsilon;
 		return result;
 	}
-	
+
 	/**
 	 * equalToRel
-	 * 
+	 *
 	 * @param left
 	 * @param right
 	 * @param gain, i.e. 0.01
@@ -1028,10 +1028,10 @@ public class CheckCodec {
 		boolean result = Math.abs(left - right) < gain;
 		return result;
 	}
-	
+
 	/**
 	 * equalTo
-	 * 
+	 *
 	 * @param left
 	 * @param right
 	 * @param precision, i.e. 7
@@ -1047,10 +1047,10 @@ public class CheckCodec {
 		boolean result = absSub < pow;
 		return result;
 	}
-	
+
 	/**
 	 * equalTo
-	 * 
+	 *
 	 * @param left
 	 * @param right
 	 * @param epsilon, i.e. 0.00000001
@@ -1060,10 +1060,10 @@ public class CheckCodec {
 		boolean result = Math.abs(left - right) < epsilon;
 		return result;
 	}
-	
+
 	/**
 	 * logFileOperationException
-	 * 
+	 *
 	 * @param e
 	 * @param fileName
 	 * @param prefix
@@ -1075,10 +1075,10 @@ public class CheckCodec {
 			e.printStackTrace();
 		}
 	}
-	
+
 	/**
 	 * getAttributesFromOutHdr
-	 * 
+	 *
 	 * @param fileName
 	 * @return
 	 * @throws FileNotFoundException
@@ -1163,10 +1163,10 @@ public class CheckCodec {
 		}
 		return true;
 	}
-	
+
 	/**
 	 * checkAttributesFromOutHdr
-	 * 
+	 *
 	 * @return
 	 */
 	public final boolean checkAttributesFromOutHdr() {
@@ -1214,10 +1214,10 @@ public class CheckCodec {
 		}
 		return true;
 	}
-	
+
 	/**
 	 * checkSampleUnitAtPos
-	 * 
+	 *
 	 * @param outDtaFisSampleUnitValue
 	 * @param inDtaChannelObject
 	 * @param channelNr
@@ -1254,10 +1254,10 @@ public class CheckCodec {
 		}
 		return error;
 	}
-	
+
 	/**
 	 * checkSampleUnitsAtPos
-	 * 
+	 *
 	 * @param outDtaFisChannel
 	 * @param outDtaFisOffset
 	 * @param bytesToRead
@@ -1283,10 +1283,10 @@ public class CheckCodec {
 				sampleUnitNrInCurrentBuffer, testPrecisionForSample, testDeltaForSample);
 		}
 	}
-	
+
 	/**
 	 * checkSamples
-	 * 
+	 *
 	 * @param gotoNextChannel
 	 * @param gotoNextSamplePortionBig
 	 * @param outDtaFisOffsetStart
@@ -1334,10 +1334,10 @@ public class CheckCodec {
 		if (CheckCodec.LOG_INFO) System.out.println();
 		return gotoNextChannel;
 	}
-	
+
 	/**
 	 * checkChannel
-	 * 
+	 *
 	 * @param outDtaFisOffsetStart
 	 * @param outDtaFisLengthSampleUnitValue
 	 * @param outDtaFisNrOfSamplesPerChannel
@@ -1398,10 +1398,10 @@ public class CheckCodec {
 			outDtaFisLengthSampleUnitValue, outDtaFisNrOfSamplesPerChannel, outDtaFisChannel,
 			verificationMultiplyFactor, inDtaChannelObject, channelNr, testPrecisionForSample, testDeltaForSample);
 	}
-	
+
 	/**
 	 * checkChannels
-	 * 
+	 *
 	 * @return
 	 * @throws IOException
 	 */
@@ -1409,10 +1409,10 @@ public class CheckCodec {
 		final float verificationMultiplyFactor = 1.0f;
 		return checkChannels(verificationMultiplyFactor);
 	}
-	
+
 	/**
 	 * checkChannels
-	 * 
+	 *
 	 * @param verificationMultiplyFactor
 	 * @return
 	 * @throws IOException
@@ -1422,10 +1422,10 @@ public class CheckCodec {
 		final int testPrecisionForSamplingFrequency = precisionDouble;
 		return checkChannels(verificationMultiplyFactor, testPrecisionForSample, testPrecisionForSamplingFrequency);
 	}
-	
+
 	/**
 	 * checkChannels
-	 * 
+	 *
 	 * @param verificationMultiplyFactor
 	 * @param testPrecisionForSample
 	 * @param testPrecisionForSamplingFrequency
@@ -1440,10 +1440,10 @@ public class CheckCodec {
 		return checkChannels(verificationMultiplyFactor, testPrecisionForSample, testPrecisionForSamplingFrequency,
 			testDeltaForSample, testDeltaForSamplingFrequency);
 	}
-	
+
 	/**
 	 * checkChannels
-	 * 
+	 *
 	 * @param verificationMultiplyFactor
 	 * @param testPrecisionForSample
 	 * @param testPrecisionForSamplingFrequency
@@ -1461,10 +1461,10 @@ public class CheckCodec {
 		return checkChannels(verificationMultiplyFactor, testPrecisionForSample, testPrecisionForSamplingFrequency,
 			testDeltaForSample, testDeltaForSamplingFrequency, startAtLeastFromChannel, finishAtMostBeforeChannel);
 	}
-	
+
 	/**
 	 * checkChannels
-	 * 
+	 *
 	 * @param verificationMultiplyFactor
 	 * @param testPrecisionForSample
 	 * @param testPrecisionForSamplingFrequency
@@ -1526,7 +1526,7 @@ public class CheckCodec {
 
 	/**
 	 * checkInDtaAccess
-	 * 
+	 *
 	 * @return
 	 */
 	public final boolean checkInDtaAccess() {
@@ -1554,7 +1554,7 @@ public class CheckCodec {
 
 	/**
 	 * getInDta
-	 * 
+	 *
 	 * @param fileName
 	 * @param useContextDumper
 	 * @param useInDtaChecking
@@ -1600,7 +1600,7 @@ public class CheckCodec {
 
 	/**
 	 * getOutDtaHdr
-	 * 
+	 *
 	 * @param fileName
 	 * @return
 	 * @throws FileNotFoundException
@@ -1613,10 +1613,10 @@ public class CheckCodec {
 		if (!outHdrAttribsStatus) return false;
 		return true;
 	}
-	
+
 	/**
 	 * getOutDtaBody
-	 * 
+	 *
 	 * @param fileName
 	 * @return
 	 * @throws IOException
@@ -1634,7 +1634,7 @@ public class CheckCodec {
 		outDtaFisSize = outDtaFisChannel.size();
 		if (CheckCodec.LOG_INFO) System.out.println("File size: " + outDtaFisSize + " bytes = " + (outDtaFisSize/1024f)
 			+ " kB = " + (outDtaFisSize/1048576f) + " MB = " + (outDtaFisSize/1073741824f) + " GB");
-		
+
 		outDtaFisNrOfChannels = outDtaFisMapBuffer.getInt(0);
 		if (CheckCodec.LOG_INFO) System.out.println("Nr of channels found: " + outDtaFisNrOfChannels);
 		if (outDtaFisNrOfChannels * outDtaFisLengthNrOfSamplesPerChannel >= outDtaFisSize) {
@@ -1660,7 +1660,7 @@ public class CheckCodec {
 
 	/**
 	 * getOutDta
-	 * 
+	 *
 	 * @param dataHeaderFileName
 	 * @param dataBodyFileName
 	 * @return
@@ -1689,10 +1689,10 @@ public class CheckCodec {
 			}
 		}
 	}
-	
+
 	/**
 	 * main
-	 * 
+	 *
 	 * @param args
 	 */
 	public static void main(java.lang.String[] args) {
@@ -1758,7 +1758,7 @@ public class CheckCodec {
 			fileName = outHdrFileName + " (or) " + outDtaFileName;
 			boolean outDtaStatus = checkCodec.getOutDta(outHdrFileName, outDtaFileName, exitOnNrsOfChannelsError);
 			if (!outDtaStatus) return;
-			//then compare everything (outBody with outHdr and with in) 
+			//then compare everything (outBody with outHdr and with in)
 			fileName = "(unknown)";
 			boolean verificationStatus = checkCodec.checkChannels(verificationMultiplyFactor,
 				testPrecisionForSample, testPrecisionForSamplingFrequency,
@@ -1773,6 +1773,6 @@ public class CheckCodec {
 			checkCodec.close();
 		}
 	}
-	
+
 }
 

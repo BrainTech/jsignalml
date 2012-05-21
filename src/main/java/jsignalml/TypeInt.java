@@ -1,18 +1,6 @@
 package jsignalml;
 
-import java.util.regex.Pattern;
-import java.util.Map;
-import java.util.TreeMap;
-import java.util.HashMap;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.Iterator;
 import java.math.BigInteger;
-import static java.util.Collections.unmodifiableList;
-import static java.lang.String.format;
-
-import org.apache.commons.lang.StringUtils;
 
 public class TypeInt extends Type {
 	public static final TypeInt I = new TypeInt();
@@ -389,15 +377,15 @@ public class TypeInt extends Type {
 	public boolean equals(Object obj) {
 		return obj instanceof TypeInt ? value.equals(((TypeInt)obj).value) : false;
 	}
-	
+
 	@Override
 	public Type access(String item) {
 		return this.get();
 	}
-	
+
 	@Override
 	public String toString() {
 		return (this.getValue() != null) ? this.getValue().toString() : "null";
 	}
-	
+
 }

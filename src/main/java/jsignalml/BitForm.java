@@ -1,10 +1,6 @@
 package jsignalml;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.math.BigInteger;
 import java.nio.ByteBuffer;
-import java.nio.CharBuffer;
 import java.nio.ByteOrder;
 
 import jsignalml.logging.Logger;

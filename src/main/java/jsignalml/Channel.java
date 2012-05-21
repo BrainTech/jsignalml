@@ -1,7 +1,7 @@
 package jsignalml;
 
-import java.nio.FloatBuffer;
 import java.nio.BufferUnderflowException;
+import java.nio.FloatBuffer;
 
 public interface Channel {
 	/*
@@ -25,5 +25,5 @@ public interface Channel {
 	long getNumberOfSamples() throws ExpressionFault;
 	String getChannelName() throws ExpressionFault;
 	String getChannelTypeName() throws ExpressionFault;
-	
+
 }

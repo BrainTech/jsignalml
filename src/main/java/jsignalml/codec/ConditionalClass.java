@@ -82,7 +82,7 @@ public abstract class ConditionalClass extends Context {
 	public abstract class ElseIfBranchClass extends Context {
 
 		abstract public Type getCondition();
-		
+
 		abstract public boolean hasElseIf();
 
 		public void createParams() {
@@ -146,5 +146,5 @@ public abstract class ConditionalClass extends Context {
 		}
 
 	}
-	
+
 }

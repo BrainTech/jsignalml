@@ -1,8 +1,9 @@
 package jsignalml.codec;
 
-import jsignalml.Type;
-import jsignalml.ContextVisitor;
 import java.util.List;
+
+import jsignalml.ContextVisitor;
+import jsignalml.Type;
 
 public abstract class FunctionParam<T extends Type> extends Context {
 	@Override

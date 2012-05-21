@@ -1,18 +1,6 @@
 package jsignalml;
 
-import java.util.regex.Pattern;
-import java.util.Map;
-import java.util.TreeMap;
-import java.util.HashMap;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.Iterator;
 import java.math.BigInteger;
-import static java.util.Collections.unmodifiableList;
-import static java.lang.String.format;
-
-import org.apache.commons.lang.StringUtils;
 
 public class TypeFloat extends Type {
 	public static final TypeFloat I = new TypeFloat();
@@ -226,15 +214,15 @@ public class TypeFloat extends Type {
 			throw new ExpressionFault.TypeError();
 		}
 	}
-	
+
 	@Override
 	public Type access(String item) {
 		return this.get();
 	}
-	
+
 	@Override
 	public String toString() {
 		return (this.getValue() != null) ? this.getValue().toString() : "null";
 	}
-	
+
 }

@@ -1,7 +1,7 @@
 package jsignalml;
 
-import java.util.regex.Pattern;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 public class TypeString extends Type {
 	public static final TypeString I = new TypeString();
@@ -243,10 +243,10 @@ public class TypeString extends Type {
 	public Type access(String item) {
 		return this.get();
 	}
-	
+
 	@Override
 	public String toString() {
 		return (this.getValue() != null) ? this.getValue().toString() : "null";
 	}
-	
+
 }

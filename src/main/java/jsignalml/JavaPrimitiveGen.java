@@ -1,15 +1,11 @@
 package jsignalml;
 
-import java.util.List;
-import java.util.Map;
-import com.sun.codemodel.JCodeModel;
-import com.sun.codemodel.JType;
 import com.sun.codemodel.JClass;
-import com.sun.codemodel.JExpression;
+import com.sun.codemodel.JCodeModel;
 import com.sun.codemodel.JExpr;
-import com.sun.codemodel.JInvocation;
-import com.sun.codemodel.JStringLiteral;
+import com.sun.codemodel.JExpression;
 import com.sun.codemodel.JOp;
+import com.sun.codemodel.JType;
 
 /**
  * Create JExpression representations of Expressions. For numbers and strings

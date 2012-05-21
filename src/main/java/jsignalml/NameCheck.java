@@ -1,6 +1,7 @@
 package jsignalml;
 
 import java.util.List;
+
 import javax.lang.model.type.NullType;
 
 import jsignalml.logging.Logger;

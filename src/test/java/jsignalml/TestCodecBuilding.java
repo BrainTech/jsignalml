@@ -1,18 +1,17 @@
 package jsignalml;
 
-import org.junit.Test;
-import static org.junit.Assert.*;
 import static org.hamcrest.core.IsInstanceOf.instanceOf;
-import static org.hamcrest.core.IsNull.nullValue;
-import static org.hamcrest.core.IsNull.notNullValue;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
 
-import java.util.List;
 import java.io.File;
-import java.io.InputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.StringBufferInputStream;
-import org.xml.sax.SAXException;
+
+import org.junit.Test;
 import org.w3c.dom.Element;
+import org.xml.sax.SAXException;
 
 public class TestCodecBuilding {
 	static final XMLDocument doc;

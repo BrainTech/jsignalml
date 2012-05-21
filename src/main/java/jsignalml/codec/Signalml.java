@@ -2,7 +2,6 @@ package jsignalml.codec;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.util.ArrayList;
 
 import jsignalml.AsciiScanner;
@@ -15,8 +14,6 @@ import jsignalml.MyBuffer;
 import jsignalml.TextBuffer;
 import jsignalml.XmlBuffer;
 import jsignalml.util;
-
-import org.xml.sax.SAXException;
 
 public abstract class Signalml extends Context implements jsignalml.Source {
 	protected File default_filename;

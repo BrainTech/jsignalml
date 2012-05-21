@@ -1,10 +1,8 @@
 package jsignalml;
 
-import org.junit.Test;
-import static org.junit.Assert.*;
-
 import static jsignalml.TestNumberOps.eval;
-import static jsignalml.TestNumberOps.equal;
+
+import org.junit.Test;
 
 public class TestAccessOps {
 

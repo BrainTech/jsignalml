@@ -8,7 +8,6 @@ import jsignalml.ExpressionFault;
 import jsignalml.SyntaxError;
 import jsignalml.Type;
 import jsignalml.TypeObject;
-import jsignalml.TypeString;
 import jsignalml.logging.Logger;
 
 public abstract class Context extends TypeObject {
@@ -90,5 +89,5 @@ public abstract class Context extends TypeObject {
 		result += "]";
 		return result;
 	}
-	
+
 }

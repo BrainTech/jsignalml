@@ -1,10 +1,11 @@
 package jsignalml;
 
-import org.junit.Test;
-import static org.junit.Assert.*;
 import static org.hamcrest.core.IsEqual.equalTo;
+import static org.junit.Assert.assertThat;
 
 import java.io.File;
+
+import org.junit.Test;
 
 public class TestFileType {
 	File filename = new File("target/test-classes/file1");

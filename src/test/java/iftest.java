@@ -1,6 +1,7 @@
 import java.io.File;
 import java.nio.FloatBuffer;
 import java.util.List;
+
 import jsignalml.Builtins;
 import jsignalml.ContextDumper;
 import jsignalml.Type;
@@ -12,11 +13,12 @@ import jsignalml.codec.FunctionParam;
 import jsignalml.codec.Param;
 import jsignalml.codec.Signalml;
 import jsignalml.logging.Logger;
+
 import org.apache.log4j.BasicConfigurator;
 
 
 /**
- * 
+ *
  * jsignalml.ASTNode$Signalml._accept(ASTNode.java:121)
  * jsignalml.JavaClassGen.visit(JavaClassGen.java:38)
  * jsignalml.JavaClassGen.visit(JavaClassGen.java:171)
@@ -41,7 +43,7 @@ import org.apache.log4j.BasicConfigurator;
  * XXXparent paramClass=_param_test_range_3
  * XXXparent node.type=unknown
  * XXXparent --> nodetype=TypeList
- * 
+ *
  */
 public class iftest
     extends Signalml
@@ -318,7 +320,7 @@ public class iftest
 
 
     /**
-     * 
+     *
      * jsignalml.ASTNode$Conditional._accept(ASTNode.java:549)
      * jsignalml.JavaClassGen.visit(JavaClassGen.java:38)
      * jsignalml.JavaClassGen.visit(JavaClassGen.java:1024)
@@ -329,7 +331,7 @@ public class iftest
      * XXXparent paramClass=_param_p1
      * XXXparent node.type=TypeInt
      * XXXparent --> nodetype=TypeInt
-     * 
+     *
      */
     public class If_if1
         extends ConditionalClass
@@ -467,7 +469,7 @@ public class iftest
 
 
         /**
-         * 
+         *
          * jsignalml.ASTNode$ElseBranch._accept(ASTNode.java:622)
          * jsignalml.JavaClassGen.visit(JavaClassGen.java:38)
          * jsignalml.JavaClassGen.visit(JavaClassGen.java:1110)
@@ -478,7 +480,7 @@ public class iftest
          * XXXparent paramClass=_param_p1
          * XXXparent node.type=TypeString
          * XXXparent --> nodetype=TypeInt
-         * 
+         *
          */
         public class Else_gen_id_0
             extends ConditionalClass.ElseBranchClass
@@ -538,14 +540,14 @@ public class iftest
 
 
             /**
-             * 
+             *
              * jsignalml.ASTNode$ExprParam._accept(ASTNode.java:318)
              * jsignalml.JavaClassGen.visit(JavaClassGen.java:38)
              * jsignalml.JavaClassGen.visit(JavaClassGen.java:390)
              * jsignalml.JavaClassGen.paramClass(JavaClassGen.java:445)
              * node.type=TypeString
              * --> nodetype=TypeInt
-             * 
+             *
              */
             public class _param_p1
                 extends Param<TypeInt>
@@ -577,14 +579,14 @@ public class iftest
 
 
         /**
-         * 
+         *
          * jsignalml.ASTNode$ExprParam._accept(ASTNode.java:318)
          * jsignalml.JavaClassGen.visit(JavaClassGen.java:38)
          * jsignalml.JavaClassGen.visit(JavaClassGen.java:390)
          * jsignalml.JavaClassGen.paramClass(JavaClassGen.java:445)
          * node.type=TypeInt
          * --> nodetype=TypeInt
-         * 
+         *
          */
         public class _param_p1
             extends Param<TypeInt>
@@ -616,14 +618,14 @@ public class iftest
 
 
     /**
-     * 
+     *
      * jsignalml.ASTNode$ExprParam._accept(ASTNode.java:318)
      * jsignalml.JavaClassGen.visit(JavaClassGen.java:38)
      * jsignalml.JavaClassGen.visit(JavaClassGen.java:390)
      * jsignalml.JavaClassGen.paramClass(JavaClassGen.java:445)
      * node.type=unknown
      * --> nodetype=unknown
-     * 
+     *
      */
     public class _param_call_wrap_builtin_strip
         extends Param<Type>
@@ -653,14 +655,14 @@ public class iftest
 
 
     /**
-     * 
+     *
      * jsignalml.ASTNode$ExprParam._accept(ASTNode.java:318)
      * jsignalml.JavaClassGen.visit(JavaClassGen.java:38)
      * jsignalml.JavaClassGen.visit(JavaClassGen.java:390)
      * jsignalml.JavaClassGen.paramClass(JavaClassGen.java:445)
      * node.type=unknown
      * --> nodetype=unknown
-     * 
+     *
      */
     public class _param_p2
         extends Param<Type>
@@ -690,14 +692,14 @@ public class iftest
 
 
     /**
-     * 
+     *
      * jsignalml.ASTNode$ExprParam._accept(ASTNode.java:318)
      * jsignalml.JavaClassGen.visit(JavaClassGen.java:38)
      * jsignalml.JavaClassGen.visit(JavaClassGen.java:390)
      * jsignalml.JavaClassGen.paramClass(JavaClassGen.java:445)
      * node.type=unknown
      * --> nodetype=TypeString
-     * 
+     *
      */
     public class _param_requires_builtin_strip
         extends Param<TypeString>
@@ -727,14 +729,14 @@ public class iftest
 
 
     /**
-     * 
+     *
      * jsignalml.ASTNode$ExprParam._accept(ASTNode.java:318)
      * jsignalml.JavaClassGen.visit(JavaClassGen.java:38)
      * jsignalml.JavaClassGen.visit(JavaClassGen.java:390)
      * jsignalml.JavaClassGen.paramClass(JavaClassGen.java:445)
      * node.type=unknown
      * --> nodetype=TypeList
-     * 
+     *
      */
     public class _param_test_range_1
         extends Param<TypeList>
@@ -764,14 +766,14 @@ public class iftest
 
 
     /**
-     * 
+     *
      * jsignalml.ASTNode$ExprParam._accept(ASTNode.java:318)
      * jsignalml.JavaClassGen.visit(JavaClassGen.java:38)
      * jsignalml.JavaClassGen.visit(JavaClassGen.java:390)
      * jsignalml.JavaClassGen.paramClass(JavaClassGen.java:445)
      * node.type=unknown
      * --> nodetype=TypeList
-     * 
+     *
      */
     public class _param_test_range_2
         extends Param<TypeList>
@@ -801,14 +803,14 @@ public class iftest
 
 
     /**
-     * 
+     *
      * jsignalml.ASTNode$ExprParam._accept(ASTNode.java:318)
      * jsignalml.JavaClassGen.visit(JavaClassGen.java:38)
      * jsignalml.JavaClassGen.visit(JavaClassGen.java:390)
      * jsignalml.JavaClassGen.paramClass(JavaClassGen.java:445)
      * node.type=unknown
      * --> nodetype=TypeList
-     * 
+     *
      */
     public class _param_test_range_3
         extends Param<TypeList>
@@ -838,14 +840,14 @@ public class iftest
 
 
     /**
-     * 
+     *
      * jsignalml.ASTNode$ExprParam._accept(ASTNode.java:318)
      * jsignalml.JavaClassGen.visit(JavaClassGen.java:38)
      * jsignalml.JavaClassGen.visit(JavaClassGen.java:390)
      * jsignalml.JavaClassGen.paramClass(JavaClassGen.java:445)
      * node.type=unknown
      * --> nodetype=TypeString
-     * 
+     *
      */
     public class _param_wrap_builtin_strip
         extends FunctionParam<TypeString>

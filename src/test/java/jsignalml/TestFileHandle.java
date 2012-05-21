@@ -1,10 +1,6 @@
 package jsignalml;
 
 import org.junit.Test;
-import static org.junit.Assert.*;
-import static org.hamcrest.core.IsInstanceOf.instanceOf;
-
-import java.util.TreeMap;
 
 public class TestFileHandle {
 	static final String file1 = "target/test-classes/file1";

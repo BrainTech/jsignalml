@@ -160,7 +160,7 @@ public class ExpressionFault extends RuntimeException {
 	 */
 	public static class NoMatchFoundError extends ExpressionFault {
 		public final String text, pattern;
-		public NoMatchFoundError(java.lang.String text, 
+		public NoMatchFoundError(java.lang.String text,
 				java.lang.String pattern) {
 			this.text = text;
 			this.pattern = pattern;
@@ -171,7 +171,7 @@ public class ExpressionFault extends RuntimeException {
 		}
 	}
 
-	
+
 	/**
 	 * Signifies an error detected by the environment in the course of
 	 * expression evalution.

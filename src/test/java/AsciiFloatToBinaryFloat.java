@@ -1,7 +1,6 @@
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.RandomAccessFile;
-import java.util.ArrayList;
 
 /**
  * @author Grzegorz Stadnik
@@ -11,7 +10,7 @@ public class AsciiFloatToBinaryFloat {
 
 	/**
 	 * @param args
-	 * @throws FileNotFoundException 
+	 * @throws FileNotFoundException
 	 */
 	public static void main(String[] args) throws FileNotFoundException, IOException {
 		//sample arguments:

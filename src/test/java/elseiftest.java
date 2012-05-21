@@ -1,5 +1,6 @@
 import java.io.File;
 import java.nio.FloatBuffer;
+
 import jsignalml.ContextDumper;
 import jsignalml.Type;
 import jsignalml.TypeInt;
@@ -7,17 +8,18 @@ import jsignalml.codec.ConditionalClass;
 import jsignalml.codec.Param;
 import jsignalml.codec.Signalml;
 import jsignalml.logging.Logger;
+
 import org.apache.log4j.BasicConfigurator;
 
 
 /**
- * 
+ *
  * jsignalml.ASTNode$Signalml._accept(ASTNode.java:121)
  * jsignalml.JavaClassGen.visit(JavaClassGen.java:38)
  * jsignalml.JavaClassGen.visit(JavaClassGen.java:171)
  * parent paramClass=_param_p1
  * parent paramClass=_param_p2
- * 
+ *
  */
 public class elseiftest
     extends Signalml
@@ -189,7 +191,7 @@ public class elseiftest
 
 
     /**
-     * 
+     *
      * jsignalml.ASTNode$Conditional._accept(ASTNode.java:576)
      * jsignalml.JavaClassGen.visit(JavaClassGen.java:38)
      * jsignalml.JavaClassGen.visit(JavaClassGen.java:1022)
@@ -198,7 +200,7 @@ public class elseiftest
      * jsignalml.JavaClassGen.visit(JavaClassGen.java:38)
      * jsignalml.JavaClassGen.visit(JavaClassGen.java:1023)
      * parent paramClass=_param_p1
-     * 
+     *
      */
     public class If_if1
         extends ConditionalClass
@@ -385,7 +387,7 @@ public class elseiftest
 
 
         /**
-         * 
+         *
          * jsignalml.ASTNode$ElseIfBranch._accept(ASTNode.java:616)
          * jsignalml.JavaClassGen.visit(JavaClassGen.java:38)
          * jsignalml.JavaClassGen.visit(JavaClassGen.java:1122)
@@ -394,7 +396,7 @@ public class elseiftest
          * jsignalml.JavaClassGen.visit(JavaClassGen.java:38)
          * jsignalml.JavaClassGen.visit(JavaClassGen.java:1123)
          * parent paramClass=_param_p1
-         * 
+         *
          */
         public class ElseIf_gen_id_0
             extends ConditionalClass.ElseIfBranchClass
@@ -546,7 +548,7 @@ public class elseiftest
 
 
             /**
-             * 
+             *
              * jsignalml.ASTNode$ElseIfBranch._accept(ASTNode.java:616)
              * jsignalml.JavaClassGen.visit(JavaClassGen.java:38)
              * jsignalml.JavaClassGen.visit(JavaClassGen.java:1122)
@@ -555,7 +557,7 @@ public class elseiftest
              * jsignalml.JavaClassGen.visit(JavaClassGen.java:38)
              * jsignalml.JavaClassGen.visit(JavaClassGen.java:1123)
              * parent paramClass=_param_p1
-             * 
+             *
              */
             public class ElseIf_gen_id_1
                 extends ConditionalClass.ElseIfBranchClass
@@ -693,7 +695,7 @@ public class elseiftest
 
 
                 /**
-                 * 
+                 *
                  * jsignalml.ASTNode$ElseBranch._accept(ASTNode.java:649)
                  * jsignalml.JavaClassGen.visit(JavaClassGen.java:38)
                  * jsignalml.JavaClassGen.visit(JavaClassGen.java:1077)
@@ -702,7 +704,7 @@ public class elseiftest
                  * jsignalml.JavaClassGen.visit(JavaClassGen.java:38)
                  * jsignalml.JavaClassGen.visit(JavaClassGen.java:1078)
                  * parent paramClass=_param_p1
-                 * 
+                 *
                  */
                 public class Else_gen_id_2
                     extends ConditionalClass.ElseBranchClass
@@ -762,14 +764,14 @@ public class elseiftest
 
 
                     /**
-                     * 
+                     *
                      * jsignalml.ASTNode$ExprParam._accept(ASTNode.java:318)
                      * jsignalml.JavaClassGen.visit(JavaClassGen.java:38)
                      * jsignalml.JavaClassGen.visit(JavaClassGen.java:390)
                      * jsignalml.JavaClassGen.paramClass(JavaClassGen.java:443)
                      * node.type=TypeInt
                      * --> nodetype=TypeInt
-                     * 
+                     *
                      */
                     public class _param_p1
                         extends Param<TypeInt>
@@ -815,14 +817,14 @@ public class elseiftest
 
 
                 /**
-                 * 
+                 *
                  * jsignalml.ASTNode$ExprParam._accept(ASTNode.java:318)
                  * jsignalml.JavaClassGen.visit(JavaClassGen.java:38)
                  * jsignalml.JavaClassGen.visit(JavaClassGen.java:390)
                  * jsignalml.JavaClassGen.paramClass(JavaClassGen.java:443)
                  * node.type=TypeInt
                  * --> nodetype=TypeInt
-                 * 
+                 *
                  */
                 public class _param_p1
                     extends Param<TypeInt>
@@ -868,14 +870,14 @@ public class elseiftest
 
 
             /**
-             * 
+             *
              * jsignalml.ASTNode$ExprParam._accept(ASTNode.java:318)
              * jsignalml.JavaClassGen.visit(JavaClassGen.java:38)
              * jsignalml.JavaClassGen.visit(JavaClassGen.java:390)
              * jsignalml.JavaClassGen.paramClass(JavaClassGen.java:443)
              * node.type=TypeInt
              * --> nodetype=TypeInt
-             * 
+             *
              */
             public class _param_p1
                 extends Param<TypeInt>
@@ -921,7 +923,7 @@ public class elseiftest
 
 
         /**
-         * 
+         *
          * jsignalml.ASTNode$Conditional._accept(ASTNode.java:576)
          * jsignalml.JavaClassGen.visit(JavaClassGen.java:38)
          * jsignalml.JavaClassGen.visit(JavaClassGen.java:1022)
@@ -930,7 +932,7 @@ public class elseiftest
          * jsignalml.JavaClassGen.visit(JavaClassGen.java:38)
          * jsignalml.JavaClassGen.visit(JavaClassGen.java:1023)
          * parent paramClass=_param_p1
-         * 
+         *
          */
         public class If_if11
             extends ConditionalClass
@@ -1117,7 +1119,7 @@ public class elseiftest
 
 
             /**
-             * 
+             *
              * jsignalml.ASTNode$ElseIfBranch._accept(ASTNode.java:616)
              * jsignalml.JavaClassGen.visit(JavaClassGen.java:38)
              * jsignalml.JavaClassGen.visit(JavaClassGen.java:1122)
@@ -1126,7 +1128,7 @@ public class elseiftest
              * jsignalml.JavaClassGen.visit(JavaClassGen.java:38)
              * jsignalml.JavaClassGen.visit(JavaClassGen.java:1123)
              * parent paramClass=_param_p1
-             * 
+             *
              */
             public class ElseIf_gen_id_3
                 extends ConditionalClass.ElseIfBranchClass
@@ -1278,7 +1280,7 @@ public class elseiftest
 
 
                 /**
-                 * 
+                 *
                  * jsignalml.ASTNode$ElseIfBranch._accept(ASTNode.java:616)
                  * jsignalml.JavaClassGen.visit(JavaClassGen.java:38)
                  * jsignalml.JavaClassGen.visit(JavaClassGen.java:1122)
@@ -1287,7 +1289,7 @@ public class elseiftest
                  * jsignalml.JavaClassGen.visit(JavaClassGen.java:38)
                  * jsignalml.JavaClassGen.visit(JavaClassGen.java:1123)
                  * parent paramClass=_param_p1
-                 * 
+                 *
                  */
                 public class ElseIf_gen_id_4
                     extends ConditionalClass.ElseIfBranchClass
@@ -1425,7 +1427,7 @@ public class elseiftest
 
 
                     /**
-                     * 
+                     *
                      * jsignalml.ASTNode$ElseBranch._accept(ASTNode.java:649)
                      * jsignalml.JavaClassGen.visit(JavaClassGen.java:38)
                      * jsignalml.JavaClassGen.visit(JavaClassGen.java:1077)
@@ -1434,7 +1436,7 @@ public class elseiftest
                      * jsignalml.JavaClassGen.visit(JavaClassGen.java:38)
                      * jsignalml.JavaClassGen.visit(JavaClassGen.java:1078)
                      * parent paramClass=_param_p1
-                     * 
+                     *
                      */
                     public class Else_gen_id_5
                         extends ConditionalClass.ElseBranchClass
@@ -1494,14 +1496,14 @@ public class elseiftest
 
 
                         /**
-                         * 
+                         *
                          * jsignalml.ASTNode$ExprParam._accept(ASTNode.java:318)
                          * jsignalml.JavaClassGen.visit(JavaClassGen.java:38)
                          * jsignalml.JavaClassGen.visit(JavaClassGen.java:390)
                          * jsignalml.JavaClassGen.paramClass(JavaClassGen.java:443)
                          * node.type=TypeInt
                          * --> nodetype=TypeInt
-                         * 
+                         *
                          */
                         public class _param_p1
                             extends Param<TypeInt>
@@ -1547,14 +1549,14 @@ public class elseiftest
 
 
                     /**
-                     * 
+                     *
                      * jsignalml.ASTNode$ExprParam._accept(ASTNode.java:318)
                      * jsignalml.JavaClassGen.visit(JavaClassGen.java:38)
                      * jsignalml.JavaClassGen.visit(JavaClassGen.java:390)
                      * jsignalml.JavaClassGen.paramClass(JavaClassGen.java:443)
                      * node.type=TypeInt
                      * --> nodetype=TypeInt
-                     * 
+                     *
                      */
                     public class _param_p1
                         extends Param<TypeInt>
@@ -1600,14 +1602,14 @@ public class elseiftest
 
 
                 /**
-                 * 
+                 *
                  * jsignalml.ASTNode$ExprParam._accept(ASTNode.java:318)
                  * jsignalml.JavaClassGen.visit(JavaClassGen.java:38)
                  * jsignalml.JavaClassGen.visit(JavaClassGen.java:390)
                  * jsignalml.JavaClassGen.paramClass(JavaClassGen.java:443)
                  * node.type=TypeInt
                  * --> nodetype=TypeInt
-                 * 
+                 *
                  */
                 public class _param_p1
                     extends Param<TypeInt>
@@ -1653,7 +1655,7 @@ public class elseiftest
 
 
             /**
-             * 
+             *
              * jsignalml.ASTNode$Conditional._accept(ASTNode.java:576)
              * jsignalml.JavaClassGen.visit(JavaClassGen.java:38)
              * jsignalml.JavaClassGen.visit(JavaClassGen.java:1022)
@@ -1662,7 +1664,7 @@ public class elseiftest
              * jsignalml.JavaClassGen.visit(JavaClassGen.java:38)
              * jsignalml.JavaClassGen.visit(JavaClassGen.java:1023)
              * parent paramClass=_param_p1
-             * 
+             *
              */
             public class If_if111
                 extends ConditionalClass
@@ -1814,7 +1816,7 @@ public class elseiftest
 
 
                 /**
-                 * 
+                 *
                  * jsignalml.ASTNode$ElseIfBranch._accept(ASTNode.java:616)
                  * jsignalml.JavaClassGen.visit(JavaClassGen.java:38)
                  * jsignalml.JavaClassGen.visit(JavaClassGen.java:1122)
@@ -1823,7 +1825,7 @@ public class elseiftest
                  * jsignalml.JavaClassGen.visit(JavaClassGen.java:38)
                  * jsignalml.JavaClassGen.visit(JavaClassGen.java:1123)
                  * parent paramClass=_param_p1
-                 * 
+                 *
                  */
                 public class ElseIf_gen_id_6
                     extends ConditionalClass.ElseIfBranchClass
@@ -2010,7 +2012,7 @@ public class elseiftest
 
 
                     /**
-                     * 
+                     *
                      * jsignalml.ASTNode$ElseIfBranch._accept(ASTNode.java:616)
                      * jsignalml.JavaClassGen.visit(JavaClassGen.java:38)
                      * jsignalml.JavaClassGen.visit(JavaClassGen.java:1122)
@@ -2019,7 +2021,7 @@ public class elseiftest
                      * jsignalml.JavaClassGen.visit(JavaClassGen.java:38)
                      * jsignalml.JavaClassGen.visit(JavaClassGen.java:1123)
                      * parent paramClass=_param_p1
-                     * 
+                     *
                      */
                     public class ElseIf_gen_id_7
                         extends ConditionalClass.ElseIfBranchClass
@@ -2157,7 +2159,7 @@ public class elseiftest
 
 
                         /**
-                         * 
+                         *
                          * jsignalml.ASTNode$ElseBranch._accept(ASTNode.java:649)
                          * jsignalml.JavaClassGen.visit(JavaClassGen.java:38)
                          * jsignalml.JavaClassGen.visit(JavaClassGen.java:1077)
@@ -2166,7 +2168,7 @@ public class elseiftest
                          * jsignalml.JavaClassGen.visit(JavaClassGen.java:38)
                          * jsignalml.JavaClassGen.visit(JavaClassGen.java:1078)
                          * parent paramClass=_param_p1
-                         * 
+                         *
                          */
                         public class Else_gen_id_8
                             extends ConditionalClass.ElseBranchClass
@@ -2226,14 +2228,14 @@ public class elseiftest
 
 
                             /**
-                             * 
+                             *
                              * jsignalml.ASTNode$ExprParam._accept(ASTNode.java:318)
                              * jsignalml.JavaClassGen.visit(JavaClassGen.java:38)
                              * jsignalml.JavaClassGen.visit(JavaClassGen.java:390)
                              * jsignalml.JavaClassGen.paramClass(JavaClassGen.java:443)
                              * node.type=TypeInt
                              * --> nodetype=TypeInt
-                             * 
+                             *
                              */
                             public class _param_p1
                                 extends Param<TypeInt>
@@ -2279,14 +2281,14 @@ public class elseiftest
 
 
                         /**
-                         * 
+                         *
                          * jsignalml.ASTNode$ExprParam._accept(ASTNode.java:318)
                          * jsignalml.JavaClassGen.visit(JavaClassGen.java:38)
                          * jsignalml.JavaClassGen.visit(JavaClassGen.java:390)
                          * jsignalml.JavaClassGen.paramClass(JavaClassGen.java:443)
                          * node.type=TypeInt
                          * --> nodetype=TypeInt
-                         * 
+                         *
                          */
                         public class _param_p1
                             extends Param<TypeInt>
@@ -2332,7 +2334,7 @@ public class elseiftest
 
 
                     /**
-                     * 
+                     *
                      * jsignalml.ASTNode$Conditional._accept(ASTNode.java:576)
                      * jsignalml.JavaClassGen.visit(JavaClassGen.java:38)
                      * jsignalml.JavaClassGen.visit(JavaClassGen.java:1022)
@@ -2341,7 +2343,7 @@ public class elseiftest
                      * jsignalml.JavaClassGen.visit(JavaClassGen.java:38)
                      * jsignalml.JavaClassGen.visit(JavaClassGen.java:1023)
                      * parent paramClass=_param_p1
-                     * 
+                     *
                      */
                     public class If_if1111
                         extends ConditionalClass
@@ -2493,7 +2495,7 @@ public class elseiftest
 
 
                         /**
-                         * 
+                         *
                          * jsignalml.ASTNode$ElseIfBranch._accept(ASTNode.java:616)
                          * jsignalml.JavaClassGen.visit(JavaClassGen.java:38)
                          * jsignalml.JavaClassGen.visit(JavaClassGen.java:1122)
@@ -2502,7 +2504,7 @@ public class elseiftest
                          * jsignalml.JavaClassGen.visit(JavaClassGen.java:38)
                          * jsignalml.JavaClassGen.visit(JavaClassGen.java:1123)
                          * parent paramClass=_param_p1
-                         * 
+                         *
                          */
                         public class ElseIf_gen_id_9
                             extends ConditionalClass.ElseIfBranchClass
@@ -2654,7 +2656,7 @@ public class elseiftest
 
 
                             /**
-                             * 
+                             *
                              * jsignalml.ASTNode$ElseIfBranch._accept(ASTNode.java:616)
                              * jsignalml.JavaClassGen.visit(JavaClassGen.java:38)
                              * jsignalml.JavaClassGen.visit(JavaClassGen.java:1122)
@@ -2663,7 +2665,7 @@ public class elseiftest
                              * jsignalml.JavaClassGen.visit(JavaClassGen.java:38)
                              * jsignalml.JavaClassGen.visit(JavaClassGen.java:1123)
                              * parent paramClass=_param_p1
-                             * 
+                             *
                              */
                             public class ElseIf_gen_id_10
                                 extends ConditionalClass.ElseIfBranchClass
@@ -2836,7 +2838,7 @@ public class elseiftest
 
 
                                 /**
-                                 * 
+                                 *
                                  * jsignalml.ASTNode$ElseBranch._accept(ASTNode.java:649)
                                  * jsignalml.JavaClassGen.visit(JavaClassGen.java:38)
                                  * jsignalml.JavaClassGen.visit(JavaClassGen.java:1077)
@@ -2845,7 +2847,7 @@ public class elseiftest
                                  * jsignalml.JavaClassGen.visit(JavaClassGen.java:38)
                                  * jsignalml.JavaClassGen.visit(JavaClassGen.java:1078)
                                  * parent paramClass=_param_p1
-                                 * 
+                                 *
                                  */
                                 public class Else_gen_id_11
                                     extends ConditionalClass.ElseBranchClass
@@ -2905,14 +2907,14 @@ public class elseiftest
 
 
                                     /**
-                                     * 
+                                     *
                                      * jsignalml.ASTNode$ExprParam._accept(ASTNode.java:318)
                                      * jsignalml.JavaClassGen.visit(JavaClassGen.java:38)
                                      * jsignalml.JavaClassGen.visit(JavaClassGen.java:390)
                                      * jsignalml.JavaClassGen.paramClass(JavaClassGen.java:443)
                                      * node.type=TypeInt
                                      * --> nodetype=TypeInt
-                                     * 
+                                     *
                                      */
                                     public class _param_p1
                                         extends Param<TypeInt>
@@ -2958,7 +2960,7 @@ public class elseiftest
 
 
                                 /**
-                                 * 
+                                 *
                                  * jsignalml.ASTNode$Conditional._accept(ASTNode.java:576)
                                  * jsignalml.JavaClassGen.visit(JavaClassGen.java:38)
                                  * jsignalml.JavaClassGen.visit(JavaClassGen.java:1022)
@@ -2967,7 +2969,7 @@ public class elseiftest
                                  * jsignalml.JavaClassGen.visit(JavaClassGen.java:38)
                                  * jsignalml.JavaClassGen.visit(JavaClassGen.java:1023)
                                  * parent paramClass=_param_p1
-                                 * 
+                                 *
                                  */
                                 public class If_if11111
                                     extends ConditionalClass
@@ -3119,7 +3121,7 @@ public class elseiftest
 
 
                                     /**
-                                     * 
+                                     *
                                      * jsignalml.ASTNode$ElseIfBranch._accept(ASTNode.java:616)
                                      * jsignalml.JavaClassGen.visit(JavaClassGen.java:38)
                                      * jsignalml.JavaClassGen.visit(JavaClassGen.java:1122)
@@ -3128,7 +3130,7 @@ public class elseiftest
                                      * jsignalml.JavaClassGen.visit(JavaClassGen.java:38)
                                      * jsignalml.JavaClassGen.visit(JavaClassGen.java:1123)
                                      * parent paramClass=_param_p1
-                                     * 
+                                     *
                                      */
                                     public class ElseIf_gen_id_12
                                         extends ConditionalClass.ElseIfBranchClass
@@ -3280,7 +3282,7 @@ public class elseiftest
 
 
                                         /**
-                                         * 
+                                         *
                                          * jsignalml.ASTNode$ElseIfBranch._accept(ASTNode.java:616)
                                          * jsignalml.JavaClassGen.visit(JavaClassGen.java:38)
                                          * jsignalml.JavaClassGen.visit(JavaClassGen.java:1122)
@@ -3289,7 +3291,7 @@ public class elseiftest
                                          * jsignalml.JavaClassGen.visit(JavaClassGen.java:38)
                                          * jsignalml.JavaClassGen.visit(JavaClassGen.java:1123)
                                          * parent paramClass=_param_p1
-                                         * 
+                                         *
                                          */
                                         public class ElseIf_gen_id_13
                                             extends ConditionalClass.ElseIfBranchClass
@@ -3427,7 +3429,7 @@ public class elseiftest
 
 
                                             /**
-                                             * 
+                                             *
                                              * jsignalml.ASTNode$ElseBranch._accept(ASTNode.java:649)
                                              * jsignalml.JavaClassGen.visit(JavaClassGen.java:38)
                                              * jsignalml.JavaClassGen.visit(JavaClassGen.java:1077)
@@ -3436,7 +3438,7 @@ public class elseiftest
                                              * jsignalml.JavaClassGen.visit(JavaClassGen.java:38)
                                              * jsignalml.JavaClassGen.visit(JavaClassGen.java:1078)
                                              * parent paramClass=_param_p1
-                                             * 
+                                             *
                                              */
                                             public class Else_gen_id_14
                                                 extends ConditionalClass.ElseBranchClass
@@ -3496,14 +3498,14 @@ public class elseiftest
 
 
                                                 /**
-                                                 * 
+                                                 *
                                                  * jsignalml.ASTNode$ExprParam._accept(ASTNode.java:318)
                                                  * jsignalml.JavaClassGen.visit(JavaClassGen.java:38)
                                                  * jsignalml.JavaClassGen.visit(JavaClassGen.java:390)
                                                  * jsignalml.JavaClassGen.paramClass(JavaClassGen.java:443)
                                                  * node.type=TypeInt
                                                  * --> nodetype=TypeInt
-                                                 * 
+                                                 *
                                                  */
                                                 public class _param_p1
                                                     extends Param<TypeInt>
@@ -3549,14 +3551,14 @@ public class elseiftest
 
 
                                             /**
-                                             * 
+                                             *
                                              * jsignalml.ASTNode$ExprParam._accept(ASTNode.java:318)
                                              * jsignalml.JavaClassGen.visit(JavaClassGen.java:38)
                                              * jsignalml.JavaClassGen.visit(JavaClassGen.java:390)
                                              * jsignalml.JavaClassGen.paramClass(JavaClassGen.java:443)
                                              * node.type=TypeInt
                                              * --> nodetype=TypeInt
-                                             * 
+                                             *
                                              */
                                             public class _param_p1
                                                 extends Param<TypeInt>
@@ -3602,14 +3604,14 @@ public class elseiftest
 
 
                                         /**
-                                         * 
+                                         *
                                          * jsignalml.ASTNode$ExprParam._accept(ASTNode.java:318)
                                          * jsignalml.JavaClassGen.visit(JavaClassGen.java:38)
                                          * jsignalml.JavaClassGen.visit(JavaClassGen.java:390)
                                          * jsignalml.JavaClassGen.paramClass(JavaClassGen.java:443)
                                          * node.type=TypeInt
                                          * --> nodetype=TypeInt
-                                         * 
+                                         *
                                          */
                                         public class _param_p1
                                             extends Param<TypeInt>
@@ -3655,14 +3657,14 @@ public class elseiftest
 
 
                                     /**
-                                     * 
+                                     *
                                      * jsignalml.ASTNode$ExprParam._accept(ASTNode.java:318)
                                      * jsignalml.JavaClassGen.visit(JavaClassGen.java:38)
                                      * jsignalml.JavaClassGen.visit(JavaClassGen.java:390)
                                      * jsignalml.JavaClassGen.paramClass(JavaClassGen.java:443)
                                      * node.type=TypeInt
                                      * --> nodetype=TypeInt
-                                     * 
+                                     *
                                      */
                                     public class _param_p1
                                         extends Param<TypeInt>
@@ -3708,14 +3710,14 @@ public class elseiftest
 
 
                                 /**
-                                 * 
+                                 *
                                  * jsignalml.ASTNode$ExprParam._accept(ASTNode.java:318)
                                  * jsignalml.JavaClassGen.visit(JavaClassGen.java:38)
                                  * jsignalml.JavaClassGen.visit(JavaClassGen.java:390)
                                  * jsignalml.JavaClassGen.paramClass(JavaClassGen.java:443)
                                  * node.type=TypeInt
                                  * --> nodetype=TypeInt
-                                 * 
+                                 *
                                  */
                                 public class _param_p1
                                     extends Param<TypeInt>
@@ -3761,14 +3763,14 @@ public class elseiftest
 
 
                             /**
-                             * 
+                             *
                              * jsignalml.ASTNode$ExprParam._accept(ASTNode.java:318)
                              * jsignalml.JavaClassGen.visit(JavaClassGen.java:38)
                              * jsignalml.JavaClassGen.visit(JavaClassGen.java:390)
                              * jsignalml.JavaClassGen.paramClass(JavaClassGen.java:443)
                              * node.type=TypeInt
                              * --> nodetype=TypeInt
-                             * 
+                             *
                              */
                             public class _param_p1
                                 extends Param<TypeInt>
@@ -3814,14 +3816,14 @@ public class elseiftest
 
 
                         /**
-                         * 
+                         *
                          * jsignalml.ASTNode$ExprParam._accept(ASTNode.java:318)
                          * jsignalml.JavaClassGen.visit(JavaClassGen.java:38)
                          * jsignalml.JavaClassGen.visit(JavaClassGen.java:390)
                          * jsignalml.JavaClassGen.paramClass(JavaClassGen.java:443)
                          * node.type=TypeInt
                          * --> nodetype=TypeInt
-                         * 
+                         *
                          */
                         public class _param_p1
                             extends Param<TypeInt>
@@ -3867,14 +3869,14 @@ public class elseiftest
 
 
                     /**
-                     * 
+                     *
                      * jsignalml.ASTNode$ExprParam._accept(ASTNode.java:318)
                      * jsignalml.JavaClassGen.visit(JavaClassGen.java:38)
                      * jsignalml.JavaClassGen.visit(JavaClassGen.java:390)
                      * jsignalml.JavaClassGen.paramClass(JavaClassGen.java:443)
                      * node.type=TypeInt
                      * --> nodetype=TypeInt
-                     * 
+                     *
                      */
                     public class _param_p1
                         extends Param<TypeInt>
@@ -3920,14 +3922,14 @@ public class elseiftest
 
 
                 /**
-                 * 
+                 *
                  * jsignalml.ASTNode$ExprParam._accept(ASTNode.java:318)
                  * jsignalml.JavaClassGen.visit(JavaClassGen.java:38)
                  * jsignalml.JavaClassGen.visit(JavaClassGen.java:390)
                  * jsignalml.JavaClassGen.paramClass(JavaClassGen.java:443)
                  * node.type=TypeInt
                  * --> nodetype=TypeInt
-                 * 
+                 *
                  */
                 public class _param_p1
                     extends Param<TypeInt>
@@ -3973,14 +3975,14 @@ public class elseiftest
 
 
             /**
-             * 
+             *
              * jsignalml.ASTNode$ExprParam._accept(ASTNode.java:318)
              * jsignalml.JavaClassGen.visit(JavaClassGen.java:38)
              * jsignalml.JavaClassGen.visit(JavaClassGen.java:390)
              * jsignalml.JavaClassGen.paramClass(JavaClassGen.java:443)
              * node.type=TypeInt
              * --> nodetype=TypeInt
-             * 
+             *
              */
             public class _param_p1
                 extends Param<TypeInt>
@@ -4026,14 +4028,14 @@ public class elseiftest
 
 
         /**
-         * 
+         *
          * jsignalml.ASTNode$ExprParam._accept(ASTNode.java:318)
          * jsignalml.JavaClassGen.visit(JavaClassGen.java:38)
          * jsignalml.JavaClassGen.visit(JavaClassGen.java:390)
          * jsignalml.JavaClassGen.paramClass(JavaClassGen.java:443)
          * node.type=TypeInt
          * --> nodetype=TypeInt
-         * 
+         *
          */
         public class _param_p1
             extends Param<TypeInt>
@@ -4079,14 +4081,14 @@ public class elseiftest
 
 
     /**
-     * 
+     *
      * jsignalml.ASTNode$ExprParam._accept(ASTNode.java:318)
      * jsignalml.JavaClassGen.visit(JavaClassGen.java:38)
      * jsignalml.JavaClassGen.visit(JavaClassGen.java:390)
      * jsignalml.JavaClassGen.paramClass(JavaClassGen.java:443)
      * node.type=TypeInt
      * --> nodetype=TypeInt
-     * 
+     *
      */
     public class _param_p1
         extends Param<TypeInt>
@@ -4130,14 +4132,14 @@ public class elseiftest
 
 
     /**
-     * 
+     *
      * jsignalml.ASTNode$ExprParam._accept(ASTNode.java:318)
      * jsignalml.JavaClassGen.visit(JavaClassGen.java:38)
      * jsignalml.JavaClassGen.visit(JavaClassGen.java:390)
      * jsignalml.JavaClassGen.paramClass(JavaClassGen.java:443)
      * node.type=unknown
      * --> nodetype=TypeInt
-     * 
+     *
      */
     public class _param_p2
         extends Param<TypeInt>

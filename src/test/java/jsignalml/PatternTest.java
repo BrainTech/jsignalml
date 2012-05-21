@@ -33,7 +33,7 @@ public class PatternTest {
 		String pattern = "MSI.FileDescriptor: (.+;){4}([a-zA-Z0-9,._-]+)";
 
 		String expectedFilename = "Art_e,rfhp0.1Hz,n,ccfbp10-40-508-2,cag,c,n,tm,bahe001-1High350,a";
-		
+
 		String filename = read(line, pattern, 2);
 		assertTrue(expectedFilename.equals(filename));
 

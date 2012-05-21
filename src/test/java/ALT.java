@@ -2,6 +2,7 @@ import java.io.File;
 import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 import java.util.List;
+
 import jsignalml.BitForm;
 import jsignalml.Builtins;
 import jsignalml.Channel;
@@ -21,15 +22,16 @@ import jsignalml.codec.OuterLoopClass;
 import jsignalml.codec.Param;
 import jsignalml.codec.Signalml;
 import jsignalml.logging.Logger;
+
 import org.apache.log4j.BasicConfigurator;
 
 
 /**
- * 
+ *
  * jsignalml.ASTNode$Signalml._accept(ASTNode.java:122)
  * jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
  * jsignalml.JavaClassGen.visit(JavaClassGen.java:173)
- * 
+ *
  */
 public class ALT
     extends Signalml
@@ -183,7 +185,7 @@ public class ALT
 
 
     /**
-     * 
+     *
      * jsignalml.ASTNode$FileHandle._accept(ASTNode.java:435)
      * jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
      * jsignalml.JavaClassGen.visit(JavaClassGen.java:819)
@@ -192,7 +194,7 @@ public class ALT
      * parent paramClass=_param_sample_unit
      * parent paramClass=_param_sample_size
      * parent paramClass=_param_sample_format
-     * 
+     *
      */
     public class File_main
         extends Signalml.FileClass
@@ -371,7 +373,7 @@ public class ALT
 
 
         /**
-         * 
+         *
          * jsignalml.ASTNode$ChannelSet._accept(ASTNode.java:141)
          * jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
          * jsignalml.JavaClassGen.visit(JavaClassGen.java:1297)
@@ -379,7 +381,7 @@ public class ALT
          * jsignalml.ASTNode$ChannelSet._accept(ASTNode.java:141)
          * jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
          * jsignalml.JavaClassGen.visit(JavaClassGen.java:1298)
-         * 
+         *
          */
         public class ChannelSet_data
             extends ChannelSetClass
@@ -458,11 +460,11 @@ public class ALT
 
 
             /**
-             * 
+             *
              * jsignalml.ASTNode$ForLoop._accept(ASTNode.java:526)
              * jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
              * jsignalml.JavaClassGen.visit(JavaClassGen.java:1000)
-             * 
+             *
              */
             public class Loop_channels
                 extends OuterLoopClass
@@ -519,7 +521,7 @@ public class ALT
 
 
                 /**
-                 * 
+                 *
                  * jsignalml.ASTNode$ForLoop._accept(ASTNode.java:526)
                  * jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
                  * jsignalml.JavaClassGen.visit(JavaClassGen.java:1004)
@@ -541,7 +543,7 @@ public class ALT
                  * parent paramClass=_param_number_of_samples
                  * parent paramClass=_param_calibration_gain
                  * parent paramClass=_param_calibration_offset
-                 * 
+                 *
                  */
                 public class channels_inner
                     extends OuterLoopClass.LoopClass
@@ -970,7 +972,7 @@ public class ALT
 
 
                     /**
-                     * 
+                     *
                      * jsignalml.ASTNode$Channel._accept(ASTNode.java:189)
                      * jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
                      * jsignalml.JavaClassGen.visit(JavaClassGen.java:1331)
@@ -979,7 +981,7 @@ public class ALT
                      * jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
                      * jsignalml.JavaClassGen.visit(JavaClassGen.java:1332)
                      * parent paramClass=_param_mapping
-                     * 
+                     *
                      */
                     public class Channel_gen_id_0
                         extends ChannelClass
@@ -1198,14 +1200,14 @@ public class ALT
 
 
                         /**
-                         * 
+                         *
                          * jsignalml.ASTNode$ExprParam._accept(ASTNode.java:319)
                          * jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
                          * jsignalml.JavaClassGen.visit(JavaClassGen.java:457)
                          * jsignalml.JavaClassGen.paramClass(JavaClassGen.java:510)
                          * node.type=TypeInt
                          * --> nodetype=TypeInt
-                         * 
+                         *
                          */
                         public class _param_mapping
                             extends FunctionParam<TypeInt>
@@ -1269,12 +1271,12 @@ public class ALT
 
 
                     /**
-                     * 
+                     *
                      * jsignalml.ASTNode$FileHandle._accept(ASTNode.java:435)
                      * jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
                      * jsignalml.JavaClassGen.visit(JavaClassGen.java:819)
                      * jsignalml.JavaClassGen.fileClass(JavaClassGen.java:834)
-                     * 
+                     *
                      */
                     public class File_channel_file
                         extends Signalml.FileClass
@@ -1339,14 +1341,14 @@ public class ALT
 
 
                     /**
-                     * 
+                     *
                      * jsignalml.ASTNode$TextParam._accept(ASTNode.java:289)
                      * jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
                      * jsignalml.JavaClassGen.visit(JavaClassGen.java:488)
                      * jsignalml.JavaClassGen.paramClass(JavaClassGen.java:510)
                      * node.type=TypeFloat
                      * --> nodetype=TypeFloat
-                     * 
+                     *
                      */
                     public class _param_calibration_gain
                         extends Param<TypeFloat>
@@ -1404,14 +1406,14 @@ public class ALT
 
 
                     /**
-                     * 
+                     *
                      * jsignalml.ASTNode$ExprParam._accept(ASTNode.java:319)
                      * jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
                      * jsignalml.JavaClassGen.visit(JavaClassGen.java:457)
                      * jsignalml.JavaClassGen.paramClass(JavaClassGen.java:510)
                      * node.type=TypeString
                      * --> nodetype=TypeString
-                     * 
+                     *
                      */
                     public class _param_calibration_gain_pattern
                         extends Param<TypeString>
@@ -1441,14 +1443,14 @@ public class ALT
 
 
                     /**
-                     * 
+                     *
                      * jsignalml.ASTNode$TextParam._accept(ASTNode.java:289)
                      * jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
                      * jsignalml.JavaClassGen.visit(JavaClassGen.java:488)
                      * jsignalml.JavaClassGen.paramClass(JavaClassGen.java:510)
                      * node.type=unknown
                      * --> nodetype=TypeFloat
-                     * 
+                     *
                      */
                     public class _param_calibration_offset
                         extends Param<TypeFloat>
@@ -1506,14 +1508,14 @@ public class ALT
 
 
                     /**
-                     * 
+                     *
                      * jsignalml.ASTNode$ExprParam._accept(ASTNode.java:319)
                      * jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
                      * jsignalml.JavaClassGen.visit(JavaClassGen.java:457)
                      * jsignalml.JavaClassGen.paramClass(JavaClassGen.java:510)
                      * node.type=TypeString
                      * --> nodetype=TypeString
-                     * 
+                     *
                      */
                     public class _param_calibration_offset_pattern
                         extends Param<TypeString>
@@ -1543,14 +1545,14 @@ public class ALT
 
 
                     /**
-                     * 
+                     *
                      * jsignalml.ASTNode$TextParam._accept(ASTNode.java:289)
                      * jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
                      * jsignalml.JavaClassGen.visit(JavaClassGen.java:488)
                      * jsignalml.JavaClassGen.paramClass(JavaClassGen.java:510)
                      * node.type=TypeString
                      * --> nodetype=TypeString
-                     * 
+                     *
                      */
                     public class _param_channel_filename
                         extends Param<TypeString>
@@ -1594,14 +1596,14 @@ public class ALT
 
 
                     /**
-                     * 
+                     *
                      * jsignalml.ASTNode$ExprParam._accept(ASTNode.java:319)
                      * jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
                      * jsignalml.JavaClassGen.visit(JavaClassGen.java:457)
                      * jsignalml.JavaClassGen.paramClass(JavaClassGen.java:510)
                      * node.type=TypeString
                      * --> nodetype=TypeString
-                     * 
+                     *
                      */
                     public class _param_channel_filename_pattern
                         extends Param<TypeString>
@@ -1631,14 +1633,14 @@ public class ALT
 
 
                     /**
-                     * 
+                     *
                      * jsignalml.ASTNode$TextParam._accept(ASTNode.java:289)
                      * jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
                      * jsignalml.JavaClassGen.visit(JavaClassGen.java:488)
                      * jsignalml.JavaClassGen.paramClass(JavaClassGen.java:510)
                      * node.type=TypeString
                      * --> nodetype=TypeString
-                     * 
+                     *
                      */
                     public class _param_channel_name
                         extends Param<TypeString>
@@ -1682,14 +1684,14 @@ public class ALT
 
 
                     /**
-                     * 
+                     *
                      * jsignalml.ASTNode$ExprParam._accept(ASTNode.java:319)
                      * jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
                      * jsignalml.JavaClassGen.visit(JavaClassGen.java:457)
                      * jsignalml.JavaClassGen.paramClass(JavaClassGen.java:510)
                      * node.type=TypeString
                      * --> nodetype=TypeString
-                     * 
+                     *
                      */
                     public class _param_channel_name_pattern
                         extends Param<TypeString>
@@ -1719,14 +1721,14 @@ public class ALT
 
 
                     /**
-                     * 
+                     *
                      * jsignalml.ASTNode$ExprParam._accept(ASTNode.java:319)
                      * jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
                      * jsignalml.JavaClassGen.visit(JavaClassGen.java:457)
                      * jsignalml.JavaClassGen.paramClass(JavaClassGen.java:510)
                      * node.type=TypeString
                      * --> nodetype=TypeString
-                     * 
+                     *
                      */
                     public class _param_channel_nr_of_samples_pattern
                         extends Param<TypeString>
@@ -1756,14 +1758,14 @@ public class ALT
 
 
                     /**
-                     * 
+                     *
                      * jsignalml.ASTNode$ExprParam._accept(ASTNode.java:319)
                      * jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
                      * jsignalml.JavaClassGen.visit(JavaClassGen.java:457)
                      * jsignalml.JavaClassGen.paramClass(JavaClassGen.java:510)
                      * node.type=TypeString
                      * --> nodetype=TypeString
-                     * 
+                     *
                      */
                     public class _param_channel_sampling_frequency_pattern
                         extends Param<TypeString>
@@ -1793,14 +1795,14 @@ public class ALT
 
 
                     /**
-                     * 
+                     *
                      * jsignalml.ASTNode$TextParam._accept(ASTNode.java:289)
                      * jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
                      * jsignalml.JavaClassGen.visit(JavaClassGen.java:488)
                      * jsignalml.JavaClassGen.paramClass(JavaClassGen.java:510)
                      * node.type=TypeString
                      * --> nodetype=TypeString
-                     * 
+                     *
                      */
                     public class _param_channel_type_name
                         extends Param<TypeString>
@@ -1844,14 +1846,14 @@ public class ALT
 
 
                     /**
-                     * 
+                     *
                      * jsignalml.ASTNode$ExprParam._accept(ASTNode.java:319)
                      * jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
                      * jsignalml.JavaClassGen.visit(JavaClassGen.java:457)
                      * jsignalml.JavaClassGen.paramClass(JavaClassGen.java:510)
                      * node.type=TypeString
                      * --> nodetype=TypeString
-                     * 
+                     *
                      */
                     public class _param_channel_type_name_pattern
                         extends Param<TypeString>
@@ -1881,14 +1883,14 @@ public class ALT
 
 
                     /**
-                     * 
+                     *
                      * jsignalml.ASTNode$TextParam._accept(ASTNode.java:289)
                      * jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
                      * jsignalml.JavaClassGen.visit(JavaClassGen.java:488)
                      * jsignalml.JavaClassGen.paramClass(JavaClassGen.java:510)
                      * node.type=TypeInt
                      * --> nodetype=TypeInt
-                     * 
+                     *
                      */
                     public class _param_number_of_samples
                         extends Param<TypeInt>
@@ -1946,14 +1948,14 @@ public class ALT
 
 
                     /**
-                     * 
+                     *
                      * jsignalml.ASTNode$TextParam._accept(ASTNode.java:289)
                      * jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
                      * jsignalml.JavaClassGen.visit(JavaClassGen.java:488)
                      * jsignalml.JavaClassGen.paramClass(JavaClassGen.java:510)
                      * node.type=TypeFloat
                      * --> nodetype=TypeFloat
-                     * 
+                     *
                      */
                     public class _param_sampling_frequency
                         extends Param<TypeFloat>
@@ -2011,12 +2013,12 @@ public class ALT
 
 
                     /**
-                     * 
+                     *
                      * jsignalml.ASTNode$Itername._accept(ASTNode.java:498)
                      * jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
                      * jsignalml.JavaClassGen.visit(JavaClassGen.java:978)
                      * jsignalml.JavaClassGen.indexClass(JavaClassGen.java:1254)
-                     * 
+                     *
                      */
                     public class index
                         extends Param<TypeInt>
@@ -2072,14 +2074,14 @@ public class ALT
 
 
         /**
-         * 
+         *
          * jsignalml.ASTNode$TextParam._accept(ASTNode.java:289)
          * jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
          * jsignalml.JavaClassGen.visit(JavaClassGen.java:488)
          * jsignalml.JavaClassGen.paramClass(JavaClassGen.java:510)
          * node.type=TypeInt
          * --> nodetype=TypeInt
-         * 
+         *
          */
         public class _param_number_of_channels
             extends Param<TypeInt>
@@ -2137,14 +2139,14 @@ public class ALT
 
 
         /**
-         * 
+         *
          * jsignalml.ASTNode$ExprParam._accept(ASTNode.java:319)
          * jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
          * jsignalml.JavaClassGen.visit(JavaClassGen.java:457)
          * jsignalml.JavaClassGen.paramClass(JavaClassGen.java:510)
          * node.type=TypeString
          * --> nodetype=TypeString
-         * 
+         *
          */
         public class _param_sample_format
             extends Param<TypeString>
@@ -2174,14 +2176,14 @@ public class ALT
 
 
         /**
-         * 
+         *
          * jsignalml.ASTNode$ExprParam._accept(ASTNode.java:319)
          * jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
          * jsignalml.JavaClassGen.visit(JavaClassGen.java:457)
          * jsignalml.JavaClassGen.paramClass(JavaClassGen.java:510)
          * node.type=TypeInt
          * --> nodetype=TypeInt
-         * 
+         *
          */
         public class _param_sample_size
             extends Param<TypeInt>
@@ -2225,14 +2227,14 @@ public class ALT
 
 
         /**
-         * 
+         *
          * jsignalml.ASTNode$ExprParam._accept(ASTNode.java:319)
          * jsignalml.JavaClassGen.visit(JavaClassGen.java:1)
          * jsignalml.JavaClassGen.visit(JavaClassGen.java:457)
          * jsignalml.JavaClassGen.paramClass(JavaClassGen.java:510)
          * node.type=TypeFloat
          * --> nodetype=TypeInt
-         * 
+         *
          */
         public class _param_sample_unit
             extends Param<TypeInt>

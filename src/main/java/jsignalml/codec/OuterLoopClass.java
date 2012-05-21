@@ -1,16 +1,15 @@
 package jsignalml.codec;
 
-import jsignalml.Type;
-import jsignalml.TypeList;
-import jsignalml.TypeInt;
-import jsignalml.ContextVisitor;
-import jsignalml.util;
-import jsignalml.logging.Logger;
+import static java.lang.String.format;
 
 import java.util.List;
-import java.util.ArrayList;
 
-import static java.lang.String.format;
+import jsignalml.ContextVisitor;
+import jsignalml.Type;
+import jsignalml.TypeInt;
+import jsignalml.TypeList;
+import jsignalml.util;
+import jsignalml.logging.Logger;
 
 public abstract class OuterLoopClass extends Param<TypeList> {
 	static final Logger log = new Logger(OuterLoopClass.class);

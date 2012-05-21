@@ -1,11 +1,11 @@
 package jsignalml;
 
-import org.junit.Test;
-import static org.junit.Assert.*;
-
-import static jsignalml.TestNumberOps.eval;
 import static jsignalml.TestNumberOps.equal;
+import static jsignalml.TestNumberOps.eval;
 import static jsignalml.TestNumberOps.verifyIsTrue;
+import static org.junit.Assert.assertEquals;
+
+import org.junit.Test;
 
 public class TestMapOps {
 	static void mapEqual(String line, Object...elements) throws Exception

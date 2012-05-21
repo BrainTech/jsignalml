@@ -1,12 +1,11 @@
 package jsignalml;
 
-import org.junit.Test;
-import static org.junit.Assert.*;
-
-import static jsignalml.TestNumberOps.eval;
 import static jsignalml.TestNumberOps.equal;
+import static jsignalml.TestNumberOps.eval;
 import static jsignalml.TestNumberOps.listEqual;
 import static jsignalml.TestNumberOps.verifyIsTrue;
+
+import org.junit.Test;
 
 public class TestSequenceOps {
 
@@ -146,7 +145,7 @@ public class TestSequenceOps {
 	@Test public void string_slice() throws Exception
 	{
 		equal("'abc'[1:]", "bc");
-		equal("'abc'[-1:]", "c");		
+		equal("'abc'[-1:]", "c");
 		equal("'abcdef'[-1:]", "f");
 		equal("'abcdef'[:-1]", "abcde");
 		equal("'abcdef'[1:-1]", "bcde");
@@ -173,13 +172,13 @@ public class TestSequenceOps {
 		equal("'abcdef'[1::-2]", "b");
 	}
 	@Test public void string_slice_three_arguments_4() throws Exception
-	{		
+	{
 		equal("'abcdef'[-2::-2]","eca");
 	}
 	@Test public void list_slice() throws Exception
 	{
 		listEqual("[1,2,3][1:]", 2, 3);
-		listEqual("[1,2,3][-1:]", 3);		
+		listEqual("[1,2,3][-1:]", 3);
 		listEqual("[1,2,3,4,5,6][-1:]", 6);
 		listEqual("[1,2,3,4,5,6][:-1]", 1, 2, 3, 4, 5);
 		listEqual("[1,2,3,4,5,6][1:-1]", 2, 3, 4, 5);
@@ -206,7 +205,7 @@ public class TestSequenceOps {
 		listEqual("[1,2,3,4,5,6][1::-2]", 2);
 	}
 	@Test public void list_slice_three_arguments_4() throws Exception
-	{		
+	{
 		listEqual("[1,2,3,4,5,6][-2::-2]",5,3,1);
 	}
 	@Test(expected=ExpressionFault.IndexError.class)
@@ -219,7 +218,7 @@ public class TestSequenceOps {
 	{
 		eval("[1,2,3,4,5][1:14]");
 	}
-	
+
 	@Test(expected=ExpressionFault.TypeError.class)
 	public void eval_list_plus_int() throws Exception
 	{
@@ -413,7 +412,7 @@ public class TestSequenceOps {
 	@Test public void multiplication_string_commutativity() throws Exception
 	{
 		equal("3*'asia'", "asiaasiaasia");
-		equal("5*'a'", "aaaaa");		
+		equal("5*'a'", "aaaaa");
 		equal("1*'a'", "a");
 	}
 	@Test public void addition_list() throws Exception
@@ -530,9 +529,9 @@ public class TestSequenceOps {
 	@Test(expected=ExpressionFault.TypeError.class)
 	public void eval_keyerror_list_bin_and() throws Exception
 	{
-		eval("[1,2] & [1]");		
+		eval("[1,2] & [1]");
 		eval("[1,2] & 1");
-	}	
+	}
 	@Test(expected=ExpressionFault.TypeError.class)
 	public void eval_keyerror_string_div() throws Exception
 	{
@@ -543,9 +542,9 @@ public class TestSequenceOps {
 	@Test(expected=ExpressionFault.TypeError.class)
 	public void eval_keyerror_string_bin_or() throws Exception
 	{
-		eval("'asia' | 'a'");		
+		eval("'asia' | 'a'");
 		eval("'asia' | 1");
-	}	
+	}
 	@Test(expected=ExpressionFault.TypeError.class)
 	public void eval_keyerror_list_pow() throws Exception
 	{
@@ -556,26 +555,26 @@ public class TestSequenceOps {
 	@Test(expected=ExpressionFault.TypeError.class)
 	public void eval_keyerror_list_bin_or() throws Exception
 	{
-		eval("[1,2] | [1]");		
+		eval("[1,2] | [1]");
 		eval("[1,2] | 1");
-	}	
+	}
 	@Test(expected=ExpressionFault.TypeError.class)
 	public void eval_keyerror_string_pow() throws Exception
 	{
 		eval("'asia' ** 'a'");
 		eval("'asia' ** 1");
 	}
-		
+
 	@Test(expected=ExpressionFault.TypeError.class)
 	public void eval_keyerror_string_modulo() throws Exception
 	{
-		eval("'asia' % 'a'");		
+		eval("'asia' % 'a'");
 		eval("'asia' % 1");
 	}
 	@Test(expected=ExpressionFault.TypeError.class)
 	public void eval_keyerror_list_modulo() throws Exception
 	{
-		eval("[1,2,3] % [1]");		
+		eval("[1,2,3] % [1]");
 		eval("[1,2,3] % 1");
 	}
 }

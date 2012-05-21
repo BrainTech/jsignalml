@@ -9,17 +9,17 @@ import jsignalml.logging.Logger;
 /**
  * This is a helper class which reads the float values from ascii files
  * at given offset (position in file) with whitespace delimiters
- * 
+ *
  * @author kago
  *
  */
 public class AsciiScanner {
 	// the scanner instance
 	private Scanner sc;
-	
+
 	// the file reference, required in case of 'reset'
 	private File file;
-	
+
 	// current position at which the scanner returns the next value
 	private int currentPosition = 0;
 
@@ -27,7 +27,7 @@ public class AsciiScanner {
 
 	/**
 	 * The constructor which takes the file reference
-	 *   
+	 *
 	 * @param source the file to which the searching applies
 	 * @throws FileNotFoundException
 	 */
@@ -42,11 +42,11 @@ public class AsciiScanner {
 	 * Returns the float value at given offset.
 	 * If the offset is higher than current position, the number of values are skipped
 	 * If the offset is lower than current position, the new instance of the underlying scanner is instantiated.
-	 * 
+	 *
 	 * @param offset - the position (using whitespace delimiters) of the desired value
-	 * 
+	 *
 	 * @return the float value found
-	 * 
+	 *
 	 * @throws ExpressionFault
 	 */
 	public float readFloat(int offset) throws ExpressionFault {
@@ -79,10 +79,10 @@ public class AsciiScanner {
 		}
 	}
 
-	
+
 	// skips next value (using whitespace characters as delimiters)
 	private void skip(){
 		sc.next();
 	}
-	
+
 }
