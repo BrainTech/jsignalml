@@ -1,0 +1,48 @@
+<?xml version="1.0"?>
+<!DOCTYPE signalml SYSTEM "SignalML_2_0.dtd">
+<signalml>
+
+	<header>
+		<text_info>SignalML definition for dummy codec, designed to test bool type</text_info>
+	</header>
+
+	<param id='paramint1' type='int'>
+		<expr>1</expr>
+	</param>
+
+	<param id='paramint2' type='int'>
+		<expr>2</expr>
+	</param>
+
+	<param id='paramstr1' type='str'>
+		<expr>"true"</expr>
+	</param>
+
+	<param id='boolp1' type='bool'>
+		<expr>true</expr>
+	</param>
+
+	<param id='boolp2' type='bool'>
+		<expr>false</expr>
+	</param>
+
+	<param id='boolp3' type='bool'>
+		<expr>TRUE</expr>
+	</param>
+
+	<if id='if1' test='paramint1 == paramint2'>
+		<param id='p1' type='bool'>
+			<expr>paramint1 == paramint2</expr>
+		</param>
+	<else>
+		<param id='p1' type='bool'>
+			<expr>paramint2 != paramint1</expr>
+		</param>
+	</else>
+	</if>
+
+	<param id='boolparam' type='bool'>
+		<expr>if1.p1 or boolp1 or boolp2 or boolp3</expr>
+	</param>
+
+</signalml>
