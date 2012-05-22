@@ -203,7 +203,10 @@
 						<pattern>line_pattern_for_channel_sensitivities</pattern>
 						<group>4</group>
 					</param>
-					<param id='calibration_gain' type='float' units='str(channel_sensitivity_unit)'>
+					<param id='unit' type='str'>
+						<expr>str(channel_sensitivity_unit)</expr>
+					</param>
+					<param id='calibration_gain' type='float'>
 						<expr>channel_sensitivity</expr>
 					</param>
 					<channel id='channel' mapping='mapping' format='sample_format'

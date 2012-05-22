@@ -144,8 +144,12 @@
 					<expr>(sample*total_channels + channel_index -1) * sample_size</expr>
 				</param>
 
-				<param id='calibration_gain' type='float' units='μV'>
+				<param id='calibration_gain' type='float'>
 					<expr>'1.0e15f'</expr>
+				</param>
+
+				<param id='unit' type='str'>
+					<expr>'μV'</expr>
 				</param>
 
  			</for-each>

@@ -1688,6 +1688,20 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 		return method;
 	}
 
+	public JMethod getUnit(JDefinedClass klass, ASTNode.Channel node)
+	{
+		final JMethod method = klass.method(JMod.PUBLIC, String_t, "getUnit");
+		comment_stamp(method.body());
+
+		JInvocation jInvo = JExpr.invoke("get_unit").invoke("get");
+		final JVar value = method.body().decl(Type_t, "value", jInvo);
+		final JInvocation jInvoStr = method.body().decl(TypeString_t, "stringValue",
+				JExpr.cast(TypeString_t, value)).invoke("getValue");
+		method.body()._return(jInvoStr);
+
+		return method;
+	}
+
 	public JMethod getChannelTypeNameMethod(JDefinedClass klass, ASTNode.Channel node)
 	{
 		final JMethod method = klass.method(JMod.PUBLIC, String_t, "getChannelTypeName");

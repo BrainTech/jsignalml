@@ -52,7 +52,11 @@
 			<expr>1</expr>
 		</param>
 
-		<param id='calibration_gain' type='float' units='μV'>
+		<param id='unit' type='str'>
+			<expr>'μV'</expr>
+		</param>
+
+		<param id='calibration_gain' type='float'>
 			<expr>1.0e15</expr>
 		</param>
 

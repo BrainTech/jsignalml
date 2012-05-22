@@ -82,7 +82,11 @@
 
 		<!-- more 'flags' should follow -->
 
-		<param id='calibration_gain' type='float' units='μV'>
+		<param id='unit' type='str'>
+			<expr>'μV'</expr>
+		</param>
+
+		<param id='calibration_gain' type='float'>
 			<expr>1/_calibration_unit</expr>
 		</param>
 		<param id='_calibration_unit'>

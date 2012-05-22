@@ -81,7 +81,10 @@
 					<pattern>channel_nr_of_samples_pattern</pattern>
 					<group>2</group>
 				</param>
-				<param id='calibration_gain' type='float' units='μV'>
+				<param id='unit' type='str'>
+					<expr>'μV'</expr>
+				</param>
+				<param id='calibration_gain' type='float'>
 					<format>'&lt;f4'</format>
 					<line>-1</line>
 					<pattern>calibration_gain_pattern</pattern>

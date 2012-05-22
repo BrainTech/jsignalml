@@ -133,6 +133,10 @@ public abstract class Signalml extends Context implements jsignalml.Source {
 		return new EmptyStringParam();
 	}
 
+	public EmptyStringParam get_unit(){
+		return new EmptyStringParam();
+	}
+
 	public EmptyStringParam get_channel_type_name(){
 		return new EmptyStringParam();
 	}
