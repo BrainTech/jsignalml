@@ -86,6 +86,8 @@ expr returns [Expression value]
 	{ $value = new Expression.Access($a.value, $ID.text); }
     | INT
         { $value = new Expression.Const(new TypeInt($INT.text)); }
+    | BOOL
+        { $value = new Expression.Const(new TypeBool(new TypeString($BOOL.text))); }
     | FLOAT
         { $value = new Expression.Const(new TypeFloat($FLOAT.text)); }
     | STRING
