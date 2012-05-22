@@ -7,11 +7,11 @@
 	</header>
 	<file id='main' type='xml'>
 		<param id='export_file_name' type='str'>
-			<xpath xpath-evaluation-type='node-content-text'>'/rs:rawSignal/rs:exportFileName'</xpath>
+			<xpath xpath-evaluation-type='node-content'>'/rs:rawSignal/rs:exportFileName'</xpath>
 		</param>
 
 		<param id='data_filename' type='str'>
-			<xpath xpath-evaluation-type='node-content-text'>'/rs:rawSignal/rs:sourceFileName'</xpath>
+			<xpath xpath-evaluation-type='node-content'>'/rs:rawSignal/rs:sourceFileName'</xpath>
 		</param>
 
 		<param id='source_file_format' type='str'>
@@ -19,39 +19,44 @@
 		</param>
 
 		<param id='sampling_frequency' type='float' units='Hz'>
-			<xpath xpath-evaluation-type='node-content-float'>'/rs:rawSignal/rs:samplingFrequency'</xpath>
+			<xpath xpath-evaluation-type='node-content'>'/rs:rawSignal/rs:samplingFrequency'</xpath>
+		</param>
+
+		<param id='example_param_with_attribute' type='str'>
+			<xpath xpath-evaluation-type='node-attribute'
+				xpath-attribute-name='units'>'/rs:rawSignal/rs:exampleParamWithAttribute'</xpath>
 		</param>
 
 		<param id='total_channels' type='int'>
-			<xpath xpath-evaluation-type='node-content-int'>'/rs:rawSignal/rs:channelCount'</xpath>
+			<xpath xpath-evaluation-type='node-content'>'/rs:rawSignal/rs:channelCount'</xpath>
 		</param>
 
 		<param id='number_of_samples' type='int'>
-			<xpath xpath-evaluation-type='node-content-int'>'/rs:rawSignal/rs:sampleCount'</xpath>
+			<xpath xpath-evaluation-type='node-content'>'/rs:rawSignal/rs:sampleCount'</xpath>
 		</param>
 
 		<param id='calibration' type='float'>
-			<xpath xpath-evaluation-type='node-content-float'>'/rs:rawSignal/rs:calibration'</xpath>
+			<xpath xpath-evaluation-type='node-content'>'/rs:rawSignal/rs:calibration'</xpath>
 		</param>
 
 		<param id='sample_format' type='str'>
-			<xpath xpath-evaluation-type='node-content-text'>'/rs:rawSignal/rs:sampleType'</xpath>
+			<xpath xpath-evaluation-type='node-content'>'/rs:rawSignal/rs:sampleType'</xpath>
 		</param>
 
 		<param id='byte_order' type='str'>
-			<xpath xpath-evaluation-type='node-content-text'>'/rs:rawSignal/rs:byteOrder'</xpath>
+			<xpath xpath-evaluation-type='node-content'>'/rs:rawSignal/rs:byteOrder'</xpath>
 		</param>
 
 		<param id='page_size' type='float'>
-			<xpath xpath-evaluation-type='node-content-float'>'/rs:rawSignal/rs:pageSize'</xpath>
+			<xpath xpath-evaluation-type='node-content'>'/rs:rawSignal/rs:pageSize'</xpath>
 		</param>
 
 		<param id='blocks_per_page' type='int'>
-			<xpath xpath-evaluation-type='node-content-int'>'/rs:rawSignal/rs:blocksPerPage'</xpath>
+			<xpath xpath-evaluation-type='node-content'>'/rs:rawSignal/rs:blocksPerPage'</xpath>
 		</param>
 
 		<param id='first_sample_timestamp' type='str'>
-			<xpath xpath-evaluation-type='node-content-text'>'/rs:rawSignal/rs:firstSampleTimestamp'</xpath>
+			<xpath xpath-evaluation-type='node-content'>'/rs:rawSignal/rs:firstSampleTimestamp'</xpath>
 		</param>
 
 		<param id='sample_unit' type='float'>
@@ -135,7 +140,7 @@
 				</param>
 
 				<param id='channel_name' type='str'>
-					<xpath xpath-evaluation-type='node-content-text'>channel_name_expr</xpath>
+					<xpath xpath-evaluation-type='node-content'>channel_name_expr</xpath>
 				</param>
 
 				<param id='calibration_gain_expr' type='str'>
@@ -144,7 +149,7 @@
 				</param>
 
 				<param id='calibration_gain' type='str'>
-					<xpath xpath-evaluation-type='node-content-text'>calibration_gain_expr</xpath>
+					<xpath xpath-evaluation-type='node-content'>calibration_gain_expr</xpath>
 				</param>
 
 				<param id='calibration_offset_expr' type='str'>
@@ -153,7 +158,7 @@
 				</param>
 
 				<param id='calibration_offset' type='str'>
-					<xpath xpath-evaluation-type='node-content-text'>calibration_offset_expr</xpath>
+					<xpath xpath-evaluation-type='node-content'>calibration_offset_expr</xpath>
 				</param>
 
 				<channel mapping='mapping' format='sample_format_type'
