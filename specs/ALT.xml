@@ -8,8 +8,6 @@
 
 		<!-- global header items -->
 		<param id='number_of_channels' type='int'>
-			<format>'|u1'</format>
-			<line>-1</line>
 			<pattern>"number_of_channels: ([0-9]+.[0-9]*)"</pattern>
 			<group>1</group>
 		</param>
@@ -52,32 +50,22 @@
 
 				<!-- local header items -->
 				<param id='channel_name' type='str'>
-					<format>'|S1'</format>
-					<line>-1</line>
 					<pattern>channel_name_pattern</pattern>
 					<group>2</group>
 				</param>
 				<param id='channel_type_name' type='str'>
-					<format>'|S1'</format>
-					<line>-1</line>
 					<pattern>channel_type_name_pattern</pattern>
 					<group>2</group>
 				</param>
 				<param id='channel_filename' type='str'>
-					<format>'|S2'</format>
-					<line>-1</line>
 					<pattern>channel_filename_pattern</pattern>
 					<group>2</group>
 				</param>
 				<param id='sampling_frequency' type='float' units='Hz'>
-					<format>'&lt;u2'</format>
-					<line>-1</line>
 					<pattern>channel_sampling_frequency_pattern</pattern>
 					<group>2</group>
 				</param>
 				<param id='number_of_samples' type='int'>
-					<format>'|u1'</format>
-					<line>-1</line>
 					<pattern>channel_nr_of_samples_pattern</pattern>
 					<group>2</group>
 				</param>
@@ -85,14 +73,10 @@
 					<expr>'μV'</expr>
 				</param>
 				<param id='calibration_gain' type='float'>
-					<format>'&lt;f4'</format>
-					<line>-1</line>
 					<pattern>calibration_gain_pattern</pattern>
 					<group>2</group>
 				</param>
 				<param id='calibration_offset'>
-					<format>'&lt;f4'</format>
-					<line>-1</line>
 					<pattern>calibration_offset_pattern</pattern>
 					<group>2</group>
 				</param>

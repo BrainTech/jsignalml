@@ -12,27 +12,22 @@
 			<expr>fetch(get_filename(main), "([a-zA-Z0-9_,.;]+.)hdr", 1) + "data"</expr>
 		</param>
 		<param id='file_type' type='str'>
-			<format>'|S0'</format>
 			<pattern>"[ ]*File[ _]*[Tt]{1}ype[ ]*:[ ]*\'([A-Za-z]*)\'"</pattern>
 			<group>1</group>
 		</param>
 		<param id='sampling_frequency' type='float' units='Hz'>
-			<format>'&lt;f4'</format>
 			<pattern>"[ ]*Sample[ _]*[Ff]{1}requency[ ]*:[ ]*([0-9]+[.0-9e+]*)"</pattern>
 			<group>1</group>
 		</param>
 		<param id='data_format' type='str'>
-			<format>'|S1'</format>
 			<pattern>"[ ]*Data[ _]*[Ff]{1}ormat[ ]*:[ ]*([A-Za-z,]*)"</pattern>
 			<group>1</group>
 		</param>
 		<param id='total_number_of_channels' type='int'>
-			<format>'|u1'</format>
 			<pattern>"[ ]*([0-9]*)[ ]+channels[ ]*$"</pattern>
 			<group>1</group>
 		</param>
 		<param id='MEG_channel_group' type='int'>
-			<format>'|u1'</format>
 			<pattern>"[ ]*([0-9]*)[ ]+MEG[ ]*channels[,]{1}[ ]*group[ ]*([0-9]*)"</pattern>
 			<group>2</group>
 		</param>
@@ -43,13 +38,10 @@
 			<expr>get_line_for_pattern(main, line_pattern_for_channel_sensitivities, 0)</expr>
 		</param>
 		<param id='longest_epoch_nr' type='int'>
-			<format>'&lt;u4'</format>
-
 			<pattern>"[ ]*Epoch[ _]*([0-9]*)[ ]*:[ ]*([0-9]*)[ ]+slices[,]{1}[ ]*([0-9]+[.]{1}[0-9]*)"</pattern>
 			<group>1</group>
 		</param>
 		<param id='number_of_samples' type='int'>
-			<format>'&lt;u4'</format>
 			<pattern>"[ ]*Epoch[ _]*([0-9]*)[ ]*:[ ]*([0-9]*)[ ]+slices[,]{1}[ ]*([0-9]+[.]{1}[0-9]*)"</pattern>
 			<group>2</group>
 		</param>
@@ -114,14 +106,12 @@
 					<expr>line_number_with_channel_sensitivities + line_nr</expr>
 				</param>
 				<param id='channel_group' type='int'>
-					<format>'&lt;u1'</format>
 					<line type='int'>line_nr_channel_sensitivities</line>
 					<pattern>line_pattern_for_channel_sensitivities</pattern>
 					<group>2</group>
 				</param>
 				<if test='channel_group == MEG_channel_group'>
 					<param id='channel_name' type='str'>
-						<format>'|S0'</format>
 						<line type='int'>line_nr_channel_sensitivities</line>
 						<pattern>line_pattern_for_channel_sensitivities</pattern>
 						<group>1</group>
@@ -130,13 +120,11 @@
 						<expr>'MEG'</expr>
 					</param>
 					<param id='channel_sensitivity' type='float'>
-						<format>'&lt;f4'</format>
 						<line type='int'>line_nr_channel_sensitivities</line>
 						<pattern>line_pattern_for_channel_sensitivities</pattern>
 						<group>3</group>
 					</param>
 					<param id='channel_sensitivity_unit' type='str'>
-						<format>'|S0'</format>
 						<line type='int'>line_nr_channel_sensitivities</line>
 						<pattern>line_pattern_for_channel_sensitivities</pattern>
 						<group>4</group>
