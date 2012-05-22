@@ -644,6 +644,7 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 		comment(body, "--> nodetype=%s", typename(nodetype));
 		comment(body, "xpathPattern=(%s)", node.xpathPattern);
 		comment(body, "xpathEvaluationType=(%s)", node.xpathEvaluationType);
+		comment(body, "xpathAttributeName=(%s)", node.xpathAttributeName);
 
 		final JVar xpathPattern_ = body.decl(TypeString_t, "xpathPattern",
 				node.xpathPattern.accept(javagen));
@@ -651,9 +652,14 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 		final JVar xmlBuf = body.decl(XmlBuffer_t, "xmlBuf",
 				JExpr.invoke("xmlBuffer"));
 		final JVar _t = body.decl(nodetype_t, "_t", JExpr._null());
-		final JVar value = body.decl(nodetype_t, "value", xmlBuf.invoke("read")
-				.arg(xpathPattern_).arg(node.xpathEvaluationType).arg(_t));
-
+		final JVar value;
+		if (node.xpathAttributeName != null){
+			value = body.decl(nodetype_t, "value", xmlBuf.invoke("read")
+					.arg(xpathPattern_).arg(node.xpathEvaluationType).arg(node.xpathAttributeName).arg(_t));
+		} else {
+			value = body.decl(nodetype_t, "value", xmlBuf.invoke("read")
+					.arg(xpathPattern_).arg(node.xpathEvaluationType).arg(_t));
+		}
 		body._return(value);
 
 		if (isPrimGeneration())

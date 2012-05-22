@@ -224,20 +224,22 @@ public abstract class ASTNode {
 	public static class XmlParam extends ReadParam {
 		final Expression xpathPattern;
 		final String xpathEvaluationType;
+		final String xpathAttributeName;
 
 		public XmlParam(ASTNode parent, Expression id, Type type,
-				Expression xpathPattern, String xpathEvaluationType)
+				Expression xpathPattern, String xpathEvaluationType, String xpathAttributeName)
 				throws SyntaxError {
 			super(parent, id, type);
 			this.xpathPattern = xpathPattern;
 			this.xpathEvaluationType = xpathEvaluationType;
+			this.xpathAttributeName = xpathAttributeName;
 		}
 
 		@Override
 		public String toString() {
 			return format(
-					"ASTNode.XmlParam %s on %s xpathPattern=%s xpathEvaluationType=%s",
-					id, handle, xpathPattern, xpathEvaluationType);
+					"ASTNode.XmlParam %s on %s xpathPattern=%s xpathEvaluationType=%s xpathAttributeName=%s",
+					id, handle, xpathPattern, xpathEvaluationType, xpathAttributeName);
 		}
 
 		@Override

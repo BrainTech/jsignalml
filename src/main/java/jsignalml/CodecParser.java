@@ -10,6 +10,7 @@ import jsignalml.logging.Logger;
 
 import org.apache.log4j.BasicConfigurator;
 import org.w3c.dom.Element;
+import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
@@ -20,6 +21,7 @@ import org.xml.sax.SAXException;
 public class CodecParser {
 	private static final String XPATH_TAG_NAME = "xpath";
 	private static final String XPATH_EVALUATION_TYPE_ATTRIBUTE_NAME = "xpath-evaluation-type";
+	private static final String XPATH_ATTRIBUTE_NAME_ATTRIBUTE_NAME = "xpath-attribute-name";
 	public static final Logger log = new Logger(CodecParser.class);
 
 	final File filename;
@@ -154,7 +156,8 @@ public class CodecParser {
 		} else if (xpath != null) {
 			if ((expr == null) && (pattern == null) && (line == null) && (offset == null)){
 				String xpathEvaluationType = getXpathEvaluationTypeFromParamElement(element);
-				p = new ASTNode.XmlParam(parent, id, type, xpath, xpathEvaluationType);
+				String xpathAttributeName = getXpathAttributeNameFromParamElement(element);
+				p = new ASTNode.XmlParam(parent, id, type, xpath, xpathEvaluationType, xpathAttributeName);
 			}
 		} else {
 			throw new SyntaxError("not enough attributes: " + element);
@@ -178,6 +181,26 @@ public class CodecParser {
 					xpathTypeAttrValue = node.getAttributes()
 							.getNamedItem(XPATH_EVALUATION_TYPE_ATTRIBUTE_NAME).getFirstChild()
 							.getNodeValue();
+				}
+			}
+		}
+		return xpathTypeAttrValue;
+	}
+
+	private String getXpathAttributeNameFromParamElement(Element paramElement) {
+		String xpathTypeAttrValue = null;
+		if (paramElement.hasChildNodes()) {
+			NodeList nl = paramElement.getChildNodes();
+			Node node;
+			for (int i = 0; i < nl.getLength(); i++) {
+				node = nl.item(i);
+				String nodeLocalName = node.getLocalName();
+				if ((nodeLocalName != null) && (nodeLocalName.equals(XPATH_TAG_NAME))) {
+					NamedNodeMap nnm = node.getAttributes();
+					Node attributeNameNode = nnm.getNamedItem(XPATH_ATTRIBUTE_NAME_ATTRIBUTE_NAME);
+					if (attributeNameNode != null){
+						xpathTypeAttrValue = attributeNameNode.getFirstChild().getNodeValue();
+					}
 				}
 			}
 		}
