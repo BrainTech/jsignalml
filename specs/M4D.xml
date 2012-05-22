@@ -6,9 +6,8 @@
 		<text_info>SignalML definition for 4D format</text_info>
 	</header>
 
-
 	<file id='main' type='text'>
-		<!---->
+
 		<param id='number_of_channels' type='int'>
 			<pattern>"MSI.MegChanCount: ([0-9]*)"</pattern>
 			<group>1</group>
@@ -130,8 +129,7 @@
 			<for-each id='channels' var='index' sequence='range(number_of_channels)'
 				type='int'>
 				<channel mapping='mapping' format='sample_format' length='number_of_samples'
-					data='data_file' />
-
+					data='data_file'/>
 
 				<param id='channel_name' type='str'>
 					<pattern>single_channel_name_pattern</pattern>
@@ -164,8 +162,6 @@
 			</for-each>
 		</channelset>
 
-
 	</file>
 
 </signalml>
-

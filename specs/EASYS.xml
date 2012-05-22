@@ -14,13 +14,6 @@
 			</expr>
 		</param>
 
-		<param id='channel_name' type='str'>
-			<expr>'chNamInit0'</expr>
-		</param>
-		<param id='channel_type_name' type='str'>
-			<expr>'chTypInit0'</expr>
-		</param>
-
 		<param id='signature'>
 			<format>'|S15'</format>
 			<offset>0</offset>
@@ -85,15 +78,13 @@
 		<param id='unit' type='str'>
 			<expr>'μV'</expr>
 		</param>
-
-		<param id='calibration_gain' type='float'>
-			<expr>1/_calibration_unit</expr>
-		</param>
 		<param id='_calibration_unit'>
 			<format>'|u1'</format>
 			<offset>25</offset>
 		</param>
-
+		<param id='calibration_gain' type='float'>
+			<expr>1/_calibration_unit</expr>
+		</param>
 		<param id='calibration_offset'>
 			<format>'&lt;i2'</format>
 			<offset>26</offset>
