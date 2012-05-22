@@ -7,19 +7,14 @@
 		<url>sometestfile</url>
 	</header>
 
-
 	<file id='main' type='text'>
-		<!---->
+
 		<param id='number_of_channels' type='int'>
-			<format>'|u1'</format>
-			<line>-1</line>
 			<pattern>"MSI.MegChanCount: ([0-9]*)"</pattern>
 			<group>1</group>
 		</param>
 
 		<param id='sampling_frequency' type='float' units='Hz'>
-			<format>'&lt;f4'</format>
-			<line>-1</line>
 			<pattern>"MSI.SampleFrequency: ([0-9]+.[0-9]*)"</pattern>
 			<group>1</group>
 		</param>
@@ -29,36 +24,26 @@
 		</param>
 
 		<param id='meg_chan_index' type='str'>
-			<format>'|S2'</format>
-			<line>-1</line>
 			<pattern>"MSI.MegChanIndex: ([0-9,]+)$"</pattern>
 			<group>1</group>
 		</param>
 
 		<param id='total_epochs' type='int'>
-			<format>'|u1'</format>
-			<line>-1</line>
 			<pattern>"MSI.TotalEpochs: ([0-9]*)"</pattern>
 			<group>1</group>
 		</param>
 
 		<param id='slices_per_epoch' type='int'>
-			<format>'|u1'</format>
-			<line>-1</line>
 			<pattern>"MSI.SlicesPerEpoch: ([0-9]*)"</pattern>
 			<group>1</group>
 		</param>
 
 		<param id='total_channels' type='int'>
-			<format>'|u1'</format>
-			<line>-1</line>
 			<pattern>"MSI.TotalChannels: ([0-9]*)"</pattern>
 			<group>1</group>
 		</param>
 
 		<param id='get_data_filename' type='str'>
-			<format>'|S2'</format>
-			<line>-1</line>
 			<pattern>"MSI.FileDescriptor: (.+;){4}([a-zA-Z0-9,._-]+)"</pattern>
 			<group>2</group>
 		</param>
@@ -67,10 +52,8 @@
 		</file>
 
 		<param id='msi_format' type='str'>
-		        <format>'|S1'</format>
-		        <line>-1</line>
-		        <pattern>"MSI.Format: ([a-zA-Z]+)"</pattern>
-		        <group>1</group>
+			<pattern>"MSI.Format: ([a-zA-Z]+)"</pattern>
+			<group>1</group>
 		</param>
 
 		<if id='format' test='msi_format == "SHORT"'>
@@ -80,7 +63,6 @@
 			<param id='sample_format_1' type='str'>
 				<expr>"&gt;i2"</expr>
 			</param>
-
 			<else>  <!--  test='msi_format == "FLOAT"'> -->
 				<param id='sample_size_1' type='int'>
 					<expr>4</expr>
@@ -89,7 +71,6 @@
 					<expr>"&gt;f4"</expr>
 				</param>
 			</else>
-
 		</if>
 
 <!--   XXX : TODO: apply if for appropriate formats, i.e. FLOAT, LONG, DOUBLE
@@ -111,15 +92,12 @@
 		</param>
 
 		<channelset id='data_test'>
-
 			<for-each id='channels' var='index' sequence='range(number_of_channels)'>
-				<channel mapping='mapping' format='sample_format'
-							length='number_of_samples' data='data_file' />
 
+				<channel mapping='mapping' format='sample_format'
+							length='number_of_samples' data='data_file'/>
 
 				<param id='channel_name' type='str'>
-					<format>'|S1'</format>
-					<line>-1</line>
 					<pattern>single_channel_name_pattern</pattern>
 					<group>2</group>
 				</param>
@@ -129,8 +107,6 @@
 				</param>
 
 				<param id='channel_index' type='int'>
-					<format>'|u1'</format>
-					<line>-1</line>
 					<pattern>single_channel_index_pattern</pattern>
 					<group>2</group>
 				</param>
@@ -155,8 +131,6 @@
  			</for-each>
 		</channelset>
 
-
 	</file>
 
 </signalml>
-
