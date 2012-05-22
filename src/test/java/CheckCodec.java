@@ -11,26 +11,23 @@ import jsignalml.ChannelSet;
 import jsignalml.ContextDumper;
 import jsignalml.codec.Signalml;
 
-//import org.apache.log4j.BasicConfigurator;
-//import org.junit.experimental.theories.Theory;
-
 /**
  * @author Grzegorz Stadnik
  *
  */
 public class CheckCodec {
 
-	private final static String  outHdrNameNrOfSamples = "number_of_samples";
-	private final static String  outHdrNameNrOfChannels = "number_of_channels";
-	private final static String  outHdrNameSamplingFrequency = "sampling_frequency";
-	private final static String  outHdrNameLabelsOfChannels = "channel_labels";
-	private final static String  outHdrNameTypesOfChannels = "channel_types";
-	private final static String  outHdrNameScaled = "scaled";
-	private final static String  outHdrNameScalingGain = "scaling_gain";
-	private final static String  outHdrNameScalingOffset = "scaling_offset";
-	private final static String  outHdrNameCalibrationGain = "calibration_gain";
-	private final static String  outHdrNameCalibrationOffset = "calibration_offset";
-	private final static String  outHdrNameCalibrationUnits = "calibration_units";
+	private static final String  outHdrNameNrOfSamples = "number_of_samples";
+	private static final String  outHdrNameNrOfChannels = "number_of_channels";
+	private static final String  outHdrNameSamplingFrequency = "sampling_frequency";
+	private static final String  outHdrNameLabelsOfChannels = "channel_labels";
+	private static final String  outHdrNameTypesOfChannels = "channel_types";
+	private static final String  outHdrNameScaled = "scaled";
+	private static final String  outHdrNameScalingGain = "scaling_gain";
+	private static final String  outHdrNameScalingOffset = "scaling_offset";
+	private static final String  outHdrNameCalibrationGain = "calibration_gain";
+	private static final String  outHdrNameCalibrationOffset = "calibration_offset";
+	private static final String  outHdrNameCalibrationUnits = "calibration_units";
 
 	private Integer              outHdrNrOfChannels = null;
 	private Long                 outHdrNrOfSamples = null;
@@ -72,17 +69,22 @@ public class CheckCodec {
 
 	private Signalml             codec = null;
 
-	public  final static int     precisionFloat = 5;
-	public  final static int     precisionDouble = 7;
-	public  final static float   deltaFloat = 0.01f; //0.001f;
-	public  final static double  deltaDouble = 0.0001d; //0.000001d;
+	public  static final float   FLP_EPSILON = calculateMachineEpsilonFloat();  //probably FLP_EPSILON = POW(2.0F, -23.0F) = 1.19209290E-07F
+	public  static final double  DBL_EPSILON = calculateMachineEpsilonDouble(); //probably DBL_EPSILON = POW(2.0D, -52.0D) = 2.2204460492503131E-16F
 
-	private final static boolean LOG_DEBUG = false;
-	private final static boolean LOG_INFO = true;
-	private final static boolean LOG_WARNING = true;
-	private final static boolean LOG_ERROR = true;
-	private final static boolean LOG_FATAL = true;
-	private final static boolean LOG_TEST = true;
+	public  static final float   precisionRelFloat = FLP_EPSILON;
+	public  static final double  precisionRelDouble = DBL_EPSILON;
+	public  static final float   precisionDeltaFloat = 0.01f; //0.001f;
+	public  static final double  precisionDeltaDouble = 0.0001d; //0.000001d;
+	public  static final int     precisionUlpFloat = 6;
+	public  static final long    precisionUlpDouble = 7;
+
+	private static final boolean LOG_DEBUG = false;
+	private static final boolean LOG_INFO = true;
+	private static final boolean LOG_WARNING = true;
+	private static final boolean LOG_ERROR = true;
+	private static final boolean LOG_FATAL = true;
+	private static final boolean LOG_TEST = true;
 
 	/**
 	 * CheckCodec constructor. It stores Signalml codec object given as a parameter.
@@ -647,15 +649,43 @@ public class CheckCodec {
 	/**
 	 * @return the precisionFloat
 	 */
-	public static float getPrecisionFloat() {
-		return precisionFloat;
+	public static float getPrecisionRelFloat() {
+		return precisionRelFloat;
 	}
 
 	/**
 	 * @return the precisionDouble
 	 */
-	public static double getPrecisionDouble() {
-		return precisionDouble;
+	public static double getPrecisionRelDouble() {
+		return precisionRelDouble;
+	}
+
+	/**
+	 * @return the precisionFloat
+	 */
+	public static float getPrecisionDeltaFloat() {
+		return precisionDeltaFloat;
+	}
+
+	/**
+	 * @return the precisionDouble
+	 */
+	public static double getPrecisionDeltaDouble() {
+		return precisionDeltaDouble;
+	}
+
+	/**
+	 * @return the precisionFloat
+	 */
+	public static int getPrecisionUlpFloat() {
+		return precisionUlpFloat;
+	}
+
+	/**
+	 * @return the precisionDouble
+	 */
+	public static long getPrecisionUlpDouble() {
+		return precisionUlpDouble;
 	}
 
 	/**
@@ -766,7 +796,7 @@ public class CheckCodec {
 			} else if (type instanceof Float) {
 				value = new Float(Float.parseFloat(valueStr));
 			} else {
-				if (CheckCodec.LOG_ERROR) System.out.println("Failed during convertion: value for " + item
+				if (CheckCodec.LOG_ERROR) System.out.println("Failed during convertion: value for " + item 
 					+ " item cannot have not supported type (" + type.getClass().getName() + ")");
 				return null;
 			}
@@ -840,7 +870,7 @@ public class CheckCodec {
 			}
 			return arrayList.toArray(typeArray);
 		} else {
-			if (CheckCodec.LOG_ERROR) System.out.println("Failed during convertion: values for " + item
+			if (CheckCodec.LOG_ERROR) System.out.println("Failed during convertion: values for " + item 
 				+ " item cannot have not supported type (" + type.getClass().getName() + ")");
 			return null;
 		}
@@ -918,66 +948,69 @@ public class CheckCodec {
 	}
 
 	/**
-	 * greaterThan
+	 * greaterThanUsingMaxDelta
 	 *
 	 * @param left
 	 * @param right
 	 * @param delta
 	 * @return
 	 */
-	public static final boolean greaterThan(float left, float right, float delta) {
+	public static final boolean greaterThanUsingMaxDelta(float left, float right, float delta) {
 		boolean result = left - right > delta;
 		return result;
 	}
 
 	/**
-	 * greaterThan
+	 * greaterThanUsingMaxDelta
 	 *
 	 * @param left
 	 * @param right
 	 * @param delta
 	 * @return
 	 */
-	public static final boolean greaterThan(double left, double right, double delta) {
+	public static final boolean greaterThanUsingMaxDelta(double left, double right, double delta) {
 		boolean result = left - right > delta;
 		return result;
 	}
 
 	/**
-	 * lesserThan
+	 * lesserThanUsingMinDelta
 	 *
 	 * @param left
 	 * @param right
 	 * @param delta
 	 * @return
 	 */
-	public static final boolean lesserThan(float left, float right, float delta) {
+	public static final boolean lesserThanUsingMinDelta(float left, float right, float delta) {
 		boolean result = left - right < delta;
 		return result;
 	}
 
 	/**
-	 * lesserThan
+	 * lesserThanUsingMinDelta
 	 *
 	 * @param left
 	 * @param right
 	 * @param delta
 	 * @return
 	 */
-	public static final boolean lesserThan(double left, double right, double delta) {
+	public static final boolean lesserThanUsingMinDelta(double left, double right, double delta) {
 		boolean result = left - right < delta;
 		return result;
 	}
 
 	/**
-	 * equalTo
+	 * equalToUsingULP
+	 *
+	 * ULP -- unit in the last place (unit of least precision) is the spacing between floating-point numbers
+	 * If x has exponent E, then ULP(x) = machine epsilon * x * 2^E
 	 *
 	 * @param left
 	 * @param right
 	 * @param precision, i.e. 5
 	 * @return
 	 */
-	public static final boolean equalTo(float left, float right, int precision) {
+	public static final boolean equalToUsingULP(float left, float right, int precision) {
 		if (left == right) return true;
 		if (left < 0 && right > 0 || left > 0 && right < 0 || left == 0 || right == 0) return false;
 		int leftInt = Float.floatToIntBits(left);
@@ -988,77 +1021,213 @@ public class CheckCodec {
 			result = absSub < ((precision == 6) ? 125 : 10);
 			return result;
 		}
-		//Float.compare(left, right);
+		//int comparisonResult = Float.compare(left, right);
 		double logAbsSub = Math.log10(absSub);
 		if (logAbsSub == 0.0f) return true;
 		double floorLogAbsSub = Math.floor(logAbsSub);
 		double restLogAbsSub = logAbsSub - floorLogAbsSub;
-		double powFloorLogAbsSub = Math.pow(10.d, floorLogAbsSub);
+		//double powFloorLogAbsSub = Math.pow(10.d, floorLogAbsSub);
 		double powRestLogAbsSub = Math.pow(10.d, restLogAbsSub);
 		double floorPowRestLogAbsSub = Math.floor(powRestLogAbsSub);
 		int unbiasedExponentAbsSub = Math.getExponent(absSub);
-		float min = Math.min(left, right);
-		float max = Math.max(left, right);
+		//float min = Math.min(left, right);
+		//float max = Math.max(left, right);
 		result = precision > floorPowRestLogAbsSub - unbiasedExponentAbsSub && precision < powRestLogAbsSub;
 		return result;
 	}
 
 	/**
-	 * equalTo
-	 *
-	 * @param left
-	 * @param right
-	 * @param epsilon, i.e. 0.0001
-	 * @return
-	 */
-	public static final boolean equalTo(float left, float right, float epsilon) {
-		boolean result = Math.abs(left - right) < epsilon;
-		return result;
-	}
-
-	/**
-	 * equalToRel
-	 *
-	 * @param left
-	 * @param right
-	 * @param gain, i.e. 0.01
-	 * @return
-	 */
-	public static final boolean equalToRel(float left, float right, float gain) {
-		boolean result = Math.abs(left - right) < gain;
-		return result;
-	}
-
-	/**
-	 * equalTo
+	 * equalToUsingULP
 	 *
 	 * @param left
 	 * @param right
 	 * @param precision, i.e. 7
 	 * @return
 	 */
-	public static final boolean equalTo(double left, double right, int precision) {
+	public static final boolean equalToUsingULP(double left, double right, long precision) {
 		if (left == right) return true;
 		if (left < 0 && right > 0 || left > 0 && right < 0 || left == 0 || right == 0) return false;
 		long leftInt = Double.doubleToLongBits(left);
 		long rightInt = Double.doubleToLongBits(right);
 		long absSub = Math.abs(leftInt - rightInt);
-		double pow = Math.pow(10.0d, precision - 1);
-		boolean result = absSub < pow;
+		boolean result = false;
+		if (precision > 5 && precision < 8) {
+			result = absSub < ((precision == 6) ? 125 : 10);
+			return result;
+		}
+		//int comparisonResult = Double.compare(left, right);
+		double logAbsSub = Math.log10(absSub);
+		if (logAbsSub == 0.0f) return true;
+		double floorLogAbsSub = Math.floor(logAbsSub);
+		double restLogAbsSub = logAbsSub - floorLogAbsSub;
+		//double powFloorLogAbsSub = Math.pow(10.d, floorLogAbsSub);
+		double powRestLogAbsSub = Math.pow(10.d, restLogAbsSub);
+		double floorPowRestLogAbsSub = Math.floor(powRestLogAbsSub);
+		long unbiasedExponentAbsSub = Math.getExponent(absSub);
+		//double min = Math.min(left, right);
+		//double max = Math.max(left, right);
+		result = precision > floorPowRestLogAbsSub - unbiasedExponentAbsSub && precision < powRestLogAbsSub;
 		return result;
 	}
 
 	/**
-	 * equalTo
+	 * equalToUsingMaxDelta
 	 *
 	 * @param left
 	 * @param right
-	 * @param epsilon, i.e. 0.00000001
+	 * @param maxDelta, i.e. 0.0001
 	 * @return
 	 */
-	public static final boolean equalTo(double left, double right, double epsilon) {
-		boolean result = Math.abs(left - right) < epsilon;
+	public static final boolean equalToUsingMaxDelta(float left, float right, float maxDelta) {
+		boolean result = Math.abs(left - right) <= maxDelta;
 		return result;
+	}
+
+	/**
+	 * equalToUsingMaxDelta
+	 *
+	 * @param left
+	 * @param right
+	 * @param maxDelta, i.e. 0.00000001
+	 * @return
+	 */
+	public static final boolean equalToUsingMaxDelta(double left, double right, double maxDelta) {
+		boolean result = Math.abs(left - right) <= maxDelta;
+		return result;
+	}
+
+	/**
+	 * equalToUsingRelative
+	 *
+	 * @param left
+	 * @param right
+	 * @return
+	 */
+	public static final boolean equalToUsingRelative(float left, float right) {
+		float gain = FLP_EPSILON;
+		boolean result = equalToUsingRelative(left, right, gain);
+		return result;
+	}
+
+	/**
+	 * equalToUsingRelative
+	 *
+	 * @param left
+	 * @param right
+	 * @param gain, i.e. FLP_EPSILON
+	 * @return
+	 */
+	public static final boolean equalToUsingRelative(float left, float right, float gain) {
+		// Calculate the difference.
+		float diff = Math.abs(left - right);
+		float a = Math.abs(left);
+		float b = Math.abs(right);
+		// Find the largest
+		float largest = Math.max(a,b);
+		// Set result
+		boolean result = (diff <= largest * gain);
+		return result;
+	}
+
+	/**
+	 * equalToUsingRelative
+	 *
+	 * @param left
+	 * @param right
+	 * @return
+	 */
+	public static final boolean equalToUsingRelative(double left, double right) {
+		double gain = DBL_EPSILON;
+		boolean result = equalToUsingRelative(left, right, gain);
+		return result;
+	}
+
+	/**
+	 * equalToUsingRelative
+	 *
+	 * @param left
+	 * @param right
+	 * @param gain, i.e. DBL_EPSILON
+	 * @return
+	 */
+	public static final boolean equalToUsingRelative(double left, double right, double gain) {
+		// Calculate the difference.
+		double diff = Math.abs(left - right);
+		double a = Math.abs(left);
+		double b = Math.abs(right);
+		// Find the largest
+		double largest = Math.max(a,b);
+		// Set result
+		boolean result = (diff <= largest * gain);
+		return result;
+	}
+
+	/**
+	 * calculateMachineEpsilonFloat
+	 *
+	 * @return  Probably it will be FLP_EPSILON = POW(2.0F, -23.0F) = 1.19209290E-07F
+	 */
+	public static final float calculateMachineEpsilonFloat() {
+		float machEps = 1.0f;
+		do {
+			machEps /= 2.0f;
+		}
+		while ((float)(1.0f + (machEps/2.0f)) != 1.0f);
+		return machEps;
+	}
+
+	/**
+	 * calculateMachineEpsilonDouble
+	 *
+	 * @return  Probably it will be DBL_EPSILON = POW(2.0D, -52.0D) = 2.2204460492503131E-16F
+	 */
+	public static final double calculateMachineEpsilonDouble() {
+		double machEps = 1.0d;
+		do {
+			machEps /= 2.0d;
+		}
+		while ((float)(1.0d + (machEps/2.0d)) != 1.0d);
+		return machEps;
+	}
+
+	/**
+	 * equalToCombined
+	 *
+	 * @param a
+	 * @param b
+	 * @param maxRelDiff
+	 * @param maxDelta
+	 * @param maxUlpsDiff
+	 * @return
+	 */
+	public static final boolean equalToCombined(float a, float b, float maxRelDiff, float maxDelta, int maxUlpsDiff) {
+		boolean equal = false;
+		equal = equalToUsingRelative(a, b, maxRelDiff);
+		if (equal) return true;
+		equal = equalToUsingMaxDelta(a, b, maxDelta);
+		if (equal) return true;
+		equal = equalToUsingULP(a, b, maxUlpsDiff);
+		return equal;
+	}
+
+	/**
+	 * equalToCombined
+	 *
+	 * @param a
+	 * @param b
+	 * @param maxRelDiff
+	 * @param maxDelta
+	 * @param maxUlpsDiff
+	 * @return
+	 */
+	public static final boolean equalToCombined(double a, double b, double maxRelDiff, double maxDelta, long maxUlpsDiff) {
+		boolean equal = false;
+		equal = equalToUsingRelative(a, b, maxRelDiff);
+		if (equal) return true;
+		equal = equalToUsingMaxDelta(a, b, maxDelta);
+		if (equal) return true;
+		equal = equalToUsingULP(a, b, maxUlpsDiff);
+		return equal;
 	}
 
 	/**
@@ -1228,12 +1397,12 @@ public class CheckCodec {
 	 */
 	public final boolean checkSampleUnitAtPos(final float outDtaFisSampleUnitValue, final Channel inDtaChannelObject,
 			final int channelNr, final int sampleUnitNr, final int sampleUnitNrInCurrentBuffer,
-			final int testPrecisionForSample, final float testDeltaForSample) {
+			final float testPrecisionRelForSample, final float testPrecisionDeltaForSample, final int testPrecisionUlpForSample) {
 		if (CheckCodec.LOG_DEBUG) System.out.print(" " + outDtaFisSampleUnitValue); //System.out.format(" %.3f", outDtaFisSampleUnitValue);
 		int fullSampleNr = sampleUnitNr + sampleUnitNrInCurrentBuffer;
 		float inDtaCodecSampleUnitValue = inDtaChannelObject.getSample(fullSampleNr);
-		boolean error = !(equalTo(inDtaCodecSampleUnitValue, outDtaFisSampleUnitValue, testPrecisionForSample)
-			|| equalTo(inDtaCodecSampleUnitValue, outDtaFisSampleUnitValue, testDeltaForSample));
+		boolean error = !(equalToCombined(inDtaCodecSampleUnitValue, outDtaFisSampleUnitValue,
+			testPrecisionRelForSample, testPrecisionDeltaForSample, testPrecisionUlpForSample));
 		if (error) {
 			if (howMuchErrorsFound < howMuchErrorsToRemember) {
 				rememberedErrorsValueShouldBe[howMuchErrorsFound] = outDtaFisSampleUnitValue;
@@ -1271,7 +1440,8 @@ public class CheckCodec {
 	 */
 	public final void checkSampleUnitsAtPos(final FileChannel outDtaFisChannel, final long outDtaFisOffset, final long bytesToRead,
 			final int outDtaFisLengthSampleUnitValue, final float verificationMultiplyFactor, final Channel inDtaChannelObject,
-			final int channelNr, final int sampleUnitNr, final int testPrecisionForSample, final float testDeltaForSample)
+			final int channelNr, final int sampleUnitNr,
+			final float testPrecisionRelForSample, final float testPrecisionDeltaForSample, final int testPrecisionUlpForSample)
 			throws IOException {
 		MappedByteBuffer outDtaFisMapBuffer = outDtaFisChannel.map(FileChannel.MapMode.READ_ONLY, outDtaFisOffset, bytesToRead);
 		int sampleUnitPosInCurrentBuffer = 0;
@@ -1280,7 +1450,7 @@ public class CheckCodec {
 		for (; sampleUnitPosInCurrentBuffer < bytesToRead; sampleUnitNrInCurrentBuffer ++, sampleUnitPosInCurrentBuffer += outDtaFisLengthSampleUnitValue) {
 			final float outDtaFisSampleUnitValue = outDtaFisMapBuffer.getFloat((int) sampleUnitPosInCurrentBuffer) * verificationMultiplyFactor;
 			checkSampleUnitAtPos(outDtaFisSampleUnitValue, inDtaChannelObject, channelNr, sampleUnitNr,
-				sampleUnitNrInCurrentBuffer, testPrecisionForSample, testDeltaForSample);
+				sampleUnitNrInCurrentBuffer, testPrecisionRelForSample, testPrecisionDeltaForSample, testPrecisionUlpForSample);
 		}
 	}
 
@@ -1303,8 +1473,8 @@ public class CheckCodec {
 	public final boolean checkSamples(boolean gotoNextChannel, boolean gotoNextSamplePortionBig,
 			final long outDtaFisOffsetStart, final int outDtaFisLengthSampleUnitValue,
 			final long outDtaFisNrOfSamplesPerChannel, final FileChannel outDtaFisChannel,
-			final float verificationMultiplyFactor, final Channel inDtaChannelObject,
-			final int channelNr, final int testPrecisionForSample, final float testDeltaForSample)
+			final float verificationMultiplyFactor, final Channel inDtaChannelObject, final int channelNr,
+			final float testPrecisionRelForSample, final float testPrecisionDeltaForSample, final int testPrecisionUlpForSample)
 			throws IOException {
 		long samplesBytesAlreadyRead = outDtaFisOffset - outDtaFisOffsetStart;
 		long samplesAlreadyRead = samplesBytesAlreadyRead / outDtaFisLengthSampleUnitValue;
@@ -1321,8 +1491,8 @@ public class CheckCodec {
 			bytesToRead = samplesToRead * outDtaFisLengthSampleUnitValue;
 			if (gotoNextChannel == false && gotoNextSamplePortionBig == false) {
 				checkSampleUnitsAtPos(outDtaFisChannel, outDtaFisOffset, bytesToRead,
-					outDtaFisLengthSampleUnitValue, verificationMultiplyFactor, inDtaChannelObject,
-					channelNr, sampleUnitNr, testPrecisionForSample, testDeltaForSample);
+					outDtaFisLengthSampleUnitValue, verificationMultiplyFactor, inDtaChannelObject, channelNr, sampleUnitNr,
+					testPrecisionRelForSample, testPrecisionDeltaForSample, testPrecisionUlpForSample);
 			}
 			outDtaFisOffset += bytesToRead;
 			sampleUnitNr += samplesToRead;
@@ -1352,8 +1522,9 @@ public class CheckCodec {
 	public final void checkChannel(final long outDtaFisOffsetStart, final int outDtaFisLengthSampleUnitValue,
 			final long outDtaFisNrOfSamplesPerChannel, final FileChannel outDtaFisChannel,
 			final float verificationMultiplyFactor, final Channel inDtaChannelObject, final int channelNr,
-			final int testPrecisionForSample, final int testPrecisionForSamplingFrequency,
-			final float testDeltaForSample, final double testDeltaForSamplingFrequency)
+			final float testPrecisionRelForSample, final double testPrecisionRelForSamplingFrequency,
+			final float testPrecisionDeltaForSample, final double testPrecisionDeltaForSamplingFrequency,
+			final int testPrecisionUlpForSample, final long testPrecisionUlpForSamplingFrequency)
 			throws IOException {
 		long inDtaChannelObjectNumberOfSamplesPerChannel = inDtaChannelObject.getNumberOfSamples();
 		String inDtaChannelObjectChannelName = inDtaChannelObject.getChannelName();
@@ -1364,30 +1535,30 @@ public class CheckCodec {
 		//boolean gotoNextSamplePortionSmall = false;
 		//comparing header info
 		if (!inDtaChannelObjectChannelName.equals(outHdrLabelsOfChannels[channelNr])) {
-			if (CheckCodec.LOG_TEST) System.out.println("\nCODEC TEST RESULT: ERROR. Details: Label or name of the channel #"
+			if (CheckCodec.LOG_TEST) System.out.println("\nCODEC TEST RESULT: " + "WARNING"/* + "ERROR"*/ + ". Details: Label or name of the channel #"
 				+ channelNr + " get from codec (" + inDtaChannelObjectChannelName
 				+ ") differs from that specified in output file .hdr (" + outHdrLabelsOfChannels[channelNr] + ").");
 			////TODO increment offset
 			//break channels; //return;
 		}
 		if (!inDtaChannelObjectChannelTypeName.equals(outHdrTypesOfChannels[channelNr])) {
-			if (CheckCodec.LOG_TEST) System.out.println("\nCODEC TEST RESULT: ERROR. Details: Type of the channel #"
+			if (CheckCodec.LOG_TEST) System.out.println("\nCODEC TEST RESULT: " + "WARNING"/* + "ERROR"*/ + ". Details: Type of the channel #"
 				+ channelNr + " get from codec (" + inDtaChannelObjectChannelTypeName
 				+ ") differs from that specified in output file .hdr (" + outHdrTypesOfChannels[channelNr] + ").");
 			////TODO increment offset
 			//break channels; //return;
 		}
 		double outHdrSamplingFrequencyPerChannel = ((outHdrSamplingFrequency == null) ? outHdrSamplingFrequencies[channelNr] : outHdrSamplingFrequency);
-		if (!equalTo(inDtaChannelObjectSamplingFrequency, outHdrSamplingFrequencyPerChannel, testPrecisionForSamplingFrequency)
-				|| !equalTo(inDtaChannelObjectSamplingFrequency, outHdrSamplingFrequencyPerChannel, testDeltaForSamplingFrequency)) {
-			if (CheckCodec.LOG_TEST) System.out.println("\nCODEC TEST RESULT: ERROR. Details: Sampling frequency of the channel #"
+		if (!equalToCombined(inDtaChannelObjectSamplingFrequency, outHdrSamplingFrequencyPerChannel,
+				testPrecisionRelForSamplingFrequency, testPrecisionDeltaForSamplingFrequency, testPrecisionUlpForSamplingFrequency)) {
+			if (CheckCodec.LOG_TEST) System.out.println("\nCODEC TEST RESULT: " + "WARNING"/* + "ERROR"*/ + ". Details: Sampling frequency of the channel #"
 				+ channelNr + " get from codec (" + inDtaChannelObjectSamplingFrequency + ") differs from that specified in output file .hdr ("
 				+ outHdrSamplingFrequencyPerChannel + ").");
 			////TODO increment offset
 			//break channels; //return;
 		}
 		if (inDtaChannelObjectNumberOfSamplesPerChannel != outDtaFisNrOfSamplesPerChannel) {
-			if (CheckCodec.LOG_TEST) System.out.println("\nCODEC TEST RESULT: ERROR. Details: Number of samples per channel #"
+			if (CheckCodec.LOG_TEST) System.out.println("\nCODEC TEST RESULT: " + "WARNING"/* + "ERROR"*/ + ". Details: Number of samples per channel #"
 				+ channelNr + " get from codec (" + inDtaChannelObjectNumberOfSamplesPerChannel + ") differs from that specified in output file .hdr ("
 				+ outDtaFisNrOfSamplesPerChannel + ").");
 			//TODO increment offset
@@ -1396,7 +1567,8 @@ public class CheckCodec {
 		//comparing data info
 		gotoNextChannel = checkSamples(gotoNextChannel, gotoNextSamplePortionBig, outDtaFisOffsetStart,
 			outDtaFisLengthSampleUnitValue, outDtaFisNrOfSamplesPerChannel, outDtaFisChannel,
-			verificationMultiplyFactor, inDtaChannelObject, channelNr, testPrecisionForSample, testDeltaForSample);
+			verificationMultiplyFactor, inDtaChannelObject, channelNr,
+			testPrecisionRelForSample, testPrecisionDeltaForSample, testPrecisionUlpForSample);
 	}
 
 	/**
@@ -1418,66 +1590,103 @@ public class CheckCodec {
 	 * @throws IOException
 	 */
 	public final boolean checkChannels(final float verificationMultiplyFactor) throws IOException {
-		final int testPrecisionForSample = precisionFloat;
-		final int testPrecisionForSamplingFrequency = precisionDouble;
-		return checkChannels(verificationMultiplyFactor, testPrecisionForSample, testPrecisionForSamplingFrequency);
+		final float testPrecisionRelForSample = precisionRelFloat;              //FLT_EPSILON
+		final double testPrecisionRelForSamplingFrequency = precisionRelDouble;  //DBL_EPSILON
+		boolean result = checkChannels(verificationMultiplyFactor, testPrecisionRelForSample, testPrecisionRelForSamplingFrequency);
+		return result;
 	}
 
 	/**
 	 * checkChannels
 	 *
 	 * @param verificationMultiplyFactor
-	 * @param testPrecisionForSample
-	 * @param testPrecisionForSamplingFrequency
+	 * @param testPrecisionRelForSample
+	 * @param testPrecisionRelForSamplingFrequency
 	 * @return
 	 * @throws IOException
 	 */
 	public final boolean checkChannels(final float verificationMultiplyFactor,
-			final int testPrecisionForSample, final int testPrecisionForSamplingFrequency)
+			final float testPrecisionRelForSample, final double testPrecisionRelForSamplingFrequency)
 			throws IOException {
-		final float testDeltaForSample = deltaFloat;
-		final double testDeltaForSamplingFrequency = deltaDouble;
-		return checkChannels(verificationMultiplyFactor, testPrecisionForSample, testPrecisionForSamplingFrequency,
-			testDeltaForSample, testDeltaForSamplingFrequency);
+		final float testPrecisionDeltaForSample = precisionDeltaFloat;
+		final double testPrecisionDeltaForSamplingFrequency = precisionDeltaDouble;
+		boolean result = checkChannels(verificationMultiplyFactor,
+				testPrecisionRelForSample, testPrecisionRelForSamplingFrequency,
+				testPrecisionDeltaForSample, testPrecisionDeltaForSamplingFrequency);
+		return result;
 	}
 
 	/**
 	 * checkChannels
 	 *
 	 * @param verificationMultiplyFactor
-	 * @param testPrecisionForSample
-	 * @param testPrecisionForSamplingFrequency
-	 * @param testDeltaForSample
-	 * @param testDeltaForSamplingFrequency
+	 * @param testPrecisionRelForSample
+	 * @param testPrecisionRelForSamplingFrequency
+	 * @param testPrecisionDeltaForSample
+	 * @param testPrecisionDeltaForSamplingFrequency
 	 * @return
 	 * @throws IOException
 	 */
 	public final boolean checkChannels(final float verificationMultiplyFactor,
-			final int testPrecisionForSample, final int testPrecisionForSamplingFrequency,
-			final float testDeltaForSample, final double testDeltaForSamplingFrequency)
+			final float testPrecisionRelForSample, final double testPrecisionRelForSamplingFrequency,
+			final float testPrecisionDeltaForSample, final double testPrecisionDeltaForSamplingFrequency)
+			throws IOException {
+		final int testPrecisionUlpForSample = precisionUlpFloat;
+		final long testPrecisionUlpForSamplingFrequency = precisionUlpDouble;
+		boolean result = checkChannels(verificationMultiplyFactor,
+				testPrecisionRelForSample, testPrecisionRelForSamplingFrequency,
+				testPrecisionDeltaForSample, testPrecisionDeltaForSamplingFrequency,
+				testPrecisionUlpForSample, testPrecisionUlpForSamplingFrequency);
+		return result;
+	}
+
+	/**
+	 * checkChannels
+	 *
+	 * @param verificationMultiplyFactor
+	 * @param testPrecisionRelForSample
+	 * @param testPrecisionRelForSamplingFrequency
+	 * @param testPrecisionDeltaForSample
+	 * @param testPrecisionDeltaForSamplingFrequency
+	 * @param testPrecisionUlpForSample
+	 * @param testPrecisionUlpForSamplingFrequency
+	 * @return
+	 * @throws IOException
+	 */
+	public final boolean checkChannels(final float verificationMultiplyFactor,
+			final float testPrecisionRelForSample, final double testPrecisionRelForSamplingFrequency,
+			final float testPrecisionDeltaForSample, final double testPrecisionDeltaForSamplingFrequency,
+			final int testPrecisionUlpForSample, final long testPrecisionUlpForSamplingFrequency)
 			throws IOException {
 		final int startAtLeastFromChannel = Integer.MIN_VALUE;
 		final int finishAtMostBeforeChannel = Integer.MAX_VALUE;
-		return checkChannels(verificationMultiplyFactor, testPrecisionForSample, testPrecisionForSamplingFrequency,
-			testDeltaForSample, testDeltaForSamplingFrequency, startAtLeastFromChannel, finishAtMostBeforeChannel);
+		boolean result = checkChannels(verificationMultiplyFactor,
+			testPrecisionRelForSample, testPrecisionRelForSamplingFrequency,
+			testPrecisionDeltaForSample, testPrecisionDeltaForSamplingFrequency,
+			testPrecisionUlpForSample, testPrecisionUlpForSamplingFrequency,
+			startAtLeastFromChannel, finishAtMostBeforeChannel);
+		return result;
 	}
 
 	/**
 	 * checkChannels
 	 *
 	 * @param verificationMultiplyFactor
-	 * @param testPrecisionForSample
-	 * @param testPrecisionForSamplingFrequency
-	 * @param testDeltaForSample
-	 * @param testDeltaForSamplingFrequency
+	 * @param testPrecisionRelForSample
+	 * @param testPrecisionRelForSamplingFrequency
+	 * @param testPrecisionDeltaForSample
+	 * @param testPrecisionDeltaForSamplingFrequency
+	 * @param testPrecisionUlpForSample
+	 * @param testPrecisionUlpForSamplingFrequency
 	 * @param startAtLeastFromChannel
 	 * @param finishAtMostBeforeChannel
 	 * @return
 	 * @throws IOException
 	 */
 	public final boolean checkChannels(final float verificationMultiplyFactor,
-			final int testPrecisionForSample, final int testPrecisionForSamplingFrequency,
-			final float testDeltaForSample, final double testDeltaForSamplingFrequency,
+			final float testPrecisionRelForSample, final double testPrecisionRelForSamplingFrequency,
+			final float testPrecisionDeltaForSample, final double testPrecisionDeltaForSamplingFrequency,
+			final int testPrecisionUlpForSample, final long testPrecisionUlpForSamplingFrequency,
 			final int startAtLeastFromChannel, final int finishAtMostBeforeChannel)
 			throws IOException {
 		/*channels:*/
@@ -1517,8 +1726,9 @@ public class CheckCodec {
 			checkChannel(outDtaFisOffsetStart, outDtaFisLengthSampleUnitValue,
 				outDtaFisNrOfSamplesPerChannel, outDtaFisChannel,
 				verificationMultiplyFactor, inDtaChannelObject, channelNr,
-				testPrecisionForSample, testPrecisionForSamplingFrequency,
-				testDeltaForSample, testDeltaForSamplingFrequency);
+				testPrecisionRelForSample, testPrecisionRelForSamplingFrequency,
+				testPrecisionDeltaForSample, testPrecisionDeltaForSamplingFrequency,
+				testPrecisionUlpForSample, testPrecisionUlpForSamplingFrequency);
 			//continue with next channel
 		}
 		return true;
@@ -1634,7 +1844,7 @@ public class CheckCodec {
 		outDtaFisSize = outDtaFisChannel.size();
 		if (CheckCodec.LOG_INFO) System.out.println("File size: " + outDtaFisSize + " bytes = " + (outDtaFisSize/1024f)
 			+ " kB = " + (outDtaFisSize/1048576f) + " MB = " + (outDtaFisSize/1073741824f) + " GB");
-
+		
 		outDtaFisNrOfChannels = outDtaFisMapBuffer.getInt(0);
 		if (CheckCodec.LOG_INFO) System.out.println("Nr of channels found: " + outDtaFisNrOfChannels);
 		if (outDtaFisNrOfChannels * outDtaFisLengthNrOfSamplesPerChannel >= outDtaFisSize) {
@@ -1707,10 +1917,12 @@ public class CheckCodec {
 		final boolean useContextDumper = false; //true;
 		final boolean usePreCheckingOfTheDataFromCodec = false;
 		final boolean exitOnNrsOfChannelsError = false;
-		final int testPrecisionForSample = CheckCodec.precisionFloat;
-		final int testPrecisionForSamplingFrequency = CheckCodec.precisionDouble;
-		final float testDeltaForSample = CheckCodec.deltaFloat;
-		final double testDeltaForSamplingFrequency = CheckCodec.deltaDouble;
+		final float testPrecisionRelForSample = CheckCodec.precisionRelFloat;
+		final double testPrecisionRelForSamplingFrequency = CheckCodec.precisionRelDouble;
+		final float testPrecisionDeltaForSample = CheckCodec.precisionDeltaFloat;
+		final double testPrecisionDeltaForSamplingFrequency = CheckCodec.precisionDeltaDouble;
+		final int testPrecisionUlpForSample = CheckCodec.precisionUlpFloat;
+		final long testPrecisionUlpForSamplingFrequency = CheckCodec.precisionUlpDouble;
 		final int startAtLeastFromChannel = 0; //78;
 		final int finishAtMostBeforeChannel = 80;
 		float verificationMultiplyFactor = 1.0f;
@@ -1758,11 +1970,12 @@ public class CheckCodec {
 			fileName = outHdrFileName + " (or) " + outDtaFileName;
 			boolean outDtaStatus = checkCodec.getOutDta(outHdrFileName, outDtaFileName, exitOnNrsOfChannelsError);
 			if (!outDtaStatus) return;
-			//then compare everything (outBody with outHdr and with in)
+			//then compare everything (outBody with outHdr and with in) 
 			fileName = "(unknown)";
 			boolean verificationStatus = checkCodec.checkChannels(verificationMultiplyFactor,
-				testPrecisionForSample, testPrecisionForSamplingFrequency,
-				testDeltaForSample, testDeltaForSamplingFrequency,
+				testPrecisionRelForSample, testPrecisionRelForSamplingFrequency,
+				testPrecisionDeltaForSample, testPrecisionDeltaForSamplingFrequency,
+				testPrecisionUlpForSample, testPrecisionUlpForSamplingFrequency,
 				startAtLeastFromChannel, finishAtMostBeforeChannel);
 			if (!verificationStatus) return;
 		} catch (FileNotFoundException e) {
