@@ -72,6 +72,9 @@
 				</param>
 			</else>
 		</if>
+		<param id='sample_unit' type='float'>
+			<expr>1</expr>
+		</param>
 
 <!--   XXX : TODO: apply if for appropriate formats, i.e. FLOAT, LONG, DOUBLE
 		<else-if id='format' test='msi_format == "LONG"'>
