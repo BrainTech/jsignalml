@@ -13,11 +13,9 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 public class XmlBuffer {
-	private static final String XPATH_EVALUATION_TYPE_NODE_CONTENT_TEXT = "node-content-text";
-	private static final String XPATH_EVALUATION_TYPE_NODE_CONTENT_INT = "node-content-int";
-	private static final String XPATH_EVALUATION_TYPE_NODE_CONTENT_FLOAT = "node-content-float";
+	private static final String XPATH_EVALUATION_TYPE_NODE_CONTENT = "node-content";
 	private static final String XPATH_EVALUATION_TYPE_NODE_NAME_LOCAL = "node-name-local";
-	private static final String XPATH_EVALUATION_TYPE_NODE_CONTENT_MULTIPLE_TEXT = "node-content-multiple-text";
+	private static final String XPATH_EVALUATION_TYPE_NODE_ATTRIBUTE = "node-attribute";
 	protected static final Logger log = new Logger(XmlBuffer.class);
 
 	final private XMLDocument source;
@@ -37,6 +35,21 @@ public class XmlBuffer {
 			throw new jsignalml.ExpressionFault.ExternalError(e);
 		}
 		this.source = xmlDocument;
+	}
+
+	public TypeInt read(TypeString xpathPattern, String xpathType, String xpathAttributeName, TypeInt t) {
+		String s = read(xpathPattern, xpathType, xpathAttributeName).value;
+		return new TypeInt(s);
+	}
+
+	public TypeFloat read(TypeString xpathPattern, String xpathType, String xpathAttributeName, TypeFloat t) {
+		String s = read(xpathPattern, xpathType, xpathAttributeName).value;
+		return new TypeFloat(Double.parseDouble(s));
+	}
+
+	public TypeString read(TypeString xpathPattern, String xpathType, String xpathAttributeName,
+			TypeString t) {
+		return read(xpathPattern, xpathType, xpathAttributeName);
 	}
 
 	public TypeInt read(TypeString xpathPattern, String xpathType, TypeInt t) {
@@ -60,19 +73,26 @@ public class XmlBuffer {
 		return new TypeBool(s);
 	}
 
+	public TypeBool read(TypeString xpathPattern, String xpathType, String xpathAttributeName,
+			TypeBool t) {
+		String s = read(xpathPattern, xpathType, xpathAttributeName).value;
+		return new TypeBool(s);
+	}
+
+	private TypeString read(TypeString xpathPattern, String xpathType, String xpathAttributeName) {
+		String value = null;
+		if (xpathType.equals(XPATH_EVALUATION_TYPE_NODE_ATTRIBUTE)){
+			value = evaluateXpathNodeAttributeValue(xpathPattern, xpathAttributeName);
+		}
+		return new TypeString(value);
+	}
+
 	private TypeString read(TypeString xpathPattern, String xpathType) {
 		String value = null;
 		if (xpathType.equals(XPATH_EVALUATION_TYPE_NODE_NAME_LOCAL)) {
 			value = evaluateXpathNodeNameLocal(xpathPattern);
-		} else if (xpathType.equals(XPATH_EVALUATION_TYPE_NODE_CONTENT_TEXT)) {
+		} else if (xpathType.equals(XPATH_EVALUATION_TYPE_NODE_CONTENT)) {
 			value = evaluateXpathNodeContentText(xpathPattern);
-		} else if (xpathType.equals(XPATH_EVALUATION_TYPE_NODE_CONTENT_INT)) {
-			value = evaluateXpathNodeContentText(xpathPattern);
-		} else if (xpathType.equals(XPATH_EVALUATION_TYPE_NODE_CONTENT_FLOAT)) {
-			value = evaluateXpathNodeContentText(xpathPattern);
-		} else if (xpathType
-				.equals(XPATH_EVALUATION_TYPE_NODE_CONTENT_MULTIPLE_TEXT)) {
-			value = evaluateXpathNodeContentMultipleText(xpathPattern);
 		}
 		return new TypeString(value);
 	}
@@ -116,15 +136,22 @@ public class XmlBuffer {
 		return value;
 	}
 
-	private String evaluateXpathNodeContentMultipleText(TypeString xpathPattern) {
-		Node multipleNode = null;
+	private String evaluateXpathNodeAttributeValue(TypeString xpathPattern, String xpathAttributeName){
+		Node node = null;
+		String value = null;
 		try {
-			multipleNode = source.getNode(xpathPattern.getValue());
+			node = source.getNode(xpathPattern.getValue());
 		} catch (XPathExpressionException e) {
 			throw new jsignalml.ExpressionFault.ExternalError(e);
 		} catch (NodeError e) {
 			throw new jsignalml.ExpressionFault.ExternalError(e);
 		}
-		return multipleNode.getTextContent();
+		if ((node != null) && (node.hasAttributes())){
+			Node xpathAttributeNameNode = node.getAttributes().getNamedItem(xpathAttributeName);
+			if (xpathAttributeNameNode != null){
+				value = xpathAttributeNameNode.getFirstChild().getNodeValue();
+			}
+		}
+		return value;
 	}
 }
