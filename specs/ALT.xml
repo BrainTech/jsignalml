@@ -76,7 +76,7 @@
 					<pattern>calibration_gain_pattern</pattern>
 					<group>2</group>
 				</param>
-				<param id='calibration_offset'>
+				<param id='calibration_offset' type='float'>
 					<pattern>calibration_offset_pattern</pattern>
 					<group>2</group>
 				</param>
