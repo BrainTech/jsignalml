@@ -184,6 +184,10 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 		this.getFormatIDMethod(klass);
 		this.codecOpenMethod(klass);
 		this.closeMethod(klass);
+
+		// Private variable for channel objects counter
+		klass.field(4, model.INT, "channelCounter", JExpr.lit(0));
+
 		return klass;
 	}
 
@@ -1398,6 +1402,9 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 		metadata.registerContext(id, klass, JExpr.invoke(getter));
 		metadata.registerChannel(id, JExpr.invoke(getter));
 
+		// Private variable for channel number
+		klass.field(4, model.INT, "channelNum", JExpr.ref("channelCounter").incr());
+
 		return klass;
 	}
 
@@ -1680,10 +1687,18 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 		comment_stamp(method.body());
 
 		JInvocation ji = JExpr.invoke("get_channel_name").invoke("get");
-		final JVar value = method.body().decl(Type_t, "value", ji);
-		final JInvocation jiji = method.body().decl(TypeString_t, "stringValue",
+		final JBlock body = method.body();
+
+		final JVar value = body.decl(Type_t, "value", ji);
+		final JInvocation jiji = body.decl(TypeString_t, "stringValue",
 				JExpr.cast(TypeString_t, value)).invoke("getValue");
-		method.body()._return(jiji);
+		final JVar strValue = body.decl(String_t, "strValue", jiji);
+
+		final JConditional _if = body._if(strValue.invoke("equals").arg(JExpr.lit("")));
+		final JBlock _ifBlock = _if._then();
+		_ifBlock._return(JExpr.lit("L").plus(JExpr.ref("channelNum")));
+
+		method.body()._return(strValue);
 
 		return method;
 	}
