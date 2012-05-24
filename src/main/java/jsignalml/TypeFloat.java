@@ -153,13 +153,13 @@ public class TypeFloat extends Type {
 	}
 
 	public Type bin_and(Type other){
-		throw new ExpressionFault.TypeError();
+		throw new ExpressionFault.Unsupported(this.getClass(), "bin_and");
 	}
 	public Type bin_or(Type other){
-		throw new ExpressionFault.TypeError();
+		throw new ExpressionFault.Unsupported(this.getClass(), "bin_or");
 	}
 	public Type bin_xor(Type other){
-		throw new ExpressionFault.TypeError();
+		throw new ExpressionFault.Unsupported(this.getClass(), "bin_xor");
 	}
 
 	public Type pow(Type other){
@@ -177,13 +177,13 @@ public class TypeFloat extends Type {
 	}
 
 	public Type index(Type i){
-		throw new ExpressionFault.TypeError();
+		throw new ExpressionFault.Unsupported(this.getClass(), "index");
 	}
 
 	public TypeFloat pos() { return this; }
 	public TypeFloat neg() { return new TypeFloat(-this.value); }
 	public TypeInt bin_neg() {
-		throw new ExpressionFault.TypeError();
+		throw new ExpressionFault.Unsupported(this.getClass(), "bin_neg");
 	}
 
 	@Override
@@ -203,7 +203,7 @@ public class TypeFloat extends Type {
 
 	@Override
 	public Type unaryOp(UnaryOp op)
-		throws ExpressionFault.TypeError
+		throws ExpressionFault.Unsupported
 	{
 		switch (op) {
 		case POS:
@@ -211,7 +211,7 @@ public class TypeFloat extends Type {
 		case NEG:
 			return new TypeFloat(-this.value);
 		default:
-			throw new ExpressionFault.TypeError();
+			throw new ExpressionFault.Unsupported(this.getClass(), op.toString());
 		}
 	}
 

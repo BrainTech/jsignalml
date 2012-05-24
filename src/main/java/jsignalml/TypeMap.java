@@ -84,21 +84,21 @@ public class TypeMap extends Type /* implements Map<Type, Type>  */ {
 	}
 
 	public Type binaryOp(BinaryOp op, TypeInt other)
-		throws ExpressionFault.TypeError
+		throws ExpressionFault.Unsupported
 	{
-		throw new ExpressionFault.TypeError();
+		throw new ExpressionFault.Unsupported(this.getClass(), op.toString());
 	}
 
 	public Type binaryOp(BinaryOp op, TypeFloat other)
-		throws ExpressionFault.TypeError
+		throws ExpressionFault.Unsupported
 	{
-		throw new ExpressionFault.TypeError();
+		throw new ExpressionFault.Unsupported(this.getClass(), op.toString());
 	}
 
 	public Type binaryOp(BinaryOp op, TypeList other)
-		throws ExpressionFault.TypeError
+		throws ExpressionFault.Unsupported
 	{
-		throw new ExpressionFault.TypeError();
+		throw new ExpressionFault.Unsupported(this.getClass(), op.toString());
 	}
 
 	@Override
@@ -174,7 +174,7 @@ public class TypeMap extends Type /* implements Map<Type, Type>  */ {
 	@Override
 	public Type _binaryOpType(BinaryOp op, TypeInt other)
 	{
-		throw new ExpressionFault.TypeError();
+		throw new ExpressionFault.Unsupported(this.getClass(), op.toString());
 	}
 
 	@Override
@@ -185,54 +185,54 @@ public class TypeMap extends Type /* implements Map<Type, Type>  */ {
 	}
 
 	public Type add(Type other){
-		throw new ExpressionFault.TypeError();
+		throw new ExpressionFault.Unsupported(this.getClass(), "add");
 	}
 
 	public Type sub(Type other){
-		throw new ExpressionFault.TypeError();
+		throw new ExpressionFault.Unsupported(this.getClass(), "sub");
 	}
 
 	public Type mul(Type other){
-		throw new ExpressionFault.TypeError();
+		throw new ExpressionFault.Unsupported(this.getClass(), "mul");
 	}
 	public TypeList mul(TypeInt other){
-		throw new ExpressionFault.TypeError();
+		throw new ExpressionFault.Unsupported(this.getClass(), "mul");
 	}
 
 	public TypeFloat div(Type other){
-		throw new ExpressionFault.TypeError();
+		throw new ExpressionFault.Unsupported(this.getClass(), "div");
 	}
 
 	public TypeInt floordiv(Type other){
-		throw new ExpressionFault.TypeError();
+		throw new ExpressionFault.Unsupported(this.getClass(), "floordiv");
 	}
 
 	public Type mod(Type other){
-		throw new ExpressionFault.TypeError();
+		throw new ExpressionFault.Unsupported(this.getClass(), "mod");
 	}
 
 	public Type bin_and(Type other){
-		throw new ExpressionFault.TypeError();
+		throw new ExpressionFault.Unsupported(this.getClass(), "bin_and");
 	}
 	public Type bin_or(Type other){
-		throw new ExpressionFault.TypeError();
+		throw new ExpressionFault.Unsupported(this.getClass(), "bin_or");
 	}
 	public Type bin_xor(Type other){
-		throw new ExpressionFault.TypeError();
+		throw new ExpressionFault.Unsupported(this.getClass(), "bin_xor");
 	}
 
 	public Type pow(Type other){
-		throw new ExpressionFault.TypeError();
+		throw new ExpressionFault.Unsupported(this.getClass(), "pow");
 	}
 
 	public TypeInt pos() {
-		throw new ExpressionFault.TypeError();
+		throw new ExpressionFault.Unsupported(this.getClass(), "pos");
 	}
 	public TypeInt neg() {
-		throw new ExpressionFault.TypeError();
+		throw new ExpressionFault.Unsupported(this.getClass(), "neg");
 	}
 	public TypeInt bin_neg() {
-		throw new ExpressionFault.TypeError();
+		throw new ExpressionFault.Unsupported(this.getClass(), "bin_neg");
 	}
 
 	@Override

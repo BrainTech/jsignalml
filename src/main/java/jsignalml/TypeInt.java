@@ -182,7 +182,7 @@ public class TypeInt extends Type {
 
 	@Override
 	public Type unaryOp(UnaryOp op)
-		throws ExpressionFault.TypeError
+		throws ExpressionFault.Unsupported
 	{
 		switch (op) {
 		case POS:
@@ -190,7 +190,7 @@ public class TypeInt extends Type {
 		case NEG:
 			return new TypeInt(this.value.negate());
 		default:
-			throw new ExpressionFault.TypeError();
+			throw new ExpressionFault.Unsupported(this.getClass(), op.toString());
 		}
 	}
 
