@@ -55,7 +55,7 @@ public abstract class ASTNode {
 			return null;
 		final Type ans = ((Expression.Const)id).value;
 		if(!(ans instanceof TypeString))
-			throw new ExpressionFault.TypeError();
+			throw new ExpressionFault.TypeError(ans, new TypeString(""));
 		return ((TypeString)ans).value;
 	}
 

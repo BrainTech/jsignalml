@@ -31,7 +31,7 @@ public class TypeFloat extends Type {
 			return new TypeFloat(((TypeInt)value).getValue());
 		if (value instanceof TypeString)
 			return new TypeFloat(((TypeString)value).getValue());
-		throw new ExpressionFault.TypeError();
+		throw new ExpressionFault.TypeError(value, this);
 	}
 
 	@Override
@@ -54,7 +54,7 @@ public class TypeFloat extends Type {
 			return this.compareTo((TypeInt)other);
 		if(other instanceof TypeFloat)
 			return this.compareTo((TypeFloat)other);
-		throw new ExpressionFault.TypeError();
+		throw new ExpressionFault.TypeError(other, this);
 	}
 	public int compareTo(TypeInt other){
 		return -other.compareTo(this);
@@ -69,7 +69,7 @@ public class TypeFloat extends Type {
 			return this.add((TypeInt)other);
 		if(other instanceof TypeFloat)
 			return this.add((TypeFloat)other);
-		throw new ExpressionFault.TypeError();
+		throw new ExpressionFault.TypeError(other, this);
 	}
 	public TypeFloat add(TypeInt other){
 		return new TypeFloat(this.value + other.value.doubleValue());
@@ -83,7 +83,7 @@ public class TypeFloat extends Type {
 			return this.sub((TypeInt)other);
 		if(other instanceof TypeFloat)
 			return this.sub((TypeFloat)other);
-		throw new ExpressionFault.TypeError();
+		throw new ExpressionFault.TypeError(other, this);
 	}
 	public TypeFloat sub(TypeInt other){
 		return new TypeFloat(this.value - other.value.doubleValue());
@@ -97,7 +97,7 @@ public class TypeFloat extends Type {
 			return this.mul((TypeInt)other);
 		if(other instanceof TypeFloat)
 			return this.mul((TypeFloat)other);
-		throw new ExpressionFault.TypeError();
+		throw new ExpressionFault.TypeError(other, this);
 	}
 	public TypeFloat mul(TypeInt other){
 		return new TypeFloat(this.value * other.value.doubleValue());
@@ -111,7 +111,7 @@ public class TypeFloat extends Type {
 			return this.div((TypeInt)other);
 		if(other instanceof TypeFloat)
 			return this.div((TypeFloat)other);
-		throw new ExpressionFault.TypeError();
+		throw new ExpressionFault.TypeError(other, this);
 	}
 	public TypeFloat div(TypeInt other){
 		return new TypeFloat(this.value / other.value.doubleValue());
@@ -125,7 +125,7 @@ public class TypeFloat extends Type {
 			return this.floordiv((TypeInt)other);
 		if(other instanceof TypeFloat)
 			return this.floordiv((TypeFloat)other);
-		throw new ExpressionFault.TypeError();
+		throw new ExpressionFault.TypeError(other, this);
 	}
 	public TypeInt floordiv(TypeInt other){
 		return new TypeInt(Math.round(Math.floor(this.value / other.value.doubleValue())));
@@ -139,7 +139,7 @@ public class TypeFloat extends Type {
 			return this.mod((TypeInt)other);
 		if(other instanceof TypeFloat)
 			return this.mod((TypeFloat)other);
-		throw new ExpressionFault.TypeError();
+		throw new ExpressionFault.TypeError(other, this);
 	}
 	public TypeFloat mod(TypeFloat other){
 		double value = this.value % other.value;
@@ -167,7 +167,7 @@ public class TypeFloat extends Type {
 			return this.pow((TypeInt)other);
 		if(other instanceof TypeFloat)
 			return this.pow((TypeFloat)other);
-		throw new ExpressionFault.TypeError();
+		throw new ExpressionFault.TypeError(other, this);
 	}
 	public TypeFloat pow(TypeInt other){
 		return new TypeFloat(Math.pow(this.value, other.value.doubleValue()));

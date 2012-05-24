@@ -297,23 +297,23 @@ public abstract class Type implements Comparable<Type> {
 	public abstract Type _binaryOpType(BinaryOp op, TypeInt other);
 	public Type _binaryOpType(BinaryOp op, TypeFloat other)
 	{
-		throw new ExpressionFault.TypeError();
+		throw new ExpressionFault.TypeError(other, this);
 	}
 	public Type _binaryOpType(BinaryOp op, TypeString other)
 	{
-		throw new ExpressionFault.TypeError();
+		throw new ExpressionFault.TypeError(other, this);
 	}
 	public Type _binaryOpType(BinaryOp op, TypeList other)
 	{
-		throw new ExpressionFault.TypeError();
+		throw new ExpressionFault.TypeError(other, this);
 	}
 	public Type _binaryOpType(BinaryOp op, TypeMap other)
 	{
-		throw new ExpressionFault.TypeError();
+		throw new ExpressionFault.TypeError(other, this);
 	}
 
 	public Type _binaryOpType(BinaryOp op, TypeBool other) {
-		throw new ExpressionFault.TypeError();
+		throw new ExpressionFault.TypeError(other, this);
 	}
 
 

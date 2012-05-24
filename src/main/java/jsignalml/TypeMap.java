@@ -34,7 +34,7 @@ public class TypeMap extends Type /* implements Map<Type, Type>  */ {
 	public TypeMap make(Type other) {
 		if (other instanceof TypeMap)
 			return new TypeMap(((TypeMap)other).map);
-		throw new ExpressionFault.TypeError();
+		throw new ExpressionFault.TypeError(other, this);
 	}
 
 	public static TypeMap make(Object... items) {
@@ -145,7 +145,7 @@ public class TypeMap extends Type /* implements Map<Type, Type>  */ {
 	public int compareTo(Type other){
 		if(other instanceof TypeMap)
 			return this.compareTo((TypeMap)other);
-		throw new ExpressionFault.TypeError();
+		throw new ExpressionFault.TypeError(other, this);
 	}
 
 	/* No strict ordering exists for Maps. Therefore operations are

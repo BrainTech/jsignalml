@@ -29,7 +29,7 @@ public class TypeList extends Type implements Iterable<Type> {
 			throw new NotImplementedException();
 		if (other instanceof TypeList)
 			return (TypeList)other;
-		throw new ExpressionFault.TypeError();
+		throw new ExpressionFault.TypeError(other, this);
 	}
 
 	public static TypeList make(Object... items) {
@@ -122,7 +122,7 @@ public class TypeList extends Type implements Iterable<Type> {
 	public Type add(Type other){
 		if(other instanceof TypeList)
 			return this.add((TypeList)other);
-		throw new ExpressionFault.TypeError();
+		throw new ExpressionFault.TypeError(other, this);
 	}
 	public TypeList add(TypeList other){
 		ArrayList<Type> result = new ArrayList<Type>(this.value);
@@ -137,7 +137,7 @@ public class TypeList extends Type implements Iterable<Type> {
 	public Type mul(Type other){
 		if(other instanceof TypeInt)
 			return this.mul((TypeInt)other);
-		throw new ExpressionFault.TypeError();
+		throw new ExpressionFault.TypeError(other, this);
 	}
 	public TypeList mul(TypeInt other){
 		ArrayList<Type> result = new ArrayList<Type>(this.value);
@@ -175,7 +175,7 @@ public class TypeList extends Type implements Iterable<Type> {
 	public int compareTo(Type other){
 		if(other instanceof TypeList)
 			return this.compareTo((TypeList)other);
-		throw new ExpressionFault.TypeError();
+		throw new ExpressionFault.TypeError(other, this);
 	}
 	public int compareTo(TypeList other){
 		Iterator<Type> itother = other.value.iterator();
@@ -201,7 +201,7 @@ public class TypeList extends Type implements Iterable<Type> {
 	public Type index(Type i){
 		if(i instanceof TypeInt)
 			return this.index((TypeInt)i);
-		throw new ExpressionFault.TypeError();
+		throw new ExpressionFault.TypeError(i, new TypeInt());
 	}
 	public Type index(TypeInt i){
 		int offset = i.safeIntValue();

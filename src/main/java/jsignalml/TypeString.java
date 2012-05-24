@@ -105,7 +105,7 @@ public class TypeString extends Type {
 	public Type add(Type other){
 		if(other instanceof TypeString)
 			return this.add((TypeString)other);
-		throw new ExpressionFault.TypeError();
+		throw new ExpressionFault.TypeError(other, this);
 	}
 	public TypeString add(TypeString other){
 		return new TypeString(this.value + other.value);
@@ -118,7 +118,7 @@ public class TypeString extends Type {
 	public Type mul(Type other){
 		if(other instanceof TypeInt)
 			return this.mul((TypeInt)other);
-		throw new ExpressionFault.TypeError();
+		throw new ExpressionFault.TypeError(other, this);
 	}
 	public TypeString mul(TypeInt other){
 		StringBuilder result = new StringBuilder();
@@ -156,7 +156,7 @@ public class TypeString extends Type {
 	public int compareTo(Type other){
 		if(other instanceof TypeString)
 			return this.compareTo((TypeString)other);
-		throw new ExpressionFault.TypeError();
+		throw new ExpressionFault.TypeError(other, this);
 	}
 	public int compareTo(TypeString other){
 		return this.value.compareTo(other.value);
@@ -169,7 +169,7 @@ public class TypeString extends Type {
 	public Type index(Type i){
 		if(i instanceof TypeInt)
 			return this.index((TypeInt)i);
-		throw new ExpressionFault.TypeError();
+		throw new ExpressionFault.TypeError(i, new TypeInt());
 	}
 	public Type index(TypeInt i){
 		int offset = i.safeIntValue();
