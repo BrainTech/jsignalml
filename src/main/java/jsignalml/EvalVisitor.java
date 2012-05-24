@@ -144,7 +144,7 @@ public class EvalVisitor extends ExpressionVisitor<Type> {
 		final Type expr_type = expr.getType();
 		if(expr_type != null && expected != null
 		   && !expected.getClass().isAssignableFrom(expr_type.getClass()))
-			throw new ExpressionFault.TypeError();
+			throw new ExpressionFault.TypeError(expr_type, expected);
 
 		Type ans = null;
 		try {
@@ -159,7 +159,7 @@ public class EvalVisitor extends ExpressionVisitor<Type> {
 
 		if (expected != null
 		    && !expected.getClass().isAssignableFrom(ans.getClass()))
-			throw new ExpressionFault.TypeError();
+			throw new ExpressionFault.TypeError(expr_type, expected);
 
 		return (T) ans.getValue();
 	}
