@@ -10,7 +10,7 @@ public class ASTEvalVisitor extends ASTVisitor<Type> {
 	final Frame context;
 	final List<Type> args;
 
-	static final List EMPTY = util.newLinkedList();
+	static final List<Type> EMPTY = util.newLinkedList();
 
 	ASTEvalVisitor(Frame context, List<Type> args){
 		this.context = context;

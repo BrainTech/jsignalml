@@ -16,7 +16,7 @@ public class TypeList extends Type implements Iterable<Type> {
 	public final java.util.List<Type> value;
 
 	public TypeList(java.util.List<? extends Type> value) {
-		this.value = unmodifiableList(new ArrayList(value));
+		this.value = unmodifiableList(new ArrayList<Type>(value));
 	}
 
 	public TypeList(Type...items) {

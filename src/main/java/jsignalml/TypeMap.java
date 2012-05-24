@@ -12,7 +12,7 @@ public class TypeMap extends Type /* implements Map<Type, Type>  */ {
 	public final HashMap<Type, Type> map;
 
 	public TypeMap(Map<? extends Type, ? extends Type> map) {
-		this.map = new HashMap(map);
+		this.map = new HashMap<Type, Type>(map);
 		// make a copy to be independent from the external map
 	}
 

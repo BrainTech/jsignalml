@@ -138,11 +138,11 @@ public abstract class Expression {
 
 		Call(Expression what, List<? extends Expression> args) {
 			this.what = what;
-			this.args = unmodifiableList(new ArrayList(args));
+			this.args = unmodifiableList(new ArrayList<Expression>(args));
 		}
 
 		Call(Expression what) {
-			this(what, new ArrayList());
+			this(what, new ArrayList<Expression>());
 		}
 
 		@Override
@@ -193,7 +193,8 @@ public abstract class Expression {
 		final /*immutable*/ List<Expression> args;
 
 		List_(List<? extends Expression> args) {
-			this.args = unmodifiableList(args!=null ? new ArrayList(args) : new ArrayList());
+			this.args = unmodifiableList(args!=null ?
+					new ArrayList<Expression>(args) : new ArrayList<Expression>());
 		}
 
 		@Override
@@ -225,7 +226,9 @@ public abstract class Expression {
 		final List<Map.Entry<Expression, Expression>> args;
 
 		Map_(List<Map.Entry<Expression, Expression>> args) {
-			this.args = unmodifiableList(args!=null ? new ArrayList(args) : new ArrayList());
+			this.args = unmodifiableList(args!=null ?
+					new ArrayList<Map.Entry<Expression, Expression>>(args) :
+					new ArrayList<Map.Entry<Expression, Expression>>());
 		}
 
 		//		@Override
@@ -260,7 +263,7 @@ public abstract class Expression {
 			for (Map.Entry<Expression, Expression> entry: this.args) {
 				T key = entry.getKey().accept(v);
 				T value = entry.getValue().accept(v);
-				vals.add( new SimpleImmutableEntry(key, value) );
+				vals.add( new SimpleImmutableEntry<T, T>(key, value) );
 			}
 
 			return v.visit(this, vals);
