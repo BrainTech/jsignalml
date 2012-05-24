@@ -117,6 +117,8 @@ public class Frame implements CallHelper {
 	}
 
 	public static class CannotEvaluate extends RuntimeException {
+		private static final long serialVersionUID = 4298910252434913355L;
+
 		public CannotEvaluate(String reason)
 		{
 			super(reason);

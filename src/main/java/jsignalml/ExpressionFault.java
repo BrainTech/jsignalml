@@ -11,6 +11,8 @@ import static java.lang.String.format;
  * instead of expressions.
  */
 public class ExpressionFault extends RuntimeException {
+	private static final long serialVersionUID = 7719500197353152070L;
+
 	public ExpressionFault() {}
 	public ExpressionFault(Throwable cause) {
 		super(cause);
@@ -22,12 +24,16 @@ public class ExpressionFault extends RuntimeException {
 	/**
 	 * Assignement is forbidden.
 	 */
-	public static class AssignmentError extends ExpressionFault {}
+	public static class AssignmentError extends ExpressionFault {
+		private static final long serialVersionUID = -3454528897579581518L;
+	}
 
 	/**
 	 * Arguments passed to a function are wrong.
 	 */
 	public static class ValueError extends ExpressionFault {
+		private static final long serialVersionUID = 9214001167013056023L;
+
 		public ValueError(String message) {
 			super(message);
 		}
@@ -37,6 +43,7 @@ public class ExpressionFault extends RuntimeException {
 	 * An object of wrong type was passed.
 	 */
 	public static class TypeError extends ExpressionFault {
+		private static final long serialVersionUID = -2637767045944695520L;
 		public final Class<? extends Type> from, to;
 		public TypeError(Class<? extends Type> from, Class<? extends Type> to) {
 			this.from = from;
@@ -60,6 +67,7 @@ public class ExpressionFault extends RuntimeException {
 	 * An object of wrong type was passed.
 	 */
 	public static class Unsupported extends ExpressionFault {
+		private static final long serialVersionUID = -2950937959720456512L;
 		public final Class<? extends Type> type;
 		public final String operation;
 
@@ -78,6 +86,7 @@ public class ExpressionFault extends RuntimeException {
 	 * Param with a given name was not found.
 	 */
 	public static class NameError extends ExpressionFault {
+		private static final long serialVersionUID = 4231374170978836361L;
 		public final String name;
 		public NameError(java.lang.String name) {
 			this.name = name;
@@ -92,6 +101,7 @@ public class ExpressionFault extends RuntimeException {
 	 * Attribute with a given name was not found.
 	 */
 	public static class AttributeError extends ExpressionFault {
+		private static final long serialVersionUID = -4350498693303718448L;
 		public final String object, name;
 		public AttributeError(String object, String name) {
 			this.object = object;
@@ -113,6 +123,7 @@ public class ExpressionFault extends RuntimeException {
 	 * An out of bounds index.
 	 */
 	public static class IndexError extends ExpressionFault {
+		private static final long serialVersionUID = 1323922786439845723L;
 		public final long index, limit;
 		public IndexError(long index, long limit) {
 			this.index = index;
@@ -125,6 +136,7 @@ public class ExpressionFault extends RuntimeException {
 	}
 
 	public static class KeyError extends ExpressionFault {
+		private static final long serialVersionUID = 7979531271678809101L;
 		public final Type key;
 		public KeyError(Type key) {
 			this.key = key;
@@ -139,6 +151,7 @@ public class ExpressionFault extends RuntimeException {
 	 * A wrong number of arguments was used.
 	 */
 	public static class ArgMismatch extends ExpressionFault {
+		private static final long serialVersionUID = -989272934577362674L;
 		final int expected, present;
 		@Deprecated public ArgMismatch() {
 			this(-1, -1);
@@ -159,6 +172,7 @@ public class ExpressionFault extends RuntimeException {
 	 * No match for a given pattern was found.
 	 */
 	public static class NoMatchFoundError extends ExpressionFault {
+		private static final long serialVersionUID = -3189905529168663102L;
 		public final String text, pattern;
 		public NoMatchFoundError(java.lang.String text,
 				java.lang.String pattern) {
@@ -177,6 +191,7 @@ public class ExpressionFault extends RuntimeException {
 	 * expression evalution.
 	 */
 	public static class ExternalError extends ExpressionFault {
+		private static final long serialVersionUID = 1685835458140308288L;
 		public ExternalError(Throwable cause) {
 			super(cause);
 		}
@@ -189,6 +204,7 @@ public class ExpressionFault extends RuntimeException {
 	 * No attributes allowed for const
 	 */
 	public static class ConstAttributeError extends ExpressionFault {
+		private static final long serialVersionUID = 6327719056150106229L;
 		public final String name;
 
 		public ConstAttributeError(String name) {

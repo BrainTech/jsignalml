@@ -21,6 +21,7 @@ import org.w3c.dom.NodeList;
 public class XMLDocument
 {
 	public static class NodeError extends Exception {
+		private static final long serialVersionUID = -473104514836817338L;
 		public final String xpath;
 		public NodeError(String xpath) {
 			this.xpath = xpath;

@@ -44,6 +44,8 @@ public abstract class BitForm {
 	}
 
 	public static class BadBitForm extends Exception {
+		private static final long serialVersionUID = 1444830363920758159L;
+
 		public BadBitForm(java.lang.String description) {
 			super("bad BitFormat description '" + description + "'");
 		}
