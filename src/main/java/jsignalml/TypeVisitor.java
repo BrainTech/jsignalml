@@ -121,7 +121,7 @@ public class TypeVisitor extends ExpressionVisitor<Type> {
 	{
 		log.debug("Index %s[%s]", typename(seq), typename(index));
 		if (index != null && !(index instanceof TypeInt))
-			throw new ExpressionFault.TypeError();
+			throw new ExpressionFault.TypeError(index, new TypeInt());
 
 		if (seq != null && !(seq instanceof TypeList || seq instanceof TypeString))
 			throw new ExpressionFault.TypeError();
@@ -142,11 +142,11 @@ public class TypeVisitor extends ExpressionVisitor<Type> {
 		log.debug("Index %s[%s:%s:%s]", typename(seq),
 			  typename(start), typename(stop), typename(step));
 		if (start != null && !(start instanceof TypeInt))
-			throw new ExpressionFault.TypeError();
+			throw new ExpressionFault.TypeError(start, new TypeInt());
 		if (stop != null && !(stop instanceof TypeInt))
-			throw new ExpressionFault.TypeError();
+			throw new ExpressionFault.TypeError(stop, new TypeInt());
 		if (step != null && !(step instanceof TypeInt))
-			throw new ExpressionFault.TypeError();
+			throw new ExpressionFault.TypeError(step, new TypeInt());
 
 		if (seq != null && !(seq instanceof TypeList || seq instanceof TypeString))
 			throw new ExpressionFault.TypeError();
