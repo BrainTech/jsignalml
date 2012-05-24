@@ -59,7 +59,7 @@ public class CodecParser {
 		if (name.equals("param"))
 			return this.do_param(parent, element);
 		if (name.equals("arg"))
-			return this.do_arg(parent, element);
+			return CodecParser.do_arg(parent, element);
 		if (name.equals("assert"))
 			return this.do_assert(parent, element);
 		if (name.equals("for-each"))

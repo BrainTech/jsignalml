@@ -28,7 +28,7 @@ public class MyBuffer {
 		FileChannel channel = file.getChannel();
 		this.source = channel.map(MapMode.READ_ONLY, 0, channel.size());
 
-		log.info("setting byteorder %s", this.byteorder);
+		log.info("setting byteorder %s", MyBuffer.byteorder);
 		source.order(byteorder);
 	}
 

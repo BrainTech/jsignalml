@@ -53,7 +53,7 @@ public class XMLDocument
 	throws java.io.IOException,
 		org.xml.sax.SAXException
 	{
-		this.namespaceContext = null;
+		XMLDocument.namespaceContext = null;
 		this.document = docbuilder.parse(stream);
 	}
 
@@ -66,7 +66,7 @@ public class XMLDocument
 
 	public XMLDocument(InputStream stream, NamespaceContext namespaceContext)
 			throws java.io.IOException, org.xml.sax.SAXException {
-		this.namespaceContext = namespaceContext;
+		XMLDocument.namespaceContext = namespaceContext;
 		this.document = docbuilder.parse(stream);
 	}
 
