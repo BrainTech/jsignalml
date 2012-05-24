@@ -41,7 +41,7 @@ public class TypeString extends Type {
 
 	@Override
 	public Type binaryOp(BinaryOp op, TypeString other)
-		throws ExpressionFault.TypeError
+		throws ExpressionFault.TypeError, ExpressionFault.Unsupported
 	{
 		switch (op) {
 		case ADD: return this.add(other);
@@ -55,7 +55,7 @@ public class TypeString extends Type {
 
 		case LOG_AND:
 		case LOG_OR:
-			throw new RuntimeException();
+			throw new ExpressionFault.Unsupported(this.getClass(), op.toString());
 		default:
 			throw new ExpressionFault.TypeError(this.getClass(), other.getClass());
 		}

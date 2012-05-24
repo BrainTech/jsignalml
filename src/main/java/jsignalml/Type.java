@@ -162,7 +162,7 @@ public abstract class Type implements Comparable<Type> {
 		case GE: return new TypeInt(this.compareTo(other) >= 0);
 		case LOG_AND:
 		case LOG_OR:
-			throw new RuntimeException();
+			throw new ExpressionFault.Unsupported(this.getClass(), op.toString());
 		default:
 			throw new ExpressionFault.TypeError(this, other);
 		}
@@ -189,7 +189,7 @@ public abstract class Type implements Comparable<Type> {
 		case GE: return new TypeInt(this.compareTo(other) >= 0);
 		case LOG_AND:
 		case LOG_OR:
-			throw new RuntimeException();
+			throw new ExpressionFault.Unsupported(this.getClass(), op.toString());
 		default:
 			throw new ExpressionFault.TypeError(this, other);
 		}
@@ -339,7 +339,7 @@ public abstract class Type implements Comparable<Type> {
 			else
 				return unsupported("unary " + op);
 		default:
-			throw new RuntimeException();
+			throw new ExpressionFault.Unsupported(this.getClass(), op.toString());
 		}
 	}
 

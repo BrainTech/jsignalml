@@ -79,7 +79,7 @@ public class TypeList extends Type implements Iterable<Type> {
 
 	@Override
 	public Type binaryOp(BinaryOp op, TypeList other)
-		throws ExpressionFault.TypeError
+		throws ExpressionFault.TypeError, ExpressionFault.Unsupported
 	{
 		switch (op) {
 		case ADD: return this.add(other);
@@ -93,7 +93,7 @@ public class TypeList extends Type implements Iterable<Type> {
 
 		case LOG_AND:
 		case LOG_OR:
-			throw new RuntimeException();
+			throw new ExpressionFault.Unsupported(this.getClass(), op.toString());
 		default:
 			throw new ExpressionFault.TypeError(this, other);
 		}

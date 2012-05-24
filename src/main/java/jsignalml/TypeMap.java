@@ -103,7 +103,7 @@ public class TypeMap extends Type /* implements Map<Type, Type>  */ {
 
 	@Override
 	public Type binaryOp(BinaryOp op, TypeMap other)
-		throws ExpressionFault.TypeError
+		throws ExpressionFault.TypeError, ExpressionFault.Unsupported
 	{
 		final boolean value;
 		switch (op) {
@@ -130,7 +130,7 @@ public class TypeMap extends Type /* implements Map<Type, Type>  */ {
 
 		case LOG_AND:
 		case LOG_OR:
-			throw new RuntimeException();
+			throw new ExpressionFault.Unsupported(this.getClass(), op.toString());
 		default:
 			throw new ExpressionFault.TypeError(this.getClass(), other.getClass());
 		}
