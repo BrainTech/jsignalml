@@ -215,7 +215,7 @@ public class TypeString extends Type {
 			stop_ = default_stop;
 		}
 
-		final int newsize = (stop_ - start_) / step_;
+		//final int newsize = (stop_ - start_) / step_;
 		StringBuilder ans = new StringBuilder();
 		int i = -1; // value will not be ever used, I think
 		try {
