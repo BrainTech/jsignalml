@@ -4,7 +4,7 @@ import static java.lang.String.format;
 
 
 /**
- * An exception signyfing that an error occured during the execution
+ * An exception signifying that an error occurred during the execution
  * of an Expression.
  * This class is also used for errors in things that are not
  * expressions themselves, but are degenerate constants sometimes used
@@ -22,7 +22,7 @@ public class ExpressionFault extends RuntimeException {
 	}
 
 	/**
-	 * Assignement is forbidden.
+	 * Assignment is forbidden.
 	 */
 	public static class AssignmentError extends ExpressionFault {
 		private static final long serialVersionUID = -3454528897579581518L;
@@ -64,7 +64,7 @@ public class ExpressionFault extends RuntimeException {
 	}
 
 	/**
-	 * An object of wrong type was passed.
+	 * Operation is not supported by a class.
 	 */
 	public static class Unsupported extends ExpressionFault {
 		private static final long serialVersionUID = -2950937959720456512L;
@@ -135,6 +135,9 @@ public class ExpressionFault extends RuntimeException {
 		}
 	}
 
+	/**
+	 * Specified key has not been found in a map.
+	 */
 	public static class KeyError extends ExpressionFault {
 		private static final long serialVersionUID = 7979531271678809101L;
 		public final Type key;
@@ -188,7 +191,7 @@ public class ExpressionFault extends RuntimeException {
 
 	/**
 	 * Signifies an error detected by the environment in the course of
-	 * expression evalution.
+	 * expression evaluation.
 	 */
 	public static class ExternalError extends ExpressionFault {
 		private static final long serialVersionUID = 1685835458140308288L;
