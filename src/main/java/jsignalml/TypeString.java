@@ -112,7 +112,7 @@ public class TypeString extends Type {
 	}
 
 	public Type sub(Type other){
-		throw new ExpressionFault.TypeError();
+		throw new ExpressionFault.Unsupported(this.getClass(), "sub");
 	}
 
 	public Type mul(Type other){
@@ -128,29 +128,29 @@ public class TypeString extends Type {
 	}
 
 	public TypeFloat div(Type other){
-		throw new ExpressionFault.TypeError();
+		throw new ExpressionFault.Unsupported(this.getClass(), "div");
 	}
 
 	public TypeInt floordiv(Type other){
-		throw new ExpressionFault.TypeError();
+		throw new ExpressionFault.Unsupported(this.getClass(), "floordiv");
 	}
 
 	public Type mod(Type other){
-		throw new ExpressionFault.TypeError();
+		throw new ExpressionFault.Unsupported(this.getClass(), "mod");
 	}
 
 	public Type bin_and(Type other){
-		throw new ExpressionFault.TypeError();
+		throw new ExpressionFault.Unsupported(this.getClass(), "bin_and");
 	}
 	public Type bin_or(Type other){
-		throw new ExpressionFault.TypeError();
+		throw new ExpressionFault.Unsupported(this.getClass(), "bin_or");
 	}
 	public Type bin_xor(Type other){
-		throw new ExpressionFault.TypeError();
+		throw new ExpressionFault.Unsupported(this.getClass(), "bin_xor");
 	}
 
 	public Type pow(Type other){
-		throw new ExpressionFault.TypeError();
+		throw new ExpressionFault.Unsupported(this.getClass(), "pow");
 	}
 
 	public int compareTo(Type other){
@@ -230,13 +230,13 @@ public class TypeString extends Type {
 	}
 
 	public TypeInt pos() {
-		throw new ExpressionFault.TypeError();
+		throw new ExpressionFault.Unsupported(this.getClass(), "pos");
 	}
 	public TypeInt neg() {
-		throw new ExpressionFault.TypeError();
+		throw new ExpressionFault.Unsupported(this.getClass(), "neg");
 	}
 	public TypeInt bin_neg() {
-		throw new ExpressionFault.TypeError();
+		throw new ExpressionFault.Unsupported(this.getClass(), "bin_neg");
 	}
 
 	@Override
