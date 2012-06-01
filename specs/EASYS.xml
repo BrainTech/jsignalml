@@ -150,7 +150,7 @@
 							<param id='channel_name' type='str'>
 								<expr>trim(channel_name_ASCIIZ)</expr>
 							</param>
-							<param id='channel_type_name' type='str'>
+							<param id='channel_type' type='str'>
 								<expr>'EEG'</expr>
 							</param>
 							<param id='mapping' type='int'>

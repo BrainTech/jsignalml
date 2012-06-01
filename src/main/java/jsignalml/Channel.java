@@ -5,6 +5,13 @@ import java.nio.FloatBuffer;
 
 public interface Channel {
 	/*
+	 * Returns a single sample value.
+	 *
+	 * @param sample: the number of sample to return
+	 */
+	float getSample(long sample);
+
+	/*
 	 * Copy samples into a buffer.
 	 *
 	 * The indices between position and limit are filled.  Samples
@@ -16,14 +23,26 @@ public interface Channel {
 	 * @throws BufferUnderflowException if not enough samples are
 	 * available to fill the requested area.
 	 */
-	float getSample(long sample);
-
 	void getSamples(FloatBuffer dst, long sample) throws BufferUnderflowException;
-	/* void getSamples(DoubleBuffer dst, long sample); */
 
+	/**
+	 * Returns the sampling frequency for the channel.
+	 */
 	double getSamplingFrequency() throws ExpressionFault;
+
+	/**
+	 * Returns the number of channels.
+	 */
 	long getNumberOfSamples() throws ExpressionFault;
+
+	/**
+	 * Returns the channel name.
+	 */
 	String getChannelName() throws ExpressionFault;
-	String getChannelTypeName() throws ExpressionFault;
+
+	/**
+	 * Returns the channel type string.
+	 */
+	String getChannelType() throws ExpressionFault;
 
 }

@@ -1380,7 +1380,7 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 		getSamplingFrequencyMethod(klass, node);
 		getNumberOfSamplesMethod(klass, node);
 		getChannelNameMethod(klass, node);
-		getChannelTypeNameMethod(klass, node);
+		getChannelTypeMethod(klass, node);
 		getCalibrationGainMethod(klass, node);
 		getCalibrationOffsetMethod(klass, node);
 		getSampleUnitMethod(klass, node);
@@ -1723,12 +1723,12 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 		return method;
 	}
 
-	public JMethod getChannelTypeNameMethod(JDefinedClass klass, ASTNode.Channel node)
+	public JMethod getChannelTypeMethod(JDefinedClass klass, ASTNode.Channel node)
 	{
-		final JMethod method = klass.method(JMod.PUBLIC, String_t, "getChannelTypeName");
+		final JMethod method = klass.method(JMod.PUBLIC, String_t, "getChannelType");
 		comment_stamp(method.body());
 
-		JInvocation ji = JExpr.invoke("get_channel_type_name").invoke("get");
+		JInvocation ji = JExpr.invoke("get_channel_type").invoke("get");
 
 		final JVar value = method.body().decl(Type_t, "value", ji);
 		final JInvocation jiji = method.body().decl(TypeString_t, "stringValue",

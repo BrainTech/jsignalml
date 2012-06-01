@@ -136,7 +136,7 @@
 					<group>2</group>
 				</param>
 
-				<param id='channel_type_name' type='str'>
+				<param id='channel_type' type='str'>
 					<expr>'MEG'</expr>
 				</param>
 

@@ -116,7 +116,7 @@
 						<pattern>line_pattern_for_channel_sensitivities</pattern>
 						<group>1</group>
 					</param>
-					<param id='channel_type_name' type='str'>
+					<param id='channel_type' type='str'>
 						<expr>'MEG'</expr>
 					</param>
 					<param id='channel_sensitivity' type='float'>

@@ -4,16 +4,29 @@ package jsignalml;
  * introduction of this concept now will make things easier later on.
  */
 public interface ChannelSet extends Iterable<Channel> {
+
+
+	/**
+	 * Returns the number of channels
+	 *
+	 * @throws ExpressionFault
+	 */
 	int getNumberOfChannels() throws ExpressionFault;
 	Channel getChannel(int channel);
 
-	/*
+	/**
 	 * Return the sampling frequency, if it is the same in all channels.
 	 *
 	 * @throws ExpressionFault if has_uniform_sampling_frequency() is false
 	 */
 	double getSamplingFrequency()
 		throws ExpressionFault;
+
+	/**
+	 * Indicates if all channels in the set have same sampling frequency
+	 *
+	 * @throws ExpressionFault
+	 */
 	boolean hasUniformSamplingFrequency()
 		throws ExpressionFault;
 
