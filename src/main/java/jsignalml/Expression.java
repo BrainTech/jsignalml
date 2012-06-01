@@ -394,6 +394,9 @@ public abstract class Expression {
 		public static Expression make(boolean bool) {
 			return new Const(new TypeBool(bool));
 		}
+		public static Expression make(TypeBytes.ByteSequence bytes) {
+			return new Const(new TypeBytes(bytes));
+		}
 
 		@Override
 		public <T> T accept(ExpressionVisitor<T> v)

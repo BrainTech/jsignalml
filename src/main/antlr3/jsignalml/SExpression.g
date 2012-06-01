@@ -224,6 +224,7 @@ atom
     :	INT
     |	BOOL
     |	FLOAT
+    |   BYTES
     |	STRING
     |	'('! expr ')'!
     |   '[' ']' -> ^(LIST)
@@ -265,6 +266,10 @@ WS  :   ( ' '
 STRING
     :  '"' ( ESC_SEQ | ~('\\'|'"') )* '"'
     | '\'' ( ESC_SEQ | ~('\\'|'\'') )* '\''
+    ;
+
+BYTES
+    : ('B'|'b') STRING
     ;
 
 fragment

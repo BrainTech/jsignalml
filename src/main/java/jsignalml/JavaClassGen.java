@@ -80,6 +80,7 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 	final JClass Long_t = this.model.ref(Long.class);
 	final JClass Double_t = this.model.ref(Double.class);
 	final JClass Boolean_t = this.model.ref(Boolean.class);
+	final JClass ByteSequence_t = this.model.ref(TypeBytes.ByteSequence.class);
 	final JClass Type_t = this.model.ref(Type.class);
 	final JClass TypeInt_t = this.model.ref(TypeInt.class);
 	final JClass TypeFloat_t = this.model.ref(TypeFloat.class);
@@ -87,6 +88,7 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 	final JClass TypeList_t = this.model.ref(TypeList.class);
 	final JClass TypeMap_t = this.model.ref(TypeMap.class);
 	final JClass TypeBool_t = this.model.ref(TypeBool.class);
+	final JClass TypeBytes_t = this.model.ref(TypeBytes.class);
 	final JClass List_of_Type_t = this.model.ref(List.class).narrow(Type.class);
 
 	final JFieldRef TypeInt_I = TypeInt_t.staticRef("I");
@@ -95,6 +97,7 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 	final JFieldRef TypeList_I = TypeList_t.staticRef("I");
 	final JFieldRef TypeMap_I = TypeMap_t.staticRef("I");
 	final JFieldRef TypeBool_I = TypeBool_t.staticRef("I");
+	final JFieldRef TypeBytes_I = TypeBytes_t.staticRef("I");
 
 	final JClass ArgMismatch_t = this.model.ref(ExpressionFault.ArgMismatch.class);
 	final JClass ContextDumper_t = this.model.ref(ContextDumper.class);
@@ -763,6 +766,9 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 		} else if (wanted instanceof TypeBool) {
 			get = get.invoke("getValue");
 			type = Boolean_t;
+		} else if (wanted instanceof TypeBytes) {
+			get = get.invoke("getValue");
+			type = ByteSequence_t;
 		} else {
 			return null;
 		}

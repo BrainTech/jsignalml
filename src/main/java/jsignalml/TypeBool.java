@@ -121,7 +121,6 @@ public class TypeBool extends Type {
 
 	/**
 	 * Compares this <code>TypeBool</code> instance with another.
-	 * <code>this</code> object.
 	 *
 	 * @param other
 	 *            the <code>TypeBool</code> instance to be compared
@@ -143,7 +142,6 @@ public class TypeBool extends Type {
 
 	/**
 	 * Compares this <code>TypeBool</code> instance with another.
-	 * <code>this</code> object.
 	 *
 	 * @param other
 	 *            the <code>TypeBool</code> instance to be compared
@@ -163,10 +161,7 @@ public class TypeBool extends Type {
 	 *
 	 * @param other
 	 *            the other <code>Type</code> instance
-	 * @return the other object reference if the type of the object is
-	 *         <code>TypeBool</code>; new instance of <code>TypeBool</code>
-	 *         value based on other object if the other is <code>TypeInt</code>,
-	 *         <code>TypeFloat</code> or <code>TypeString</code>.
+	 * @return new instance of <code>TypeBool</code> class
 	 * @throws ExpressionFault.TypeError
 	 *             in case the other object is of different class than
 	 *             <code>TypeBool</code>, <code>TypeString</code>,

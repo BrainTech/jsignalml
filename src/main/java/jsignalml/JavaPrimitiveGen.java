@@ -14,6 +14,8 @@ import com.sun.codemodel.JType;
  */
 public class JavaPrimitiveGen extends JavaExprGen {
 
+	final JClass ByteSequence_t = this.model.ref(TypeBytes.ByteSequence.class);
+
 	JavaPrimitiveGen(JCodeModel model, JavaNameResolver context)
 	{
 		super(model, context);
@@ -100,6 +102,8 @@ public class JavaPrimitiveGen extends JavaExprGen {
 			repr = JExpr.lit(((TypeString)val.value).getValue());
 		} else if (val.value instanceof TypeBool) {
 			repr = JExpr.lit(((TypeBool)val.value).getValue());
+		} else if (val.value instanceof TypeBytes) {
+			repr = TypeBytes.ByteSequence.lit(((TypeBytes)val.value).getValue());
 		} else {
 			throw new ExpressionFault.Unsupported(val.getType().getClass(),
 				"primitive evaluation. Type was not specified correctly, evaluation cannot be used"
@@ -124,6 +128,8 @@ public class JavaPrimitiveGen extends JavaExprGen {
 			return this.model.ref(String.class);
 		else if (type instanceof TypeBool)
 			return this.model.BOOLEAN;
+		else if (type instanceof TypeBytes)
+			return this.ByteSequence_t;
 		else
 			throw new ExpressionFault.Unsupported(type.getClass(),
 				"primitive evaluation. Type was not specified correctly, evaluation cannot be used"

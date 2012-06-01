@@ -51,6 +51,8 @@ public class TypeMap extends Type /* implements Map<Type, Type>  */ {
 				typed[i] = new TypeString((String) item);
 			} else if (item instanceof Boolean) {
 				typed[i] = new TypeBool((Boolean) item);
+			} else if (item instanceof TypeBytes.ByteSequence) {
+				typed[i] = new TypeBytes((TypeBytes.ByteSequence) item);
 			} else {
 				throw new RuntimeException();
 			}

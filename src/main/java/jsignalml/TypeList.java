@@ -45,6 +45,8 @@ public class TypeList extends Type implements Iterable<Type> {
 				list.add(new TypeString((String) item));
 			} else if (item instanceof Boolean) {
 				list.add(new TypeBool((Boolean) item));
+			} else if (item instanceof TypeBytes.ByteSequence) {
+				list.add(new TypeBytes((TypeBytes.ByteSequence) item));
 			} else {
 				throw new RuntimeException();
 			}

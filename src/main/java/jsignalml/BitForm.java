@@ -722,4 +722,47 @@ public abstract class BitForm {
 				+ "(" + this.size + ")";
 		}
 	}
+
+	public static class Bytes extends BitForm {
+		protected static final Logger log = new Logger(Bytes.class);
+
+		public TypeBytes readType()
+		{
+			return TypeBytes.I;
+		}
+
+		final int size;
+
+		public Bytes(int size) {
+			this.size = size;
+		}
+
+		@Override
+		public float read(ByteBuffer buffer, int offset_) {
+			throw new ExpressionFault.ValueError("Unsupported format for Primitive Types read");
+		}
+
+		@Override
+		public TypeBytes read(ByteBuffer buffer, TypeInt offset) {
+			int offset_ = offset.safeIntValue();
+			log.info("BitForm.Bytes.read: buffer=%s offset=%d",
+			         buffer, offset_);
+			buffer = buffer.asReadOnlyBuffer();
+			try {
+				buffer.limit(offset_ + this.size).position(offset_);
+			} catch(IllegalArgumentException e) {
+				throw new ExpressionFault(e);
+			}
+
+			byte[] data = new byte[this.size];
+			buffer.get(data);
+			return new TypeBytes(new java.lang.String(data));
+		}
+
+		public java.lang.String toString()
+		{
+			return this.getClass().getName().replace("$", ".")
+				+ "(" + this.size + ")";
+		}
+	}
 }

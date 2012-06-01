@@ -137,6 +137,8 @@ public abstract class Type implements Comparable<Type> {
 			return this.binaryOp(op, (TypeMap) other);
 		else if (other instanceof TypeBool)
 			return this.binaryOp(op, (TypeBool) other);
+		else if (other instanceof TypeBytes)
+			return this.binaryOp(op, (TypeBytes) other);
 		else
 			throw new RuntimeException("unknown type in expression: " + other.getClass());
 	}
@@ -221,14 +223,21 @@ public abstract class Type implements Comparable<Type> {
 		}
 	}
 
+	public Type binaryOp(BinaryOp op, TypeBytes other)
+	{
+		throw new ExpressionFault.TypeError(this, other);
+	}
+
 	public Type binaryOp(BinaryOp op, TypeString other)
 	{
 		throw new ExpressionFault.TypeError(this, other);
 	}
+
 	public Type binaryOp(BinaryOp op, TypeList other)
 	{
 		throw new ExpressionFault.TypeError(this, other);
 	}
+
 	public Type binaryOp(BinaryOp op, TypeMap other)
 	{
 		throw new ExpressionFault.TypeError(this, other);
@@ -278,6 +287,8 @@ public abstract class Type implements Comparable<Type> {
 			return this._binaryOpType(op, (TypeMap) other);
 		else if (other instanceof TypeBool)
 			return this._binaryOpType(op, (TypeBool) other);
+		else if (other instanceof TypeBytes)
+			return this._binaryOpType(op, (TypeBytes) other);
 		else
 			throw new RuntimeException("unknown type in expression: " + other);
 	}
@@ -295,18 +306,22 @@ public abstract class Type implements Comparable<Type> {
 	}
 
 	public abstract Type _binaryOpType(BinaryOp op, TypeInt other);
+
 	public Type _binaryOpType(BinaryOp op, TypeFloat other)
 	{
 		throw new ExpressionFault.TypeError(other, this);
 	}
+
 	public Type _binaryOpType(BinaryOp op, TypeString other)
 	{
 		throw new ExpressionFault.TypeError(other, this);
 	}
+
 	public Type _binaryOpType(BinaryOp op, TypeList other)
 	{
 		throw new ExpressionFault.TypeError(other, this);
 	}
+
 	public Type _binaryOpType(BinaryOp op, TypeMap other)
 	{
 		throw new ExpressionFault.TypeError(other, this);
@@ -316,6 +331,9 @@ public abstract class Type implements Comparable<Type> {
 		throw new ExpressionFault.TypeError(other, this);
 	}
 
+	public Type _binaryOpType(BinaryOp op, TypeBytes other) {
+		throw new ExpressionFault.TypeError(other, this);
+	}
 
 	public Type unaryOp(UnaryOp op)
 	{
@@ -451,6 +469,7 @@ public abstract class Type implements Comparable<Type> {
 		registerType("list", new TypeList());
 		registerType("map", new TypeMap());
 		registerType("bool", new TypeBool());
+		registerType("bytes", new TypeBytes());
 	}
 
 	public static String typename(Type type) {

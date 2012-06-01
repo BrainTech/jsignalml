@@ -93,6 +93,9 @@ expr returns [Expression value]
     | STRING
         { TypeString tmp = TypeString.fromQuoted($STRING.text);
           $value = new Expression.Const(tmp); }
+    | BYTES
+        { TypeBytes tmp = TypeBytes.fromQuoted($BYTES.text);
+          $value = new Expression.Const(tmp); }
     | ^(TERN q=expr a=expr b=expr)
         { $value = new Expression.Ternary($q.value, $a.value, $b.value); }
     | NIL

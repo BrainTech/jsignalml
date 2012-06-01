@@ -61,6 +61,10 @@ public class TypeInt extends Type {
 		this(value.getValue());
 	}
 
+	public TypeInt(TypeBytes value) {
+		this(value.getValue().toString());
+	}
+
 	@Override
 	public TypeInt make(Type other) {
 		if (other instanceof TypeInt)
@@ -71,6 +75,8 @@ public class TypeInt extends Type {
 			return new TypeInt(((TypeString)other).value);
 		else if (other instanceof TypeBool)
 			return new TypeInt(((TypeBool) other).getValue());
+		else if (other instanceof TypeBytes)
+			return new TypeInt(((TypeBytes) other).getValue().toString());
 		else
 			throw new ExpressionFault.TypeError(other, this);
 	}
