@@ -83,7 +83,6 @@ public class CheckCodec {
 	private static final boolean LOG_INFO = true;
 	private static final boolean LOG_WARNING = true;
 	private static final boolean LOG_ERROR = true;
-	private static final boolean LOG_FATAL = true;
 	private static final boolean LOG_TEST = true;
 
 	/**
@@ -796,7 +795,7 @@ public class CheckCodec {
 			} else if (type instanceof Float) {
 				value = new Float(Float.parseFloat(valueStr));
 			} else {
-				if (CheckCodec.LOG_ERROR) System.out.println("Failed during convertion: value for " + item 
+				if (CheckCodec.LOG_ERROR) System.out.println("Failed during convertion: value for " + item
 					+ " item cannot have not supported type (" + type.getClass().getName() + ")");
 				return null;
 			}
@@ -870,7 +869,7 @@ public class CheckCodec {
 			}
 			return arrayList.toArray(typeArray);
 		} else {
-			if (CheckCodec.LOG_ERROR) System.out.println("Failed during convertion: values for " + item 
+			if (CheckCodec.LOG_ERROR) System.out.println("Failed during convertion: values for " + item
 				+ " item cannot have not supported type (" + type.getClass().getName() + ")");
 			return null;
 		}
@@ -1844,7 +1843,7 @@ public class CheckCodec {
 		outDtaFisSize = outDtaFisChannel.size();
 		if (CheckCodec.LOG_INFO) System.out.println("File size: " + outDtaFisSize + " bytes = " + (outDtaFisSize/1024f)
 			+ " kB = " + (outDtaFisSize/1048576f) + " MB = " + (outDtaFisSize/1073741824f) + " GB");
-		
+
 		outDtaFisNrOfChannels = outDtaFisMapBuffer.getInt(0);
 		if (CheckCodec.LOG_INFO) System.out.println("Nr of channels found: " + outDtaFisNrOfChannels);
 		if (outDtaFisNrOfChannels * outDtaFisLengthNrOfSamplesPerChannel >= outDtaFisSize) {
@@ -1910,7 +1909,7 @@ public class CheckCodec {
 			System.out.println("Using:\njava " + CheckCodec.class.getSimpleName() + " input_header input_data output_header.hdr output_data.float");
 			return;
 		}
-		String      codecName = args[0]; //String  inHdrFileName = args[0]; //codec to use (EASYS, M4D, ...)
+		String      codecName = args[0]; //String  inHdrFileName = args[0]; //codec to use (ALT, EASYS, M4D, New4D, New4DAscii, TextFile, XML, ...)
 		String  inDtaFileName = args[1]; //d:/grst/projects/UW/data/for_EASYS_codec/inb02.d                          //d:/grst/projects/UW/data/for_4D_format/m4d/example_data/Art_e,rfhp0.1Hz,n,ccfbp10-40-508-2,cag,c,n,tm,bahe001-1High350,a.m4d
 		String outHdrFileName = args[2]; //d:/grst/projects/UW/data/for_EASYS_codec/EASYS/inb02-unscaled/inb02.hdr   //d:/grst/projects/UW/data/for_4D_format/m4d/example_data/Art_e,rfhp0.1Hz,n,ccfbp10-40-508-2,cag,c,n,tm,bahe001-1High350,a.hdr
 		String outDtaFileName = args[3]; //d:/grst/projects/UW/data/for_EASYS_codec/EASYS/inb02-unscaled/inb02.float //d:/grst/projects/UW/data/for_4D_format/m4d/example_data/Art_e,rfhp0.1Hz,n,ccfbp10-40-508-2,cag,c,n,tm,bahe001-1High350,a.float
@@ -1936,27 +1935,16 @@ public class CheckCodec {
 			}
 		}
 		Signalml reader = null; //TODO please make abstract method getSignalml() and superclass of the CheckCodec will give us there codec EASYS or M4D or ...
-		if (codecName.equalsIgnoreCase("EASYS")) {
-			if (CheckCodec.LOG_INFO) System.out.println("You selected EASYS codec. Trying to use it.");
-			reader = new EASYS();
-		} else if (/*codecName.equalsIgnoreCase("4D") ||*/ codecName.equalsIgnoreCase("M4D")) {
-			if (CheckCodec.LOG_INFO) System.out.println("You selected M4D codec. Trying to use it.");
-			reader = new M4D();
-		} else if (codecName.equalsIgnoreCase("4D") || codecName.equalsIgnoreCase("New4D")) {
-			if (CheckCodec.LOG_INFO) System.out.println("You selected New4D codec. Trying to use it.");
-			reader = new New4D();
-		} else if (codecName.equalsIgnoreCase("EDF")) {
-			if (CheckCodec.LOG_FATAL) System.out.println("Fatal error! EDF codec is not supported yet. It is under construction.");
+		try {
+			reader = (Signalml) Class.forName(codecName).newInstance();
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
 			return;
-		} else if (codecName.equalsIgnoreCase("GDF")) {
-			if (CheckCodec.LOG_FATAL) System.out.println("Fatal error! GDF codec is not supported yet. It is under construction.");
+		} catch (InstantiationException e) {
+			e.printStackTrace();
 			return;
-		} else if (codecName.equalsIgnoreCase("BDF")) {
-			if (CheckCodec.LOG_FATAL) System.out.println("Fatal error! BDF codec is not supported yet. It is under construction.");
-			return;
-		} else {
-			if (CheckCodec.LOG_ERROR) System.out.println("Error! Unknown codec name '" + codecName +
-				"'. Instead of it pelase use one of the codec names from the list: EASYS, New4D, M4D, EDF, GDF, BDF.");
+		} catch (IllegalAccessException e) {
+			e.printStackTrace();
 			return;
 		}
 		CheckCodec checkCodec = new CheckCodec(reader);
@@ -1970,7 +1958,7 @@ public class CheckCodec {
 			fileName = outHdrFileName + " (or) " + outDtaFileName;
 			boolean outDtaStatus = checkCodec.getOutDta(outHdrFileName, outDtaFileName, exitOnNrsOfChannelsError);
 			if (!outDtaStatus) return;
-			//then compare everything (outBody with outHdr and with in) 
+			//then compare everything (outBody with outHdr and with in)
 			fileName = "(unknown)";
 			boolean verificationStatus = checkCodec.checkChannels(verificationMultiplyFactor,
 				testPrecisionRelForSample, testPrecisionRelForSamplingFrequency,
