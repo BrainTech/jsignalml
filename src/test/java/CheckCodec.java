@@ -1527,7 +1527,7 @@ public class CheckCodec {
 			throws IOException {
 		long inDtaChannelObjectNumberOfSamplesPerChannel = inDtaChannelObject.getNumberOfSamples();
 		String inDtaChannelObjectChannelName = inDtaChannelObject.getChannelName();
-		String inDtaChannelObjectChannelTypeName = inDtaChannelObject.getChannelTypeName();
+		String inDtaChannelObjectChannelTypeName = inDtaChannelObject.getChannelType();
 		double inDtaChannelObjectSamplingFrequency = inDtaChannelObject.getSamplingFrequency();
 		boolean gotoNextChannel = false;
 		boolean gotoNextSamplePortionBig = false;

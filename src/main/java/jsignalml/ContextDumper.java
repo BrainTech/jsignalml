@@ -82,7 +82,7 @@ public class ContextDumper implements ContextVisitor<Integer> {
 	{
 		long count = node.getNumberOfSamples();
 		int ans = dumper.put(level, "Channel %s type=%s name=%s length=%d\n", name,
-			node.getChannelTypeName(), node.getChannelName(), count);
+			node.getChannelType(), node.getChannelName(), count);
 		if (count < 3) throw new RuntimeException("Number of samples must be at least 3!");
 
 		List<String> array = util.newLinkedList();
