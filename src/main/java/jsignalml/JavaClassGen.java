@@ -360,7 +360,7 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 			final JVar channelName = forbody.decl(String_t, "channelName",
 					channel.invoke("getChannelName"));
 			final JVar channelType = forbody.decl(String_t, "channelType",
-					channel.invoke("getChannelTypeName"));
+					channel.invoke("getChannelType"));
 			final JExpression channelInfo = JExpr.lit("Channel #").plus(channelNr)
 					.plus(JExpr.lit("[").plus(channelType).plus(JExpr.lit(" ").plus(channelName)))
 					.plus(JExpr.lit("] has ").plus(nrOfSamples).plus(JExpr.lit(" samples:")));
