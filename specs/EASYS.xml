@@ -39,10 +39,6 @@
 			<offset>16</offset>
 		</param>
 
-		<param id='sample_unit' type='float'>
-			<expr>1</expr>
-		</param>
-
 		<param id='number_of_auxiliary_channels'>
 			<format>'|u1'</format>
 			<offset>17</offset>

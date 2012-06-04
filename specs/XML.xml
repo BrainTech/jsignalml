@@ -59,10 +59,6 @@
 			<xpath xpath-evaluation-type='node-content'>'/rs:rawSignal/rs:firstSampleTimestamp'</xpath>
 		</param>
 
-		<param id='sample_unit' type='float'>
-			<expr>1</expr>
-		</param>
-
 		<file id='data_file' type='binary' filename='data_filename'>
 		</file>
 

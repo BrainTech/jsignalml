@@ -11,9 +11,6 @@
 			<pattern>"number_of_channels: ([0-9]+.[0-9]*)"</pattern>
 			<group>1</group>
 		</param>
-		<param id='sample_unit' type='float'>
-			<expr>1</expr>
-		</param>
 		<param id='sample_size' type='int'>
 			<expr>4</expr>
 		</param>

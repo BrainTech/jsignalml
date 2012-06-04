@@ -1383,7 +1383,6 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 		getChannelTypeMethod(klass, node);
 		getCalibrationGainMethod(klass, node);
 		getCalibrationOffsetMethod(klass, node);
-		getSampleUnitMethod(klass, node);
 
 		return klass;
 	}
@@ -1626,11 +1625,8 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 		final JVar calibOffs = body.decl(this.model.FLOAT, "calibOffs",
 				JExpr.invoke("getCalibrationOffset").invoke("getValue")
 				.invoke("floatValue"));
-		final JVar sampleUnit = body.decl(this.model.FLOAT, "sampleUnit",
-				JExpr.invoke("getSampleUnit").invoke("getValue")
-				.invoke("floatValue"));
-		body._return(rawValue.minus(calibOffs).mul(calibGain)
-				.mul(sampleUnit));
+
+		body._return(rawValue.minus(calibOffs).mul(calibGain));
 		return method;
 	}
 
@@ -1671,19 +1667,6 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 		final JVar cast = method.body().decl(TypeInt_t, "cast",
 						     TypeInt_I.invoke("make").arg(value));
 		method.body()._return(cast.invoke("safeLongValue"));
-		return method;
-	}
-
-	public JMethod getSampleUnitMethod(JDefinedClass klass, ASTNode.Channel node)
-	{
-		final JMethod method = klass.method(JMod.PUBLIC, TypeFloat_t,
-				"getSampleUnit");
-		comment_stamp(method.body());
-		final JVar value = method.body().decl(Type_t, "value",
-				JExpr.invoke("get_sample_unit").invoke("get"));
-		final JVar cast = method.body().decl(TypeFloat_t, "cast",
-				TypeFloat_I.invoke("make").arg(value));
-		method.body()._return(cast);
 		return method;
 	}
 

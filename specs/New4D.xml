@@ -94,9 +94,6 @@
 		<param id='sample_format' type='str'>
 			<expr>str(format.sample_format_1)</expr>
 		</param>
-		<param id='sample_unit' type='float'>
-			<expr>1</expr>
-		</param>
 
 		<file id='data_file' type='binary' filename='data_filename' />
 

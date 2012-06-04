@@ -47,10 +47,6 @@
 			<group>2</group>
 		</param>
 
-		<param id='sample_unit' type='float'>
-			<expr>1</expr>
-		</param>
-
 		<param id='unit' type='str'>
 			<expr>'μV'</expr>
 		</param>
