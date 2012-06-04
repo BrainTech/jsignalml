@@ -56,6 +56,90 @@ public class TypeBytes extends Type {
 	}
 
 	/**
+	 *
+	 * Constructs new instance of <code>TypeBytes</code> with value based on
+	 * specified <code>TypeString</code> instance
+	 *
+	 * @param s
+	 *            specified <code>TypeString</code> instance
+	 */
+	public TypeBytes(TypeString str) {
+		this(str.value);
+	}
+
+	/**
+	 *
+	 * Constructs new instance of <code>TypeBytes</code> with value based on
+	 * specified <code>TypeBool</code> instance
+	 *
+	 * @param bool
+	 *            specified <code>TypeBool</code> instance
+	 */
+	public TypeBytes(TypeBool bool) {
+		this(String.valueOf(bool.getValue()));
+	}
+
+	/**
+	 *
+	 * Constructs new instance of <code>TypeBytes</code> with value based on
+	 * specified <code>boolean</code> value
+	 *
+	 * @param bool
+	 *            specified <code>boolean</code> value
+	 */
+	public TypeBytes(boolean bool) {
+		this(String.valueOf(bool));
+	}
+
+	/**
+	 *
+	 * Constructs new instance of <code>TypeBytes</code> with value based on
+	 * specified <code>TypeInt</code> instance
+	 *
+	 * @param integer
+	 *            specified <code>TypeInt</code> instance
+	 */
+	public TypeBytes(TypeInt integer) {
+		this(integer.value.toString());
+	}
+
+	/**
+	 *
+	 * Constructs new instance of <code>TypeBytes</code> with value based on
+	 * specified <code>long</code> value
+	 *
+	 * @param integer
+	 *            specified <code>long</code> value
+	 */
+	public TypeBytes(long integer) {
+		this(String.valueOf(integer));
+	}
+
+	/**
+	 *
+	 * Constructs new instance of <code>TypeBytes</code> with value based on
+	 * specified <code>TypeFloat</code> instance
+	 *
+	 * @param flvalue
+	 *            specified <code>TypeFloat</code> instance
+	 */
+	public TypeBytes(TypeFloat flvalue) {
+		this(String.valueOf(flvalue.value));
+	}
+
+	/**
+	 *
+	 * Constructs new instance of <code>TypeBytes</code> with value based on
+	 * specified <code>double</code> value
+	 *
+	 * @param flvalue
+	 *            specified <code>double</code> value
+	 */
+	public TypeBytes(double flvalue) {
+		this(String.valueOf(flvalue));
+	}
+
+	/**
 	 * Constructs new instance of <code>TypeBytes</code> with empty byte
 	 * sequence.
 	 *
@@ -293,7 +377,7 @@ public class TypeBytes extends Type {
 	 *            <i>bytes</i> literal
 	 * @return new <code>TypeBytes</code> instance
 	 */
-	public static TypeBytes fromQuoted(java.lang.String quoted) {
+	public static TypeBytes fromQuoted(String quoted) {
 		return new TypeBytes(unquote(quoted));
 	}
 
@@ -427,7 +511,7 @@ public class TypeBytes extends Type {
 		 *            <code>ByteSequence</code> value
 		 */
 		JBytesLiteral(ByteSequence what) {
-			str = what.toString();
+			str = "\"" + what.toString() + "\"";
 		}
 
 		/**

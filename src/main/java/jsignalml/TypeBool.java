@@ -76,6 +76,17 @@ public class TypeBool extends Type {
 	}
 
 	/**
+	 * Constructs instance of class <code>TypeBool</code> based on
+	 * <code>TypeBytes</code> instance value.
+	 *
+	 * @param bytesVal
+	 *            <code>TypeBytes</code> instance
+	 */
+	public TypeBool(TypeBytes bytesVal) {
+		this(bytesVal.getValue().toString());
+	}
+
+	/**
 	 * Constructs instance of class <code>TypeBool</code> directly from a given
 	 * boolean value.
 	 *
@@ -177,8 +188,11 @@ public class TypeBool extends Type {
 			return new TypeBool(((TypeString) other).getValue());
 		} else if (other instanceof TypeFloat) {
 			return new TypeBool((TypeFloat) other);
+		} else if (other instanceof TypeBytes) {
+			return new TypeBool((TypeBytes) other);
+		} else {
+			throw new ExpressionFault.TypeError(other, this);
 		}
-		throw new ExpressionFault.TypeError(other, this);
 	}
 
 	/**
@@ -192,7 +206,8 @@ public class TypeBool extends Type {
 	}
 
 	/**
-	 * @see jsignalml.Type#_binaryOpType(jsignalml.Type.BinaryOp, jsignalml.TypeInt)
+	 * @see jsignalml.Type#_binaryOpType(jsignalml.Type.BinaryOp,
+	 *      jsignalml.TypeInt)
 	 */
 	@Override
 	public Type _binaryOpType(BinaryOp op, TypeInt other) {

@@ -19,6 +19,10 @@ public class TypeFloat extends Type {
 		this(value.value);
 	}
 
+	public TypeFloat(TypeBytes value) {
+		this(value.getValue().toString());
+	}
+
 	public TypeFloat() {
 		this(0.0);
 	}
@@ -27,11 +31,14 @@ public class TypeFloat extends Type {
 	public TypeFloat make(Type value) {
 		if (value instanceof TypeFloat)
 			return (TypeFloat)value;
-		if (value instanceof TypeInt)
+		else if (value instanceof TypeInt)
 			return new TypeFloat(((TypeInt)value).getValue());
-		if (value instanceof TypeString)
+		else if (value instanceof TypeString)
 			return new TypeFloat(((TypeString)value).getValue());
-		throw new ExpressionFault.TypeError(value, this);
+		else if (value instanceof TypeBytes)
+			return new TypeFloat(((TypeBytes)value).getValue().toString());
+		else
+			throw new ExpressionFault.TypeError(value, this);
 	}
 
 	@Override
