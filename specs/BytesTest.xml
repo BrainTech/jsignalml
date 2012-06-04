@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<!DOCTYPE signalml SYSTEM "SignalML_2_0.dtd">
+<signalml>
+
+	<header>
+		<text_info>SignalML definition for dummy codec, designed to test bytes type</text_info>
+	</header>
+
+	<param id='bytes1test' type='bytes'>
+		<expr>B'abcdABCD'</expr>
+	</param>
+
+	<param id='bytes2test' type='bytes'>
+		<expr>b'123456789'</expr>
+	</param>
+
+	<param id='bytes3test' type='bytes'>
+		<expr>b"ABCDabcd"</expr>
+	</param>
+
+	<param id='bytes4test' type='bytes'>
+		<expr>B"0abcd"</expr>
+	</param>
+
+</signalml>
