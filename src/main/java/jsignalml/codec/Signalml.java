@@ -42,6 +42,12 @@ public abstract class Signalml extends Context implements jsignalml.Source {
 		return this.channel_set_list.get(0);
 	}
 
+	public ChannelSet get_set(int id) {
+		assert(!this.channel_set_list.isEmpty());
+		assert(id < getNumberOfChannelSets());
+		return this.channel_set_list.get(id);
+	}
+
 	public abstract class FileClass extends Context {
 		MyBuffer buffer;
 		TextBuffer textBuffer;

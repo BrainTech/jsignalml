@@ -1,0 +1,168 @@
+<?xml version="1.0"?>
+<!DOCTYPE signalml SYSTEM "SignalML_2_0.dtd">
+<signalml>
+	<header>
+		<text_info>SignalML definition for ALT format</text_info>
+	</header>
+	<file id='main' type='text'>
+
+		<!-- global header items -->
+		<param id='number_of_channels' type='int'>
+			<pattern>"number_of_channels: ([0-9]+.[0-9]*)"</pattern>
+			<group>1</group>
+		</param>
+		<param id='sample_size' type='int'>
+			<expr>4</expr>
+		</param>
+		<param id='sample_format' type='str'>
+			<expr>str("&gt;i4")</expr>
+		</param>
+
+		<!-- set of channels -->
+		<channelset id='data'>
+			<for-each id='channels' var='index' sequence='range(number_of_channels)' type='int'>
+
+				<!-- local header patterns -->
+				<param id='channel_name_pattern' type='str'>
+					<expr>"channel_names: ([a-zA-Z0-9]+,){" + str(index) + "}([A-Za-z0-9]+)"</expr>
+				</param>
+				<param id='channel_type_name_pattern' type='str'>
+					<expr>"channel_types: ([a-zA-Z0-9]+,){" + str(index) + "}([A-Za-z0-9]+)"</expr>
+				</param>
+				<param id='channel_filename_pattern' type='str'>
+					<expr>"channel_filenames: ([a-zA-Z0-9._-]+,){" + str(index) + "}([a-zA-Z0-9._-]+)"</expr>
+				</param>
+				<param id='channel_sampling_frequency_pattern' type='str'>
+					<expr>"channel_sampling_frequencies: ([0-9.eE]+,){" + str(index) + "}([0-9.eE]+)"</expr>
+				</param>
+				<param id='channel_nr_of_samples_pattern' type='str'>
+					<expr>"channel_nrs_of_samples: ([0-9]+,){" + str(index) + "}([0-9]+)"</expr>
+				</param>
+				<param id='calibration_gain_pattern' type='str'>
+					<expr>"channel_calibration_gains: ([0-9.eE]+,){" + str(index) + "}([0-9.eE]+)"</expr>
+				</param>
+				<param id='calibration_offset_pattern' type='str'>
+					<expr>"channel_calibration_offsets: ([0-9.eE]+,){" + str(index) + "}([0-9.eE]+)"</expr>
+				</param>
+
+				<!-- local header items -->
+				<param id='channel_name' type='str'>
+					<pattern>channel_name_pattern</pattern>
+					<group>2</group>
+				</param>
+				<param id='channel_type' type='str'>
+					<pattern>channel_type_name_pattern</pattern>
+					<group>2</group>
+				</param>
+				<param id='channel_filename' type='str'>
+					<pattern>channel_filename_pattern</pattern>
+					<group>2</group>
+				</param>
+				<param id='sampling_frequency' type='float' units='Hz'>
+					<pattern>channel_sampling_frequency_pattern</pattern>
+					<group>2</group>
+				</param>
+				<param id='number_of_samples' type='int'>
+					<pattern>channel_nr_of_samples_pattern</pattern>
+					<group>2</group>
+				</param>
+				<param id='unit' type='str'>
+					<expr>'μV'</expr>
+				</param>
+				<param id='calibration_gain' type='float'>
+					<pattern>calibration_gain_pattern</pattern>
+					<group>2</group>
+				</param>
+				<param id='calibration_offset' type='float'>
+					<pattern>calibration_offset_pattern</pattern>
+					<group>2</group>
+				</param>
+
+				<!-- body items -->
+				<file id='channel_file' type='binary' filename='channel_filename'>
+				</file>
+				<channel mapping='mapping' format='sample_format' length='number_of_samples' data='channel_file'>
+					<param id='mapping' type='int'>
+						<arg type='int' name='sample_nr' />
+						<expr>sample_nr * sample_size</expr>
+					</param>
+				</channel>
+
+ 			</for-each>
+		</channelset>
+
+		<!-- second set of channels -->
+		<channelset id='data2'>
+			<for-each id='channels' var='index' sequence='range(number_of_channels)' type='int'>
+
+				<!-- local header patterns -->
+				<param id='channel_name_pattern' type='str'>
+					<expr>"channel_names: ([a-zA-Z0-9]+,){" + str(index) + "}([A-Za-z0-9]+)"</expr>
+				</param>
+				<param id='channel_type_name_pattern' type='str'>
+					<expr>"channel_types: ([a-zA-Z0-9]+,){" + str(index) + "}([A-Za-z0-9]+)"</expr>
+				</param>
+				<param id='channel_filename_pattern' type='str'>
+					<expr>"channel_filenames: ([a-zA-Z0-9._-]+,){" + str(index) + "}([a-zA-Z0-9._-]+)"</expr>
+				</param>
+				<param id='channel_sampling_frequency_pattern' type='str'>
+					<expr>"channel_sampling_frequencies: ([0-9.eE]+,){" + str(index) + "}([0-9.eE]+)"</expr>
+				</param>
+				<param id='channel_nr_of_samples_pattern' type='str'>
+					<expr>"channel_nrs_of_samples: ([0-9]+,){" + str(index) + "}([0-9]+)"</expr>
+				</param>
+				<param id='calibration_gain_pattern' type='str'>
+					<expr>"channel_calibration_gains: ([0-9.eE]+,){" + str(index) + "}([0-9.eE]+)"</expr>
+				</param>
+				<param id='calibration_offset_pattern' type='str'>
+					<expr>"channel_calibration_offsets: ([0-9.eE]+,){" + str(index) + "}([0-9.eE]+)"</expr>
+				</param>
+
+				<!-- local header items -->
+				<param id='channel_name' type='str'>
+					<pattern>channel_name_pattern</pattern>
+					<group>2</group>
+				</param>
+				<param id='channel_type' type='str'>
+					<pattern>channel_type_name_pattern</pattern>
+					<group>2</group>
+				</param>
+				<param id='channel_filename' type='str'>
+					<pattern>channel_filename_pattern</pattern>
+					<group>2</group>
+				</param>
+				<param id='sampling_frequency' type='float' units='Hz'>
+					<pattern>channel_sampling_frequency_pattern</pattern>
+					<group>2</group>
+				</param>
+				<param id='number_of_samples' type='int'>
+					<pattern>channel_nr_of_samples_pattern</pattern>
+					<group>2</group>
+				</param>
+				<param id='unit' type='str'>
+					<expr>'μV'</expr>
+				</param>
+				<param id='calibration_gain' type='float'>
+					<pattern>calibration_gain_pattern</pattern>
+					<group>2</group>
+				</param>
+				<param id='calibration_offset' type='float'>
+					<pattern>calibration_offset_pattern</pattern>
+					<group>2</group>
+				</param>
+
+				<!-- body items -->
+				<file id='channel_file' type='binary' filename='channel_filename'>
+				</file>
+				<channel mapping='mapping' format='sample_format' length='number_of_samples' data='channel_file'>
+					<param id='mapping' type='int'>
+						<arg type='int' name='sample_nr' />
+						<expr>sample_nr * sample_size</expr>
+					</param>
+				</channel>
+
+ 			</for-each>
+		</channelset>
+
+	</file>
+</signalml>

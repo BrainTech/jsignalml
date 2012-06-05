@@ -57,7 +57,9 @@ public class CheckCodec {
 	private float[]              rememberedErrorsValueThereIs = new float[howMuchErrorsToRemember];
 
 	private ChannelSet           inDtaChannelSet = null;
+//	private ChannelSet[]         inDtaChannelSets = null;
 	private int                  inDtaChannelSetNrOfChannels = 0;
+//	private int[]                inDtaChannelSetsNrOfChannels = null;
 	private FileInputStream      outDtaFis = null;
 	private FileChannel          outDtaFisChannel = null;
 	private int                  outDtaFisNrOfChannels = 0;
@@ -1534,14 +1536,14 @@ public class CheckCodec {
 		//boolean gotoNextSamplePortionSmall = false;
 		//comparing header info
 		if (!inDtaChannelObjectChannelName.equals(outHdrLabelsOfChannels[channelNr])) {
-			if (CheckCodec.LOG_TEST) System.out.println("\nCODEC TEST RESULT: " + "WARNING"/* + "ERROR"*/ + ". Details: Label or name of the channel #"
+			if (CheckCodec.LOG_TEST) System.out.print("\nCODEC TEST RESULT: " + "WARNING"/* + "ERROR"*/ + ". Details: Label or name of the channel #"
 				+ channelNr + " get from codec (" + inDtaChannelObjectChannelName
 				+ ") differs from that specified in output file .hdr (" + outHdrLabelsOfChannels[channelNr] + ").");
 			////TODO increment offset
 			//break channels; //return;
 		}
 		if (!inDtaChannelObjectChannelTypeName.equals(outHdrTypesOfChannels[channelNr])) {
-			if (CheckCodec.LOG_TEST) System.out.println("\nCODEC TEST RESULT: " + "WARNING"/* + "ERROR"*/ + ". Details: Type of the channel #"
+			if (CheckCodec.LOG_TEST) System.out.print("\nCODEC TEST RESULT: " + "WARNING"/* + "ERROR"*/ + ". Details: Type of the channel #"
 				+ channelNr + " get from codec (" + inDtaChannelObjectChannelTypeName
 				+ ") differs from that specified in output file .hdr (" + outHdrTypesOfChannels[channelNr] + ").");
 			////TODO increment offset
@@ -1550,7 +1552,7 @@ public class CheckCodec {
 		double outHdrSamplingFrequencyPerChannel = ((outHdrSamplingFrequency == null) ? outHdrSamplingFrequencies[channelNr] : outHdrSamplingFrequency);
 		if (!equalToCombined(inDtaChannelObjectSamplingFrequency, outHdrSamplingFrequencyPerChannel,
 				testPrecisionRelForSamplingFrequency, testPrecisionDeltaForSamplingFrequency, testPrecisionUlpForSamplingFrequency)) {
-			if (CheckCodec.LOG_TEST) System.out.println("\nCODEC TEST RESULT: " + "WARNING"/* + "ERROR"*/ + ". Details: Sampling frequency of the channel #"
+			if (CheckCodec.LOG_TEST) System.out.print("\nCODEC TEST RESULT: " + "WARNING"/* + "ERROR"*/ + ". Details: Sampling frequency of the channel #"
 				+ channelNr + " get from codec (" + inDtaChannelObjectSamplingFrequency + ") differs from that specified in output file .hdr ("
 				+ outHdrSamplingFrequencyPerChannel + ").");
 			////TODO increment offset
@@ -1688,47 +1690,53 @@ public class CheckCodec {
 			final int testPrecisionUlpForSample, final long testPrecisionUlpForSamplingFrequency,
 			final int startAtLeastFromChannel, final int finishAtMostBeforeChannel)
 			throws IOException {
-		/*channels:*/
-		int nrOfChannelsMin = Math.min(Math.min(outDtaFisNrOfChannels, (int) outHdrNrOfChannels.longValue()), inDtaChannelSetNrOfChannels);
-		final int chStart = Math.max(0, startAtLeastFromChannel);
-		final int chFinish = Math.min(nrOfChannelsMin, finishAtMostBeforeChannel);
-		for (int channelNr = chStart; channelNr < chFinish && outDtaFisOffset < outDtaFisSize; channelNr ++) {
-			//info from output
-			if (CheckCodec.LOG_INFO) System.out.print("Channel " + channelNr);
-			MappedByteBuffer outDtaFisMapBuffer = outDtaFisChannel.map(FileChannel.MapMode.READ_ONLY,
-				outDtaFisOffset, outDtaFisLengthNrOfSamplesPerChannel);
-			final long outDtaFisNrOfSamplesPerChannel = outDtaFisMapBuffer.getLong(0);
-			if (CheckCodec.LOG_INFO) System.out.print(" has " + outDtaFisNrOfSamplesPerChannel + " sample units in output data file");
-			if (outHdrNrOfSamples != null) {
-				if (outDtaFisNrOfSamplesPerChannel != outHdrNrOfSamples) {
-					if (CheckCodec.LOG_ERROR) System.out.println("\nError! In output header file there were specified "
-						+ outHdrNrOfSamples + " sample units for every channel. "
-						+ "Output data file has other value: " + outDtaFisNrOfSamplesPerChannel + ". "
-						+ "Please correct .hdr file or change output data file used!");
+		int nrOfChannelSets = codec.getNumberOfChannelSets();
+		int nrOfChannelsMinInOut = Math.min(outDtaFisNrOfChannels, (int) outHdrNrOfChannels.longValue());
+		for (int channelSetNr = 0; channelSetNr < nrOfChannelSets; channelSetNr ++) {
+			inDtaChannelSet = codec.get_set(channelSetNr);
+			inDtaChannelSetNrOfChannels = inDtaChannelSet.getNumberOfChannels();
+			/*channels:*/
+			int nrOfChannelsMin = Math.min(nrOfChannelsMinInOut, inDtaChannelSetNrOfChannels);
+			final int chStart = Math.max(0, startAtLeastFromChannel);
+			final int chFinish = Math.min(nrOfChannelsMin, finishAtMostBeforeChannel);
+			for (int channelNr = chStart; channelNr < chFinish && outDtaFisOffset < outDtaFisSize; channelNr ++) {
+				//info from output
+				if (CheckCodec.LOG_INFO) System.out.print("Channel " + channelNr);
+				MappedByteBuffer outDtaFisMapBuffer = outDtaFisChannel.map(FileChannel.MapMode.READ_ONLY,
+					outDtaFisOffset, outDtaFisLengthNrOfSamplesPerChannel);
+				final long outDtaFisNrOfSamplesPerChannel = outDtaFisMapBuffer.getLong(0);
+				if (CheckCodec.LOG_INFO) System.out.print(" has " + outDtaFisNrOfSamplesPerChannel + " sample units in output data file");
+				if (outHdrNrOfSamples != null) {
+					if (outDtaFisNrOfSamplesPerChannel != outHdrNrOfSamples) {
+						if (CheckCodec.LOG_ERROR) System.out.println("\nError! In output header file there were specified "
+							+ outHdrNrOfSamples + " sample units for every channel. "
+							+ "Output data file has other value: " + outDtaFisNrOfSamplesPerChannel + ". "
+							+ "Please correct .hdr file or change output data file used!");
+						return false;
+					}
+				} else {
+					if (outDtaFisNrOfSamplesPerChannel != outHdrNrsOfSamples[channelNr]) {
+						if (CheckCodec.LOG_WARNING) System.out.println("\nWarning! In output header file there were specified "
+							+ outHdrNrsOfSamples[channelNr] + " sample units for channel #" + channelNr + ". "
+							+ "Output data file has other value: " + outDtaFisNrOfSamplesPerChannel + "!");
+					}
+				}
+				if (outDtaFisNrOfSamplesPerChannel * outDtaFisLengthSampleUnitValue >= outDtaFisSize) {
+					if (CheckCodec.LOG_ERROR) System.out.println("\nError! File has bad format, too big number of samples specified!");
 					return false;
 				}
-			} else {
-				if (outDtaFisNrOfSamplesPerChannel != outHdrNrsOfSamples[channelNr]) {
-					if (CheckCodec.LOG_WARNING) System.out.println("\nWarning! In output header file there were specified "
-						+ outHdrNrsOfSamples[channelNr] + " sample units for channel #" + channelNr + ". "
-						+ "Output data file has other value: " + outDtaFisNrOfSamplesPerChannel + "!");
-				}
+				outDtaFisOffset += outDtaFisLengthNrOfSamplesPerChannel;
+				long outDtaFisOffsetStart = outDtaFisOffset;
+				//info from input
+				Channel inDtaChannelObject = inDtaChannelSet.getChannel(channelNr);
+				checkChannel(outDtaFisOffsetStart, outDtaFisLengthSampleUnitValue,
+					outDtaFisNrOfSamplesPerChannel, outDtaFisChannel,
+					verificationMultiplyFactor, inDtaChannelObject, channelNr,
+					testPrecisionRelForSample, testPrecisionRelForSamplingFrequency,
+					testPrecisionDeltaForSample, testPrecisionDeltaForSamplingFrequency,
+					testPrecisionUlpForSample, testPrecisionUlpForSamplingFrequency);
+				//continue with next channel
 			}
-			if (outDtaFisNrOfSamplesPerChannel * outDtaFisLengthSampleUnitValue >= outDtaFisSize) {
-				if (CheckCodec.LOG_ERROR) System.out.println("\nError! File has bad format, too big number of samples specified!");
-				return false;
-			}
-			outDtaFisOffset += outDtaFisLengthNrOfSamplesPerChannel;
-			long outDtaFisOffsetStart = outDtaFisOffset;
-			//info from input
-			Channel inDtaChannelObject = inDtaChannelSet.getChannel(channelNr);
-			checkChannel(outDtaFisOffsetStart, outDtaFisLengthSampleUnitValue,
-				outDtaFisNrOfSamplesPerChannel, outDtaFisChannel,
-				verificationMultiplyFactor, inDtaChannelObject, channelNr,
-				testPrecisionRelForSample, testPrecisionRelForSamplingFrequency,
-				testPrecisionDeltaForSample, testPrecisionDeltaForSamplingFrequency,
-				testPrecisionUlpForSample, testPrecisionUlpForSamplingFrequency);
-			//continue with next channel
 		}
 		return true;
 	}
@@ -1789,18 +1797,21 @@ public class CheckCodec {
 			String allCodecDataDumped = ContextDumper.dump(codec); //it takes too much time
 			System.out.print(allCodecDataDumped);
 		}
-		int inDtaNumberOfChannelSets = codec.getNumberOfChannelSets(); //@Theory, do not know if this is fully supported
+		int inDtaNumberOfChannelSets = codec.getNumberOfChannelSets();
 		if (CheckCodec.LOG_INFO) {
 			System.out.println("Number of channel sets: " + inDtaNumberOfChannelSets);
 		}
-		inDtaChannelSet = codec.get_set();
-		inDtaChannelSetNrOfChannels = inDtaChannelSet.getNumberOfChannels();
-		if (CheckCodec.LOG_INFO) {
-			System.out.println("Number of channels: " + inDtaChannelSetNrOfChannels);
-		}
-		if (useInDtaChecking) {
-			boolean inDtaAccessStatus = checkInDtaAccess(); //it takes quite much time
-			if (!inDtaAccessStatus) return false;
+		for (int channelSetIndex = 0; channelSetIndex < inDtaNumberOfChannelSets; channelSetIndex ++) {
+			inDtaChannelSet = codec.get_set(channelSetIndex);
+			inDtaChannelSetNrOfChannels = inDtaChannelSet.getNumberOfChannels();
+			if (CheckCodec.LOG_INFO) {
+				System.out.println("Index of channel set: " + channelSetIndex);
+				System.out.println("Number of channels: " + inDtaChannelSetNrOfChannels);
+			}
+			if (useInDtaChecking) {
+				boolean inDtaAccessStatus = checkInDtaAccess(); //it takes quite much time
+				if (!inDtaAccessStatus) return false;
+			}
 		}
 		//TODO show on the screen (optionally -- for INFO log only) some informations from the codec (from above)
 		//...
@@ -1857,7 +1868,7 @@ public class CheckCodec {
 			////outHdrNrOfChannels = inDtaChannelSetNrOfChannels;
 		}
 		if (inDtaChannelSetNrOfChannels != outDtaFisNrOfChannels) {
-			if (CheckCodec.LOG_TEST) System.out.println("CODEC TEST RESULT: ERROR. Details: Number of channels get from codec ("
+			if (CheckCodec.LOG_TEST) System.out.println("CODEC TEST RESULT: WARNING. Details: Number of channels get from codec ("
 				+ inDtaChannelSetNrOfChannels + ") differs from that specified in output files .hdr and/or .float ("
 				+ outDtaFisNrOfChannels + ").");
 			if (exitOnNrsOfChannelsError) return false;
