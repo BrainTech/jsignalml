@@ -165,8 +165,14 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 		assert dummy == null;
 
 		final JDefinedClass klass;
-		final String theid = dynamicID(node, node.id);
+		String theid = dynamicID(node, node.id);
 		try {
+			if (! isJavaIdentifier (theid)) {
+				String theidold = theid;
+				theid = theid.replaceAll("([^A-Za-z0-9_])", "_");
+				log.info("visit(node id %s -> %s)", theidold, theid);
+				assert isJavaIdentifier (theid);
+			}
 			klass = this.model._class(theid);
 		} catch(JClassAlreadyExistsException e) {
 			throw new SyntaxError(format("duplicate name: '%s'", theid));
@@ -533,6 +539,27 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 		return nested;
 	}
 
+	//
+
+	/**
+	 * isJavaIdentifier
+	 * Method returns true if given string is a legal Java identifier.
+	 *
+	 * @param string
+	 * @return
+	 */
+	public static boolean isJavaIdentifier(String string) {
+		if (string == null || string.isEmpty() || !Character.isJavaIdentifierStart (string.charAt (0))) {
+			return false;
+		}
+		for (int j = 1; j < string.length(); j ++) {
+			if (!Character.isJavaIdentifierPart (string.charAt (j))) {
+				return false;
+			}
+		}
+		return true;
+	}
+
 	JMethod idMethod(JDefinedClass klass, ASTNode node, String theid)
 	{
 		final JMethod method = klass.method(JMod.PUBLIC, String_t, "id");
@@ -542,6 +569,14 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 			final EvalVisitor valuator = EvalVisitor.create(node);
 			String value = valuator.quickEval(TypeString.I, node.id);
 			if (value != null) {
+				/*if (! isJavaIdentifier (value)) {
+					String valueOld = value;
+					value = value.replaceAll("([^A-Za-z0-9_])", "_");
+					log.info("idMethod(node id %s -> %s, class %s)", valueOld, value, klass);
+					assert isJavaIdentifier (value);
+				} else {
+					log.info("idMethod(node id %s, class %s)", value, klass);
+				}*/
 				ret = JExpr.lit(value);
 			} else {
 				JavaExprGen javagen = createExprGen(node, null);
