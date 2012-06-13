@@ -112,6 +112,10 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 	final JClass Param_t = this.model.ref(jsignalml.codec.Param.class);
 	final JClass FunctionParam_t = this.model.ref(jsignalml.codec.FunctionParam.class);
 
+	final JClass Header_t = this.model.ref(jsignalml.codec.Header.class);
+	final JClass CodecId_t = this.model.ref(jsignalml.codec.CodecId.class);
+	final JClass FormatId_t = this.model.ref(jsignalml.codec.FormatId.class);
+
 	final JClass BasicConfigurator_t = this.model.ref(BasicConfigurator.class);
 	final JClass File_t = this.model.ref(File.class);
 	final JClass String_t = this.model.ref(String.class);
@@ -193,6 +197,11 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 		this.getFormatIDMethod(klass);
 		this.codecOpenMethod(klass);
 		this.closeMethod(klass);
+		this.getFormatNameMethod(klass);
+		this.getFormatProviderMethod(klass);
+		this.getFormatVersionMethod(klass);
+		this.getCodecProviderMethod(klass);
+		this.getCodecVersionMethod(klass);
 
 		// Private variable for channel objects counter
 		klass.field(4, model.INT, "channelCounter", JExpr.lit(0));
@@ -448,6 +457,81 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 		return method;
 	}
 
+	public JMethod getFormatNameMethod(JDefinedClass klass)
+	{
+		final JMethod method = klass.method(JMod.PUBLIC, String_t,
+			    "getFormatName");
+		comment_stamp(method.body());
+		final JBlock body = method.body();
+
+		final JVar formatName = body.decl(String_t, "formatName",
+				body.invoke("get_header").invoke("get_format_id").ref("name")
+				.invoke("get").invoke("toString"));
+		body._return(formatName);
+
+		return method;
+	}
+
+	public JMethod getFormatProviderMethod(JDefinedClass klass)
+	{
+		final JMethod method = klass.method(JMod.PUBLIC, String_t,
+			    "getFormatProvider");
+		comment_stamp(method.body());
+		final JBlock body = method.body();
+
+		final JVar formatProvider = body.decl(String_t, "formatProvider",
+				body.invoke("get_header").invoke("get_format_id")
+				.ref("provider").invoke("get").invoke("toString"));
+		body._return(formatProvider);
+
+		return method;
+	}
+
+	public JMethod getFormatVersionMethod(JDefinedClass klass)
+	{
+		final JMethod method = klass.method(JMod.PUBLIC, String_t,
+			    "getFormatVersion");
+		comment_stamp(method.body());
+		final JBlock body = method.body();
+
+		final JVar formatVersion = body.decl(String_t, "formatVersion",
+				body.invoke("get_header").invoke("get_format_id")
+				.ref("version").invoke("get").invoke("toString"));
+		body._return(formatVersion);
+
+		return method;
+	}
+
+	public JMethod getCodecProviderMethod(JDefinedClass klass)
+	{
+		final JMethod method = klass.method(JMod.PUBLIC, String_t,
+			    "getCodecProvider");
+		comment_stamp(method.body());
+		final JBlock body = method.body();
+
+		final JVar codecProvider = body.decl(String_t, "codecProvider",
+				body.invoke("get_header").invoke("get_codec_id")
+				.ref("provider").invoke("get").invoke("toString"));
+		body._return(codecProvider);
+
+		return method;
+	}
+
+	public JMethod getCodecVersionMethod(JDefinedClass klass)
+	{
+		final JMethod method = klass.method(JMod.PUBLIC, String_t,
+			    "getCodecVersion");
+		comment_stamp(method.body());
+		final JBlock body = method.body();
+
+		final JVar codecVersion = body.decl(String_t, "codecVersion",
+				body.invoke("get_header").invoke("get_codec_id").
+				ref("version").invoke("get").invoke("toString"));
+		body._return(codecVersion);
+
+		return method;
+	}
+
 	public JMethod closeMethod(JDefinedClass klass)
 	{
 		final JMethod method = klass.method(JMod.PUBLIC, this.model.VOID,
@@ -527,6 +611,80 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 			throw new SyntaxError(format("duplicate name: '%s'", theid));
 		}
 		nested._extends(param_class);
+		comment_stamp(nested);
+		comment(nested, "node.type=%s", typename(node.type));
+		comment(nested, "--> nodetype=%s", typename(nodetype));
+
+		final JMethod getter = classCacheMethod(parent, theid, nested);
+
+		Metadata metadata = (Metadata) parent.metadata;
+		metadata.registerParam(theid, nested, JExpr.invoke(getter));
+
+		return nested;
+	}
+
+	@Override
+	public JDefinedClass visit(ASTNode.FormatID node, JDefinedClass klass)
+	{
+		log.info("visit((FormatId) %s, %s)", node, klass);
+		assert klass != null;
+		final String theid = dynamicID(node, node.id);
+		JDefinedClass nested = formatIdClass(klass, theid, node);
+		idMethod(nested, node, theid);
+		readParamFunction(nested, node);
+		return nested;
+	}
+
+	JDefinedClass formatIdClass(JDefinedClass parent, String theid, ASTNode.FormatID node)
+	{
+		final Type nodetype = this.nodeType(node);
+
+		final JDefinedClass nested;
+		try {
+			String parentParamClass = makeParamClass(theid);
+			comment(parent, "parent paramClass=%s", parentParamClass);
+			nested = parent._class(parentParamClass);
+		} catch(JClassAlreadyExistsException e) {
+			throw new SyntaxError(format("duplicate name: '%s'", theid));
+		}
+		nested._extends(FormatId_t);
+		comment_stamp(nested);
+		comment(nested, "node.type=%s", typename(node.type));
+		comment(nested, "--> nodetype=%s", typename(nodetype));
+
+		final JMethod getter = classCacheMethod(parent, theid, nested);
+
+		Metadata metadata = (Metadata) parent.metadata;
+		metadata.registerParam(theid, nested, JExpr.invoke(getter));
+
+		return nested;
+	}
+
+	@Override
+	public JDefinedClass visit(ASTNode.CodecID node, JDefinedClass klass)
+	{
+		log.info("visit((FormatId) %s, %s)", node, klass);
+		assert klass != null;
+		final String theid = dynamicID(node, node.id);
+		JDefinedClass nested = codecIdClass(klass, theid, node);
+		idMethod(nested, node, theid);
+		readParamFunction(nested, node);
+		return nested;
+	}
+
+	JDefinedClass codecIdClass(JDefinedClass parent, String theid, ASTNode.CodecID node)
+	{
+		final Type nodetype = this.nodeType(node);
+
+		final JDefinedClass nested;
+		try {
+			String parentParamClass = makeParamClass(theid);
+			comment(parent, "parent paramClass=%s", parentParamClass);
+			nested = parent._class(parentParamClass);
+		} catch(JClassAlreadyExistsException e) {
+			throw new SyntaxError(format("duplicate name: '%s'", theid));
+		}
+		nested._extends(CodecId_t);
 		comment_stamp(nested);
 		comment(nested, "node.type=%s", typename(node.type));
 		comment(nested, "--> nodetype=%s", typename(nodetype));
@@ -719,6 +877,66 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 		return impl;
 	}
 
+	public JMethod readParamFunction(JDefinedClass klass, ASTNode.FormatID node) {
+		assert klass != null;
+
+		final JavaExprGen javagen = createExprGen(node, null);
+		final Type nodetype = new TypeString();
+		final JClass nodetype_t = convertTypeToJClass(nodetype);
+		final JMethod impl = klass.method(JMod.PROTECTED, nodetype_t, GET_PRIV);
+		final JBlock body = impl.body();
+		comment_stamp(body);
+
+		comment(body, "node.type=%s", typename(node.type));
+		comment(body, "--> nodetype=%s", typename(nodetype));
+		comment(body, "name=(%s)", node.name);
+		comment(body, "name.type=%s", typename(node.name.type));
+		comment(body, "provider=(%s)", node.provider);
+		comment(body, "provider.type=%s", typename(node.provider.type));
+		comment(body, "version=(%s)", node.version);
+		comment(body, "version.type=%s", typename(node.version.type));
+
+		JFieldVar name_ = klass.field(1, Type_t, "name", node.name.accept(javagen));
+		JFieldVar provider_ = klass.field(1, Type_t, "provider", node.provider.accept(javagen));
+		JFieldVar version_ = klass.field(1, Type_t, "version", node.version.accept(javagen));
+
+		final JVar value;
+		value = body.decl(TypeString_t, "value", JExpr._new(TypeString_t)
+				.arg(name_.invoke("toString").plus(JExpr.lit(":")).plus(provider_)
+						.plus(JExpr.lit(":")).plus(version_)));
+		body._return(value);
+
+		return impl;
+	}
+
+	public JMethod readParamFunction(JDefinedClass klass, ASTNode.CodecID node) {
+		assert klass != null;
+
+		final JavaExprGen javagen = createExprGen(node, null);
+		final Type nodetype = new TypeString();
+		final JClass nodetype_t = convertTypeToJClass(nodetype);
+		final JMethod impl = klass.method(JMod.PROTECTED, nodetype_t, GET_PRIV);
+		final JBlock body = impl.body();
+		comment_stamp(body);
+
+		comment(body, "node.type=%s", typename(node.type));
+		comment(body, "--> nodetype=%s", typename(nodetype));
+		comment(body, "provider=(%s)", node.provider);
+		comment(body, "provider.type=%s", typename(node.provider.type));
+		comment(body, "version=(%s)", node.version);
+		comment(body, "version.type=%s", typename(node.version.type));
+
+		JFieldVar provider_ = klass.field(1, Type_t, "provider", node.provider.accept(javagen));
+		JFieldVar version_ = klass.field(1, Type_t, "version", node.version.accept(javagen));
+
+		final JVar value;
+		value = body.decl(TypeString_t, "value", JExpr._new(TypeString_t)
+				.arg(provider_.invoke("toString").plus(JExpr.lit(":")).plus(version_)));
+		body._return(value);
+
+		return impl;
+	}
+
 	BitForm staticBitform(ASTNode start, Expression format)
 	{
 		EvalVisitor valuator = EvalVisitor.create(start);
@@ -892,6 +1110,40 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 
 		body._return(value);
 		return impl;
+	}
+
+	@Override
+	public JDefinedClass visit(ASTNode.Header node, JDefinedClass parent)
+	{
+		log.info("visit((Header) %s, %s)", node, parent);
+
+		final String theid = dynamicID(node, node.id);
+		final JDefinedClass klass = this.headerClass(node, theid, parent);
+		idMethod(klass, node, theid);
+		return klass;
+	}
+
+	public JDefinedClass headerClass(ASTNode.Header node, String id,
+		       JDefinedClass parent)
+	{
+		final JDefinedClass klass;
+		try {
+			klass = parent._class(id);
+		} catch(JClassAlreadyExistsException e) {
+			throw new SyntaxError(format("duplicate name: '%s'", id));
+		}
+		klass._extends(jsignalml.codec.Header.class);
+		comment_stamp(klass);
+
+		klass.metadata = new Metadata(klass);
+		log.info("%s.metadata has been set", klass);
+
+		final JMethod getter = classCacheMethod(parent, id, klass);
+
+		Metadata metadata = (Metadata) parent.metadata;
+		metadata.registerContext(id, klass, JExpr.invoke(getter));
+
+		return klass;
 	}
 
 	@Override

@@ -3,6 +3,15 @@
 <signalml>
 	<header>
 		<text_info>SignalML definition for ALT format</text_info>
+		<format_id>
+			<name>'ALT 2 format'</name>
+			<provider>'-'</provider>
+			<version>'1.0.0'</version>
+		</format_id>
+		<codec_id>
+			<provider>'UW'</provider>
+			<version>'1.0.0'</version>
+		</codec_id>
 	</header>
 	<file id='main' type='text'>
 

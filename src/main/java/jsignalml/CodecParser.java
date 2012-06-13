@@ -52,31 +52,38 @@ public class CodecParser {
 		final String name = element.getNodeName();
 		if (name.equals("signalml"))
 			return this.do_signalml(parent, element);
-		if (name.equals("channelset"))
+		else if (name.equals("channelset"))
 			return this.do_channelset(parent, element);
-		if (name.equals("channel"))
+		else if (name.equals("channel"))
 			return this.do_channel(parent, element);
-		if (name.equals("param"))
+		else if (name.equals("param"))
 			return this.do_param(parent, element);
-		if (name.equals("arg"))
+		else if (name.equals("arg"))
 			return CodecParser.do_arg(parent, element);
-		if (name.equals("assert"))
+		else if (name.equals("assert"))
 			return this.do_assert(parent, element);
-		if (name.equals("for-each"))
+		else if (name.equals("for-each"))
 			return this.do_forloop(parent, element);
-		if (name.equals("if"))
+		else if (name.equals("if"))
 			return this.do_conditional(parent, element);
 			//return this.do_conditional(parent, element, false);
-		if (name.equals("else"))
+		else if (name.equals("else"))
 			return this.do_else(parent, element);
-		if (name.equals("else-if"))
+		else if (name.equals("else-if"))
 			return this.do_elseIf(parent, element);
 			//return this.do_conditional(parent, element, true);
-		if (name.equals("file"))
+		else if (name.equals("file"))
 			return this.do_file(parent, element);
-		if (name.equals("expr") || name.equals("format") || name.equals("offset")
+		else if (name.equals("header"))
+			return this.do_header(parent, element);
+		else if (name.equals("format_id"))
+			return this.do_format_id(parent, element);
+		else if (name.equals("codec_id"))
+			return this.do_codec_id(parent, element);
+		else if (name.equals("expr") || name.equals("format") || name.equals("offset")
 		    || name.equals("pattern") || name.equals("line") || name.equals("xpath")
-		    || name.equals("group"))
+		    || name.equals("group") || name.equals("version")
+		    || name.equals("name") || name.equals("provider"))
 			return null; /* handled directly */
 		log.warn("unknown element: %s", element);
 		return null;
@@ -118,6 +125,56 @@ public class CodecParser {
 			name = util.basename_noext(this.filename);
 
 		return new ASTNode.Signalml(name);
+	}
+
+	public ASTNode.Header do_header(ASTNode parent, Element element)
+	{
+		assert element.getNodeName().equals("header");
+
+		final Expression id = Expression.Const.make("header");
+		return new ASTNode.Header(parent, id);
+	}
+
+	public ASTNode.FormatID do_format_id(ASTNode parent, Element element)
+	{
+		assert element.getNodeName().equals("format_id");
+		final Expression id = Expression.Const.make("format_id");
+
+		final Expression name    = _extract(element, "name");
+		final Expression provider    = _extract(element, "provider");
+		final Expression version    = _extract(element, "version");
+
+		if (name == null) {
+			throw new SyntaxError("element <format_id> requires element <name>");
+		}
+		else if (provider == null) {
+			throw new SyntaxError("element <format_id> requires element <provider>");
+		}
+		else if (version == null) {
+			throw new SyntaxError("element <format_id> requires element <version>");
+		}
+
+		return new ASTNode.FormatID(parent, id, name,
+				provider, version);
+	}
+
+	public ASTNode.CodecID do_codec_id(ASTNode parent, Element element)
+	{
+		assert element.getNodeName().equals("codec_id");
+		final Expression id = Expression.Const.make("codec_id");
+
+		final Expression provider    = _extract(element, "provider");
+		final Expression version    = _extract(element, "version");
+
+		if (provider == null) {
+			throw new SyntaxError("element <codec_id> requires element <provider>");
+		}
+		else if (version == null) {
+			throw new SyntaxError("element <codec_id> requires element <version>");
+		}
+
+		return new ASTNode.CodecID(parent, id, provider,
+				version);
 	}
 
 	public ASTNode.Param do_param(ASTNode parent, Element element)
@@ -168,6 +225,8 @@ public class CodecParser {
 
 		return p;
 	}
+
+
 
 	private String getXpathEvaluationTypeFromParamElement(Element paramElement) {
 		String xpathTypeAttrValue = null;

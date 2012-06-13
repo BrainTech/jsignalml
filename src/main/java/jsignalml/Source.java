@@ -17,6 +17,12 @@ public interface Source { /* implements Iterable<> */
 	String getFormatID();
 	String getFormatDescription();
 
+	String getFormatName();
+	String getFormatProvider();
+	String getFormatVersion();
+	String getCodecProvider();
+	String getCodecVersion();
+
 	File getCurrentFilename();
 
 	ChannelSet get_set(/* for one only one, so no need to specify which one,

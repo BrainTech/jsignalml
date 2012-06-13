@@ -18,6 +18,9 @@ public abstract class ASTVisitor<T> {
 	public T visit(ASTNode.TextParam node, T parent){ return parent; }
 	public T visit(Builtins node, T parent){ return parent; }
 	public T visit(ASTNode.XmlParam node, T parent){ return parent; }
+	public T visit(ASTNode.Header node, T parent) { return parent; }
+	public T visit(ASTNode.FormatID node, T parent) { return parent; }
+	public T visit(ASTNode.CodecID node, T parent) { return parent; }
 
 	public String toString(){ return getClass().getSimpleName(); }
 }

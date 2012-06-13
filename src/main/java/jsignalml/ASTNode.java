@@ -675,4 +675,87 @@ public abstract class ASTNode {
 			return v.visit(this, data);
 		}
 	}
+
+	public static class Header extends ASTNode {
+
+		public FormatID format_id = null;
+		public CodecID codec_id = null;
+
+		public Header(ASTNode parent, Expression id) {
+			super(parent, id);
+		}
+
+		@Override
+		public <T> T _accept(ASTVisitor<T> v, T data) {
+			return v.visit(this, data);
+		}
+	}
+
+	public static class FormatID extends Param {
+
+		public final Expression name;
+		public final Expression provider;
+		public final Expression version;
+
+		public FormatID(ASTNode parent, Expression id, Expression name,
+				Expression provider, Expression version) {
+			super(parent, id, new TypeString());
+			if (parent == null) {
+				throw new SyntaxError("<format_id> tag must have a parent tag");
+			}
+
+			if (parent instanceof Header) {
+				Header header = (Header) parent;
+				if (header.format_id != null) {
+					throw new SyntaxError("cannot have more than one <format_id>"
+							+ " tag inside parent <header> tag!");
+				}
+				this.name = name;
+				this.provider = provider;
+				this.version = version;
+			} else {
+				throw new SyntaxError("<format_id> tag can only be used inside <header>");
+			}
+
+		}
+
+		@Override
+		public <T> T _accept(ASTVisitor<T> v, T data) {
+			return v.visit(this, data);
+		}
+
+	}
+
+	public static class CodecID extends Param {
+
+		public final Expression provider;
+		public final Expression version;
+
+		public CodecID(ASTNode parent, Expression id, Expression provider,
+				Expression version) {
+			super(parent, id, new TypeString());
+			if (parent == null) {
+				throw new SyntaxError("<codec_id> tag must have a parent tag");
+			}
+			if (parent instanceof Header) {
+				Header header = (Header) parent;
+				if (header.codec_id != null) {
+					throw new SyntaxError("cannot have more than one <codec_id>"
+							+ " tag inside parent <header> tag!");
+				}
+
+				this.provider = provider;
+				this.version = version;
+			} else {
+				throw new SyntaxError("<codec_id> tag can only be used inside <header>");
+			}
+		}
+
+		@Override
+		public <T> T _accept(ASTVisitor<T> v, T data) {
+			return v.visit(this, data);
+		}
+
+	}
+
 }

@@ -38,4 +38,29 @@ public class ASTEvalVisitor extends ASTVisitor<Type> {
 
 		return p.function.call(this.args);
 	}
+
+	public Type visit(ASTNode.FormatID p, Type dummy) {
+		assert dummy == null;
+
+		log.error("evaluating expression " + p);
+		if(p.args.size() != this.args.size())
+			throw new ExpressionFault.ArgMismatch(p.args.size(), this.args.size());
+
+		CallHelper context = this.context.localize(p, this.args);
+		p.name.accept(new EvalVisitor(context));
+		p.provider.accept(new EvalVisitor(context));
+		return p.version.accept(new EvalVisitor(context));
+	}
+
+	public Type visit(ASTNode.CodecID p, Type dummy) {
+		assert dummy == null;
+
+		log.error("evaluating expression " + p);
+		if(p.args.size() != this.args.size())
+			throw new ExpressionFault.ArgMismatch(p.args.size(), this.args.size());
+
+		CallHelper context = this.context.localize(p, this.args);
+		p.provider.accept(new EvalVisitor(context));
+		return p.version.accept(new EvalVisitor(context));
+	}
 }

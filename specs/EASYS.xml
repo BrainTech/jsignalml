@@ -3,6 +3,15 @@
 <signalml>
 	<header>
 		<text_info>PE-EASYS</text_info>
+		<format_id>
+			<name>'PE-EASYS'</name>
+			<provider>'-'</provider>
+			<version>'1.0.0'</version>
+		</format_id>
+		<codec_id>
+			<provider>'Ericpol'</provider>
+			<version>'1.0.0'</version>
+		</codec_id>
 	</header>
 
 	<file type='binary' id='main'><!-- extension='*.d' -->

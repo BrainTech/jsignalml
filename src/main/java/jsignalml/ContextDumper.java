@@ -8,6 +8,7 @@ import jsignalml.codec.ChannelSetClass;
 import jsignalml.codec.ConditionalClass;
 import jsignalml.codec.Context;
 import jsignalml.codec.FunctionParam;
+import jsignalml.codec.Header;
 import jsignalml.codec.OuterLoopClass;
 import jsignalml.codec.Param;
 import jsignalml.codec.Signalml;
@@ -112,6 +113,11 @@ public class ContextDumper implements ContextVisitor<Integer> {
 
 	@Override public String toString() {
 		return dumper.getText();
+	}
+
+	@Override
+	public Integer visit(Header node, String name, Integer level) {
+		return dumper.put(level, "%s => %s\n", name, node.get().repr());
 	}
 
 }

@@ -119,4 +119,21 @@ public class ASTDumper extends ASTVisitor<Integer> {
 		return this.header(parent, node, "arg", "type=%s",
 				   Type.typename(node.type));
 	}
+
+	@Override
+	public Integer visit(ASTNode.Header node, Integer parent)
+	{
+		return this.header(parent, node, "header", "");
+	}
+
+	@Override
+	public Integer visit(ASTNode.FormatID node, Integer parent)
+	{
+		return this.header(parent, node, "format_id", "");
+	}
+
+	@Override
+	public Integer visit(ASTNode.CodecID node, Integer parent) {
+		return this.header(parent, node, "codec_id", "");
+	}
 }

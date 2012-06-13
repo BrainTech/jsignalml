@@ -4,6 +4,7 @@ import jsignalml.codec.ChannelClass;
 import jsignalml.codec.ChannelSetClass;
 import jsignalml.codec.ConditionalClass;
 import jsignalml.codec.FunctionParam;
+import jsignalml.codec.Header;
 import jsignalml.codec.OuterLoopClass;
 import jsignalml.codec.OuterLoopClass.LoopClass;
 import jsignalml.codec.Param;
@@ -22,4 +23,5 @@ public interface ContextVisitor<T> {
 	T visit(FunctionParam<?> node, String name, T parent);
 	T visit(ChannelSetClass node, String name, T parent);
 	T visit(ChannelClass node, String name, T parent);
+	T visit(Header node, String name, T parent);
 }

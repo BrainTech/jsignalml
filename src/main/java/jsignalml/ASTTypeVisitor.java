@@ -319,6 +319,40 @@ public class ASTTypeVisitor extends ASTVisitor<Type> {
 		return putCached(node, null);
 	}
 
+	@Override
+	public Type visit(ASTNode.FormatID node, Type parent) {
+		final Type cached = this.getCached(node);
+		if (cached != null) {
+			return cached == _null_repl ? null : cached;
+		} else {
+			assert node.name != null;
+			assert node.provider != null;
+			assert node.version != null;
+			final Type t1 = node.name.accept(_typeVisitor(node));
+			final Type t2 = node.provider.accept(_typeVisitor(node));
+			final Type t3 = node.version.accept(_typeVisitor(node));
+			log.info("%s name.type=%s provider.type=%s version.type=%s", node,
+					typename(t1), typename(t2), typename(t3));
+		}
+		return putCached(node, null);
+	}
+
+	@Override
+	public Type visit(ASTNode.CodecID node, Type parent) {
+		final Type cached = this.getCached(node);
+		if (cached != null) {
+			return cached == _null_repl ? null : cached;
+		} else {
+			assert node.provider != null;
+			assert node.version != null;
+			final Type t1 = node.provider.accept(_typeVisitor(node));
+			final Type t2 = node.version.accept(_typeVisitor(node));
+			log.info("%s provider.type=%s version.type=%s", node,
+					typename(t1), typename(t2));
+		}
+		return putCached(node, null);
+	}
+
 	void assert_type(Type var, Type type)
 	{
 		assert type != null;

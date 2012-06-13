@@ -5,6 +5,15 @@
   <header>
     <text_info>testfile for access()</text_info>
     <url>http://wheredoyouwantogotoday.to</url>
+	<format_id>
+		<name>'AccessTest'</name>
+		<provider>'-'</provider>
+		<version>'1.0.0'</version>
+	</format_id>
+	<codec_id>
+		<provider>'UW'</provider>
+		<version>'1.0.0'</version>
+	</codec_id>
   </header>
 
   <param id='p1' type='int'>

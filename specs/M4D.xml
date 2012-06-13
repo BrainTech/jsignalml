@@ -4,6 +4,15 @@
 
 	<header>
 		<text_info>SignalML definition for 4D format</text_info>
+		<format_id>
+			<name>'4D format'</name>
+			<provider>'-'</provider>
+			<version>'1.0.0'</version>
+		</format_id>
+		<codec_id>
+			<provider>'Ericpol'</provider>
+			<version>'1.0.0'</version>
+		</codec_id>
 	</header>
 
 	<file id='main' type='text'>
