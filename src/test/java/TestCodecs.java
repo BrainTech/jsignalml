@@ -7,8 +7,6 @@ import java.util.Properties;
 
 import jsignalml.codec.Signalml;
 
-import org.junit.Test;
-
 /**
  * @author Grzegorz Stadnik
  *
@@ -25,10 +23,7 @@ public class TestCodecs {
 		t.test();
 	}
 
-	/**
-	 *
-	 */
-	@Test public void test() {
+	private void test() {
 		CheckCodec checkCodec = null; //place for codec test object
 		Properties properties = new Properties(); //place for properties from the configuration of the codec test
 		String fileName = null; //name of the file currently read -- taken separately because of possible exception occurs
