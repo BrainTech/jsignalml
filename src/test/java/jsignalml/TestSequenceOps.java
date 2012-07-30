@@ -95,7 +95,7 @@ public class TestSequenceOps {
 		eval("1[0]");
 	}
 
-	@Test(expected=ExpressionFault.TypeError.class)
+	@Test(expected=ExpressionFault.Unsupported.class)
 	public void eval_float_indexed() throws Exception
 	{
 		eval("1.[0]");
@@ -224,7 +224,7 @@ public class TestSequenceOps {
 	{
 		eval("[1] + 2");
 	}
-	@Test(expected=ExpressionFault.TypeError.class)
+	@Test(expected=ExpressionFault.Unsupported.class)
 	public void eval_list_plus_float() throws Exception
 	{
 		eval("[1] + 2.");
@@ -519,7 +519,7 @@ public class TestSequenceOps {
 		equal("bool('gugu')", 1);
 		equal("bool('')", 0);
 	}
-	@Test(expected=ExpressionFault.TypeError.class)
+	@Test(expected=ExpressionFault.Unsupported.class)
 	public void eval_keyerror_list_div() throws Exception
 	{
 		eval("[1,2] / 1");
@@ -545,7 +545,7 @@ public class TestSequenceOps {
 		eval("'asia' | 'a'");
 		eval("'asia' | 1");
 	}
-	@Test(expected=ExpressionFault.TypeError.class)
+	@Test(expected=ExpressionFault.Unsupported.class)
 	public void eval_keyerror_list_pow() throws Exception
 	{
 		eval("[1,2] ** 1");
