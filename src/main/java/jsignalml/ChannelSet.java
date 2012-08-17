@@ -38,6 +38,14 @@ public interface ChannelSet extends Iterable<Channel> {
 	long getNumberOfSamples()
 		throws ExpressionFault;
 
+	/*
+	 * Return the maximum number of samples in any channel.
+	 *
+	 * @throws ExpressionFault if an error occurs.
+	 */
+	long getMaxNumberOfSamples()
+		throws ExpressionFault;
+
 	boolean has_calibration() throws ExpressionFault;
 
 	/*

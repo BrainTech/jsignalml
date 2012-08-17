@@ -95,6 +95,26 @@ public abstract class ChannelSetClass extends Context implements jsignalml.Chann
 					throw new ExpressionFault.ValueError
 						("non-uniform number of samples");
 		}
+		log.info("getNumberOfSamples -> ", ans);
+		return ans;
+	}
+
+	/*
+	 * Return the maximum number of samples in any channel.
+	 *
+	 * @throws ExpressionFault if an error occurs
+	 */
+	public long getMaxNumberOfSamples() throws ExpressionFault
+	{
+		assert !this.channel_list.isEmpty();
+
+		long ans = 0; // value will not be used
+		for(Channel channel: this.channel_list) {
+			long ans2 = channel.getNumberOfSamples();
+			if (ans2 > ans)
+				ans = ans2;
+		}
+		log.info("getMaxNumberOfSamples -> ", ans);
 		return ans;
 	}
 
