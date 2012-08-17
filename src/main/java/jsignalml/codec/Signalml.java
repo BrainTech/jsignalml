@@ -39,11 +39,19 @@ public abstract class Signalml extends Context implements jsignalml.Source {
 	}
 
 	public ChannelSet get_set() {
-		assert(!this.channel_set_list.isEmpty());
+		if(this.channel_set_list.isEmpty()) {
+			this.createParams();
+			this.createChannels();
+		}
+		assert !this.channel_set_list.isEmpty();
 		return this.channel_set_list.get(0);
 	}
 
 	public ChannelSet get_set(int id) {
+		if(this.channel_set_list.isEmpty()) {
+			this.createParams();
+			this.createChannels();
+		}
 		assert(!this.channel_set_list.isEmpty());
 		assert(id < getNumberOfChannelSets());
 		return this.channel_set_list.get(id);
