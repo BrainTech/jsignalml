@@ -1,282 +1,162 @@
 package jsignalml;
 
-import static jsignalml.Processor.parse;
+import java.util.Collection;
+import java.util.Arrays;
 
 import org.testng.annotations.Test;
+import org.testng.annotations.DataProvider;
+
+import static jsignalml.Processor.parse;
 
 public class TestParsing {
-	@Test public void parse_atoms() throws Exception
-	{
-		parse("1");
-		parse("\"a string\"");
-		parse("'b string'");
-		parse("1.11");
+
+	@Test(dataProvider="valid")
+	public void parsingWorks(final String expr) {
+		parse(expr);
 	}
 
-	@Test public void parse_atoms_with_newlines_at_end() throws Exception
-	{
-		parse("1\n");
-		parse("\"a string\"\n");
-		parse("'b string'\n");
-		parse("1.11\n");
+	@Test(expectedExceptions=SyntaxError.class, dataProvider="invalid")
+	public void parsingFails(final String expr) {
+		parse(expr);
 	}
 
-	@Test public void parse_atoms_with_newlines_in_front() throws Exception
-	{
-		parse("\n1");
-		parse("\n\"a string\"");
-		parse("\n'b string'");
-		parse("\n1.11");
+	@DataProvider
+	public static Object[][] valid() {
+		return valid;
 	}
 
-	@Test public void parse_hexadecimal() throws Exception
-	{
-		parse("0xFF");
-		parse("0x0");
-		parse("0x01");
-		parse("0x0aAbBcD");
+	@DataProvider
+	public static Object[][] invalid() {
+		return invalid;
 	}
 
-	@Test public void parse_octal() throws Exception
-	{
-		parse("0o01");
-		parse("0o0");
-		parse("0o77777");
-		parse("0o00000");
-	}
+	public static final Object[][] valid = new Object[][] {
+		{"1"},
+		{"\"a string\""},
+		{"'b string'"},
+		{"1.11"},
 
-	@Test(expectedExceptions= SyntaxError.class)
-	public void parse_bad_octal() throws Exception
-	{
-		parse("0o8");
-		parse("0oa");
-	}
+		{"1\n"},
+		{"\"a string\"\n"},
+		{"'b string'\n"},
+		{"1.11\n"},
 
-	@Test(expectedExceptions= SyntaxError.class)
-	public void parse_bad_hexadecimal() throws Exception
-	{
-		parse("0xfggg");
-		parse("0oH");
-	}
+		{"\n1"},
+		{"\n\"a string\""},
+		{"\n'b string'"},
+		{"\n1.11"},
 
-	@Test public void parse_negative_int() throws Exception
-	{
-		parse("-1");
-	}
+		{"0xFF"},
+		{"0x0"},
+		{"0x01"},
+		{"0x0aAbBcD"},
 
-	@Test public void parse_negated_negative_int() throws Exception
-	{
-		parse("-------1");
-	}
+		{"0o01"},
+		{"0o0"},
+		{"0o77777"},
+		{"0o00000"},
 
-	@Test public void parse_positive_int() throws Exception
-	{
-		parse("+1");
-	}
+		{"-1"},
 
-	@Test public void parse_positive_based_int() throws Exception
-	{
-		parse("+0x03");
-		parse("+0o02");
-		parse("+0b01");
-	}
+		{"-------1"},
 
-	@Test public void parse_add_with_no_spaces() throws Exception
-	{
-		parse("1+1");
-	}
+		{"+1"},
 
-	@Test public void parse_additions_with_spaces() throws Exception
-	{
-		parse("1 + -1");
-		parse("1 + + 1");
-		parse("+1 + +1");
-		parse("- 1 + + 1");
-		parse(" - - 1 + + 1 ");
-	}
+		{"+0x03"},
+		{"+0o02"},
+		{"+0b01"},
 
-	@Test public void parse_additions_with_newlines() throws Exception
-	{
-		parse("1 +\n-1");
-		parse("1 +\n+ 1");
-		parse("+1 +\n+1");
-		parse("- 1 +\n+ 1");
-		parse(" -\n- 1\n+\n+\n1 ");
-	}
+		{"1+1"},
 
-	@Test public void parse_additions_without_spaces() throws Exception
-	{
-		parse("1+-1");
-		parse("1++1");
-		parse("+1++1");
-		parse("-1++1");
-		parse("--1++1");
-	}
+		{"1 + -1"},
+		{"1 + + 1"},
+		{"+1 + +1"},
+		{"- 1 + + 1"},
+		{" - - 1 + + 1 "},
 
-	@Test(expectedExceptions=SyntaxError.class)
-	public void parse_multiple_expressions_invalid_1() throws Exception
-	{
-		parse("1;2");
-	}
+		{"1 +\n-1"},
+		{"1 +\n+ 1"},
+		{"+1 +\n+1"},
+		{"- 1 +\n+ 1"},
+		{" -\n- 1\n+\n+\n1 "},
 
-	@Test(expectedExceptions=SyntaxError.class)
-	public void parse_multiple_expressions_invalid_2() throws Exception
-	{
-		parse("a+b;");
-	}
+		{"1+-1"},
+		{"1++1"},
+		{"+1++1"},
+		{"-1++1"},
+		{"--1++1"},
 
-	@Test(expectedExceptions=SyntaxError.class)
-	public void parse_multiple_expressions_invalid_3() throws Exception
-	{
-		parse("a+b;\n");
-	}
+		{"[]"},
+		{"[ ]"},
 
-	@Test(expectedExceptions=SyntaxError.class)
-	public void parse_multiple_expressions_invalid_4() throws Exception
-	{
-		parse("a+b;\nc");
-	}
+		{"[1]"},
+		{"[1,2]"},
+		{"[1,-2]"},
+		{"[-1,-2]"},
+		{"[1, -2, 3, 4, 5, 6, 9, 10, 12092020]"},
 
-	@Test(expectedExceptions=SyntaxError.class)
-	public void parse_invalid_quote_1() throws Exception
-	{
-		parse("'a");
-	}
+		{"{1:2}"},
+		{"{1: 2}"},
+		{" { 1 : 2 } "},
 
-	@Test(expectedExceptions=SyntaxError.class)
-	public void parse_invalid_quote_2() throws Exception
-	{
-		parse("\"a");
-	}
+		{"{{{}:{}}:{}}"},
+		{"{{}: {}}"},
+		{"[{}, {[]:[]}]"},
 
-	@Test(expectedExceptions=SyntaxError.class)
-	public void parse_invalid_quote_escaped_quote() throws Exception
-	{
-		parse("\"a\\\"");
-	}
+		{"{}"},
+		{"{ }"},
 
-	@Test(expectedExceptions=SyntaxError.class)
-	public void parse_unbalanced_paren_1() throws Exception
-	{
-		parse("(1");
-	}
+		{"a[0]"},
+		{"a[b]"},
 
-	@Test(expectedExceptions=SyntaxError.class)
-	public void parse_unbalanced_paren_2() throws Exception
-	{
-		parse("1)");
-	}
+		{"[0,1,2][0]"},
+		{"(a)[0]"},
+		{"(a)[-1]"},
 
-	@Test(expectedExceptions=SyntaxError.class)
-	public void parse_unbalanced_paren_3() throws Exception
-	{
-		parse(") + 3");
-	}
+		// example from EDF
+		{"data_format(0,0)[-1]"},
 
-	@Test(expectedExceptions=SyntaxError.class)
-	public void parse_unbalanced_brace_1() throws Exception
-	{
-		parse("[1");
-	}
+		// oo notation
+		{"a.b"},
 
-	@Test(expectedExceptions=SyntaxError.class)
-	public void parse_unbalanced_brace_2() throws Exception
-	{
-		parse("1]");
-	}
+		// oo notation chained
+		{"a.b.c"},
 
-	@Test(expectedExceptions=SyntaxError.class)
-	public void parse_unbalanced_brace_3() throws Exception
-	{
-		parse("] + 3");
-	}
+		// oo notation call
+		{"a.b()"},
 
-	@Test public void parse_empty_list() throws Exception
-	{
-		parse("[]");
-		parse("[ ]");
-	}
+		// oo notation chained call last
+		{"a.b.c()"},
 
-	@Test public void parse_int_list() throws Exception
-	{
-		parse("[1]");
-		parse("[1,2]");
-		parse("[1,-2]");
-		parse("[-1,-2]");
-		parse("[1, -2, 3, 4, 5, 6, 9, 10, 12092020]");
-	}
+		// oo notation chained call first
+		{"a().b.c"},
 
-	@Test public void parse_map_1() throws Exception
-	{
-		parse("{1:2}");
-		parse("{1: 2}");
-		parse(" { 1 : 2 } ");
-	}
+		// oo notation chained call all
+		{"a().b().c()"},
+	};
 
-	@Test public void parse_map_nested() throws Exception
-	{
-		parse("{{{}:{}}:{}}");
-		parse("{{}: {}}");
-		parse("[{}, {[]:[]}]");
-	}
+	public static final Object[][] invalid = new Object[][] {
+		{"0o8"},
+		{"0oa"},
 
-	@Test public void parse_map_empty() throws Exception
-	{
-		parse("{}");
-		parse("{ }");
-	}
+		{"0xfggg"},
+		{"0oH"},
 
-	@Test public void parse_index_basic() throws Exception
-	{
-		parse("a[0]");
-		parse("a[b]");
-	}
+		{"1;2"},
+		{"a+b;"},
+		{"a+b;\n"},
+		{"a+b;\nc"},
+		{"'a"},
+		{"\"a"},
+		{"\"a\\\""},
+		{"(1"},
+		{"1)"},
+		{") + 3"},
+		{"[1"},
+		{"1]"},
+		{"] + 3"},
 
-	@Test public void parse_index_list_and_subexpr() throws Exception
-	{
-		parse("[0,1,2][0]");
-		parse("(a)[0]");
-		parse("(a)[-1]");
-	}
-
-	@Test public void parse_example_from_EDF() throws Exception
-	{
-		parse("data_format(0,0)[-1]");
-	}
-
-	@Test public void parse_oo_notation() throws Exception
-	{
-		parse("a.b");
-	}
-
-	@Test public void parse_oo_notation_chained() throws Exception
-	{
-		parse("a.b.c");
-	}
-
-	@Test public void parse_oo_notation_call() throws Exception
-	{
-		parse("a.b()");
-	}
-
-	@Test public void parse_oo_notation_chained_call_last() throws Exception
-	{
-		parse("a.b.c()");
-	}
-
-	@Test public void parse_oo_notation_chained_call_first() throws Exception
-	{
-		parse("a().b.c");
-	}
-
-	@Test public void parse_oo_notation_chained_call_all() throws Exception
-	{
-		parse("a().b().c()");
-	}
-
-	@Test(expectedExceptions=SyntaxError.class)
-	public void parse_oo_notation_bad() throws Exception
-	{
-		parse("a..b.c");
-	}
+		// oo notation bad
+		{"a..b.c"},
+	};
 }
