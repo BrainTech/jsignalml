@@ -1,12 +1,12 @@
 package jsignalml;
 
-import static org.junit.Assert.assertEquals;
+import static org.testng.Assert.assertEquals;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-import org.junit.Test;
+import org.testng.annotations.Test;
 
 public class TestFrame {
 	static final Map<String,Type> map, map1;
@@ -29,7 +29,7 @@ public class TestFrame {
 		assertEquals(map.get("b"), state.lookup("b"));
 	}
 
-	@Test(expected=ExpressionFault.Unsupported.class)
+	@Test(expectedExceptions=ExpressionFault.Unsupported.class)
 	public void test_call_with_args() throws Exception
 	{
 		List<Type> args = Arrays.asList((Type)new TypeInt(666));
@@ -41,7 +41,7 @@ public class TestFrame {
 		assertEquals(map1.get("c"), state1.lookup("c"));
 	}
 
-	@Test(expected=ExpressionFault.NameError.class)
+	@Test(expectedExceptions=ExpressionFault.NameError.class)
 	public void test_parent_lookup() throws Exception
 	{
 		state1.lookup("a");
@@ -52,14 +52,14 @@ public class TestFrame {
 		assertEquals(map1.get("c"), state1.lookup("c"));
 	}
 
-	@Test(expected=ExpressionFault.Unsupported.class)
+	@Test(expectedExceptions=ExpressionFault.Unsupported.class)
 	public void test_parent_call_with_args() throws Exception
 	{
 		List<Type> args = Arrays.asList((Type)new TypeInt(667));
 		state1.lookup("c").call(args);
 	}
 
-	@Test(expected=ExpressionFault.Unsupported.class)
+	@Test(expectedExceptions=ExpressionFault.Unsupported.class)
 	public void test_parent_call_without_args() throws Exception
 	{
 		List<Type> noargs = util.newLinkedList();

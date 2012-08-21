@@ -1,15 +1,15 @@
 package jsignalml;
 
-import static org.hamcrest.core.IsInstanceOf.instanceOf;
-import static org.junit.Assert.assertEquals;
+import static org.testng.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
+import static org.hamcrest.core.IsInstanceOf.instanceOf;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringBufferInputStream;
 
-import org.junit.Test;
+import org.testng.annotations.Test;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
 

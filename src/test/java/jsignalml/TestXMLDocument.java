@@ -1,16 +1,16 @@
 package jsignalml;
 
-import static org.junit.Assert.assertEquals;
+import static org.testng.Assert.assertEquals;
 
 import java.io.InputStream;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.testng.annotations.BeforeSuite;
+import org.testng.annotations.Test;
 import org.w3c.dom.Node;
 
 public class TestXMLDocument {
 	XMLDocument doc;
-	@Before public void init()
+	@BeforeSuite public void init()
 		throws java.io.IOException,
 		       org.xml.sax.SAXException
 	{
@@ -35,7 +35,7 @@ public class TestXMLDocument {
 		assertEquals("node2", doc.getElement("//node2").getNodeName());
 	}
 
-	@Test(expected=XMLDocument.NodeError.class)
+	@Test(expectedExceptions=XMLDocument.NodeError.class)
 		public void xpath_invalid_node() throws Exception
 	{
 		doc.getNode("/no_such_node");

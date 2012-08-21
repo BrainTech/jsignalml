@@ -1,4 +1,4 @@
-import static org.junit.Assert.assertEquals;
+import static org.testng.Assert.assertEquals;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;

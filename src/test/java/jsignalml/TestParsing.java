@@ -2,7 +2,7 @@ package jsignalml;
 
 import static jsignalml.Processor.parse;
 
-import org.junit.Test;
+import org.testng.annotations.Test;
 
 public class TestParsing {
 	@Test public void parse_atoms() throws Exception
@@ -45,14 +45,14 @@ public class TestParsing {
 		parse("0o00000");
 	}
 
-	@Test(expected= SyntaxError.class)
+	@Test(expectedExceptions= SyntaxError.class)
 	public void parse_bad_octal() throws Exception
 	{
 		parse("0o8");
 		parse("0oa");
 	}
 
-	@Test(expected= SyntaxError.class)
+	@Test(expectedExceptions= SyntaxError.class)
 	public void parse_bad_hexadecimal() throws Exception
 	{
 		parse("0xfggg");
@@ -113,79 +113,79 @@ public class TestParsing {
 		parse("--1++1");
 	}
 
-	@Test(expected=SyntaxError.class)
+	@Test(expectedExceptions=SyntaxError.class)
 	public void parse_multiple_expressions_invalid_1() throws Exception
 	{
 		parse("1;2");
 	}
 
-	@Test(expected=SyntaxError.class)
+	@Test(expectedExceptions=SyntaxError.class)
 	public void parse_multiple_expressions_invalid_2() throws Exception
 	{
 		parse("a+b;");
 	}
 
-	@Test(expected=SyntaxError.class)
+	@Test(expectedExceptions=SyntaxError.class)
 	public void parse_multiple_expressions_invalid_3() throws Exception
 	{
 		parse("a+b;\n");
 	}
 
-	@Test(expected=SyntaxError.class)
+	@Test(expectedExceptions=SyntaxError.class)
 	public void parse_multiple_expressions_invalid_4() throws Exception
 	{
 		parse("a+b;\nc");
 	}
 
-	@Test(expected=SyntaxError.class)
+	@Test(expectedExceptions=SyntaxError.class)
 	public void parse_invalid_quote_1() throws Exception
 	{
 		parse("'a");
 	}
 
-	@Test(expected=SyntaxError.class)
+	@Test(expectedExceptions=SyntaxError.class)
 	public void parse_invalid_quote_2() throws Exception
 	{
 		parse("\"a");
 	}
 
-	@Test(expected=SyntaxError.class)
+	@Test(expectedExceptions=SyntaxError.class)
 	public void parse_invalid_quote_escaped_quote() throws Exception
 	{
 		parse("\"a\\\"");
 	}
 
-	@Test(expected=SyntaxError.class)
+	@Test(expectedExceptions=SyntaxError.class)
 	public void parse_unbalanced_paren_1() throws Exception
 	{
 		parse("(1");
 	}
 
-	@Test(expected=SyntaxError.class)
+	@Test(expectedExceptions=SyntaxError.class)
 	public void parse_unbalanced_paren_2() throws Exception
 	{
 		parse("1)");
 	}
 
-	@Test(expected=SyntaxError.class)
+	@Test(expectedExceptions=SyntaxError.class)
 	public void parse_unbalanced_paren_3() throws Exception
 	{
 		parse(") + 3");
 	}
 
-	@Test(expected=SyntaxError.class)
+	@Test(expectedExceptions=SyntaxError.class)
 	public void parse_unbalanced_brace_1() throws Exception
 	{
 		parse("[1");
 	}
 
-	@Test(expected=SyntaxError.class)
+	@Test(expectedExceptions=SyntaxError.class)
 	public void parse_unbalanced_brace_2() throws Exception
 	{
 		parse("1]");
 	}
 
-	@Test(expected=SyntaxError.class)
+	@Test(expectedExceptions=SyntaxError.class)
 	public void parse_unbalanced_brace_3() throws Exception
 	{
 		parse("] + 3");
@@ -274,7 +274,7 @@ public class TestParsing {
 		parse("a().b().c()");
 	}
 
-	@Test(expected=SyntaxError.class)
+	@Test(expectedExceptions=SyntaxError.class)
 	public void parse_oo_notation_bad() throws Exception
 	{
 		parse("a..b.c");

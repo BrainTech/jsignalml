@@ -1,11 +1,11 @@
 package jsignalml;
 
 import static jsignalml.TestNumberOps.eval;
-import static org.hamcrest.core.IsInstanceOf.instanceOf;
-import static org.junit.Assert.assertEquals;
+import static org.testng.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
+import static org.hamcrest.core.IsInstanceOf.instanceOf;
 
-import org.junit.Test;
+import org.testng.annotations.Test;
 
 public class TestTypes {
 
@@ -56,7 +56,7 @@ public class TestTypes {
 		assertEquals(new TypeList(), Type.getType("list"));
 	}
 
-	@Test(expected=IllegalArgumentException.class)
+	@Test(expectedExceptions=IllegalArgumentException.class)
 	public void get_types_from_string_invalid()
 	{
 		assertEquals(Type.getType("xxx"), TypeList.class);

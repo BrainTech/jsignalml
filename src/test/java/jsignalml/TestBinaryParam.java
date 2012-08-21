@@ -1,9 +1,9 @@
 package jsignalml;
 
-import static org.junit.Assert.assertNotNull;
+import static org.testng.Assert.assertNotNull;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.testng.annotations.BeforeSuite;
+import org.testng.annotations.Test;
 
 public class TestBinaryParam {
 	static final String file1 = "target/test-classes/file1";
@@ -15,7 +15,7 @@ public class TestBinaryParam {
 	final ASTNode.Signalml codec = new ASTNode.Signalml("Test");
 	ASTNode.FileHandle<FileType.BinaryFile> handle;
 
-	@Before	public void init() throws Exception
+	@BeforeSuite public void init() throws Exception
 	{
 		handle = ASTNode.FileHandle.make(codec, file1expr,true);
 	}

@@ -1,11 +1,11 @@
 package jsignalml;
 
-import static org.junit.Assert.assertTrue;
+import static org.testng.Assert.assertTrue;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.junit.Test;
+import org.testng.annotations.Test;
 
 public class PatternTest {
 

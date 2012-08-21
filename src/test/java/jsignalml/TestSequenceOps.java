@@ -5,7 +5,7 @@ import static jsignalml.TestNumberOps.eval;
 import static jsignalml.TestNumberOps.listEqual;
 import static jsignalml.TestNumberOps.verifyIsTrue;
 
-import org.junit.Test;
+import org.testng.annotations.Test;
 
 public class TestSequenceOps {
 
@@ -57,76 +57,76 @@ public class TestSequenceOps {
 		equal("[0,1,2][-3]", 0);
 	}
 
-	@Test(expected=ExpressionFault.IndexError.class)
+	@Test(expectedExceptions=ExpressionFault.IndexError.class)
 	public void eval_index_invalid_1() throws Exception
 	{
 		eval("[0, 1][2]");
 	}
-	@Test(expected=ExpressionFault.IndexError.class)
+	@Test(expectedExceptions=ExpressionFault.IndexError.class)
 	public void eval_index_invalid_2() throws Exception
 	{
 		eval("[0][1]");
 	}
-	@Test(expected=ExpressionFault.IndexError.class)
+	@Test(expectedExceptions=ExpressionFault.IndexError.class)
 	public void eval_index_invalid_3() throws Exception
 	{
 		eval("[0][-2]");
 	}
 
-	@Test(expected=ExpressionFault.IndexError.class)
+	@Test(expectedExceptions=ExpressionFault.IndexError.class)
 	public void eval_index_str_invalid_1() throws Exception
 	{
 		eval("'ab'[2]");
 	}
-	@Test(expected=ExpressionFault.IndexError.class)
+	@Test(expectedExceptions=ExpressionFault.IndexError.class)
 	public void eval_index_str_invalid_2() throws Exception
 	{
 		eval("'a'[1]");
 	}
-	@Test(expected=ExpressionFault.IndexError.class)
+	@Test(expectedExceptions=ExpressionFault.IndexError.class)
 	public void eval_index_str_invalid_3() throws Exception
 	{
 		eval("'a'[-2]");
 	}
 
-	@Test(expected=ExpressionFault.TypeError.class)
+	@Test(expectedExceptions=ExpressionFault.TypeError.class)
 	public void eval_int_indexed() throws Exception
 	{
 		eval("1[0]");
 	}
 
-	@Test(expected=ExpressionFault.Unsupported.class)
+	@Test(expectedExceptions=ExpressionFault.Unsupported.class)
 	public void eval_float_indexed() throws Exception
 	{
 		eval("1.[0]");
 	}
 
-	@Test(expected=ExpressionFault.TypeError.class)
+	@Test(expectedExceptions=ExpressionFault.TypeError.class)
 	public void eval_list_indexed_string() throws Exception
 	{
 		eval("[1]['a']");
 	}
-	@Test(expected=ExpressionFault.TypeError.class)
+	@Test(expectedExceptions=ExpressionFault.TypeError.class)
 	public void eval_string_indexed_string() throws Exception
 	{
 		eval("'a'['a']");
 	}
-	@Test(expected=ExpressionFault.TypeError.class)
+	@Test(expectedExceptions=ExpressionFault.TypeError.class)
 	public void eval_list_indexed_float() throws Exception
 	{
 		eval("[1][1.]");
 	}
-	@Test(expected=ExpressionFault.TypeError.class)
+	@Test(expectedExceptions=ExpressionFault.TypeError.class)
 	public void eval_string_indexed_float() throws Exception
 	{
 		eval("'a'[1.]");
 	}
-	@Test(expected=ExpressionFault.TypeError.class)
+	@Test(expectedExceptions=ExpressionFault.TypeError.class)
 	public void eval_list_indexed_list() throws Exception
 	{
 		eval("[1][[1]]");
 	}
-	@Test(expected=ExpressionFault.TypeError.class)
+	@Test(expectedExceptions=ExpressionFault.TypeError.class)
 	public void eval_string_indexed_list() throws Exception
 	{
 		eval("'a'[[1]]");
@@ -208,44 +208,44 @@ public class TestSequenceOps {
 	{
 		listEqual("[1,2,3,4,5,6][-2::-2]",5,3,1);
 	}
-	@Test(expected=ExpressionFault.IndexError.class)
+	@Test(expectedExceptions=ExpressionFault.IndexError.class)
 	public void string_slice_outside_of_range() throws Exception
 	{
 		eval("'abcEF'[1:14]");
 	}
-	@Test(expected=ExpressionFault.IndexError.class)
+	@Test(expectedExceptions=ExpressionFault.IndexError.class)
 	public void list_slice_outside_of_range() throws Exception
 	{
 		eval("[1,2,3,4,5][1:14]");
 	}
 
-	@Test(expected=ExpressionFault.TypeError.class)
+	@Test(expectedExceptions=ExpressionFault.TypeError.class)
 	public void eval_list_plus_int() throws Exception
 	{
 		eval("[1] + 2");
 	}
-	@Test(expected=ExpressionFault.Unsupported.class)
+	@Test(expectedExceptions=ExpressionFault.Unsupported.class)
 	public void eval_list_plus_float() throws Exception
 	{
 		eval("[1] + 2.");
 	}
-	@Test(expected=ExpressionFault.TypeError.class)
+	@Test(expectedExceptions=ExpressionFault.TypeError.class)
 	public void eval_list_plus_string() throws Exception
 	{
 		eval("[1] + 'a'");
 	}
 
-	@Test(expected=ExpressionFault.TypeError.class)
+	@Test(expectedExceptions=ExpressionFault.TypeError.class)
 	public void eval_string_plus_int() throws Exception
 	{
 		eval("'1' + 2");
 	}
-	@Test(expected=ExpressionFault.TypeError.class)
+	@Test(expectedExceptions=ExpressionFault.TypeError.class)
 	public void eval_string_plus_float() throws Exception
 	{
 		eval("'1' + 2.");
 	}
-	@Test(expected=ExpressionFault.TypeError.class)
+	@Test(expectedExceptions=ExpressionFault.TypeError.class)
 	public void eval_string_plus_list() throws Exception
 	{
 		eval("'1' + [1]");
@@ -290,7 +290,7 @@ public class TestSequenceOps {
 		equal("'a'>'b'", 0);
 		equal("'ą'>'a'", 1);
 	}
-	@Test(expected=java.lang.AssertionError.class)
+	@Test(expectedExceptions=java.lang.AssertionError.class)
 	public void greater_string_invalid() throws Exception
 	{
 		equal("'strin'>'strinG'", 1);
@@ -302,7 +302,7 @@ public class TestSequenceOps {
 		equal("'a'<'b'", 1);
 		equal("'ą'<'a'", 0);
 	}
-	@Test(expected=java.lang.AssertionError.class)
+	@Test(expectedExceptions=java.lang.AssertionError.class)
 	public void lesser_string_invalid() throws Exception
 	{
 		equal("'strin'<'strinG'", 0);
@@ -316,7 +316,7 @@ public class TestSequenceOps {
 		equal("'a'>='a'", 1);
 		equal("'b'>='a'", 1);
 	}
-	@Test(expected=java.lang.AssertionError.class)
+	@Test(expectedExceptions=java.lang.AssertionError.class)
 	public void greater_equal_string_invalid() throws Exception
 	{
 		equal("'strin'>='strinG'", 1);
@@ -332,7 +332,7 @@ public class TestSequenceOps {
 		equal("'a'<='a'", 1);
 		equal("'b'<='a'", 0);
 	}
-	@Test(expected=java.lang.AssertionError.class)
+	@Test(expectedExceptions=java.lang.AssertionError.class)
 	public void lesser_equal_string_invalid() throws Exception
 	{
 		equal("'strin'<='strinG'",0);
@@ -345,7 +345,7 @@ public class TestSequenceOps {
 		equal("[1,2,3,4]>[1,2,3,4,5]", 0);
 		equal("[1]>[2]", 0);
 	}
-	@Test(expected=java.lang.AssertionError.class)
+	@Test(expectedExceptions=java.lang.AssertionError.class)
 	public void greater_list_invalid() throws Exception
 	{
 		equal("[1,2,3,4]>[1,2,3,4,5]", 1);
@@ -356,7 +356,7 @@ public class TestSequenceOps {
 		equal("[1,2,3,4]<[1,2,3,4,5]", 1);
 		equal("[1]<[2]", 1);
 	}
-	@Test(expected=java.lang.AssertionError.class)
+	@Test(expectedExceptions=java.lang.AssertionError.class)
 	public void lesser_list_invalid() throws Exception
 	{
 		equal("[1,2,3,4]<[1,2,3,4,5]", 0);
@@ -369,7 +369,7 @@ public class TestSequenceOps {
 		equal("[1]>=[1]", 1);
 		equal("[2]>=[1]", 1);
 	}
-	@Test(expected=java.lang.AssertionError.class)
+	@Test(expectedExceptions=java.lang.AssertionError.class)
 	public void greater_equal_list_invalid() throws Exception
 	{
 		equal("[1,2,3,4]>=[1,2,3,4,5]", 1);
@@ -384,7 +384,7 @@ public class TestSequenceOps {
 		equal("[1]<=[1]", 1);
 		equal("[2]<=[1]", 0);
 	}
-	@Test(expected=java.lang.AssertionError.class)
+	@Test(expectedExceptions=java.lang.AssertionError.class)
 	public void lesser_equal_list_invalid() throws Exception
 	{
 		equal("[1,2,3,4]<=[1,2,3,4,5]", 0);
@@ -519,59 +519,59 @@ public class TestSequenceOps {
 		equal("bool('gugu')", 1);
 		equal("bool('')", 0);
 	}
-	@Test(expected=ExpressionFault.Unsupported.class)
+	@Test(expectedExceptions=ExpressionFault.Unsupported.class)
 	public void eval_keyerror_list_div() throws Exception
 	{
 		eval("[1,2] / 1");
 		eval("[1,2] / [1]");
 	}
 
-	@Test(expected=ExpressionFault.TypeError.class)
+	@Test(expectedExceptions=ExpressionFault.TypeError.class)
 	public void eval_keyerror_list_bin_and() throws Exception
 	{
 		eval("[1,2] & [1]");
 		eval("[1,2] & 1");
 	}
-	@Test(expected=ExpressionFault.TypeError.class)
+	@Test(expectedExceptions=ExpressionFault.TypeError.class)
 	public void eval_keyerror_string_div() throws Exception
 	{
 		eval("'asia' / 'a'");
 		eval("'asia' / 1");
 	}
 
-	@Test(expected=ExpressionFault.TypeError.class)
+	@Test(expectedExceptions=ExpressionFault.TypeError.class)
 	public void eval_keyerror_string_bin_or() throws Exception
 	{
 		eval("'asia' | 'a'");
 		eval("'asia' | 1");
 	}
-	@Test(expected=ExpressionFault.Unsupported.class)
+	@Test(expectedExceptions=ExpressionFault.Unsupported.class)
 	public void eval_keyerror_list_pow() throws Exception
 	{
 		eval("[1,2] ** 1");
 		eval("[1,2] ** [1]");
 	}
 
-	@Test(expected=ExpressionFault.TypeError.class)
+	@Test(expectedExceptions=ExpressionFault.TypeError.class)
 	public void eval_keyerror_list_bin_or() throws Exception
 	{
 		eval("[1,2] | [1]");
 		eval("[1,2] | 1");
 	}
-	@Test(expected=ExpressionFault.TypeError.class)
+	@Test(expectedExceptions=ExpressionFault.TypeError.class)
 	public void eval_keyerror_string_pow() throws Exception
 	{
 		eval("'asia' ** 'a'");
 		eval("'asia' ** 1");
 	}
 
-	@Test(expected=ExpressionFault.TypeError.class)
+	@Test(expectedExceptions=ExpressionFault.TypeError.class)
 	public void eval_keyerror_string_modulo() throws Exception
 	{
 		eval("'asia' % 'a'");
 		eval("'asia' % 1");
 	}
-	@Test(expected=ExpressionFault.TypeError.class)
+	@Test(expectedExceptions=ExpressionFault.TypeError.class)
 	public void eval_keyerror_list_modulo() throws Exception
 	{
 		eval("[1,2,3] % [1]");

@@ -1,6 +1,6 @@
 package jsignalml;
 
-import org.junit.Test;
+import org.testng.annotations.Test;
 
 public class TestFileHandle {
 	static final String file1 = "target/test-classes/file1";

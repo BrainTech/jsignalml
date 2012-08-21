@@ -3,9 +3,9 @@ package jsignalml;
 import static jsignalml.TestNumberOps.equal;
 import static jsignalml.TestNumberOps.eval;
 import static jsignalml.TestNumberOps.verifyIsTrue;
-import static org.junit.Assert.assertEquals;
+import static org.testng.Assert.assertEquals;
 
-import org.junit.Test;
+import org.testng.annotations.Test;
 
 public class TestMapOps {
 	static void mapEqual(String line, Object...elements) throws Exception
@@ -32,56 +32,56 @@ public class TestMapOps {
 		verifyIsTrue("{'a':'b', []:[]}", true);
 	}
 
-	@Test(expected=ExpressionFault.KeyError.class)
+	@Test(expectedExceptions=ExpressionFault.KeyError.class)
 	public void eval_keyerror() throws Exception
 	{
 		eval("{1:2}[0]");
 	}
 
-	@Test(expected=ExpressionFault.KeyError.class)
+	@Test(expectedExceptions=ExpressionFault.KeyError.class)
 	public void eval_keyerror_string() throws Exception
 	{
 		eval("{1:2}['a']");
 	}
 
-	@Test(expected=ExpressionFault.KeyError.class)
+	@Test(expectedExceptions=ExpressionFault.KeyError.class)
 	public void eval_keyerror_list() throws Exception
 	{
 		eval("{1:2}[[]]");
 	}
 
-	@Test(expected=ExpressionFault.KeyError.class)
+	@Test(expectedExceptions=ExpressionFault.KeyError.class)
 	public void eval_keyerror_map() throws Exception
 	{
 		eval("{1:2}[{}]");
 	}
 
-	@Test(expected=ExpressionFault.TypeError.class)
+	@Test(expectedExceptions=ExpressionFault.TypeError.class)
 	public void eval_keyerror_ops_add() throws Exception
 	{
 		eval("{1:2} + {}");
 		eval("{1:2} + {2:3}");
 	}
 
-	@Test(expected=ExpressionFault.TypeError.class)
+	@Test(expectedExceptions=ExpressionFault.TypeError.class)
 	public void eval_keyerror_ops_mul() throws Exception
 	{
 		eval("{1:2} * {}");
 	}
 
-	@Test(expected=ExpressionFault.TypeError.class)
+	@Test(expectedExceptions=ExpressionFault.TypeError.class)
 	public void eval_keyerror_ops_div() throws Exception
 	{
 		eval("{1:2} / {}");
 	}
 
-	@Test(expected=ExpressionFault.TypeError.class)
+	@Test(expectedExceptions=ExpressionFault.TypeError.class)
 	public void eval_keyerror_ops_bin_and() throws Exception
 	{
 		eval("{1:2} & {}");
 	}
 
-	@Test(expected=ExpressionFault.Unsupported.class)
+	@Test(expectedExceptions=ExpressionFault.Unsupported.class)
 	public void eval_keyerror_ops_unary_pos() throws Exception
 	{
 		eval("+{1:2}");
