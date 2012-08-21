@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.io.File;
+import java.io.FilenameFilter;
 
 import org.testng.annotations.Test;
 import org.testng.annotations.DataProvider;
@@ -55,13 +56,24 @@ public class TestCodecCreation {
 		codec.accept(check, null);
 	}
 
+
+	public static final File specdir = new File("specs/");
+	public static final FilenameFilter xml_files =
+		new FilenameFilter() {
+			public boolean accept(File dir, String name) {
+				return name.endsWith(".xml");
+			}
+		};
+	public static final String FILE_SEP = System.getProperty("file.separator");
+
 	@DataProvider
 	public static Object[][] valid() {
-		return valid;
+		String[] names = specdir.list(xml_files);
+		Object[][] data = new Object[names.length][];
+		for(int i=0; i<names.length; i++)
+			data[i] = new Object[] {
+				specdir + FILE_SEP + names[i]
+			};
+		return data;
 	}
-
-	public static final Object[][] valid = new Object[][] {
-		{"specs/EASYS.xml"},
-		{"specs/M4D.xml"},
-	};
 }
