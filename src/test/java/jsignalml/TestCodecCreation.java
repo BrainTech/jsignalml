@@ -1,61 +1,78 @@
 package jsignalml;
 
-import java.util.Collection;
-import java.util.Arrays;
+import java.util.List;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.io.File;
 import java.io.FilenameFilter;
 
 import org.testng.annotations.Test;
-import org.testng.annotations.DataProvider;
+import org.testng.annotations.Factory;
 import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertTrue;
 
 public class TestCodecCreation {
 
-	@Test(dataProvider="valid")
-	public void test_filename_valid(final String specfile) {
-		assertTrue(new File(specfile).exists());
+	public class TestOneCodec {
+		public final String specfile;
+		TestOneCodec(String specfile) {
+			this.specfile = specfile;
+		}
+
+		public String toString() {
+			return getClass().getSimpleName() + ": " + specfile;
+		}
+
+		@Test
+		public void test_filename_valid() {
+			assertTrue(new File(specfile).exists());
+		}
+
+		@Test(dependsOnMethods={"test_filename_valid"})
+			public void test_xml()
+			throws Exception
+		{
+			final InputStream stream = new FileInputStream(specfile);
+			final XMLDocument doc = new XMLDocument(stream);
+
+			// check required fields
+			doc.getElement_re("/signalml");
+			doc.getElement_re("/signalml/header");
+		}
+
+		@Test(dependsOnMethods={"test_xml"})
+		public void test_makeCodec()
+			throws Exception
+		{
+			final ASTNode codec = CodecParser.makeCodec(new File(specfile));
+		}
+
+		@Test(dependsOnMethods={"test_makeCodec"})
+		public void test_ASTTypeVisitor()
+			throws Exception
+		{
+			final ASTNode codec = CodecParser.makeCodec(new File(specfile));
+			final ASTTypeVisitor typer = new ASTTypeVisitor();
+			codec.accept(typer, null);
+		}
+
+		@Test(dependsOnMethods={"test_makeCodec"})
+		public void test_NameCheck()
+			throws Exception
+		{
+			final ASTNode codec = CodecParser.makeCodec(new File(specfile));
+			final NameCheck check = new NameCheck();
+			codec.accept(check, null);
+		}
 	}
 
-	@Test(dataProvider="valid", dependsOnMethods={"test_filename_valid"})
-	public void test_xml(final String specfile)
-		throws Exception
-	{
-		final InputStream stream = new FileInputStream(specfile);
-		final XMLDocument doc = new XMLDocument(stream);
-
-		// check required fields
-		doc.getElement_re("/signalml");
-		doc.getElement_re("/signalml/header");
+	@Factory
+	public Object[] factory() {
+		List<Object> result = util.newArrayList();
+		for(String filename: specfiles())
+			result.add(new TestOneCodec(filename));
+		return result.toArray(new TestOneCodec[] {});
 	}
-
-	@Test(dataProvider="valid", dependsOnMethods={"test_xml"})
-	public void test_makeCodec(final String specfile)
-		throws Exception
-	{
-		final ASTNode codec = CodecParser.makeCodec(new File(specfile));
-	}
-
-	@Test(dataProvider="valid", dependsOnMethods={"test_makeCodec"})
-	public void test_ASTTypeVisitor(final String specfile)
-		throws Exception
-	{
-		final ASTNode codec = CodecParser.makeCodec(new File(specfile));
-		final ASTTypeVisitor typer = new ASTTypeVisitor();
-		codec.accept(typer, null);
-	}
-
-	@Test(dataProvider="valid", dependsOnMethods={"test_makeCodec"})
-	public void test_NameCheck(final String specfile)
-		throws Exception
-	{
-		final ASTNode codec = CodecParser.makeCodec(new File(specfile));
-		final NameCheck check = new NameCheck();
-		codec.accept(check, null);
-	}
-
 
 	public static final File specdir = new File("specs/");
 	public static final FilenameFilter xml_files =
@@ -66,14 +83,10 @@ public class TestCodecCreation {
 		};
 	public static final String FILE_SEP = System.getProperty("file.separator");
 
-	@DataProvider
-	public static Object[][] valid() {
+	public static String[] specfiles() {
 		String[] names = specdir.list(xml_files);
-		Object[][] data = new Object[names.length][];
 		for(int i=0; i<names.length; i++)
-			data[i] = new Object[] {
-				specdir + FILE_SEP + names[i]
-			};
-		return data;
+			names[i] = specdir + FILE_SEP + names[i];
+		return names;
 	}
 }
