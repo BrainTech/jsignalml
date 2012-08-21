@@ -196,22 +196,37 @@
 	<version>2.12</version>
       </plugin>
 
-      <plugin>
-	<groupId>org.apache.maven.plugins</groupId>
-	<artifactId>maven-jxr-plugin</artifactId>
-	<version>2.3</version>
-	<configuration>
-	  <aggregate>true</aggregate>
-	  <linkJavadoc>true</linkJavadoc>
-	</configuration>
-      </plugin>
-
-      <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>cobertura-maven-plugin</artifactId>
-        <version>2.4</version>
-      </plugin>
-
     </plugins>
   </reporting>
+
+  <profiles>
+    <profile>
+      <id>full</id>
+
+      <reporting>
+	<plugins>
+
+	  <plugin>
+	    <groupId>org.apache.maven.plugins</groupId>
+	    <artifactId>maven-jxr-plugin</artifactId>
+	    <version>2.3</version>
+	    <configuration>
+	      <aggregate>true</aggregate>
+	      <linkJavadoc>true</linkJavadoc>
+	    </configuration>
+	  </plugin>
+
+	  <plugin>
+	    <groupId>org.codehaus.mojo</groupId>
+	    <artifactId>cobertura-maven-plugin</artifactId>
+	    <version>2.4</version>
+	  </plugin>
+
+
+	</plugins>
+      </reporting>
+
+    </profile>
+  </profiles>
+
 </project>
