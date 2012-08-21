@@ -1,8 +1,6 @@
 package jsignalml;
 
 import static org.testng.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
-import static org.hamcrest.core.IsInstanceOf.instanceOf;
 
 import java.io.File;
 import java.io.IOException;
@@ -97,8 +95,8 @@ public class TestCodecBuilding {
 		ASTNode.Param p = (ASTNode.Param) root.find("file").find("only");
 
 		assertEquals("only", p.static_id);
-		assertThat( p.type, instanceOf(TypeInt.class) );
+		helpers.assertInstanceOf(p.type, TypeInt.class);
 		assertEquals(4, p.args.size());
-		assertThat( p, instanceOf(ASTNode.ExprParam.class) );
+		helpers.assertInstanceOf(p, ASTNode.ExprParam.class);
 	}
 }

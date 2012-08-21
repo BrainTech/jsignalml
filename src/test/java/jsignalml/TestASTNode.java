@@ -1,8 +1,6 @@
 package jsignalml;
 
 import static org.testng.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
-import static org.hamcrest.core.IsInstanceOf.instanceOf;
 
 import java.util.Map;
 
@@ -31,7 +29,7 @@ public class TestASTNode {
 		ASTNode.ExprParam p = new ASTNode.ExprParam(signalml, "p", new TypeInt(1),
 							new Expression.Const(intval));
 		final Type val = p.expr.accept(new EvalVisitor(state));
-		assertThat(val, instanceOf(TypeInt.class));
+		helpers.assertInstanceOf(val, TypeInt.class);
 		assertEquals(val, intval);
 	}
 
@@ -46,7 +44,7 @@ public class TestASTNode {
 	{
 		ASTNode.ExprParam p = makeExprParam(new TypeFloat(1), "a+b");
 		final Type val = p.expr.accept(new EvalVisitor(state));
-		assertThat(val, instanceOf(TypeFloat.class));
+		helpers.assertInstanceOf(val, TypeFloat.class);
 		assertEquals(val, new TypeFloat(3.));
 	}
 }

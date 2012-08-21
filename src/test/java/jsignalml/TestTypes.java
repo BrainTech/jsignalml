@@ -1,18 +1,16 @@
 package jsignalml;
 
-import static jsignalml.TestNumberOps.eval;
-import static org.testng.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
-import static org.hamcrest.core.IsInstanceOf.instanceOf;
-
 import org.testng.annotations.Test;
+import static org.testng.Assert.assertEquals;
+
+import static jsignalml.TestNumberOps.eval;
 
 public class TestTypes {
 
 	public static void assertIsType(String line, Class<? extends Type> theClass)
 		throws Exception
 	{
-		assertThat(eval(line), instanceOf(theClass));
+		helpers.assertInstanceOf(eval(line), theClass);
 	}
 
 	@Test public void eval_atom_is_int() throws Exception
