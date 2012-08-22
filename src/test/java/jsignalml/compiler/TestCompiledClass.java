@@ -1,9 +1,9 @@
 package jsignalml.compiler;
 
 import org.testng.annotations.Test;
+import org.testng.annotations.DataProvider;
 import static org.testng.Assert.assertEquals;
 
-@Test
 public class TestCompiledClass {
 	static final String source =
 		"public class HelloWorld {\n" +
@@ -13,6 +13,7 @@ public class TestCompiledClass {
 		"    }\n" +
 		"}\n";
 
+	@Test
 	public void testCompilation()
 		throws Exception
 	{
@@ -22,6 +23,7 @@ public class TestCompiledClass {
 			     "'Hello, World!' by HelloWorld");
 	}
 
+	@Test
 	public void testCompilationInPackage()
 		throws Exception
 	{
@@ -31,5 +33,37 @@ public class TestCompiledClass {
 		Object instance = klass.newInstance();
 		assertEquals(instance.toString(),
 			     "'Hello, World!' by HelloWorld");
+	}
+
+	@Test(dataProvider="level")
+	public void testNestedCompilation(Integer level)
+		throws Exception
+	{
+		final String
+			fmt = "Goo%03d%03d",
+			opening = "public class " + fmt + " {\n",
+			clname = String.format(fmt, level, 0),
+			// Class name is 9 chars, or 10 with the period
+			closing = "}\n";
+
+		StringBuilder source = new StringBuilder();
+		for(int i=0; i<level; i++)
+			source.append(String.format(opening, level, i));
+		for(int i=0; i<level; i++)
+			source.append(closing);
+		CompiledClass klass = new CompiledClass(clname, source);
+		final Object instance;
+		instance = klass.newInstance();
+		assertEquals(instance.getClass().getSimpleName(), clname);
+	}
+
+	public static final int MAX_NESTEDNESS_LEVEL = 30;
+
+	@DataProvider
+	public static Object[][] level() {
+		Object[][] ar = new Object[MAX_NESTEDNESS_LEVEL][];
+		for(int i=0; i<ar.length; i++)
+			ar[i] = new Object[] { new Integer(i+1) };
+		return ar;
 	}
 }

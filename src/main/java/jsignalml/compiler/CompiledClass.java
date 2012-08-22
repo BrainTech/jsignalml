@@ -61,8 +61,7 @@ public class CompiledClass {
 			compiler.getTask(null, fileManager, this.diagnostics,
 					 null, null, jfiles);
 		if (!task.call())
-			throw new ClassNotFoundException(
-			      "compilation failed for class " + this.fullName);
+			throw compilationFailure();
 
 		// Creating an instance of our compiled class and
 		// running its toString() method
@@ -70,6 +69,22 @@ public class CompiledClass {
 			.loadClass(fullName);
 
 		return this.klass;
+	}
+
+	protected ClassNotFoundException compilationFailure() {
+		StringBuilder reason = new StringBuilder(
+			 "compilation failed for class " + this.fullName);
+		for(Diagnostic<? extends JavaFileObject> dia:
+			    this.getDiagnostics()) {
+			final String pos;
+			if(dia.getPosition() != Diagnostic.NOPOS)
+				pos = String.format("line %d: ", dia.getLineNumber());
+			else
+				pos = "";
+			reason.append("\n" + pos + dia.getMessage(null));
+		}
+		// reason.append(this.src);
+		return new ClassNotFoundException(reason.toString());
 	}
 
 	public Constructor getConstructor(Object... parameters)
