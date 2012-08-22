@@ -6,6 +6,7 @@ import static jsignalml.codec.Signalml.isPrimGeneration;
 
 import java.io.File;
 import java.io.OutputStream;
+import java.io.Writer;
 import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 import java.util.List;
@@ -33,6 +34,7 @@ import com.sun.codemodel.JMethod;
 import com.sun.codemodel.JMod;
 import com.sun.codemodel.JType;
 import com.sun.codemodel.JVar;
+import com.sun.codemodel.CodeWriter;
 import com.sun.codemodel.writer.FileCodeWriter;
 import com.sun.codemodel.writer.SingleStreamCodeWriter;
 
@@ -2069,6 +2071,11 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 		throws java.io.IOException
 	{
 		this.model.build(new SingleStreamCodeWriter(outputstream));
+	}
+	public void write(CodeWriter writer)
+		throws java.io.IOException
+	{
+		this.model.build(writer);
 	}
 	public void write(File outputdir)
 		throws java.io.IOException

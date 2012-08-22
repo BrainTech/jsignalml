@@ -5,12 +5,15 @@ import java.io.FileInputStream;
 import java.io.InputStream;
 import java.io.File;
 import java.io.FilenameFilter;
+import java.io.ByteArrayOutputStream;
 
-import org.apache.commons.io.output.NullOutputStream;
+import jsignalml.compiler.CompiledClass;
+import jsignalml.compiler.MemoryWriter;
 
 import org.testng.annotations.Test;
 import org.testng.annotations.Factory;
 import static org.testng.Assert.assertNotNull;
+import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
 
 public class TestCodecCreation {
@@ -70,6 +73,9 @@ public class TestCodecCreation {
 			this.codec.accept(this.typer, null);
 		}
 
+		String class_name = null;
+		CharSequence class_code = null;
+
 		@Test(dependsOnMethods={"test_ASTTypeVisitor"})
 		public void test_JavaClassGen()
 			throws Exception
@@ -77,7 +83,25 @@ public class TestCodecCreation {
 			final JavaClassGen gen =
 				new JavaClassGen(this.typer.getTypeResolver());
 			this.codec.accept(gen, null);
-			gen.write(new NullOutputStream());
+
+			final MemoryWriter writer = new MemoryWriter();
+			gen.write(writer);
+			this.class_name = gen.getClassName();
+			this.class_code = writer.getCode();
+		}
+
+		@Test(dependsOnMethods={"test_JavaClassGen"})
+		public void test_compilation_from_memory()
+			throws Exception
+		{
+			assert class_name != null;
+			assert class_code != null;
+			assert class_code.length() > 0;
+			CompiledClass klass = new CompiledClass(this.class_name,
+								this.class_code);
+			Object instance = klass.newInstance();
+			helpers.assertInstanceOf(instance, jsignalml.codec.Signalml.class);
+			assertEquals(instance.getClass().getSimpleName(), this.class_name);
 		}
 	}
 
