@@ -2,8 +2,12 @@ import java.io.*;
 import com.sun.codemodel.*;
 import com.sun.codemodel.writer.*;
 
+import org.testng.annotations.Test;
+import static org.testng.Assert.assertTrue;
+
 public class CodemodelTest {
-	void gen(OutputStream out) throws Exception {
+	@Test
+	public void testTrivialGeneration() throws Exception {
 		JCodeModel codeModel = new  JCodeModel();
 		JDefinedClass foo = codeModel._class( "a.b.c.Foo" ); //Creates a new class
 
@@ -25,10 +29,8 @@ public class CodemodelTest {
 
 		body._return(locvar.plus(JExpr.direct("Double.SIZE")));
 
-		codeModel.build( new SingleStreamCodeWriter( out ) );
-	}
-
-	public static void main(String...args) throws Exception {
-		new CodemodelTest().gen(System.out);
+		ByteArrayOutputStream stream = new ByteArrayOutputStream();
+		codeModel.build(new SingleStreamCodeWriter(stream));
+		assertTrue(stream.toString().contains("class Foo"));
 	}
 }
