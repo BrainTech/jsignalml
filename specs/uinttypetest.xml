@@ -1,6 +1,13 @@
 <?xml version="1.0"?>
 <!DOCTYPE signalml SYSTEM "SignalML_2_0.dtd">
 <signalml>
+  <header>
+    <format_id>
+      <name>'Unsigned Integer Type Test'</name>
+      <provider>'-'</provider>
+      <version>'0.0.0'</version>
+    </format_id>
+  </header>
   <file type='binary' id='main'>
     <param id='def_len'>
       <format>'&lt;u2'</format>

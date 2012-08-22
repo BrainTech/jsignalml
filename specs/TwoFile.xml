@@ -1,4 +1,11 @@
 <signalml>
+  <header>
+    <format_id>
+      <name>'TwoFile'</name>
+      <provider>'-'</provider>
+      <version>'0.0.0'</version>
+    </format_id>
+  </header>
   <file id="g" type="binary">
     <param id="description">
       <expr>"gooooooo"</expr>
