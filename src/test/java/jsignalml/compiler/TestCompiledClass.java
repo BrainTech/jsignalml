@@ -21,4 +21,15 @@ public class TestCompiledClass {
 		assertEquals(instance.toString(),
 			     "'Hello, World!' by HelloWorld");
 	}
+
+	public void testCompilationInPackage()
+		throws Exception
+	{
+		String source2 = "package goo.goo.goo;\n\n" + source;
+		CompiledClass klass = new CompiledClass("goo.goo.goo.HelloWorld",
+							source2);
+		Object instance = klass.newInstance();
+		assertEquals(instance.toString(),
+			     "'Hello, World!' by HelloWorld");
+	}
 }
