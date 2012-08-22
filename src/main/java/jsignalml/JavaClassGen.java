@@ -125,8 +125,13 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 	final JClass ByteBuffer_t = this.model.ref(ByteBuffer.class);
 	final JClass FileClass_t = this.model.ref(FileClass.class);
 
+	String class_name = null; // this shoudl be set when Signalml class is created.
 	JFieldVar log_var = null; // this should be set when Signalml class is created.
 	final ASTTypeResolver typeresolver;
+
+	public String getClassName() {
+		return this.class_name;
+	}
 
 	private static ASTTypeResolver nullTypeResolver() {
 		return new ASTTypeResolver() {
@@ -168,15 +173,21 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 		log.info("visit((Signalml) %s, %s)", node, dummy);
 		assert dummy == null;
 
+		if (this.class_name != null)
+			throw new SyntaxError("unexpected duplicate <signalml> node");
+
 		final JDefinedClass klass;
 		String theid = dynamicID(node, node.id);
+
+		if (!isJavaIdentifier(theid)) {
+			String theidold = theid;
+			theid = theid.replaceAll("([^A-Za-z0-9_])", "_");
+			log.info("visit(node id %s -> %s)", theidold, theid);
+			assert isJavaIdentifier(theid);
+		}
+		this.class_name = theid;
+
 		try {
-			if (! isJavaIdentifier (theid)) {
-				String theidold = theid;
-				theid = theid.replaceAll("([^A-Za-z0-9_])", "_");
-				log.info("visit(node id %s -> %s)", theidold, theid);
-				assert isJavaIdentifier (theid);
-			}
 			klass = this.model._class(theid);
 		} catch(JClassAlreadyExistsException e) {
 			throw new SyntaxError(format("duplicate name: '%s'", theid));
@@ -184,6 +195,7 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 		klass._extends(jsignalml.codec.Signalml.class);
 		comment_stamp(klass);
 
+		assert this.log_var == null;
 		this.log_var = klass.field(JMod.STATIC|JMod.FINAL, Logger_t, "log",
 					   JExpr._new(Logger_t).arg(klass.dotclass()));
 
