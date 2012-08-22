@@ -57,13 +57,14 @@ public class TestCompiledClass {
 		assertEquals(instance.getClass().getSimpleName(), clname);
 	}
 
-	public static final int MAX_NESTEDNESS_LEVEL = 30;
+	public static final int[] LEVELS = {
+		1, 2, 3, 4, 5, 6, 10, 20, 30, 50, 100, 300};
 
 	@DataProvider
 	public static Object[][] level() {
-		Object[][] ar = new Object[MAX_NESTEDNESS_LEVEL][];
+		Object[][] ar = new Object[LEVELS.length][];
 		for(int i=0; i<ar.length; i++)
-			ar[i] = new Object[] { new Integer(i+1) };
+			ar[i] = new Object[] { new Integer(LEVELS[i]) };
 		return ar;
 	}
 }
