@@ -48,21 +48,34 @@ public class TestCodecCreation {
 		}
 
 		@Test(dependsOnMethods={"test_makeCodec"})
-		public void test_ASTTypeVisitor()
-			throws Exception
-		{
-			final ASTNode codec = CodecParser.makeCodec(new File(specfile));
-			final ASTTypeVisitor typer = new ASTTypeVisitor();
-			codec.accept(typer, null);
-		}
-
-		@Test(dependsOnMethods={"test_makeCodec"})
 		public void test_NameCheck()
 			throws Exception
 		{
 			final ASTNode codec = CodecParser.makeCodec(new File(specfile));
 			final NameCheck check = new NameCheck();
 			codec.accept(check, null);
+		}
+
+		ASTNode codec = null;
+		ASTTypeVisitor typer = null;
+
+		@Test(dependsOnMethods={"test_makeCodec"})
+		public void test_ASTTypeVisitor()
+			throws Exception
+		{
+			this.codec = CodecParser.makeCodec(new File(specfile));
+			this.typer  = new ASTTypeVisitor();
+			this.codec.accept(this.typer, null);
+		}
+
+		@Test(dependsOnMethods={"test_ASTTypeVisitor"})
+		public void test_JavaClassGen()
+			throws Exception
+		{
+			final JavaClassGen gen =
+				new JavaClassGen(this.typer.getTypeResolver());
+			this.codec.accept(gen, null);
+			gen.write(System.out);
 		}
 	}
 
