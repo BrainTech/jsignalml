@@ -9,16 +9,29 @@ import javax.tools.JavaCompiler;
 import javax.tools.ToolProvider;
 import javax.tools.JavaFileManager;
 import javax.tools.JavaFileObject;
+import javax.tools.Diagnostic;
+import javax.tools.DiagnosticCollector;
 
 public class CompiledClass {
 	public final String fullName;
 	public final CharSequence src;
 
 	private Class<?> klass = null;
+	protected DiagnosticCollector<JavaFileObject> diagnostics =
+		new DiagnosticCollector<JavaFileObject>();
 
 	public CompiledClass(String fullName, CharSequence src) {
 		this.fullName = fullName;
 		this.src = src;
+	}
+
+	/**
+	 * Get compilation diagnostics. Only makes sense after compilation,
+	 * i.e. after theClass() method has been called.
+	 */
+	public List<Diagnostic<? extends JavaFileObject>> getDiagnostics()
+	{
+		return this.diagnostics.getDiagnostics();
 	}
 
 	synchronized Class<?> theClass()
@@ -44,8 +57,12 @@ public class CompiledClass {
 		// We specify a task to the compiler. Compiler should use our file
 		// manager and our list of "files".
 		// Then we run the compilation with call()
-		compiler.getTask(null, fileManager, null, null,
-				 null, jfiles).call();
+		JavaCompiler.CompilationTask task =
+			compiler.getTask(null, fileManager, this.diagnostics,
+					 null, null, jfiles);
+		if (!task.call())
+			throw new ClassNotFoundException(
+			      "compilation failed for class " + this.fullName);
 
 		// Creating an instance of our compiled class and
 		// running its toString() method

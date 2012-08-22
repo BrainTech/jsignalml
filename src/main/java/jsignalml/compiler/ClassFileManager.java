@@ -34,9 +34,11 @@ public class ClassFileManager
 	 */
 	class StringClassLoader extends SecureClassLoader {
 		@Override
-			protected Class<?> findClass(String name)
+		protected Class<?> findClass(String name)
 			throws ClassNotFoundException
 		{
+			assert jclassObject != null;
+
 			byte[] b = jclassObject.getBytes();
 			return super.defineClass(name,
 						 jclassObject.getBytes(),
