@@ -3,7 +3,7 @@ package jsignalml;
 import java.io.FileReader;
 import java.io.PrintWriter;
 
-import jline.ConsoleReader;
+import jline.console.ConsoleReader;
 import jsignalml.logging.Logger;
 
 import org.antlr.runtime.ANTLRReaderStream;
