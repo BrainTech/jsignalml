@@ -26,6 +26,9 @@ public class XMLDocument
 		public NodeError(String xpath) {
 			this.xpath = xpath;
 		}
+		public String toString() {
+			return getClass().getName() + " " + xpath;
+		}
 	}
 
 	static final Logger log = new Logger(XMLDocument.class);
