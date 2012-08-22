@@ -6,6 +6,8 @@ import java.io.InputStream;
 import java.io.File;
 import java.io.FilenameFilter;
 
+import org.apache.commons.io.output.NullOutputStream;
+
 import org.testng.annotations.Test;
 import org.testng.annotations.Factory;
 import static org.testng.Assert.assertNotNull;
@@ -75,7 +77,7 @@ public class TestCodecCreation {
 			final JavaClassGen gen =
 				new JavaClassGen(this.typer.getTypeResolver());
 			this.codec.accept(gen, null);
-			gen.write(System.out);
+			gen.write(new NullOutputStream());
 		}
 	}
 
