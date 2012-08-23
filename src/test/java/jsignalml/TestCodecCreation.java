@@ -4,7 +4,6 @@ import java.util.List;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.io.File;
-import java.io.FilenameFilter;
 import java.io.ByteArrayOutputStream;
 
 import jsignalml.compiler.CompiledClass;
@@ -113,7 +112,7 @@ public class TestCodecCreation {
 			assert this.java_class_gen != null;
 			File dir = helpers.temporaryDir("jsignalml-generated");
 			this.java_class_gen.write(dir);
-			assertTrue(dir.list(java_files).length > 0);
+			assertTrue(dir.list(helpers.java_file_filter).length > 0);
 			assertTrue(new File(dir, this.class_name + ".java").exists());
 			this.dir_with_code = dir;
 		}
@@ -159,23 +158,10 @@ public class TestCodecCreation {
 	}
 
 	public static final File specdir = new File("specs/");
-	public static final FilenameFilter xml_files =
-		new FilenameFilter() {
-			public boolean accept(File dir, String name) {
-				return name.endsWith(".xml");
-			}
-		};
 	public static String[] specfiles() {
-		String[] names = specdir.list(xml_files);
+		String[] names = specdir.list(helpers.xml_file_filter);
 		for(int i=0; i<names.length; i++)
 			names[i] = specdir + helpers.FILE_SEP + names[i];
 		return names;
 	}
-
-	public static final FilenameFilter java_files =
-		new FilenameFilter() {
-			public boolean accept(File dir, String name) {
-				return name.endsWith(".java");
-			}
-		};
 }
