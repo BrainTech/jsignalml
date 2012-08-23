@@ -3,9 +3,14 @@ package jsignalml.data;
 import java.io.Reader;
 import java.io.FileReader;
 import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.io.InputStream;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.File;
 import java.io.FileNotFoundException;
+
+import org.tukaani.xz.XZInputStream;
 
 public class AsciiFile implements DataInfo {
 	final BufferedReader reader;
@@ -22,6 +27,14 @@ public class AsciiFile implements DataInfo {
 	{
 		this.reader = new BufferedReader(reader);
 		this.lineno = 0;
+	}
+
+	public static AsciiFile compressed(File name)
+		throws IOException, FileNotFoundException
+	{
+		return new AsciiFile(new InputStreamReader(
+				     new XZInputStream(
+				     new FileInputStream(name))));
 	}
 
 	@Override
