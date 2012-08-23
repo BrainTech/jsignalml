@@ -30,7 +30,7 @@ public class TestCodecCreation {
 
 		@Test
 		public void test_filename_valid() {
-			assertTrue(new File(specfile).exists());
+			assertTrue(new File(specfile).exists(), specfile);
 		}
 
 		@Test(dependsOnMethods={"test_filename_valid"})
@@ -73,30 +73,56 @@ public class TestCodecCreation {
 			this.codec.accept(this.typer, null);
 		}
 
-		String class_name = null;
-		CharSequence class_code = null;
+		JavaClassGen java_class_gen = null;
 
 		@Test(dependsOnMethods={"test_ASTTypeVisitor"})
 		public void test_JavaClassGen()
 			throws Exception
 		{
-			final JavaClassGen gen =
+			this.java_class_gen =
 				new JavaClassGen(this.typer.getTypeResolver());
-			this.codec.accept(gen, null);
-
-			final MemoryWriter writer = new MemoryWriter();
-			gen.write(writer);
-			this.class_name = gen.getClassName();
-			this.class_code = writer.getCode();
+			this.codec.accept(this.java_class_gen, null);
 		}
 
+		String class_name = null;
+		CharSequence class_code = null;
+
 		@Test(dependsOnMethods={"test_JavaClassGen"})
+		public void test_MemoryWriter()
+			throws Exception
+		{
+			assert this.java_class_gen != null;
+			final MemoryWriter writer = new MemoryWriter();
+			java_class_gen.write(writer);
+			final String name = java_class_gen.getClassName();
+			final CharSequence code = writer.getCode();
+			assertNotNull(name);
+			assertNotNull(code);
+			assertTrue(code.toString().contains("class " + name));
+			this.class_name = name;
+			this.class_code = code;
+		}
+
+		File dir_with_code = null;
+
+		@Test(dependsOnMethods={"test_JavaClassGen"})
+		public void test_DiskWriter()
+			throws Exception
+		{
+			assert this.java_class_gen != null;
+			File dir = helpers.temporaryDir("jsignalml-generated");
+			this.java_class_gen.write(dir);
+			assertTrue(dir.list(java_files).length > 0);
+			this.dir_with_code = dir;
+		}
+
+		@Test(dependsOnMethods={"test_MemoryWriter"})
 		public void test_compilation_from_memory()
 			throws Exception
 		{
-			assert class_name != null;
-			assert class_code != null;
-			assert class_code.length() > 0;
+			assert this.class_name != null;
+			assert this.class_code != null;
+			assert this.class_code.length() > 0;
 			CompiledClass klass = new CompiledClass(this.class_name,
 								this.class_code);
 			Object instance = klass.newInstance();
@@ -120,12 +146,17 @@ public class TestCodecCreation {
 				return name.endsWith(".xml");
 			}
 		};
-	public static final String FILE_SEP = System.getProperty("file.separator");
-
 	public static String[] specfiles() {
 		String[] names = specdir.list(xml_files);
 		for(int i=0; i<names.length; i++)
-			names[i] = specdir + FILE_SEP + names[i];
+			names[i] = specdir + helpers.FILE_SEP + names[i];
 		return names;
 	}
+
+	public static final FilenameFilter java_files =
+		new FilenameFilter() {
+			public boolean accept(File dir, String name) {
+				return name.endsWith(".java");
+			}
+		};
 }

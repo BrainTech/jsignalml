@@ -83,7 +83,7 @@ public class CompiledClass {
 				pos = "";
 			reason.append("\n" + pos + dia.getMessage(null));
 		}
-		// reason.append(this.src);
+		// reason.append("\n" + this.src);
 		return new ClassNotFoundException(reason.toString());
 	}
 

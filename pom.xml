@@ -56,7 +56,12 @@
       <version>2.4</version>
       <scope>test</scope>
     </dependency>
-
+    <dependency>
+      <groupId>com.google.guava</groupId>
+      <artifactId>guava-io</artifactId>
+      <version>r03</version>
+      <scope>test</scope>
+    </dependency>
     <dependency>
       <groupId>jline</groupId>
       <artifactId>jline</artifactId>
