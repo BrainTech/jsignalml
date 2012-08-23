@@ -9,8 +9,11 @@ import java.io.IOException;
 import java.io.ByteArrayOutputStream;
 import java.security.SecureClassLoader;
 
+import jsignalml.logging.Logger;
+
 public class ClassFileManager
 	extends ForwardingJavaFileManager<StandardJavaFileManager> {
+	public static final Logger log = new Logger(ClassFileManager.class);
 
 	/**
 	 * Instance of JavaClassObject that will store the compiled bytecode
@@ -37,6 +40,7 @@ public class ClassFileManager
 		protected Class<?> findClass(String name)
 			throws ClassNotFoundException
 		{
+			log.debug("loading class: %s", name);
 			assert jclassObject != null;
 
 			byte[] b = jclassObject.getBytes();
@@ -48,6 +52,7 @@ public class ClassFileManager
 
 	@Override
 	public ClassLoader getClassLoader(Location location) {
+		log.info("providing class loader for %s", location);
 		return new StringClassLoader();
 	}
 
