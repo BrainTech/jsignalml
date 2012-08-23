@@ -18,6 +18,7 @@ import org.apache.log4j.BasicConfigurator;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 
+import jsignalml.util;
 import jsignalml.logging.Logger;
 
 public class CompiledClass {
@@ -61,9 +62,8 @@ public class CompiledClass {
 		// (our custom implementation of it)
 		JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
 		log.debug("retrieved system compiler: %s", compiler);
-		JavaFileManager fileManager = new
-			ClassFileManager(compiler
-				 .getStandardFileManager(null, null, null));
+		JavaFileManager fileManager = new ClassFileManager(
+		       compiler.getStandardFileManager(this.diagnostics, null, null));
 
 		// Dynamic compiling requires specifying
 		// a list of "files" to compile. In our case
@@ -72,13 +72,20 @@ public class CompiledClass {
 		List<JavaFileObject> jfiles =
 			StringJavaFile.createList(this.fullName, this.src);
 
+		String classpath = System.getProperty("java.class.path");
+		List<String> optionList = util.newArrayList();
+		// set compiler's classpath to be same as the runtime's
+		optionList.add("-classpath");
+		optionList.add(classpath);
+		log.debug("added classpath %s", classpath);
+
 		// We specify a task to the compiler. Compiler should use our file
 		// manager and our list of "files".
 		// Then we run the compilation with call()
 		log.debug("executing compilation for class %s", this.fullName);
 		JavaCompiler.CompilationTask task =
 			compiler.getTask(null, fileManager, this.diagnostics,
-					 null, null, jfiles);
+					 optionList, null, jfiles);
 		if (!task.call())
 			throw compilationFailure();
 
@@ -101,9 +108,10 @@ public class CompiledClass {
 				pos = String.format("line %d: ", dia.getLineNumber());
 			else
 				pos = "";
+			String msg = dia.getMessage(null).replace("\n", "; ");
 			if (i++ < exception_error_limit)
-				reason.append("\n" + pos + dia.getMessage(null));
-			log.warn(pos + dia.getMessage(null));
+				reason.append("\n" + pos + msg);
+			log.warn(pos + msg);
 		}
 		// reason.append("\n" + this.src);
 		log.error("compilation failed for class %s", this.fullName);
