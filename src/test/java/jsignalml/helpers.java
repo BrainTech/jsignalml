@@ -15,6 +15,24 @@ public class helpers {
 						 klass.getName());
 	}
 
+	public static void assertEquals(float[] left, float[] right,
+					float precision) {
+		if (left.length != right.length)
+			throw new AssertionError("arrays have different length ("
+						 + left.length + "!="
+						 + right.length + ")");
+		for(int i=0; i<left.length; i++)
+			if (Math.abs(left[i]-right[i]) > precision)
+				throw new AssertionError("arrays differ at pos "
+							 + i + " (" +
+							 left[i] + "!=" +
+							 right[i] + ")");
+	}
+
+	public static void assertEquals(float[] left, float... right) {
+		assertEquals(left, right, 0.000000001f);
+	}
+
 	public static final boolean keep_tmp_files =
 		System.getProperties()
 		.getProperty("jsignalml.test.keep", "")
