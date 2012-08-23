@@ -4,6 +4,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 
 import java.util.List;
+import java.io.File;
 
 import javax.tools.JavaCompiler;
 import javax.tools.ToolProvider;
@@ -11,6 +12,11 @@ import javax.tools.JavaFileManager;
 import javax.tools.JavaFileObject;
 import javax.tools.Diagnostic;
 import javax.tools.DiagnosticCollector;
+
+import org.apache.log4j.BasicConfigurator;
+
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.FilenameUtils;
 
 import jsignalml.logging.Logger;
 
@@ -124,5 +130,24 @@ public class CompiledClass {
 	{
 		Constructor cons = this.getConstructor(parameters);
 		return cons.newInstance(parameters);
+	}
+
+	public static void main(String... args)
+		throws java.io.IOException,
+		       java.io.FileNotFoundException,
+		       ClassNotFoundException,
+		       NoSuchMethodException,
+		       InstantiationException,
+		       IllegalAccessException,
+		       IllegalArgumentException,
+		       InvocationTargetException
+	{
+		BasicConfigurator.configure();
+
+		String name = args[0];
+		String class_name = FilenameUtils.getBaseName(name);
+		String text = FileUtils.readFileToString(new File(name));
+		CompiledClass klass = new CompiledClass(class_name, text);
+		Object instance = klass.newInstance();
 	}
 }
