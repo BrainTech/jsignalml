@@ -1,5 +1,11 @@
 package jsignalml.compiler;
 
+import java.io.File;
+import java.io.Writer;
+import java.io.FileWriter;
+
+import jsignalml.helpers;
+
 import org.testng.annotations.Test;
 import org.testng.annotations.DataProvider;
 import static org.testng.Assert.assertEquals;
@@ -91,5 +97,19 @@ public class TestCompiledClass {
 		for(int i=0; i<ar.length; i++)
 			ar[i] = new Object[] { new Integer(LEVELS[i]) };
 		return ar;
+	}
+
+	@Test
+	public void testCompilationFromDisk()
+		throws Exception
+	{
+		File dir = helpers.temporaryDir("HelloWorld");
+		File file = new File(dir, "HelloWorld.java");
+		Writer writer = new FileWriter(file);
+		writer.write(this.source);
+		writer.close();
+
+		Object instance = CompiledClass.fromFile(file).newInstance();
+		assertEquals(instance.getClass().getSimpleName(), "HelloWorld");
 	}
 }

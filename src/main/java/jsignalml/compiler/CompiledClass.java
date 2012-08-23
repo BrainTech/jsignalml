@@ -132,6 +132,23 @@ public class CompiledClass {
 		return cons.newInstance(parameters);
 	}
 
+	public static CompiledClass fromFile(File path)
+		throws java.io.IOException,
+		       java.io.FileNotFoundException,
+		       ClassNotFoundException,
+		       NoSuchMethodException,
+		       InstantiationException,
+		       IllegalAccessException,
+		       IllegalArgumentException,
+		       InvocationTargetException
+	{
+		String class_name = FilenameUtils.getBaseName(path.toString());
+		String text = FileUtils.readFileToString(path);
+		CompiledClass klass = new CompiledClass(class_name, text);
+		log.info("created CompiledClass from %s", path);
+		return klass;
+	}
+
 	public static void main(String... args)
 		throws java.io.IOException,
 		       java.io.FileNotFoundException,
@@ -144,10 +161,7 @@ public class CompiledClass {
 	{
 		BasicConfigurator.configure();
 
-		String name = args[0];
-		String class_name = FilenameUtils.getBaseName(name);
-		String text = FileUtils.readFileToString(new File(name));
-		CompiledClass klass = new CompiledClass(class_name, text);
-		Object instance = klass.newInstance();
+		String path = args[0];
+		Object instance = fromFile(new File(path)).newInstance();
 	}
 }

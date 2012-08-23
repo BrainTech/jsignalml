@@ -9,6 +9,7 @@ import java.io.ByteArrayOutputStream;
 
 import jsignalml.compiler.CompiledClass;
 import jsignalml.compiler.MemoryWriter;
+import jsignalml.codec.Signalml;
 
 import org.testng.annotations.Test;
 import org.testng.annotations.Factory;
@@ -106,13 +107,14 @@ public class TestCodecCreation {
 		File dir_with_code = null;
 
 		@Test(dependsOnMethods={"test_JavaClassGen"})
-		public void test_DiskWriter()
+		public void test_writing_to_disk()
 			throws Exception
 		{
 			assert this.java_class_gen != null;
 			File dir = helpers.temporaryDir("jsignalml-generated");
 			this.java_class_gen.write(dir);
 			assertTrue(dir.list(java_files).length > 0);
+			assertTrue(new File(dir, this.class_name + ".java").exists());
 			this.dir_with_code = dir;
 		}
 
@@ -128,6 +130,23 @@ public class TestCodecCreation {
 			Object instance = klass.newInstance();
 			helpers.assertInstanceOf(instance, jsignalml.codec.Signalml.class);
 			assertEquals(instance.getClass().getSimpleName(), this.class_name);
+		}
+
+		Signalml signalml;
+
+		@Test(dependsOnMethods={"test_writing_to_disk"})
+		public void test_compilation_from_disk()
+			throws Exception
+		{
+			assert this.dir_with_code != null;
+			File file = new File(this.dir_with_code,
+					     this.class_name + ".java");
+
+			Object instance = CompiledClass.fromFile(file).newInstance();
+			assertEquals(instance.getClass().getSimpleName(),
+				     this.class_name);
+			helpers.assertInstanceOf(instance, Signalml.class);
+			this.signalml = (Signalml) instance;
 		}
 	}
 
