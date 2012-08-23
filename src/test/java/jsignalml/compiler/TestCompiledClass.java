@@ -35,6 +35,31 @@ public class TestCompiledClass {
 			     "'Hello, World!' by HelloWorld");
 	}
 
+	@Test(dataProvider="dependency")
+	public void testCompilationRequiringPackages(final String dependency)
+		throws Exception
+	{
+		String source2 = "import " + dependency + ";\n\n" + source;
+		CompiledClass klass = new CompiledClass("HelloWorld", source2);
+		Object instance = klass.newInstance();
+		assertEquals(instance.toString(),
+			     "'Hello, World!' by HelloWorld");
+	}
+
+	public static final String[] DEPENDENCIES = {
+		"java.io.ByteArrayOutputStream",
+		"org.apache.log4j.BasicConfigurator",
+		"jsignalml.logging.Logger",
+	};
+
+	@DataProvider
+	public static Object[][] dependency() {
+		Object[][] ar = new Object[DEPENDENCIES.length][];
+		for(int i=0; i<ar.length; i++)
+			ar[i] = new Object[] { DEPENDENCIES[i] };
+		return ar;
+	}
+
 	@Test(dataProvider="level")
 	public void testNestedCompilation(Integer level)
 		throws Exception
