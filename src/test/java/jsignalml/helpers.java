@@ -22,11 +22,21 @@ public class helpers {
 						 + left.length + "!="
 						 + right.length + ")");
 		for(int i=0; i<left.length; i++)
-			if (Math.abs(left[i]-right[i]) > precision)
+			if (Math.abs((left[i]-right[i])/right[i]) > precision)
 				throw new AssertionError("arrays differ at pos "
 							 + i + " (" +
 							 left[i] + "!=" +
-							 right[i] + ")");
+							 right[i] + ")" +
+							 format(left) + " vs " +
+							 format(right)
+							 );
+	}
+
+	public static String format(float[] array) {
+		StringBuilder buf = new StringBuilder("[");
+		for(float f: array)
+			buf.append(" " + f + ",");
+		return buf.substring(0, buf.length()-1) + "]";
 	}
 
 	public static void assertEquals(float[] left, float... right) {

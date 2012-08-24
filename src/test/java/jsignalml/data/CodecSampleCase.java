@@ -101,7 +101,13 @@ public class CodecSampleCase {
 		long i = 0;
 		while((expected = data.getNextSample()) != null) {
 			current = channel_set.getSample(i);
-			helpers.assertEquals(current, expected);
+			try {
+				helpers.assertEquals(current, expected);
+			} catch(AssertionError e) {
+				throw new AssertionError("sample " + i +
+							 " differs: " + e);
+			}
+			i++;
 		}
 	}
 
