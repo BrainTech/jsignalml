@@ -244,4 +244,28 @@
     </profile>
   </profiles>
 
+  <scm>
+    <connection>scm:https://escher.fuw.edu.pl/git/jsignalml</connection>
+    <developerConnection>scm:ssh://escher.fuw.edu.pl/git/jsignalml</developerConnection>
+    <url>https://escher.fuw.edu.pl/git/jsignalml</url>
+  </scm>
+
+  <licenses>
+    <license>
+      <name>GNU General Public License, Version 3</name>
+      <distribution>repo</distribution>
+      <url>http://www.gnu.org/licenses/gpl.txt</url>
+    </license>
+  </licenses>
+
+  <mailingLists>
+    <mailingList>
+      <name>signalml</name>
+      <post>signalml@googlegroups.com</post>
+      <archive>http://groups.google.com/group/signalml</archive>
+      <subscribe>signalml-subscribe@googlegroups.com</subscribe>
+      <unsubscribe>signalml-unsubscribe@googlegroups.com</unsubscribe>
+    </mailingList>
+  </mailingLists>
+
 </project>
