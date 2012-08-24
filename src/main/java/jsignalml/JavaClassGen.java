@@ -14,6 +14,7 @@ import java.util.List;
 import jsignalml.ASTNode.ElseIfBranch;
 import jsignalml.codec.Signalml.FileClass;
 import jsignalml.logging.Logger;
+import jsignalml.compiler.MemoryWriter;
 
 import org.apache.log4j.BasicConfigurator;
 
@@ -2081,6 +2082,14 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 		throws java.io.IOException
 	{
 		this.model.build(new FileCodeWriter(outputdir));
+	}
+
+	public CharSequence getSourceCode()
+		throws java.io.IOException
+	{
+		final MemoryWriter writer = new MemoryWriter();
+		this.write(writer);
+		return writer.getCode();
 	}
 
 	public static void main(String...args)

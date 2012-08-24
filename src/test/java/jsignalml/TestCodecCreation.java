@@ -99,10 +99,8 @@ public class TestCodecCreation {
 			throws Exception
 		{
 			assert this.java_class_gen != null;
-			final MemoryWriter writer = new MemoryWriter();
-			java_class_gen.write(writer);
 			final String name = java_class_gen.getClassName();
-			final CharSequence code = writer.getCode();
+			final CharSequence code = java_class_gen.getSourceCode();
 			assertNotNull(name);
 			assertNotNull(code);
 			assertTrue(code.toString().contains("class " + name));
