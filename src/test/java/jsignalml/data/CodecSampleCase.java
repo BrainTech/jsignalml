@@ -6,6 +6,7 @@ import java.io.FileNotFoundException;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.Iterator;
+import java.util.Arrays;
 
 import jsignalml.Source;
 import jsignalml.ChannelSet;
@@ -116,12 +117,28 @@ public class CodecSampleCase {
 	 * All found .hdr files are assumed to be valid test cases.
 	 */
 	public static Collection<Object> find(Source source, File dir,
-						       String extension)
+					      String extension)
 		throws java.io.FileNotFoundException,
 		       java.io.IOException
 	{
-		Iterator<File> hdrs =
-			FileUtils.iterateFiles(dir, new String[] {"hdr"}, true);
+		try {
+			return _find(source, dir, extension);
+		} catch(Exception e) {
+			return Arrays.asList((Object)
+				new FailedTestCase(e, source, dir, extension));
+		}
+	}
+
+	public static Collection<Object> _find(Source source, File dir,
+					      String extension)
+		throws java.io.FileNotFoundException,
+		       java.io.IOException
+	{
+		log.debug("looking for %s with ext .%s in %s",
+			  source, extension, dir);
+		Iterator<File> hdrs
+			= FileUtils.iterateFiles(dir, new String[] {"hdr"}, true);
+
 		LinkedList<Object> list = util.newLinkedList();
 
 		while(hdrs.hasNext()) {
@@ -132,7 +149,8 @@ public class CodecSampleCase {
 							  extension);
 			} catch(final Exception e) {
 				log.exception("failed to create testcase", e);
-				testcase = new FailedTestCase(e);
+				testcase = new FailedTestCase(e,
+					     source, dir, extension, hdr_file);
 			}
 			list.add(testcase);
 		}
@@ -142,12 +160,23 @@ public class CodecSampleCase {
 
 	public static class FailedTestCase {
 		final Exception e;
-		public FailedTestCase(Exception e) {
+		final Object[] args;
+		public FailedTestCase(Exception e, Object... args) {
 			this.e = e;
+			this.args = args;
+		}
+
+		public String toString() {
+			StringBuffer buf =
+				new StringBuffer(this.getClass().getName() + "[");
+			for(Object obj: this.args)
+				buf.append(obj.toString() + ",");
+			buf.append("]");
+			return buf.toString();
 		}
 
 		@Test
-		public void failed_not_create_testcase()
+		public void failed_to_create_testcase()
 			throws Exception
 		{
 			throw this.e;

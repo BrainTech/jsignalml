@@ -13,15 +13,20 @@ import jsignalml.compiler.CompiledClass;
 import jsignalml.compiler.MemoryWriter;
 import jsignalml.util;
 
+import jsignalml.logging.Logger;
+import org.apache.log4j.BasicConfigurator;
+
 import org.testng.annotations.Factory;
 import org.testng.annotations.DataProvider;
 
 public class TestCompileAndCompare {
+	public static final Logger log = new Logger(TestCompileAndCompare.class);
 
 	@Factory(dataProvider="formats_and_codecs")
 	public static Object[] generate_testcase(String format, String codec)
 		throws Exception
 	{
+		log.info("looking for %s/%s in %s", format, codec, codec_basedir);
 		if (codec_basedir == null)
 			return new Object[][] {};
 		assert codec_basedir.exists();
@@ -35,7 +40,7 @@ public class TestCompileAndCompare {
 
 		String ext = getTestcaseExt(format);
 		File dirs[] = getTestcaseDirs(format);
-		Collection<CodecSampleCase> coll = util.newArrayList();
+		Collection<Object> coll = util.newArrayList();
 		for(File dir: dirs) {
 			Source inst = (Source) klass.newInstance();
 			coll.addAll(CodecSampleCase.find(inst, dir, ext));
@@ -94,5 +99,21 @@ public class TestCompileAndCompare {
 
 	public static String getTestcaseExt(String format_id) {
 		return (String) config.get(format_id + "-ext");
+	}
+
+	public static void main(String... args)
+		throws Exception
+	{
+		BasicConfigurator.configure();
+
+		log.info("looking for test cases");
+
+		Object[][] pairs = formats_and_codecs();
+		for(Object[] pair: pairs) {
+			Object[] cases = generate_testcase((String)pair[0],
+							   (String)pair[1]);
+			for(Object test: cases)
+				log.info("test: %s", test);
+		}
 	}
 }
