@@ -52,6 +52,20 @@ public class helpers {
 		return dir;
 	}
 
+	/**
+	 * Creates a temporary file with prefix in name.
+	 * Will be deleted on JVM exit unless jsignalml.test.keep
+	 * is set.
+	 */
+	public static File temporaryFile(String prefix)
+		throws java.io.IOException
+	{
+		File file = File.createTempFile(prefix, null);
+		if (!keep_tmp_files)
+			file.deleteOnExit();
+		return file;
+	}
+
 	public static final String FILE_SEP =
 		System.getProperty("file.separator");
 
