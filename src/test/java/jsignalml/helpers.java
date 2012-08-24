@@ -30,7 +30,7 @@ public class helpers {
 	}
 
 	public static void assertEquals(float[] left, float... right) {
-		assertEquals(left, right, 0.000000001f);
+		assertEquals(left, right, 0.000001f);
 	}
 
 	public static final boolean keep_tmp_files =

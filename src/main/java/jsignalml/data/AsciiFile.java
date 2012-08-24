@@ -15,6 +15,7 @@ import org.tukaani.xz.XZInputStream;
 public class AsciiFile implements DataInfo {
 	final BufferedReader reader;
 	int lineno;
+	int have_lineno;
 
 	public AsciiFile(File name)
 		throws IOException, FileNotFoundException
@@ -27,6 +28,7 @@ public class AsciiFile implements DataInfo {
 	{
 		this.reader = new BufferedReader(reader);
 		this.lineno = 0;
+		this.have_lineno = 0;
 	}
 
 	public static AsciiFile compressed(File name)
@@ -51,15 +53,25 @@ public class AsciiFile implements DataInfo {
 		throws IOException
 	{
 		String[] parts = line.split("\\s+");
-		if (parts.length < 2)
-			throw new IOException("syntax error");
-		long pos = Integer.parseInt(parts[0]);
-		if (pos != this.lineno++)
+
+		// ugly hack here
+		if (this.lineno == 0 && parts[0].equals("0"))
+			this.have_lineno = 1;
+
+		if (parts.length < 1 + this.have_lineno)
 			throw new IOException("syntax error");
 
-		float[] ans = new float[parts.length-1];
+		if (this.have_lineno == 1) {
+			long pos = Integer.parseInt(parts[0]);
+			if (pos != this.lineno)
+				throw new IOException("syntax error");
+		}
+
+		float[] ans = new float[parts.length-this.have_lineno];
 		for(int i=0; i<ans.length; i++)
-			ans[i] = Float.parseFloat(parts[i+1]);
+			ans[i] = Float.parseFloat(parts[i+this.have_lineno]);
+
+		this.lineno++;
 		return ans;
 	}
 }
