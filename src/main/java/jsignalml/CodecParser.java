@@ -443,16 +443,15 @@ public class CodecParser {
 			return _null_or_parse(name);
 	}
 
-
-	public static void main(String...args) throws Exception
+	public static JavaClassGen generateFromFile(File xml)
+		throws java.io.IOException,
+		       org.xml.sax.SAXException
 	{
-		BasicConfigurator.configure();
-
 		ASTNode codec;
 		try {
-			codec = makeCodec(new File(args[0]));
+			codec = makeCodec(xml);
 		} catch (SAXException e) {
-			System.out.println("A problem occurred while parsing the file " + args[0]);
+			log.error("A problem occurred while parsing xml: %s", xml);
 			throw new SAXException(e);
 		}
 		log.info("-- codec is parsed --");
@@ -469,6 +468,16 @@ public class CodecParser {
 		final JavaClassGen gen = new JavaClassGen(typer.getTypeResolver());
 		codec.accept(gen, null);
 		log.info("-- java has been generated --");
+
+		return gen;
+	}
+
+
+	public static void main(String...args) throws Exception
+	{
+		BasicConfigurator.configure();
+
+		final JavaClassGen gen = generateFromFile(new File(args[0]));
 
 		if("true".equalsIgnoreCase(System.getProperties().getProperty("jsignalml.debug", "false"))){
 			gen.write(System.out);
