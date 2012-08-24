@@ -11,6 +11,7 @@ import jsignalml.Source;
 import jsignalml.ChannelSet;
 import jsignalml.logging.Logger;
 import jsignalml.util;
+import jsignalml.helpers;
 
 import org.apache.commons.io.FileUtils;
 
@@ -90,6 +91,18 @@ public class CodecSampleCase {
 		double expected = (Integer) hdr.get("number_of_channels").getValue();
 		double current = channel_set.getNumberOfChannels();
 		assertEquals(current, expected);
+	}
+
+	@Test(dependsOnMethods={"test_get_set"})
+	public void test_all_samples_from_set()
+		throws Exception
+	{
+		float[] expected, current;
+		long i = 0;
+		while((expected = data.getNextSample()) != null) {
+			current = channel_set.getSample(i);
+			helpers.assertEquals(current, expected);
+		}
 	}
 
 	/**
