@@ -153,27 +153,12 @@ public class TestCodecCreation {
 			this.signalml = (Signalml) instance;
 		}
 
-		String format_id;
-
 		@Test(dependsOnMethods={"test_compilation_from_disk"})
 		public void test_codec_has_format_id() {
 			assert this.signalml != null;
 			String id = this.signalml.getFormatID();
 			assertNotNull(id);
 			assertTrue(id.length() > 0);
-			this.format_id = id;
-		}
-
-		@Factory
-		public Object[] generate_testcases()
-			throws Exception
-		{
-			assert this.format_id != null;
-			String ext = getTestcaseExt(this.format_id);
-			File dir = getTestcaseDir(this.format_id);
-			Collection<CodecTestCase> coll =
-				CodecTestCase.find(this.signalml, dir, ext);
-			return coll.toArray();
 		}
 	}
 
@@ -191,28 +176,5 @@ public class TestCodecCreation {
 		for(int i=0; i<names.length; i++)
 			names[i] = specdir + helpers.FILE_SEP + names[i];
 		return names;
-	}
-
-	public static final String codec_testcases =
-		"target/test-classes/testcase.properties";
-	public static final Properties config = new Properties();
-	static {
-		try {
-			config.load(new FileReader(codec_testcases));
-		} catch(Exception e) {
-			throw new RuntimeException(e);
-		}
-	}
-
-	public static final String codec_basedir =
-		System.getProperty("jsignalml.test.base", "data");
-
-	public static File getTestcaseDir(String format_id) {
-		return new File(codec_basedir,
-				(String) config.get(format_id));
-	}
-
-	public static String getTestcaseExt(String format_id) {
-		return (String) config.get(format_id + "-ext");
 	}
 }

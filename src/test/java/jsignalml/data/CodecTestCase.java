@@ -17,7 +17,6 @@ import org.apache.commons.io.FilenameUtils;
 import org.testng.annotations.Test;
 import static org.testng.Assert.*;
 
-@Test(dependsOnMethods={"test_codec_has_format_id"})
 public class CodecTestCase {
 	public final Source source;
 	public final File main_file;
