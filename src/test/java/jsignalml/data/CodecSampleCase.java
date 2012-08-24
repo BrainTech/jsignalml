@@ -39,6 +39,11 @@ public class CodecSampleCase {
 		this.data = data;
 	}
 
+	public String toString() {
+		return getClass().getSimpleName() + " for " +
+			source.getClass().getName() + " from " + main_file;
+	}
+
 	@Test
 	public void test_open()
 		throws FileNotFoundException, IOException
