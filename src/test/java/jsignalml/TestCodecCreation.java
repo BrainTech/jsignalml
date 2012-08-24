@@ -1,14 +1,18 @@
 package jsignalml;
 
-import java.util.List;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.io.File;
+import java.io.FileReader;
 import java.io.ByteArrayOutputStream;
+import java.util.List;
+import java.util.Properties;
+import java.util.Collection;
 
 import jsignalml.compiler.CompiledClass;
 import jsignalml.compiler.MemoryWriter;
 import jsignalml.codec.Signalml;
+import jsignalml.data.CodecTestCase;
 
 import org.testng.annotations.Test;
 import org.testng.annotations.Factory;
@@ -43,32 +47,35 @@ public class TestCodecCreation {
 			// check required fields
 			doc.getElement_re("/signalml");
 			doc.getElement_re("/signalml/header");
+			doc.getElement_re("/signalml/header/format_id");
+			doc.getElement_re("/signalml/header/format_id/name");
 		}
+
+		ASTNode codec = null;
 
 		@Test(dependsOnMethods={"test_xml"})
 		public void test_makeCodec()
 			throws Exception
 		{
-			final ASTNode codec = CodecParser.makeCodec(new File(specfile));
+			final ASTNode codec =
+				CodecParser.makeCodec(new File(specfile));
+			this.codec = codec;
 		}
 
 		@Test(dependsOnMethods={"test_makeCodec"})
 		public void test_NameCheck()
 			throws Exception
 		{
-			final ASTNode codec = CodecParser.makeCodec(new File(specfile));
 			final NameCheck check = new NameCheck();
 			codec.accept(check, null);
 		}
 
-		ASTNode codec = null;
 		ASTTypeVisitor typer = null;
 
 		@Test(dependsOnMethods={"test_makeCodec"})
 		public void test_ASTTypeVisitor()
 			throws Exception
 		{
-			this.codec = CodecParser.makeCodec(new File(specfile));
 			this.typer  = new ASTTypeVisitor();
 			this.codec.accept(this.typer, null);
 		}
@@ -147,6 +154,29 @@ public class TestCodecCreation {
 			helpers.assertInstanceOf(instance, Signalml.class);
 			this.signalml = (Signalml) instance;
 		}
+
+		String format_id;
+
+		@Test(dependsOnMethods={"test_compilation_from_disk"})
+		public void test_codec_has_format_id() {
+			assert this.signalml != null;
+			String id = this.signalml.getFormatID();
+			assertNotNull(id);
+			assertTrue(id.length() > 0);
+			this.format_id = id;
+		}
+
+		@Factory
+		public Object[] generate_testcases()
+			throws Exception
+		{
+			assert this.format_id != null;
+			String ext = getTestcaseExt(this.format_id);
+			File dir = getTestcaseDir(this.format_id);
+			Collection<CodecTestCase> coll =
+				CodecTestCase.find(this.signalml, dir, ext);
+			return coll.toArray();
+		}
 	}
 
 	@Factory
@@ -154,7 +184,7 @@ public class TestCodecCreation {
 		List<Object> result = util.newArrayList();
 		for(String filename: specfiles())
 			result.add(new TestOneCodec(filename));
-		return result.toArray(new TestOneCodec[] {});
+		return result.toArray();
 	}
 
 	public static final File specdir = new File("specs/");
@@ -163,5 +193,28 @@ public class TestCodecCreation {
 		for(int i=0; i<names.length; i++)
 			names[i] = specdir + helpers.FILE_SEP + names[i];
 		return names;
+	}
+
+	public static final String codec_testcases =
+		"target/test-classes/testcase.properties";
+	public static final Properties config = new Properties();
+	static {
+		try {
+			config.load(new FileReader(codec_testcases));
+		} catch(Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	public static final String codec_basedir =
+		System.getProperty("jsignalml.test.base", "data");
+
+	public static File getTestcaseDir(String format_id) {
+		return new File(codec_basedir,
+				(String) config.get(format_id));
+	}
+
+	public static String getTestcaseExt(String format_id) {
+		return (String) config.get(format_id + "-ext");
 	}
 }
