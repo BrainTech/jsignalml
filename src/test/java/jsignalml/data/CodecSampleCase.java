@@ -9,23 +9,25 @@ import java.util.Iterator;
 
 import jsignalml.Source;
 import jsignalml.ChannelSet;
+import jsignalml.logging.Logger;
 import jsignalml.util;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.FilenameUtils;
 
 import org.testng.annotations.Test;
 import static org.testng.Assert.*;
 
-public class CodecTestCase {
+public class CodecSampleCase {
+	public static final Logger log = new Logger(CodecSampleCase.class);
+
 	public final Source source;
 	public final File main_file;
 
 	public final HdrInfo hdr;
 	public final DataInfo data;
 
-	public CodecTestCase(Source source, File main_file,
-			     HdrInfo hdr, DataInfo data)
+	public CodecSampleCase(Source source, File main_file,
+			       HdrInfo hdr, DataInfo data)
 		throws IOException
 	{
 		// if(!dir.exists())
@@ -89,23 +91,55 @@ public class CodecTestCase {
 	 * Create testcases for all test files underneath a given dir.
 	 * All found .hdr files are assumed to be valid test cases.
 	 */
-	public static Collection<CodecTestCase> find(Source source, File dir,
-						     String extension)
+	public static Collection<Object> find(Source source, File dir,
+						       String extension)
 		throws java.io.FileNotFoundException,
 		       java.io.IOException
 	{
 		Iterator<File> hdrs =
 			FileUtils.iterateFiles(dir, new String[] {"hdr"}, true);
-		LinkedList<CodecTestCase> list = util.newLinkedList();
+		LinkedList<Object> list = util.newLinkedList();
 
 		while(hdrs.hasNext()) {
 			File hdr_file = hdrs.next();
+			Object testcase;
+			try {
+				testcase = createTestcase(source, hdr_file,
+							  extension);
+			} catch(final Exception e) {
+				log.exception("failed to create testcase", e);
+				testcase = new FailedTestCase(e);
+			}
+			list.add(testcase);
+		}
+
+		return list;
+	}
+
+	public static class FailedTestCase {
+		final Exception e;
+		public FailedTestCase(Exception e) {
+			this.e = e;
+		}
+
+		@Test
+		public void failed_not_create_testcase()
+			throws Exception
+		{
+			throw this.e;
+		}
+	}
+
+	static CodecSampleCase createTestcase(Source source, File hdr_file,
+					      String extension)
+		throws java.io.FileNotFoundException,
+		       java.io.IOException
+	{
 			final String hdr_path = hdr_file.toString();
 			assert hdr_path.endsWith(".hdr");
 			final HdrInfo hdr = new HdrFile(hdr_file);
-			
+
 			final String basename =
-				FilenameUtils.getFullPath(hdr_path) +
 				hdr_path.substring(0, hdr_path.length()-4);
 
 			File ascii_path = new File(basename + ".ascii");
@@ -119,11 +153,6 @@ public class CodecTestCase {
 
 			final File main_path = new File(basename + "." + extension);
 
-			CodecTestCase testcase =
-				new CodecTestCase(source, main_path, hdr, data);
-			list.add(testcase);
-		}
-
-		return list;
+			return new CodecSampleCase(source, main_path, hdr, data);
 	}
 }

@@ -12,7 +12,6 @@ import java.util.Collection;
 import jsignalml.compiler.CompiledClass;
 import jsignalml.compiler.MemoryWriter;
 import jsignalml.codec.Signalml;
-import jsignalml.data.CodecTestCase;
 
 import org.testng.annotations.Test;
 import org.testng.annotations.Factory;

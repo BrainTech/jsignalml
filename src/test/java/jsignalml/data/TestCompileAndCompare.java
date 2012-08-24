@@ -19,7 +19,7 @@ import org.testng.annotations.DataProvider;
 public class TestCompileAndCompare {
 
 	@Factory(dataProvider="formats_and_codecs")
-	public Object[] generate_testcase(String format, String codec)
+	public static Object[] generate_testcase(String format, String codec)
 		throws Exception
 	{
 		if (codec_basedir == null)
@@ -35,10 +35,10 @@ public class TestCompileAndCompare {
 
 		String ext = getTestcaseExt(format);
 		File dirs[] = getTestcaseDirs(format);
-		Collection<CodecTestCase> coll = util.newArrayList();
+		Collection<CodecSampleCase> coll = util.newArrayList();
 		for(File dir: dirs) {
 			Source inst = (Source) klass.newInstance();
-			coll.addAll(CodecTestCase.find(inst, dir, ext));
+			coll.addAll(CodecSampleCase.find(inst, dir, ext));
 		}
 
 		return coll.toArray();
