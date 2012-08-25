@@ -2,6 +2,7 @@ package jsignalml;
 
 import java.io.FileInputStream;
 import java.io.InputStream;
+import java.io.File;
 
 import javax.xml.namespace.NamespaceContext;
 import javax.xml.parsers.DocumentBuilder;
@@ -60,7 +61,7 @@ public class XMLDocument
 		this.document = docbuilder.parse(stream);
 	}
 
-	public XMLDocument(String filename)
+	public XMLDocument(File filename)
 	throws java.io.IOException,
 		org.xml.sax.SAXException
 	{

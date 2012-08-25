@@ -24,26 +24,24 @@ public class CodecParser {
 	private static final String XPATH_ATTRIBUTE_NAME_ATTRIBUTE_NAME = "xpath-attribute-name";
 	public static final Logger log = new Logger(CodecParser.class);
 
-	final File filename;
-	CodecParser(File filename)
+	final String name_hint;
+	public final ASTNode codec;
+
+	String format_id = null;
+	String codec_id = null;
+
+	public CodecParser(String name_hint, XMLDocument xml)
 	{
-		this.filename = filename;
+		this.name_hint = name_hint;
+		this.codec = this.parse_signalml(xml);
 	}
 
-	public static ASTNode makeCodec(File filename)
-		throws java.io.IOException, org.xml.sax.SAXException
+	public CodecParser(File filename)
+		throws java.io.IOException,
+		       org.xml.sax.SAXException
 	{
-		final InputStream stream = new FileInputStream(filename);
-		return makeCodec(stream, filename);
-	}
-
-	public static ASTNode makeCodec(InputStream stream, File filename)
-		throws java.io.IOException, org.xml.sax.SAXException
-	{
-		final XMLDocument doc = new XMLDocument(stream);
-		final CodecParser parser = new CodecParser(filename);
-		final ASTNode codec = parser.parse_signalml(doc);
-		return codec;
+		this(util.basename_noext(filename),
+		     new XMLDocument(filename));
 	}
 
 	public ASTNode dispatch(ASTNode parent, Element element)
@@ -122,7 +120,7 @@ public class CodecParser {
 
 		String name = _extract_string(element, "header/name");
 		if (name == null)
-			name = util.basename_noext(this.filename);
+			name = this.name_hint;
 
 		return new ASTNode.Signalml(name);
 	}
@@ -154,8 +152,11 @@ public class CodecParser {
 			throw new SyntaxError("element <format_id> requires element <version>");
 		}
 
-		return new ASTNode.FormatID(parent, id, name,
-				provider, version);
+		ASTNode.FormatID node = new ASTNode.FormatID(parent, id, name,
+							     provider, version);
+		final EvalVisitor valuator = EvalVisitor.create(node);
+		this.format_id = valuator.quickEval(TypeString.I, node.name);
+		return node;
 	}
 
 	public ASTNode.CodecID do_codec_id(ASTNode parent, Element element)
@@ -449,10 +450,10 @@ public class CodecParser {
 	{
 		ASTNode codec;
 		try {
-			codec = makeCodec(xml);
+			codec = new CodecParser(xml).codec;
 		} catch (SAXException e) {
 			log.error("A problem occurred while parsing xml: %s", xml);
-			throw new SAXException(e);
+			throw e;
 		}
 		log.info("-- codec is parsed --");
 		System.out.print(ASTDumper.dump(codec));

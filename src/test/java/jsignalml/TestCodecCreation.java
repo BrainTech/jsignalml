@@ -53,15 +53,15 @@ public class TestCodecCreation {
 		ASTNode codec = null;
 
 		@Test(dependsOnMethods={"test_xml"})
-		public void test_makeCodec()
+		public void test_make_codec()
 			throws Exception
 		{
-			final ASTNode codec =
-				CodecParser.makeCodec(new File(specfile));
+			final CodecParser parser = new CodecParser(new File(specfile));
+			final ASTNode codec = parser.codec;
 			this.codec = codec;
 		}
 
-		@Test(dependsOnMethods={"test_makeCodec"})
+		@Test(dependsOnMethods={"test_make_codec"})
 		public void test_NameCheck()
 			throws Exception
 		{
@@ -71,7 +71,7 @@ public class TestCodecCreation {
 
 		ASTTypeVisitor typer = null;
 
-		@Test(dependsOnMethods={"test_makeCodec"})
+		@Test(dependsOnMethods={"test_make_codec"})
 		public void test_ASTTypeVisitor()
 			throws Exception
 		{
