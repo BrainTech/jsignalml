@@ -22,8 +22,8 @@ import static org.testng.Assert.assertTrue;
 public class TestCodecCreation {
 
 	public class TestOneCodec {
-		public final String specfile;
-		TestOneCodec(String specfile) {
+		public final File specfile;
+		TestOneCodec(File specfile) {
 			this.specfile = specfile;
 		}
 
@@ -33,7 +33,7 @@ public class TestCodecCreation {
 
 		@Test
 		public void test_filename_valid() {
-			assertTrue(new File(specfile).exists(), specfile);
+			assertTrue(specfile.exists(), specfile.toString());
 		}
 
 		@Test(dependsOnMethods={"test_filename_valid"})
@@ -56,7 +56,7 @@ public class TestCodecCreation {
 		public void test_make_codec()
 			throws Exception
 		{
-			final CodecParser parser = new CodecParser(new File(specfile));
+			final CodecParser parser = new CodecParser(specfile);
 			final ASTNode codec = parser.codec;
 			this.codec = codec;
 		}
@@ -164,16 +164,17 @@ public class TestCodecCreation {
 	@Factory
 	public Object[] factory() {
 		List<Object> result = util.newArrayList();
-		for(String filename: specfiles())
+		for(File filename: specfiles())
 			result.add(new TestOneCodec(filename));
 		return result.toArray();
 	}
 
 	public static final File specdir = new File("specs/");
-	public static String[] specfiles() {
+	public static File[] specfiles() {
 		String[] names = specdir.list(helpers.xml_file_filter);
-		for(int i=0; i<names.length; i++)
-			names[i] = specdir + helpers.FILE_SEP + names[i];
-		return names;
+		File[] files = new File[names.length];
+		for(int i=0; i<files.length; i++)
+			files[i] = new File(specdir, names[i]);
+		return files;
 	}
 }

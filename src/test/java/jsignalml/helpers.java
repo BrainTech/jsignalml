@@ -90,10 +90,6 @@ public class helpers {
 		return file;
 	}
 
-	public static final String FILE_SEP =
-		System.getProperty("file.separator");
-
-
 	public static final FilenameFilter xml_file_filter =
 		new FilenameFilter() {
 			public boolean accept(File dir, String name) {
