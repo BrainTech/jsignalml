@@ -128,8 +128,9 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 	final JClass ByteBuffer_t = this.model.ref(ByteBuffer.class);
 	final JClass FileClass_t = this.model.ref(FileClass.class);
 
-	String class_name = null; // this shoudl be set when Signalml class is created.
+	String class_name = null; // this should be set when Signalml class is created.
 	JFieldVar log_var = null; // this should be set when Signalml class is created.
+	int number_of_files = 0;  // this should be increased for each File class.
 	final ASTTypeResolver typeresolver;
 
 	public String getClassName() {
@@ -207,7 +208,6 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 
 		idMethod(klass, node, theid);
 		this.mainMethod(klass);
-		this.getCurrentFilenameMethod(klass);
 		this.getFormatDescriptionMethod(klass);
 		this.getFormatIDMethod(klass);
 		this.codecOpenMethod(klass);
@@ -443,15 +443,6 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 		final JVar arg = open.param(File.class, "filename");
 		open.body().assign(JExpr._this().ref("default_filename"), arg);
 		return open;
-	}
-
-	public JMethod getCurrentFilenameMethod(JDefinedClass klass)
-	{
-		final JMethod method = klass.method(JMod.PUBLIC, File_t,
-						    "getCurrentFilename");
-		comment_stamp(method.body());
-		method.body()._return(JExpr._null());
-		return method;
 	}
 
 	public JMethod getFormatDescriptionMethod(JDefinedClass klass)
@@ -1167,13 +1158,14 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 		log.info("visit((FileHandle) %s, %s)", node, parent);
 
 		final String theid = dynamicID(node, node.id);
-		final JDefinedClass klass = this.fileClass(node, theid, parent);
+		final JDefinedClass klass = this.fileClass(node, theid, parent,
+							   ++this.number_of_files-1);
 		idMethod(klass, node, theid);
 		return klass;
 	}
 
 	public JDefinedClass fileClass(ASTNode.FileHandle<?> node, String id,
-				       JDefinedClass parent)
+				       JDefinedClass parent, int file_index)
 	{
 		final JDefinedClass klass;
 		try {
@@ -1195,6 +1187,8 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 			final JMethod constructor =
 					klass.constructor(JMod.PUBLIC);
 			JBlock body = constructor.body();
+			body.directStatement(format("super(%d);", file_index));
+			// XXX: how to call super properly in codemodel?
 
 			if(node.filename != null){
 

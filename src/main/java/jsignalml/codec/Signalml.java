@@ -18,6 +18,7 @@ import jsignalml.util;
 
 public abstract class Signalml extends Context implements jsignalml.Source {
 	protected File default_filename;
+	protected File main_filename;
 
 	final ArrayList<ChannelSet> channel_set_list = util.newArrayList();
 
@@ -63,9 +64,14 @@ public abstract class Signalml extends Context implements jsignalml.Source {
 		XmlBuffer xmlBuffer;
 		private AsciiScanner scanner;
 		protected boolean isBinary = true; // this is the default type
+		final int file_index;
 
 		public boolean isBinary(){
 			return isBinary;
+		}
+
+		protected FileClass(int file_index) {
+			this.file_index = file_index;
 		}
 
 		protected File currentFilename;
@@ -103,6 +109,9 @@ public abstract class Signalml extends Context implements jsignalml.Source {
 				this.xmlBuffer = new XmlBuffer(filename);
 			}
 			this.currentFilename = filename;
+
+			if (this.file_index == 0)
+				main_filename = filename;
 		}
 
 		public TextBuffer textBuffer()
@@ -166,5 +175,9 @@ public abstract class Signalml extends Context implements jsignalml.Source {
 
 	public Header get_header() {
 		return new DefaultHeader();
+	}
+
+	public File getCurrentFilename(){
+		return main_filename;
 	}
 }
