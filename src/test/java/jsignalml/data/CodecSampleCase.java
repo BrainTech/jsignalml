@@ -84,13 +84,13 @@ public class CodecSampleCase {
 	public void test_sampling_frequency() {
 		double expected = (Double) hdr.get("sampling_frequency").getValue();
 		double current = channel_set.getSamplingFrequency();
-		assertEquals(current, expected);
+		helpers.assertEquals(current, expected);
 	}
 
 	@Test(dependsOnMethods={"test_get_set"})
 	public void test_number_of_channels() {
-		double expected = (Integer) hdr.get("number_of_channels").getValue();
-		double current = channel_set.getNumberOfChannels();
+		int expected = (Integer) hdr.get("number_of_channels").getValue();
+		int current = channel_set.getNumberOfChannels();
 		assertEquals(current, expected);
 	}
 

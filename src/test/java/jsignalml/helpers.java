@@ -16,13 +16,14 @@ public class helpers {
 	}
 
 	public static void assertEquals(float[] left, float[] right,
-					float precision) {
+					float precision, float delta) {
 		if (left.length != right.length)
 			throw new AssertionError("arrays have different length ("
 						 + left.length + "!="
 						 + right.length + ")");
 		for(int i=0; i<left.length; i++)
-			if (Math.abs((left[i]-right[i])/right[i]) > precision)
+			if (Math.abs((left[i]-right[i])/right[i]) > precision &&
+			    Math.abs(left[i]-right[i]) > delta)
 				throw new AssertionError("arrays differ at pos "
 							 + i + " (" +
 							 left[i] + "!=" +
@@ -30,6 +31,15 @@ public class helpers {
 							 format(left) + " vs " +
 							 format(right)
 							 );
+	}
+
+	public static void assertEquals(double left, double right,
+					float precision, float delta) {
+		if (Math.abs((left-right)/right) > precision &&
+		    Math.abs(left-right) > delta)
+			throw new AssertionError("numbers differ (" +
+						 left + "!=" +
+						 right + ")");
 	}
 
 	public static String format(float[] array) {
@@ -40,7 +50,11 @@ public class helpers {
 	}
 
 	public static void assertEquals(float[] left, float... right) {
-		assertEquals(left, right, 0.000001f);
+		assertEquals(left, right, 0.000001f, 0.000001f);
+	}
+
+	public static void assertEquals(double left, double right) {
+		assertEquals(left, right, 0.000001f, 0.000001f);
 	}
 
 	public static final boolean keep_tmp_files =
