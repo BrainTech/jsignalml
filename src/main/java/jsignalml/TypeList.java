@@ -249,15 +249,13 @@ public class TypeList extends Type implements Iterable<Type> {
 
 		final int newsize = (stop_ - start_) / step_;
 		List<Type> ans = util.newArrayList(newsize);
-		int i = -1; // value will not be ever used, I think
-		try {
-			for(i=start_; step_>0 ? i<stop_ : i>stop_; i+=step_)
-				ans.add(this.value.get(i));
-		} catch (IndexOutOfBoundsException e) {
-			log.exception("this.value = %s, stop=%s, start=%s", e, this.value,
-				      stop_, start_);
-			throw new ExpressionFault.IndexError(i, len);
+
+		for(int i=start_; step_>0 ? i<stop_ : i>stop_; i+=step_) {
+			if (i < 0 || i >= this.value.size())
+				throw new ExpressionFault.IndexError(i, len);
+			ans.add(this.value.get(i));
 		}
+
 		return new TypeList(ans);
 	}
 

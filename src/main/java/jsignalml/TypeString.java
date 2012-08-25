@@ -217,15 +217,13 @@ public class TypeString extends Type {
 
 		//final int newsize = (stop_ - start_) / step_;
 		StringBuilder ans = new StringBuilder();
-		int i = -1; // value will not be ever used, I think
-		try {
-			for(i=start_; step_>0 ? i<stop_ : i>stop_ ; i+=step_)
-				ans.append(this.value.charAt(i));
-		} catch (IndexOutOfBoundsException e) {
-			log.exception("this.value = %s, stop=%s, start=%s", e, this.value,
-				      stop_, start_);
-			throw new ExpressionFault.IndexError(i, len);
+
+		for(int i=start_; step_>0 ? i<stop_ : i>stop_ ; i+=step_) {
+			if (i<0 || i>=this.value.length())
+				throw new ExpressionFault.IndexError(i, len);
+			ans.append(this.value.charAt(i));
 		}
+
 		return new TypeString(ans.toString());
 	}
 
