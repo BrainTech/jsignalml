@@ -210,8 +210,6 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 		this.mainMethod(klass);
 		this.getFormatDescriptionMethod(klass);
 		this.getFormatIDMethod(klass);
-		this.codecOpenMethod(klass);
-		this.closeMethod(klass);
 		this.getFormatNameMethod(klass);
 		this.getFormatProviderMethod(klass);
 		this.getFormatVersionMethod(klass);
@@ -436,15 +434,6 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 		return main;
 	}
 
-	public JMethod codecOpenMethod(JDefinedClass klass)
-	{
-		final JMethod open = klass.method(JMod.PUBLIC, this.model.VOID, "open");
-		comment_stamp(open.body());
-		final JVar arg = open.param(File.class, "filename");
-		open.body().assign(JExpr._this().ref("default_filename"), arg);
-		return open;
-	}
-
 	public JMethod getFormatDescriptionMethod(JDefinedClass klass)
 	{
 		final JMethod method = klass.method(JMod.PUBLIC, String_t,
@@ -535,14 +524,6 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 				ref("version").invoke("get").invoke("toString"));
 		body._return(codecVersion);
 
-		return method;
-	}
-
-	public JMethod closeMethod(JDefinedClass klass)
-	{
-		final JMethod method = klass.method(JMod.PUBLIC, this.model.VOID,
-						    "close");
-		comment_stamp(method.body());
 		return method;
 	}
 

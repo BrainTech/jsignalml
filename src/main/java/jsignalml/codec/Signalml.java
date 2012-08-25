@@ -40,19 +40,13 @@ public abstract class Signalml extends Context implements jsignalml.Source {
 	}
 
 	public ChannelSet get_set() {
-		if(this.channel_set_list.isEmpty()) {
-			this.createParams();
-			this.createChannels();
-		}
+		this.maybeInitParams();
 		assert !this.channel_set_list.isEmpty();
 		return this.channel_set_list.get(0);
 	}
 
 	public ChannelSet get_set(int id) {
-		if(this.channel_set_list.isEmpty()) {
-			this.createParams();
-			this.createChannels();
-		}
+		this.maybeInitParams();
 		assert(!this.channel_set_list.isEmpty());
 		assert(id < getNumberOfChannelSets());
 		return this.channel_set_list.get(id);
@@ -177,7 +171,23 @@ public abstract class Signalml extends Context implements jsignalml.Source {
 		return new DefaultHeader();
 	}
 
-	public File getCurrentFilename(){
+	public File getCurrentFilename() {
 		return main_filename;
+	}
+
+	public void open(File filename) {
+		this.default_filename = filename;
+		this.maybeInitParams();
+	}
+
+	public void close() {
+		// right now nothing
+	}
+
+	public void maybeInitParams() {
+		if(this.channel_set_list.isEmpty()) {
+			this.createParams();
+			this.createChannels();
+		}
 	}
 }
