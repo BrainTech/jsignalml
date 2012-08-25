@@ -11,6 +11,7 @@ import java.util.Arrays;
 import jsignalml.Source;
 import jsignalml.ChannelSet;
 import jsignalml.logging.Logger;
+import jsignalml.TypeInt;
 import jsignalml.util;
 import jsignalml.helpers;
 
@@ -89,7 +90,7 @@ public class CodecSampleCase {
 
 	@Test(dependsOnMethods={"test_get_set"})
 	public void test_number_of_channels() {
-		int expected = (Integer) hdr.get("number_of_channels").getValue();
+		int expected = ((TypeInt)hdr.get("number_of_channels")).safeIntValue();
 		int current = channel_set.getNumberOfChannels();
 		assertEquals(current, expected);
 	}
