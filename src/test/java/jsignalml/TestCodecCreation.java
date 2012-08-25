@@ -9,12 +9,15 @@ import java.util.List;
 import java.util.Properties;
 import java.util.Collection;
 
+import java.lang.reflect.Method;
+
 import jsignalml.compiler.CompiledClass;
 import jsignalml.compiler.MemoryWriter;
 import jsignalml.codec.Signalml;
 
 import org.testng.annotations.Test;
 import org.testng.annotations.Factory;
+import org.testng.annotations.DataProvider;
 import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
@@ -152,12 +155,30 @@ public class TestCodecCreation {
 			this.signalml = (Signalml) instance;
 		}
 
-		@Test(dependsOnMethods={"test_compilation_from_disk"})
-		public void test_codec_has_format_id() {
+		@Test(dataProvider="format_fields",
+		      dependsOnMethods={"test_compilation_from_disk"})
+		public void test_codec_implements_header_field(String method_name)
+			throws Exception
+		{
 			assert this.signalml != null;
-			String id = this.signalml.getFormatID();
-			assertNotNull(id);
-			assertTrue(id.length() > 0);
+			Method m = this.signalml.getClass().getMethod(method_name);
+			Object value = m.invoke(this.signalml);
+			helpers.assertInstanceOf(value, String.class);
+			String str = (String) value;
+			assertTrue(str.length() > 0);
+		}
+
+		@DataProvider
+		public Object[][] format_fields() {
+			return new Object[][] {
+				{"getFormatID"},
+				{"getFormatDescription"},
+				{"getFormatName"},
+				{"getFormatProvider"},
+				{"getFormatVersion"},
+				{"getCodecProvider"},
+				{"getCodecVersion"},
+			};
 		}
 	}
 

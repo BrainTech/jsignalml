@@ -6,8 +6,11 @@ import java.io.FilenameFilter;
 import com.google.common.io.Files;
 import org.apache.commons.io.FileUtils;
 
+import static org.testng.Assert.assertNotNull;
+
 public class helpers {
 	public static void assertInstanceOf(Object obj, Class<?> klass) {
+		assertNotNull(obj);
 		if (!klass.isInstance(obj))
 			throw new AssertionError("got type " +
 						 obj.getClass().getName() +
