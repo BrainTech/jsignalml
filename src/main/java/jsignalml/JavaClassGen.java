@@ -434,21 +434,21 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 		return main;
 	}
 
-	public JMethod getFormatInfoMethod(JDefinedClass klass)
-	{
-		final JMethod method = klass.method(JMod.PUBLIC, String_t,
-						    "getFormatInfo");
-		comment_stamp(method.body());
-		method.body()._return(JExpr._null());
-		return method;
-	}
-
 	public JMethod getFormatIDMethod(JDefinedClass klass)
 	{
 		final JMethod method = klass.method(JMod.PUBLIC, String_t,
 						    "getFormatID");
-		comment_stamp(method.body());
-		method.body()._return(JExpr._null());
+		final JBlock body = method.body();
+		comment_stamp(body);
+
+		final JVar value = body.decl(Type_t, "value",
+					     body.invoke(makeGetter("header"))
+					     .invoke(makeGetter("format_id"))
+					     .invoke("get"));
+		final JVar cast = body.decl(TypeString_t, "cast",
+					    JExpr.cast(TypeString_t, value));
+		body._return(cast.invoke("getValue"));
+
 		return method;
 	}
 
@@ -459,17 +459,19 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 	{
 		final JMethod method = klass.method(JMod.PUBLIC, String_t,
 						    method_name);
-		comment_stamp(method.body());
 		final JBlock body = method.body();
+		comment_stamp(body);
 
-		final JVar value = body.decl(String_t, "value",
-				    body.invoke(makeGetter("header"))
-					.invoke(makeGetter(header_section))
-					.ref(field_name).invoke("get")
-					.invoke("toString"));
+		final JVar value = body.decl(Type_t, "value",
+					     body.invoke(makeGetter("header"))
+					     .invoke(makeGetter(header_section))
+					     .ref(field_name).invoke("get"));
 		// XXX: this implementation is horrible. There's no reason
 		// not to export individual header fields.
-		body._return(value);
+
+		final JVar cast = body.decl(TypeString_t, "cast",
+					    JExpr.cast(TypeString_t, value));
+		body._return(cast.invoke("getValue"));
 
 		return method;
 	}
