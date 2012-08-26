@@ -17,6 +17,14 @@ import jsignalml.compiler.CompiledClass;
 import jsignalml.compiler.MemoryWriter;
 import jsignalml.codec.Signalml;
 import jsignalml.xml.XMLDocument;
+import jsignalml.logging.Logger;
+
+import org.w3c.dom.Document;
+import org.w3c.dom.DocumentType;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import org.xml.sax.ErrorHandler;
+import org.xml.sax.SAXParseException;
 
 import org.testng.annotations.Test;
 import org.testng.annotations.Factory;
@@ -26,6 +34,7 @@ import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
 
 public class TestCodecCreation {
+	protected static final Logger log = new Logger(TestCodecCreation.class);
 
 	public class TestOneCodec {
 		public final File specfile;
@@ -51,9 +60,49 @@ public class TestCodecCreation {
 
 			// check required fields
 			doc.getElement_re("/signalml");
-			doc.getElement_re("/signalml/header");
-			doc.getElement_re("/signalml/header/format_id");
-			doc.getElement_re("/signalml/header/format_id/name");
+		}
+
+		Document xml_document = null;
+
+		@Test(dependsOnMethods={"test_filename_valid"})
+		public void test_xml_valid()
+			throws Exception
+		{
+			final DocumentBuilderFactory builderFactory
+				= DocumentBuilderFactory.newInstance();
+			builderFactory.setNamespaceAware(true);
+			builderFactory.setValidating(true);
+			final DocumentBuilder builder
+				= builderFactory.newDocumentBuilder();
+			builder.setErrorHandler(new ErrorHandler(){
+					public void error(SAXParseException exception)
+						throws SAXParseException
+					{
+						throw exception;
+					}
+					public void fatalError(SAXParseException exception)
+						throws SAXParseException
+					{
+						throw exception;
+					}
+					public void warning(SAXParseException exception)
+					{
+						log.warn("%s: %s", specfile, exception);
+					}
+				});
+			final InputStream stream = new FileInputStream(specfile);
+			this.xml_document = builder.parse(stream);
+		}
+
+		@Test(dependsOnMethods={"test_xml_valid"})
+		public void test_dtd_declaration()
+			throws Exception
+		{
+			assert this.xml_document != null;
+			DocumentType doctype = this.xml_document.getDoctype();
+			assertNotNull(doctype);
+			assertEquals(doctype.getName(),
+				     XMLDocument.signalml_doctype);
 		}
 
 		ASTNode codec = null;

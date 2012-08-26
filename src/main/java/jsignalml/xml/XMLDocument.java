@@ -21,6 +21,10 @@ import org.w3c.dom.NodeList;
 
 public class XMLDocument
 {
+	protected static final Logger log = new Logger(XMLDocument.class);
+
+	public static final String signalml_doctype = "SignalML_2_0";
+
 	public static class NodeError extends Exception {
 		private static final long serialVersionUID = -473104514836817338L;
 		public final String xpath;
@@ -32,10 +36,11 @@ public class XMLDocument
 		}
 	}
 
-	static final Logger log = new Logger(XMLDocument.class);
-	static final DocumentBuilder docbuilder;
-	static final XPathFactory xfactory;
-	static NamespaceContext namespaceContext;
+	protected static final XPathFactory xfactory
+		= XPathFactory.newInstance();
+
+	final static DocumentBuilder docbuilder;
+	protected static NamespaceContext namespaceContext;
 	static {
 		final DocumentBuilderFactory builderFactory
 			= DocumentBuilderFactory.newInstance();
@@ -45,8 +50,6 @@ public class XMLDocument
 		} catch (javax.xml.parsers.ParserConfigurationException e) {
 			throw new RuntimeException(e);
 		}
-
-		xfactory = XPathFactory.newInstance();
 
 		log.info("builderFactory is %s", builderFactory.getClass());
 	}
