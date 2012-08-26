@@ -29,6 +29,19 @@ public class CodecSampleCase {
 	public final HdrInfo hdr;
 	public final DataInfo data;
 
+	/**
+	 * How many samples to test during reading tests. -1 means infinity.
+	 */
+	static final long sample_limit;
+	static {
+		String str = System.getProperty("jsignalml.test.sample_limit", "30");
+		try {
+			sample_limit = Long.decode(str);
+		} catch(NumberFormatException e) {
+			throw new RuntimeException(e);
+		}
+	}
+
 	public CodecSampleCase(Source source, File main_file,
 			       HdrInfo hdr, DataInfo data)
 		throws IOException
@@ -110,6 +123,11 @@ public class CodecSampleCase {
 							 " differs: " + e);
 			}
 			i++;
+
+			if (i == sample_limit) {
+				log.info("test finished due to hitting sample limit %d", i);
+				break;
+			}
 		}
 	}
 
