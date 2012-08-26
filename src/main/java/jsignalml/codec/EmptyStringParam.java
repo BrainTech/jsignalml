@@ -1,6 +1,6 @@
-package jsignalml;
+package jsignalml.codec;
 
-import jsignalml.codec.Param;
+import jsignalml.TypeString;
 
 /**
  * This class is a dummy empty String parameter instance,
@@ -15,7 +15,7 @@ public class EmptyStringParam extends Param<TypeString> {
 	 * This is an empty id
 	 */
 	public String id() {
-		return ""; // this value is never used
+		throw new RuntimeException("should not be reached");
 	}
 
 	/**

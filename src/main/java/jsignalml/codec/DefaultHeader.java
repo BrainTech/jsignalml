@@ -1,8 +1,7 @@
-package jsignalml;
+package jsignalml.codec;
 
-import jsignalml.codec.CodecId;
-import jsignalml.codec.FormatId;
-import jsignalml.codec.Header;
+import jsignalml.TypeString;
+import jsignalml.ContextVisitor;
 
 public class DefaultHeader extends Header {
 

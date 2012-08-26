@@ -1,6 +1,5 @@
 package jsignalml.codec;
 
-import jsignalml.EmptyStringParam;
 import jsignalml.TypeString;
 
 public abstract class CodecId extends Param<TypeString> {

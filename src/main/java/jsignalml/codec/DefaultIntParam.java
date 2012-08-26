@@ -1,9 +1,9 @@
-package jsignalml;
+package jsignalml.codec;
 
-import jsignalml.codec.Param;
+import jsignalml.TypeInt;
 
 /**
- * This class is a default int parameter instance,
+ * This class forms a default int parameter,
  * used for optional parameters which are not defined in signalml explicitly
  *
  * @author kago
@@ -22,7 +22,7 @@ public class DefaultIntParam extends Param<TypeInt> {
 	 * The default id
 	 */
 	public String id() {
-		return "" + value; // this value is never used
+		throw new RuntimeException("should not be reached");
 	}
 
 	/**

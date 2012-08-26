@@ -1,8 +1,6 @@
 package jsignalml.codec;
 
 import jsignalml.ContextVisitor;
-import jsignalml.DefaultHeader.DefaultCodecId;
-import jsignalml.DefaultHeader.DefaultFormatId;
 
 public abstract class Header extends Context {
 
@@ -16,7 +14,7 @@ public abstract class Header extends Context {
 	 * @return empty codec id
 	 */
 	public CodecId get_codec_id() {
-		return new DefaultCodecId();
+		return new DefaultHeader.DefaultCodecId();
 	}
 
 	/**
@@ -25,7 +23,7 @@ public abstract class Header extends Context {
 	 * @return empty format id
 	 */
 	public FormatId get_format_id() {
-		return new DefaultFormatId();
+		return new DefaultHeader.DefaultFormatId();
 	}
 
 	@Override
