@@ -50,11 +50,11 @@ public abstract class FileType {
 	}
 
 	public static class XmlFile extends FileType {
-		final XmlBuffer buffer;
+		final XMLBuffer buffer;
 
 		public XmlFile(File filename){
 			log.info("opening buffer for %s", filename);
-			buffer = new XmlBuffer(filename);
+			buffer = new XMLBuffer(filename);
 		}
 	}
 

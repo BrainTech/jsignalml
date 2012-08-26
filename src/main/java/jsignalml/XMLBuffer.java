@@ -13,17 +13,17 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
-public class XmlBuffer {
+public class XMLBuffer {
 	private static final String XPATH_EVALUATION_TYPE_NODE_CONTENT = "node-content";
 	private static final String XPATH_EVALUATION_TYPE_NODE_NAME_LOCAL = "node-name-local";
 	private static final String XPATH_EVALUATION_TYPE_NODE_ATTRIBUTE = "node-attribute";
-	protected static final Logger log = new Logger(XmlBuffer.class);
+	protected static final Logger log = new Logger(XMLBuffer.class);
 
 	final private XMLDocument source;
 
 	final java.io.File filename;
 
-	public XmlBuffer(File name) {
+	public XMLBuffer(File name) {
 		log.info("opening xml file %s", name);
 		this.filename = name;
 

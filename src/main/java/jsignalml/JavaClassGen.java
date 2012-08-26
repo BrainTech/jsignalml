@@ -108,7 +108,7 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 	final JClass Channel_t = this.model.ref(Channel.class);
 	final JClass MyBuffer_t = this.model.ref(MyBuffer.class);
 	final JClass TextBuffer_t = this.model.ref(TextBuffer.class);
-	final JClass XmlBuffer_t = this.model.ref(XmlBuffer.class);
+	final JClass XMLBuffer_t = this.model.ref(XMLBuffer.class);
 	final JClass BitForm_t = this.model.ref(BitForm.class);
 	final JClass Builtins_t = this.model.ref(Builtins.class);
 	final JClass RuntimeException_t = this.model.ref(RuntimeException.class);
@@ -795,7 +795,7 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 		final JVar xpathPattern_ = body.decl(TypeString_t, "xpathPattern",
 				node.xpathPattern.accept(javagen));
 
-		final JVar xmlBuf = body.decl(XmlBuffer_t, "xmlBuf",
+		final JVar xmlBuf = body.decl(XMLBuffer_t, "xmlBuf",
 				JExpr.invoke("xmlBuffer"));
 		final JVar _t = body.decl(nodetype_t, "_t", JExpr._null());
 		final JVar value;

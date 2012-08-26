@@ -13,7 +13,7 @@ import jsignalml.EmptyStringParam;
 import jsignalml.ExpressionFault;
 import jsignalml.MyBuffer;
 import jsignalml.TextBuffer;
-import jsignalml.XmlBuffer;
+import jsignalml.XMLBuffer;
 import jsignalml.util;
 
 public abstract class Signalml extends Context implements jsignalml.Source {
@@ -55,7 +55,7 @@ public abstract class Signalml extends Context implements jsignalml.Source {
 	public abstract class FileClass extends Context {
 		MyBuffer buffer;
 		TextBuffer textBuffer;
-		XmlBuffer xmlBuffer;
+		XMLBuffer xmlBuffer;
 		private AsciiScanner scanner;
 		protected boolean isBinary = true; // this is the default type
 		final int file_index;
@@ -100,7 +100,7 @@ public abstract class Signalml extends Context implements jsignalml.Source {
 			this.buffer = MyBuffer.open(filename);
 			this.textBuffer = TextBuffer.open(filename);
 			if (filename.getName().endsWith(".xml")) {
-				this.xmlBuffer = new XmlBuffer(filename);
+				this.xmlBuffer = new XMLBuffer(filename);
 			}
 			this.currentFilename = filename;
 
@@ -122,7 +122,7 @@ public abstract class Signalml extends Context implements jsignalml.Source {
 			return this.buffer;
 		}
 
-		public XmlBuffer xmlBuffer(){
+		public XMLBuffer xmlBuffer(){
 			if (this.xmlBuffer == null)
 				this.open(null);
 			return this.xmlBuffer;
