@@ -5,7 +5,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Arrays;
 import java.io.File;
-import java.io.FileReader;
 
 import jsignalml.Source;
 import jsignalml.JavaClassGen;
@@ -61,13 +60,12 @@ public class TestCompileAndCompare {
 		return coll;
 	}
 
-	public static final String codec_testcases =
-		"target/test-classes/testcase.properties";
 	public static final Properties config = new Properties();
 	static {
 		try {
-			config.load(new FileReader(codec_testcases));
-		} catch(Exception e) {
+			config.load(TestCompileAndCompare.class
+				    .getResourceAsStream("testcase.properties"));
+		} catch(java.io.IOException e) {
 			throw new RuntimeException(e);
 		}
 	}
