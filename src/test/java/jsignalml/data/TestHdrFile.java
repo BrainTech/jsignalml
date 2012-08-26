@@ -1,6 +1,6 @@
 package jsignalml.data;
 
-import java.io.File;
+import java.io.InputStream;
 import java.io.IOException;
 import java.io.FileNotFoundException;
 import java.util.Arrays;
@@ -18,16 +18,14 @@ import jsignalml.TypeList;
 import jsignalml.helpers;
 
 public class TestHdrFile {
-	public static final File header1
-		= new File("target/test-classes/snokac.hdr");
-
 	HdrInfo info = null;
 
 	@Test
 	public void test_HdrFile()
 		throws IOException, FileNotFoundException
 	{
-		this.info = new HdrFile(header1);
+		InputStream stream = getClass().getResourceAsStream("snokac.hdr");
+		this.info = new HdrFile("snokac.hdr", stream);
 	}
 
 	@Test(dependsOnMethods={"test_HdrFile"})

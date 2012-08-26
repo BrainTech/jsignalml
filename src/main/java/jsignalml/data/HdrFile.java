@@ -6,6 +6,7 @@ import jsignalml.TypeFloat;
 import jsignalml.TypeString;
 import jsignalml.TypeList;
 
+import java.io.InputStream;
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
 import java.io.IOException;
@@ -39,19 +40,19 @@ public class HdrFile
 		field_types.put("scaling_gain", TypeFloat.I);
 	}
 
-	public HdrFile(File file)
+	public HdrFile(String ident, InputStream stream)
 		throws FileNotFoundException,
 		       IOException
 	{
 		Properties prop = new Properties();
-		prop.load(new InputStreamReader(new FileInputStream(file)));
+		prop.load(new InputStreamReader(stream));
 
 		for(String name: prop.stringPropertyNames()) {
 			String value = (String) prop.get(name);
 
 			Type type = field_types.get(name);
 			if (type == null) {
-				log.warn("%s: unknown field %s", file, name);
+				log.warn("%s: unknown field %s", ident, name);
 				type = TypeString.I;
 			}
 
@@ -59,6 +60,12 @@ public class HdrFile
 		}
 	}
 
+	public HdrFile(File file)
+		throws FileNotFoundException,
+		       IOException
+	{
+		this(file.toString(), new FileInputStream(file));
+	}
 	public Type convert(String value, Type type) {
 		if (type instanceof TypeList) {
 			String[] parts = value.split(",\\s*");
