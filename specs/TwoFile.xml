@@ -1,3 +1,6 @@
+<?xml version="1.0"?>
+<!DOCTYPE signalml SYSTEM "SignalML_2_0.dtd">
+
 <signalml>
   <header>
     <format_id>
@@ -18,7 +21,6 @@
   </file>
   <param id="a">
     <expr>description</expr>
-    <!-- TODO: add support for object notation: g.description() !!! -->
   </param>
   <param id="description">
     <expr>123456</expr>

@@ -23,7 +23,8 @@ public class XMLDocument
 {
 	protected static final Logger log = new Logger(XMLDocument.class);
 
-	public static final String signalml_doctype = "SignalML_2_0";
+	public static final String signalml_doctype_name = "signalml";
+	public static final String signalml_doctype_id = "SignalML_2_0.dtd";
 
 	public static class NodeError extends Exception {
 		private static final long serialVersionUID = -473104514836817338L;

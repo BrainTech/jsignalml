@@ -80,10 +80,12 @@ public class CodecParser {
 			return this.do_format_id(parent, element);
 		else if (name.equals("codec_id"))
 			return this.do_codec_id(parent, element);
-		else if (name.equals("expr") || name.equals("format") || name.equals("offset")
-		    || name.equals("pattern") || name.equals("line") || name.equals("xpath")
-		    || name.equals("group") || name.equals("version")
-		    || name.equals("name") || name.equals("provider"))
+		else if (name.equals("expr") || // expression
+			 name.equals("format") || name.equals("offset") || // binary
+			 name.equals("pattern") || name.equals("line") || // text
+			 name.equals("xpath") || name.equals("group") || // xml
+			 name.equals("version") || name.equals("name") || // header
+			 name.equals("provider") || name.equals("info"))
 			return null; /* handled directly */
 		log.warn("unknown element: %s", element);
 		return null;

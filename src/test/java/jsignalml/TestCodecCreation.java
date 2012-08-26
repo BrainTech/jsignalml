@@ -102,7 +102,9 @@ public class TestCodecCreation {
 			DocumentType doctype = this.xml_document.getDoctype();
 			assertNotNull(doctype);
 			assertEquals(doctype.getName(),
-				     XMLDocument.signalml_doctype);
+				     XMLDocument.signalml_doctype_name);
+			assertEquals(doctype.getSystemId(),
+				     XMLDocument.signalml_doctype_id);
 		}
 
 		ASTNode codec = null;

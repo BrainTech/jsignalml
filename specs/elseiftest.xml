@@ -3,11 +3,11 @@
 <signalml>
 
 	<header>
-		<format_info>
+		<format_id>
 		  <info>
 		    testfile for ifs
 		  </info>
-		</format_info>
+		</format_id>
 	</header>
 
 	<param id='p1' type='int'>
