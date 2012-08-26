@@ -208,13 +208,13 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 
 		idMethod(klass, node, theid);
 		this.mainMethod(klass);
-		this.getFormatDescriptionMethod(klass);
 		this.getFormatIDMethod(klass);
-		this.getFormatNameMethod(klass);
-		this.getFormatProviderMethod(klass);
-		this.getFormatVersionMethod(klass);
-		this.getCodecProviderMethod(klass);
-		this.getCodecVersionMethod(klass);
+		this.headerFieldMethod(klass, "getFormatName", "format_id", "name");
+		this.headerFieldMethod(klass, "getFormatProvider", "format_id", "provider");
+		this.headerFieldMethod(klass, "getFormatVersion", "format_id", "version");
+		this.getFormatDescriptionMethod(klass);
+		this.headerFieldMethod(klass, "getCodecProvider", "codec_id", "provider");
+		this.headerFieldMethod(klass, "getCodecVersion", "codec_id", "version");
 
 		// Private variable for channel objects counter
 		klass.field(4, model.INT, "channelCounter", JExpr.lit(0));
@@ -452,77 +452,24 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 		return method;
 	}
 
-	public JMethod getFormatNameMethod(JDefinedClass klass)
+	public JMethod headerFieldMethod(JDefinedClass klass,
+					 String method_name,
+					 String header_section,
+					 String field_name)
 	{
 		final JMethod method = klass.method(JMod.PUBLIC, String_t,
-			    "getFormatName");
+						    method_name);
 		comment_stamp(method.body());
 		final JBlock body = method.body();
 
-		final JVar formatName = body.decl(String_t, "formatName",
-				body.invoke("get_header").invoke("get_format_id").ref("name")
-				.invoke("get").invoke("toString"));
-		body._return(formatName);
-
-		return method;
-	}
-
-	public JMethod getFormatProviderMethod(JDefinedClass klass)
-	{
-		final JMethod method = klass.method(JMod.PUBLIC, String_t,
-			    "getFormatProvider");
-		comment_stamp(method.body());
-		final JBlock body = method.body();
-
-		final JVar formatProvider = body.decl(String_t, "formatProvider",
-				body.invoke("get_header").invoke("get_format_id")
-				.ref("provider").invoke("get").invoke("toString"));
-		body._return(formatProvider);
-
-		return method;
-	}
-
-	public JMethod getFormatVersionMethod(JDefinedClass klass)
-	{
-		final JMethod method = klass.method(JMod.PUBLIC, String_t,
-			    "getFormatVersion");
-		comment_stamp(method.body());
-		final JBlock body = method.body();
-
-		final JVar formatVersion = body.decl(String_t, "formatVersion",
-				body.invoke("get_header").invoke("get_format_id")
-				.ref("version").invoke("get").invoke("toString"));
-		body._return(formatVersion);
-
-		return method;
-	}
-
-	public JMethod getCodecProviderMethod(JDefinedClass klass)
-	{
-		final JMethod method = klass.method(JMod.PUBLIC, String_t,
-			    "getCodecProvider");
-		comment_stamp(method.body());
-		final JBlock body = method.body();
-
-		final JVar codecProvider = body.decl(String_t, "codecProvider",
-				body.invoke("get_header").invoke("get_codec_id")
-				.ref("provider").invoke("get").invoke("toString"));
-		body._return(codecProvider);
-
-		return method;
-	}
-
-	public JMethod getCodecVersionMethod(JDefinedClass klass)
-	{
-		final JMethod method = klass.method(JMod.PUBLIC, String_t,
-			    "getCodecVersion");
-		comment_stamp(method.body());
-		final JBlock body = method.body();
-
-		final JVar codecVersion = body.decl(String_t, "codecVersion",
-				body.invoke("get_header").invoke("get_codec_id").
-				ref("version").invoke("get").invoke("toString"));
-		body._return(codecVersion);
+		final JVar value = body.decl(String_t, "value",
+				    body.invoke(makeGetter("header"))
+					.invoke(makeGetter(header_section))
+					.ref(field_name).invoke("get")
+					.invoke("toString"));
+		// XXX: this implementation is horrible. There's no reason
+		// not to export individual header fields.
+		body._return(value);
 
 		return method;
 	}
