@@ -34,9 +34,14 @@ public class AsciiFile implements DataInfo {
 	public static AsciiFile compressed(File name)
 		throws IOException, FileNotFoundException
 	{
+		return compressed(new FileInputStream(name));
+	}
+
+	public static AsciiFile compressed(InputStream stream)
+		throws IOException, FileNotFoundException
+	{
 		return new AsciiFile(new InputStreamReader(
-				     new XZInputStream(
-				     new FileInputStream(name))));
+				     new XZInputStream(stream)));
 	}
 
 	@Override
