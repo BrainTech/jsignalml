@@ -6,6 +6,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
 
+import jsignalml.xml.XMLDocument;
 import jsignalml.logging.Logger;
 
 import org.apache.log4j.BasicConfigurator;

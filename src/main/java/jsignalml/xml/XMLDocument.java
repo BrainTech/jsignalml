@@ -1,4 +1,4 @@
-package jsignalml;
+package jsignalml.xml;
 
 import java.io.FileInputStream;
 import java.io.InputStream;
@@ -38,7 +38,7 @@ public class XMLDocument
 	static NamespaceContext namespaceContext;
 	static {
 		final DocumentBuilderFactory builderFactory
-		= DocumentBuilderFactory.newInstance();
+			= DocumentBuilderFactory.newInstance();
 		builderFactory.setNamespaceAware(true);
 		try {
 			docbuilder = builderFactory.newDocumentBuilder();
@@ -54,47 +54,51 @@ public class XMLDocument
 	final Document document;
 
 	public XMLDocument(InputStream stream)
-	throws java.io.IOException,
-		org.xml.sax.SAXException
+		throws java.io.IOException,
+		       org.xml.sax.SAXException
 	{
 		XMLDocument.namespaceContext = null;
 		this.document = docbuilder.parse(stream);
 	}
 
 	public XMLDocument(File filename)
-	throws java.io.IOException,
-		org.xml.sax.SAXException
+		throws java.io.IOException,
+		       org.xml.sax.SAXException
 	{
 		this(new FileInputStream(filename));
 	}
 
 	public XMLDocument(InputStream stream, NamespaceContext namespaceContext)
-			throws java.io.IOException, org.xml.sax.SAXException {
+		throws java.io.IOException,
+		       org.xml.sax.SAXException
+	{
 		XMLDocument.namespaceContext = namespaceContext;
 		this.document = docbuilder.parse(stream);
 	}
 
 	public XMLDocument(String filename, NamespaceContext namespaceContext)
-			throws java.io.IOException, org.xml.sax.SAXException {
+		throws java.io.IOException,
+		       org.xml.sax.SAXException
+	{
 		this(new FileInputStream(filename), namespaceContext);
 	}
 
 	public Node getNode(String xpath)
-	throws javax.xml.xpath.XPathExpressionException,
-		NodeError
+		throws javax.xml.xpath.XPathExpressionException,
+		       NodeError
 	{
 		return subNode(this.document, xpath);
 	}
 
 	public Element getElement(String xpath)
-	throws javax.xml.xpath.XPathExpressionException,
-		NodeError
+		throws javax.xml.xpath.XPathExpressionException,
+		       NodeError
 	{
 		return subElement(this.document, xpath);
 	}
 
 	public Element getElement_re(String xpath)
-	throws NodeError
+		throws NodeError
 	{
 		try {
 			return subElement(this.document, xpath);
@@ -108,7 +112,7 @@ public class XMLDocument
 	 * Do not throw an an exception if not found, return null instead.
 	 */
 	public static Node _subNode(Node where, String xpath)
-	throws javax.xml.xpath.XPathExpressionException
+		throws javax.xml.xpath.XPathExpressionException
 	{
 		XPath getter = xfactory.newXPath();
 		if (namespaceContext != null){
@@ -133,8 +137,8 @@ public class XMLDocument
 	 * Throw NodeError if not found.
 	 */
 	public static Node subNode(Node where, String xpath)
-	throws javax.xml.xpath.XPathExpressionException,
-		NodeError
+		throws javax.xml.xpath.XPathExpressionException,
+		       NodeError
 	{
 		Node node = _subNode(where, xpath);
 		if (node == null)
@@ -143,8 +147,8 @@ public class XMLDocument
 	}
 
 	public static Element subElement(Node where, String xpath)
-	throws javax.xml.xpath.XPathExpressionException,
-		NodeError
+		throws javax.xml.xpath.XPathExpressionException,
+		       NodeError
 	{
 		return (Element) subNode(where, xpath);
 	}
@@ -154,13 +158,13 @@ public class XMLDocument
 	 * Do not throw an an exception if not found, return null instead.
 	 */
 	public static Element _subElement(Node where, String xpath)
-	throws javax.xml.xpath.XPathExpressionException
+		throws javax.xml.xpath.XPathExpressionException
 	{
 		return (Element) _subNode(where, xpath);
 	}
 
 	public <T extends Node> Iterable<T> getNodes(String xpath)
-	throws javax.xml.xpath.XPathExpressionException
+		throws javax.xml.xpath.XPathExpressionException
 	{
 		return subNodes(this.document, xpath);
 	}
@@ -175,7 +179,7 @@ public class XMLDocument
 	}
 
 	public static <T extends Node> Iterable<T> subNodes(Node where, String xpath)
-	throws javax.xml.xpath.XPathExpressionException
+		throws javax.xml.xpath.XPathExpressionException
 	{
 		XPath getter = xfactory.newXPath();
 		if (namespaceContext != null){

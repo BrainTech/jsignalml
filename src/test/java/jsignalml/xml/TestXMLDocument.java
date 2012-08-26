@@ -1,4 +1,4 @@
-package jsignalml;
+package jsignalml.xml;
 
 import static org.testng.Assert.assertEquals;
 
@@ -15,7 +15,7 @@ public class TestXMLDocument {
 		       org.xml.sax.SAXException
 	{
 		InputStream stream =
-			getClass().getResourceAsStream("xml_doc_1.xml" );
+			getClass().getResourceAsStream("doc_1.xml" );
 		doc = new XMLDocument(stream);
 	}
 

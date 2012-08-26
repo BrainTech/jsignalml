@@ -5,7 +5,8 @@ import java.io.IOException;
 
 import javax.xml.xpath.XPathExpressionException;
 
-import jsignalml.XMLDocument.NodeError;
+import jsignalml.xml.XMLDocument;
+import jsignalml.xml.XMLDocument.NodeError;
 import jsignalml.logging.Logger;
 
 import org.w3c.dom.Node;

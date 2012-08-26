@@ -16,6 +16,7 @@ import org.apache.commons.io.FilenameUtils;
 import jsignalml.compiler.CompiledClass;
 import jsignalml.compiler.MemoryWriter;
 import jsignalml.codec.Signalml;
+import jsignalml.xml.XMLDocument;
 
 import org.testng.annotations.Test;
 import org.testng.annotations.Factory;
