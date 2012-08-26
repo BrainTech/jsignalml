@@ -712,8 +712,7 @@ public abstract class ASTNode {
 			this.name = Expression.Const.make(name);
 			this.provider = Expression.Const.make(provider);
 			this.version = Expression.Const.make(version);
-			this.info = info != null ?
-				Expression.Const.make(info) : null;
+			this.info = Expression.Const.make(info);
 		}
 
 		@Override

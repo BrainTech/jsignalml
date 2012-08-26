@@ -159,7 +159,7 @@ public class TestCodecCreation {
 
 		@Test(dataProvider="format_fields",
 		      dependsOnMethods={"test_compilation_from_disk"})
-		public void test_codec_implements_header_field(String method_name)
+		public void test_codec_implements_header_field(String method_name, boolean nonempty)
 			throws Exception
 		{
 			assert this.signalml != null;
@@ -167,19 +167,20 @@ public class TestCodecCreation {
 			Object value = m.invoke(this.signalml);
 			helpers.assertInstanceOf(value, String.class);
 			String str = (String) value;
-			assertTrue(str.length() > 0);
+			if (nonempty)
+				assertTrue(str.length() > 0);
 		}
 
 		@DataProvider
 		public Object[][] format_fields() {
 			return new Object[][] {
-				{"getFormatID"},
-				{"getFormatInfo"},
-				{"getFormatName"},
-				{"getFormatProvider"},
-				{"getFormatVersion"},
-				{"getCodecProvider"},
-				{"getCodecVersion"},
+				{"getFormatID", true},
+				{"getFormatInfo", false},
+				{"getFormatName", true},
+				{"getFormatProvider", true},
+				{"getFormatVersion", false},
+				{"getCodecProvider", true},
+				{"getCodecVersion", true},
 			};
 		}
 

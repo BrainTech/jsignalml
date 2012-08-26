@@ -32,6 +32,7 @@ public class CodecParser {
 
 	public CodecParser(String name_hint, XMLDocument xml)
 	{
+		assert name_hint != null;
 		this.name_hint = name_hint;
 		this.codec = this.parse_signalml(xml);
 	}
@@ -133,22 +134,32 @@ public class CodecParser {
 		return new ASTNode.Header(parent, id);
 	}
 
+	void checkNotEmpty(String where, String field, String value) {
+		if (value.isEmpty())
+			throw new SyntaxError("element <" + where + "/" + field
+					      + "> cannot be empty");
+	}
+
 	public ASTNode.FormatID do_format_id(ASTNode parent, Element element)
 	{
 		assert element.getNodeName().equals("format_id");
 		final Expression id = Expression.Const.make("format_id");
 
-		final String name = _extract_string(element, "name");
-		final String provider = _extract_string(element, "provider");
-		final String version = _extract_string(element, "version");
-		final String info = _extract_string(element, "info");
+		String name = _extract_string(element, "name");
+		String provider = _extract_string(element, "provider");
+		String version = _extract_string(element, "version");
+		String info = _extract_string(element, "info");
 
 		if (name == null)
-			throw new SyntaxError("element <format_id> requires element <name>");
+			name = this.name_hint;
+		checkNotEmpty("header/format_id", "name", name);
 		if (provider == null)
-			throw new SyntaxError("element <format_id> requires element <provider>");
+			provider = "unknown";
+		checkNotEmpty("header/format_id", "provider", provider);
 		if (version == null)
-			throw new SyntaxError("element <format_id> requires element <version>");
+			version = ""; // on purpose: not everything is versioned
+		if (info == null)
+			info = "";
 
 		ASTNode.FormatID node = new ASTNode.FormatID(parent, id, name,
 							     provider, version,
@@ -163,13 +174,15 @@ public class CodecParser {
 		assert element.getNodeName().equals("codec_id");
 		final Expression id = Expression.Const.make("codec_id");
 
-		final String provider = _extract_string(element, "provider");
-		final String version  = _extract_string(element, "version");
+		String provider = _extract_string(element, "provider");
+		String version  = _extract_string(element, "version");
 
 		if (provider == null)
-			throw new SyntaxError("element <codec_id> requires element <provider>");
+			provider = "unknown";
+		checkNotEmpty("header/codec_id", "provider", provider);
 		if (version == null)
-			throw new SyntaxError("element <codec_id> requires element <version>");
+			version = "0";
+		checkNotEmpty("header/codec_id", "version", version);
 
 		return new ASTNode.CodecID(parent, id, provider, version);
 	}
