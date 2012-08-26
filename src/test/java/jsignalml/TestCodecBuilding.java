@@ -87,7 +87,7 @@ public class TestCodecBuilding {
 	{
 		Element element = doc.getElement("//file");
 
-		CodecParser parser = new CodecParser(new File("dummy.xml"));
+		CodecParser parser = new CodecParser("dummy", doc);
 		ASTNode.Signalml root = new ASTNode.Signalml("root");
 
 		parser.walk(root, element);
