@@ -3,6 +3,7 @@ package jsignalml.data;
 import java.util.Properties;
 import java.util.Collection;
 import java.util.List;
+import java.util.Arrays;
 import java.io.File;
 import java.io.FileReader;
 
@@ -24,13 +25,24 @@ public class TestCompileAndCompare {
 
 	@Factory(dataProvider="formats_and_codecs")
 	public static Object[] generate_testcase(String format, String codec)
-		throws Exception
 	{
 		log.info("looking for %s/%s in %s", format, codec, codec_basedir);
 		if (codec_basedir == null)
 			return new Object[][] {};
 		assert codec_basedir.exists();
 
+		try {
+			return _generate_testcase(format, codec).toArray();
+		} catch(Exception e) {
+			return new Object[] {
+			     new CodecSampleCase.FailedTestCase(e, format, codec)
+			};
+		}
+	}
+
+	static Collection<Object> _generate_testcase(String format, String codec)
+		throws Exception
+	{
 		final File codec_path = new File("specs", codec + ".xml");
 		final JavaClassGen gen = CodecParser.generateFromFile(codec_path);
 		final String name = gen.getClassName();
@@ -46,7 +58,7 @@ public class TestCompileAndCompare {
 			coll.addAll(CodecSampleCase.find(inst, dir, ext));
 		}
 
-		return coll.toArray();
+		return coll;
 	}
 
 	public static final String codec_testcases =
