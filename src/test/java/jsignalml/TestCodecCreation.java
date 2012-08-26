@@ -11,6 +11,8 @@ import java.util.Collection;
 
 import java.lang.reflect.Method;
 
+import org.apache.commons.io.FilenameUtils;
+
 import jsignalml.compiler.CompiledClass;
 import jsignalml.compiler.MemoryWriter;
 import jsignalml.codec.Signalml;
@@ -179,6 +181,20 @@ public class TestCodecCreation {
 				{"getCodecProvider"},
 				{"getCodecVersion"},
 			};
+		}
+
+		/**
+		 * Check that generateFromFile runs without error for various codecs.
+		 */
+		@Test
+		public void test_CodecParser_generateFromFile()
+			throws Exception
+		{
+			final JavaClassGen gen
+				= CodecParser.generateFromFile(specfile);
+			assertNotNull(gen);
+			assertEquals(gen.getClassName(),
+				     FilenameUtils.getBaseName(specfile.toString()));
 		}
 	}
 
