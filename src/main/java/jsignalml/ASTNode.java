@@ -696,10 +696,10 @@ public abstract class ASTNode {
 		public final Expression name;
 		public final Expression provider;
 		public final Expression version;
-		public final Expression description;
+		public final Expression info;
 
 		public FormatID(ASTNode parent, Expression id, String name,
-				String provider, String version, String description)
+				String provider, String version, String info)
 		{
 			super(parent, id, TypeString.I);
 			if (!(parent instanceof Header))
@@ -712,8 +712,8 @@ public abstract class ASTNode {
 			this.name = Expression.Const.make(name);
 			this.provider = Expression.Const.make(provider);
 			this.version = Expression.Const.make(version);
-			this.description = description != null ?
-				Expression.Const.make(description) : null;
+			this.info = info != null ?
+				Expression.Const.make(info) : null;
 		}
 
 		@Override

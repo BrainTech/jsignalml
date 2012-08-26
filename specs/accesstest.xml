@@ -8,7 +8,7 @@
 		<name>AccessTest</name>
 		<provider>-</provider>
 		<version>1.0.0</version>
-		<description>testfile for access()</description>
+		<info>testfile for access()</info>
 	</format_id>
 	<codec_id>
 		<provider>UW</provider>

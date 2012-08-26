@@ -15,7 +15,7 @@ public interface Source { /* implements Iterable<> */
 	void close();
 
 	String getFormatID();
-	String getFormatDescription();
+	String getFormatInfo();
 
 	String getFormatName();
 	String getFormatProvider();

@@ -6,8 +6,8 @@
 			<name>XML format</name>
 			<provider>-</provider>
 			<version>1.0.0</version>
-			<description>SignalML definition for XML header file and binary data
-			file</description>
+			<info>SignalML definition for XML header file and binary data
+			file</info>
 		</format_id>
 		<codec_id>
 			<provider>Ericpol</provider>

@@ -8,7 +8,7 @@
 			<name>Text File Test Format</name>
 			<provider>-</provider>
 			<version>1.0.0</version>
-			<description>test file for text type</description>
+			<info>test file for text type</info>
 		</format_id>
 		<codec_id>
 			<provider>Ericpol</provider>

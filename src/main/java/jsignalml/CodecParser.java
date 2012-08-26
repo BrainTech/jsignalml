@@ -141,7 +141,7 @@ public class CodecParser {
 		final String name = _extract_string(element, "name");
 		final String provider = _extract_string(element, "provider");
 		final String version = _extract_string(element, "version");
-		final String description = _extract_string(element, "description");
+		final String info = _extract_string(element, "info");
 
 		if (name == null)
 			throw new SyntaxError("element <format_id> requires element <name>");
@@ -152,7 +152,7 @@ public class CodecParser {
 
 		ASTNode.FormatID node = new ASTNode.FormatID(parent, id, name,
 							     provider, version,
-							     description);
+							     info);
 		final EvalVisitor valuator = EvalVisitor.create(node);
 		this.format_id = valuator.quickEval(TypeString.I, node.name);
 		return node;

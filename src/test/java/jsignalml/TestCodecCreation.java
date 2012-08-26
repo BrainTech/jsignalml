@@ -172,7 +172,7 @@ public class TestCodecCreation {
 		public Object[][] format_fields() {
 			return new Object[][] {
 				{"getFormatID"},
-				{"getFormatDescription"},
+				{"getFormatInfo"},
 				{"getFormatName"},
 				{"getFormatProvider"},
 				{"getFormatVersion"},

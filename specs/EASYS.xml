@@ -6,7 +6,7 @@
 			<name>PE-EASYS</name>
 			<provider>-</provider>
 			<version>1.0.0</version>
-			<description>PE-EASYS</description>
+			<info>PE-EASYS</info>
 		</format_id>
 		<codec_id>
 			<provider>Ericpol</provider>

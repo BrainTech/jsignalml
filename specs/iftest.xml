@@ -3,7 +3,7 @@
 <signalml>
 
   <header>
-    <format_id><description>testfile for ifs</description></format_id>
+    <format_id><info>testfile for ifs</info></format_id>
     <url>http://wheredoyouwantogotoday.to</url>
   </header>
 

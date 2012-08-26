@@ -4,7 +4,7 @@
 
 	<header>
 		<format_id>
-		  <description>SignalML definition for dummy codec, designed to test bool type</description>
+		  <info>SignalML definition for dummy codec, designed to test bool type</info>
 		</format_id>
 	</header>
 

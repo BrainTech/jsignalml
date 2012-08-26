@@ -55,9 +55,9 @@ public class CodecSampleCase {
 	}
 
 	@Test(dependsOnMethods={"test_open"})
-	public void test_format_description() {
+	public void test_format_info() {
 		assertNotNull(this.source.getFormatID());
-		assertNotNull(this.source.getFormatDescription());
+		assertNotNull(this.source.getFormatInfo());
 
 		assertNotNull(this.source.getFormatName());
 		assertNotNull(this.source.getFormatProvider());

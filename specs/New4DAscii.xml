@@ -6,7 +6,7 @@
 			<name>New 4D ascii format</name>
 			<provider>-</provider>
 			<version>1.0.0</version>
-			<description>New 4D ascii format</description>
+			<info>New 4D ascii format</info>
 		</format_id>
 		<codec_id>
 			<provider>Ericpol</provider>
