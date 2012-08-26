@@ -138,22 +138,21 @@ public class CodecParser {
 		assert element.getNodeName().equals("format_id");
 		final Expression id = Expression.Const.make("format_id");
 
-		final Expression name    = _extract(element, "name");
-		final Expression provider    = _extract(element, "provider");
-		final Expression version    = _extract(element, "version");
+		final String name = _extract_string(element, "name");
+		final String provider = _extract_string(element, "provider");
+		final String version = _extract_string(element, "version");
+		final String description = _extract_string(element, "description");
 
-		if (name == null) {
+		if (name == null)
 			throw new SyntaxError("element <format_id> requires element <name>");
-		}
-		else if (provider == null) {
+		if (provider == null)
 			throw new SyntaxError("element <format_id> requires element <provider>");
-		}
-		else if (version == null) {
+		if (version == null)
 			throw new SyntaxError("element <format_id> requires element <version>");
-		}
 
 		ASTNode.FormatID node = new ASTNode.FormatID(parent, id, name,
-							     provider, version);
+							     provider, version,
+							     description);
 		final EvalVisitor valuator = EvalVisitor.create(node);
 		this.format_id = valuator.quickEval(TypeString.I, node.name);
 		return node;
@@ -164,18 +163,15 @@ public class CodecParser {
 		assert element.getNodeName().equals("codec_id");
 		final Expression id = Expression.Const.make("codec_id");
 
-		final Expression provider    = _extract(element, "provider");
-		final Expression version    = _extract(element, "version");
+		final String provider = _extract_string(element, "provider");
+		final String version  = _extract_string(element, "version");
 
-		if (provider == null) {
+		if (provider == null)
 			throw new SyntaxError("element <codec_id> requires element <provider>");
-		}
-		else if (version == null) {
+		if (version == null)
 			throw new SyntaxError("element <codec_id> requires element <version>");
-		}
 
-		return new ASTNode.CodecID(parent, id, provider,
-				version);
+		return new ASTNode.CodecID(parent, id, provider, version);
 	}
 
 	public ASTNode.Param do_param(ASTNode parent, Element element)

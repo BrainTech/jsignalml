@@ -1,16 +1,16 @@
 <?xml version="1.0"?>
-<meta_format>
+
+<signalml>
 <header>
- <text_info>EDF data format</text_info>
  <url> http://xxx.xxx.nl/edf</url>
  <format_id>
-	<name>'EDF data format'</name>
-	<provider>'-'</provider>
-	<version>'1.0.0'</version>
+	<name>EDF data format</name>
+	<provider>-</provider>
+	<version>1.0.0</version>
  </format_id>
  <codec_id>
-	<provider>'UW'</provider>
-	<version>'1.0.0'</version>
+	<provider>UW</provider>
+	<version>1.0.0</version>
  </codec_id>
 </header>
 
@@ -55,4 +55,4 @@
                       index='1..{number_of_channels}' />
   
 </parameters> 
-</meta_format>
+</signalml>

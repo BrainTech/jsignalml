@@ -212,7 +212,7 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 		this.headerFieldMethod(klass, "getFormatName", "format_id", "name");
 		this.headerFieldMethod(klass, "getFormatProvider", "format_id", "provider");
 		this.headerFieldMethod(klass, "getFormatVersion", "format_id", "version");
-		this.getFormatDescriptionMethod(klass);
+		this.headerFieldMethod(klass, "getFormatDescription", "format_id", "description");
 		this.headerFieldMethod(klass, "getCodecProvider", "codec_id", "provider");
 		this.headerFieldMethod(klass, "getCodecVersion", "codec_id", "version");
 
@@ -833,6 +833,9 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 		JFieldVar name_ = klass.field(1, Type_t, "name", node.name.accept(javagen));
 		JFieldVar provider_ = klass.field(1, Type_t, "provider", node.provider.accept(javagen));
 		JFieldVar version_ = klass.field(1, Type_t, "version", node.version.accept(javagen));
+		JFieldVar description_ = klass.field(1, Type_t, "description",
+			node.description != null ? node.description.accept(javagen) :
+						   JExpr._null());
 
 		final JVar value;
 		value = body.decl(TypeString_t, "value", JExpr._new(TypeString_t)

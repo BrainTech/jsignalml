@@ -2,15 +2,15 @@
 <!DOCTYPE signalml SYSTEM "SignalML_2_0.dtd">
 <signalml>
 	<header>
-		<text_info>PE-EASYS</text_info>
 		<format_id>
-			<name>'PE-EASYS'</name>
-			<provider>'-'</provider>
-			<version>'1.0.0'</version>
+			<name>PE-EASYS</name>
+			<provider>-</provider>
+			<version>1.0.0</version>
+			<description>PE-EASYS</description>
 		</format_id>
 		<codec_id>
-			<provider>'Ericpol'</provider>
-			<version>'1.0.0'</version>
+			<provider>Ericpol</provider>
+			<version>1.0.0</version>
 		</codec_id>
 	</header>
 

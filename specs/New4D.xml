@@ -2,15 +2,15 @@
 <!DOCTYPE signalml SYSTEM "SignalML_2_0.dtd">
 <signalml>
 	<header>
-		<text_info>SignalML definition for new 4D format</text_info>
 		<format_id>
-			<name>'New 4D format'</name>
-			<provider>'-'</provider>
-			<version>'1.0.0'</version>
+			<name>New 4D format</name>
+			<provider>-</provider>
+			<version>1.0.0</version>
+			<description>New 4D format</description>
 		</format_id>
 		<codec_id>
-			<provider>'Ericpol'</provider>
-			<version>'1.0.0'</version>
+			<provider>Ericpol</provider>
+			<version>1.0.0</version>
 		</codec_id>
 	</header>
 	<file id='main' type='text'>

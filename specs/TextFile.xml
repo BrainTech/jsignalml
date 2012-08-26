@@ -3,16 +3,16 @@
 <signalml>
 
 	<header>
-		<text_info>test file for text type</text_info>
 		<url>sometestfile</url>
 		<format_id>
-			<name>'Text File Test Format'</name>
-			<provider>'-'</provider>
-			<version>'1.0.0'</version>
+			<name>Text File Test Format</name>
+			<provider>-</provider>
+			<version>1.0.0</version>
+			<description>test file for text type</description>
 		</format_id>
 		<codec_id>
-			<provider>'Ericpol'</provider>
-			<version>'1.0.0'</version>
+			<provider>Ericpol</provider>
+			<version>1.0.0</version>
 		</codec_id>
 	</header>
 

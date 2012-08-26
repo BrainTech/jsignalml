@@ -3,7 +3,9 @@
 <signalml>
 
 	<header>
-		<text_info>SignalML definition for dummy codec, designed to test bytes type</text_info>
+		<format_id>
+		  <description>SignalML definition for dummy format, designed to test bytes type</description>
+		</format_id>
 	</header>
 
 	<param id='bytes1test' type='bytes'>

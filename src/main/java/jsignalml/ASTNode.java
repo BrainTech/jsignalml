@@ -696,27 +696,24 @@ public abstract class ASTNode {
 		public final Expression name;
 		public final Expression provider;
 		public final Expression version;
+		public final Expression description;
 
-		public FormatID(ASTNode parent, Expression id, Expression name,
-				Expression provider, Expression version) {
-			super(parent, id, new TypeString());
-			if (parent == null) {
-				throw new SyntaxError("<format_id> tag must have a parent tag");
-			}
-
-			if (parent instanceof Header) {
-				Header header = (Header) parent;
-				if (header.format_id != null) {
-					throw new SyntaxError("cannot have more than one <format_id>"
-							+ " tag inside parent <header> tag!");
-				}
-				this.name = name;
-				this.provider = provider;
-				this.version = version;
-			} else {
+		public FormatID(ASTNode parent, Expression id, String name,
+				String provider, String version, String description)
+		{
+			super(parent, id, TypeString.I);
+			if (!(parent instanceof Header))
 				throw new SyntaxError("<format_id> tag can only be used inside <header>");
-			}
 
+			Header header = (Header) parent;
+			if (header.format_id != null)
+				throw new SyntaxError("cannot have more than one <format_id>"
+						      + " tag inside parent <header> tag!");
+			this.name = Expression.Const.make(name);
+			this.provider = Expression.Const.make(provider);
+			this.version = Expression.Const.make(version);
+			this.description = description != null ?
+				Expression.Const.make(description) : null;
 		}
 
 		@Override
@@ -731,24 +728,19 @@ public abstract class ASTNode {
 		public final Expression provider;
 		public final Expression version;
 
-		public CodecID(ASTNode parent, Expression id, Expression provider,
-				Expression version) {
+		public CodecID(ASTNode parent, Expression id,
+			       String provider, String version) {
 			super(parent, id, new TypeString());
-			if (parent == null) {
-				throw new SyntaxError("<codec_id> tag must have a parent tag");
-			}
-			if (parent instanceof Header) {
-				Header header = (Header) parent;
-				if (header.codec_id != null) {
-					throw new SyntaxError("cannot have more than one <codec_id>"
-							+ " tag inside parent <header> tag!");
-				}
-
-				this.provider = provider;
-				this.version = version;
-			} else {
+			if (!(parent instanceof Header))
 				throw new SyntaxError("<codec_id> tag can only be used inside <header>");
-			}
+
+			Header header = (Header) parent;
+			if (header.codec_id != null)
+				throw new SyntaxError("cannot have more than one <codec_id>"
+						      + " tag inside parent <header> tag!");
+
+			this.provider = Expression.Const.make(provider);
+			this.version = Expression.Const.make(version);
 		}
 
 		@Override

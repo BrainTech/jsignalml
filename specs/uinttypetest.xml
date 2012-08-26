@@ -3,9 +3,9 @@
 <signalml>
   <header>
     <format_id>
-      <name>'Unsigned Integer Type Test'</name>
-      <provider>'-'</provider>
-      <version>'0.0.0'</version>
+      <name>Unsigned Integer Type Test</name>
+      <provider>-</provider>
+      <version>0.0.0</version>
     </format_id>
   </header>
   <file type='binary' id='main'>

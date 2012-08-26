@@ -3,7 +3,9 @@
 <signalml>
 
 	<header>
-		<text_info>SignalML definition for dummy codec, designed to test bool type</text_info>
+		<format_id>
+		  <description>SignalML definition for dummy codec, designed to test bool type</description>
+		</format_id>
 	</header>
 
 	<param id='paramint1' type='int'>

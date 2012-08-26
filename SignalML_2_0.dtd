@@ -1,8 +1,7 @@
 <!ELEMENT signalml (header, (file | assert)*)>
 
-<!ELEMENT header (format | text_info | url)*>
+<!ELEMENT header (format | url)*>
 <!--<!ELEMENT format (#PCDATA)>-->
-<!ELEMENT text_info (#PCDATA)>
 <!ELEMENT url (#PCDATA)>
 
 <!ELEMENT file (param | assert | data)*>
