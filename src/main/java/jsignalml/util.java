@@ -9,6 +9,7 @@ import java.util.TreeMap;
 import java.util.TreeSet;
 
 import org.apache.commons.lang.StringUtils;
+import com.beust.jcommander.IStringConverter;
 
 public abstract class util {
 	public static <T> LinkedList<T> newLinkedList() {
@@ -47,5 +48,12 @@ public abstract class util {
 		String basename = StringUtils.split(file.getName(), ".")[0];
 		return basename.replace("[^a-zA-Z0-9_]", "_");
 		// TODO: tests needed
+	}
+
+	public class FileConverter implements IStringConverter<File> {
+		@Override
+		public File convert(String value) {
+			return new File(value);
+		}
 	}
 }

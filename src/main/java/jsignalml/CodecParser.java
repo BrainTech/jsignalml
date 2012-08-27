@@ -5,6 +5,7 @@ import static java.lang.String.format;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
+import java.util.List;
 
 import jsignalml.xml.XMLDocument;
 import jsignalml.logging.Logger;
@@ -15,6 +16,9 @@ import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
+
+import com.beust.jcommander.Parameter;
+import com.beust.jcommander.JCommander;
 
 /**
  * Translate an XML DOM into an ASTNode tree.
@@ -485,25 +489,47 @@ public class CodecParser {
 		return gen;
 	}
 
+	static class Options {
+		@Parameter(names="--debug",
+			   description="Dump generated code on stdout")
+		public boolean debug = false;
+
+		@Parameter(names="--help", help=true,
+			   description="Show help and exit")
+		public boolean help;
+
+		@Parameter(names={"--output", "-o"},
+			   converter=util.FileConverter.class,
+			   description="Output dir")
+		public File outputdir = null;
+
+		@Parameter(required=true,
+			   description="XML codec file")
+		public List<String> xml;
+	}
 
 	public static void main(String...args) throws Exception
 	{
 		BasicConfigurator.configure();
 
-		final JavaClassGen gen = generateFromFile(new File(args[0]));
-
-		if("true".equalsIgnoreCase(System.getProperties().getProperty("jsignalml.debug", "false"))){
-			gen.write(System.out);
+		Options opts = new Options();
+		JCommander optparser = new JCommander(opts, args);
+		if (opts.help) {
+			optparser.usage();
+			return;
 		}
 
-		if (args.length <= 1)
-			return;
+		for(String file: opts.xml) {
+			final JavaClassGen gen = generateFromFile(new File(file));
 
-		final File outputdir = new File(args[1]);
-		gen.write(outputdir);
-		log.info("-- java has been written --");
+			if (opts.debug)
+				gen.write(System.out);
 
-		// String[] files = new String[args.length-1];
-		// System.arraycopy(args, 1, files, 0, files.length);
+			if (opts.outputdir == null)
+				continue;
+
+			gen.write(opts.outputdir);
+			log.info("-- java has been written --");
+		}
 	}
 }
