@@ -460,7 +460,7 @@ public class CodecParser {
 			return _null_or_parse(name);
 	}
 
-	public static JavaClassGen generateFromFile(File xml)
+	public static JavaClassGen generateFromFile(File xml, String package_name)
 		throws java.io.IOException,
 		       org.xml.sax.SAXException
 	{
@@ -482,11 +482,19 @@ public class CodecParser {
 		codec.accept(typer, null);
 		log.info("-- type checking is done --");
 
-		final JavaClassGen gen = new JavaClassGen(typer.getTypeResolver());
+		final JavaClassGen gen =
+			new JavaClassGen(typer.getTypeResolver(), package_name);
 		codec.accept(gen, null);
 		log.info("-- java has been generated --");
 
 		return gen;
+	}
+
+	public static JavaClassGen generateFromFile(File xml)
+		throws java.io.IOException,
+		       org.xml.sax.SAXException
+	{
+		return generateFromFile(xml, "");
 	}
 
 	static class Options {
@@ -494,14 +502,17 @@ public class CodecParser {
 			   description="Dump generated code on stdout")
 		public boolean debug = false;
 
+		@Parameter(names="--package",
+			   description="Put generated classes in this package")
+		public String package_name = "";
+
 		@Parameter(names="--help", help=true,
 			   description="Show help and exit")
 		public boolean help;
 
 		@Parameter(names={"--output", "-o"},
-			   converter=util.FileConverter.class,
 			   description="Output dir")
-		public File outputdir = null;
+		public String outputdir = null;
 
 		@Parameter(required=true,
 			   description="XML codec file")
@@ -519,8 +530,10 @@ public class CodecParser {
 			return;
 		}
 
+		assert opts.xml != null;
 		for(String file: opts.xml) {
-			final JavaClassGen gen = generateFromFile(new File(file));
+			final JavaClassGen gen = generateFromFile(new File(file),
+								  opts.package_name);
 
 			if (opts.debug)
 				gen.write(System.out);
@@ -528,7 +541,7 @@ public class CodecParser {
 			if (opts.outputdir == null)
 				continue;
 
-			gen.write(opts.outputdir);
+			gen.write(new File(opts.outputdir));
 			log.info("-- java has been written --");
 		}
 	}

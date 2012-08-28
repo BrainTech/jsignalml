@@ -18,6 +18,7 @@ import jsignalml.compiler.MemoryWriter;
 
 import org.apache.log4j.BasicConfigurator;
 
+import com.sun.codemodel.JPackage;
 import com.sun.codemodel.JBlock;
 import com.sun.codemodel.JClass;
 import com.sun.codemodel.JClassAlreadyExistsException;
@@ -132,9 +133,14 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 	JFieldVar log_var = null; // this should be set when Signalml class is created.
 	int number_of_files = 0;  // this should be increased for each File class.
 	final ASTTypeResolver typeresolver;
+	final JPackage thepackage;
 
 	public String getClassName() {
 		return this.class_name;
+	}
+
+	public String getPackageName() {
+		return this.thepackage.name();
 	}
 
 	private static ASTTypeResolver nullTypeResolver() {
@@ -150,7 +156,14 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 	}
 
 	public JavaClassGen(ASTTypeResolver typeresolver) {
+		this(nullTypeResolver(), "");
+	}
+
+	public JavaClassGen(ASTTypeResolver typeresolver, String package_name) {
+		assert package_name != null;
+
 		this.typeresolver = typeresolver;
+		this.thepackage = this.model._package(package_name);
 	}
 
 	/**
@@ -192,7 +205,7 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 		this.class_name = theid;
 
 		try {
-			klass = this.model._class(theid);
+			klass = this.thepackage._class(theid);
 		} catch(JClassAlreadyExistsException e) {
 			throw new SyntaxError(format("duplicate name: '%s'", theid));
 		}
