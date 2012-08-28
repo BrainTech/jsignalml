@@ -7,6 +7,9 @@ import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.TreeMap;
 import java.util.TreeSet;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 import com.beust.jcommander.IStringConverter;
@@ -14,6 +17,17 @@ import com.beust.jcommander.IStringConverter;
 public abstract class util {
 	public static <T> LinkedList<T> newLinkedList() {
 		return new LinkedList<T>();
+	}
+
+	public static <T> LinkedList<T> newLinkedList(Collection<? extends T> c) {
+		return new LinkedList<T>(c);
+	}
+
+	public static <T> LinkedList<T> newLinkedList(Iterator<? extends T> it) {
+		LinkedList<T> list = new LinkedList<T>();
+		while(it.hasNext())
+			list.add(it.next());
+		return list;
 	}
 
 	public static <T> ArrayList<T> newArrayList() {

@@ -8,9 +8,11 @@ import java.io.ByteArrayOutputStream;
 import java.util.List;
 import java.util.Properties;
 import java.util.Collection;
+import java.util.Iterator;
 
 import java.lang.reflect.Method;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 
 import jsignalml.compiler.CompiledClass;
@@ -261,10 +263,8 @@ public class TestCodecCreation {
 
 	public static final File specdir = new File("specs/");
 	public static File[] specfiles() {
-		String[] names = specdir.list(helpers.xml_file_filter);
-		File[] files = new File[names.length];
-		for(int i=0; i<files.length; i++)
-			files[i] = new File(specdir, names[i]);
-		return files;
+		Iterator<File> files = FileUtils
+			.iterateFiles(specdir, new String[] {"xml"}, true);
+		return util.newLinkedList(files).toArray(new File[]{});
 	}
 }

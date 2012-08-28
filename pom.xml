@@ -94,6 +94,38 @@
       </plugin>
 
       <plugin>
+	<artifactId>maven-resources-plugin</artifactId>
+	<version>2.6</version>
+	<executions>
+	  <execution>
+            <id>copy-resources</id>
+            <phase>compile</phase>
+            <goals>
+              <goal>copy-resources</goal>
+            </goals>
+
+	    <configuration>
+	      <outputDirectory>${project.build.outputDirectory}/jsignalml</outputDirectory>
+	      <resources>
+		<resource>
+		  <directory>${basedir}/specs</directory>
+		  <include>*.xml</include>
+		  <exclude>test/*.xml</exclude>
+		  <targetPath>specs</targetPath>
+		</resource>
+		<resource>
+		  <directory>${basedir}</directory>
+		  <include>SignalML_2_0.dtd</include>
+		  <targetPath>specs/schema</targetPath>
+		</resource>
+	      </resources>
+	    </configuration>
+
+          </execution>
+        </executions>
+      </plugin>
+
+      <plugin>
 	<groupId>org.apache.maven.plugins</groupId>
 	<artifactId>maven-surefire-plugin</artifactId>
 	<version>2.12</version>

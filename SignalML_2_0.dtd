@@ -1,1 +1,90 @@
-src/main/resources/jsignaml/xml/SignalML_2_0.dtd
+<!ENTITY % standard_elements "param | assert | file | for-each | if | channelset | channel">
+<!ELEMENT signalml (header, (%standard_elements;)*)>
+
+<!ELEMENT header (format_id | codec_id | url)*>
+<!ELEMENT format_id (name | provider | version | info)*>
+<!ELEMENT codec_id (provider | version | info)*>
+
+<!ELEMENT url (#PCDATA)>
+<!ELEMENT name (#PCDATA)>
+<!ELEMENT provider (#PCDATA)>
+<!ELEMENT version (#PCDATA)>
+<!ELEMENT info (#PCDATA)>
+
+<!ELEMENT file (%standard_elements;)*>
+<!ELEMENT param (arg*,
+          (expr
+          | (offset, format) | (format, offset)
+          | (pattern, group, line?) | (pattern, line?, group?) | (line, pattern, group?)
+	  | (xpath) )
+)>
+<!ELEMENT assert (expr)>
+<!ELEMENT arg EMPTY>
+<!ELEMENT if (%standard_elements; | else-if | else)*>
+<!ELEMENT else-if (%standard_elements; | else-if | else)*>
+<!ELEMENT else (%standard_elements;)*>
+<!ELEMENT for-each (%standard_elements;)*>
+<!ELEMENT channelset (%standard_elements;)*>
+<!ELEMENT channel (%standard_elements;)*>
+
+<!ENTITY % file_types "binary|text|xml">
+
+<!ELEMENT expr (#PCDATA)>
+<!ELEMENT offset (#PCDATA)>
+<!ELEMENT format (#PCDATA)>
+<!ELEMENT pattern (#PCDATA)>
+<!ELEMENT line (#PCDATA)>
+<!ELEMENT group (#PCDATA)>
+<!ELEMENT xpath (#PCDATA)>
+
+<!ATTLIST file
+	  type   (%file_types;) #REQUIRED
+          name   CDATA #IMPLIED
+          id     CDATA #IMPLIED
+          filename CDATA #IMPLIED
+>
+<!ATTLIST param
+	  id     CDATA #REQUIRED
+	  type   CDATA #IMPLIED
+	  units  CDATA #IMPLIED
+>
+<!ATTLIST assert
+	  id     CDATA #IMPLIED
+>
+<!ATTLIST arg
+	  type   CDATA #IMPLIED
+	  name   CDATA #REQUIRED
+>
+<!ATTLIST for-each
+	  id     CDATA #IMPLIED
+	  var    CDATA #IMPLIED
+	  sequence CDATA #REQUIRED
+	  type   CDATA #IMPLIED
+>
+<!ATTLIST if
+	  id     CDATA #IMPLIED
+	  test   CDATA #REQUIRED
+>
+<!ATTLIST else-if
+	  test   CDATA #REQUIRED
+>
+<!ATTLIST channelset
+	  id     CDATA #IMPLIED
+>
+<!ATTLIST channel
+	  id     CDATA #IMPLIED
+	  mapping CDATA #IMPLIED
+	  format CDATA #IMPLIED
+	  length CDATA #IMPLIED
+	  data   CDATA #IMPLIED
+	  fast   CDATA #IMPLIED
+>
+<!ATTLIST line
+	  type   CDATA #IMPLIED
+>
+<!ATTLIST xpath
+	  id     CDATA #IMPLIED
+	  xpath-evaluation-type CDATA #IMPLIED
+	  xpath-attribute-name CDATA #IMPLIED
+	  type   CDATA #IMPLIED
+>
