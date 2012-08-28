@@ -10,10 +10,11 @@
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <main>Processor</main>
+    <main>jsignalml.Processor</main>
   </properties>
 
   <dependencies>
+    <!-- main -->
     <dependency>
       <groupId>org.antlr</groupId>
       <artifactId>antlr-runtime</artifactId>
@@ -28,12 +29,6 @@
       <groupId>xerces</groupId>
       <artifactId>xercesImpl</artifactId>
       <version>2.9.1</version>
-    </dependency>
-    <dependency>
-      <groupId>org.testng</groupId>
-      <artifactId>testng</artifactId>
-      <version>6.7</version>
-      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>com.sun.codemodel</groupId>
@@ -56,12 +51,6 @@
       <version>2.4</version>
     </dependency>
     <dependency>
-      <groupId>com.google.guava</groupId>
-      <artifactId>guava-io</artifactId>
-      <version>r03</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
       <groupId>jline</groupId>
       <artifactId>jline</artifactId>
       <version>0.9.94</version>
@@ -75,6 +64,20 @@
       <groupId>com.beust</groupId>
       <artifactId>jcommander</artifactId>
       <version>1.29</version>
+    </dependency>
+
+    <!-- test -->
+    <dependency>
+      <groupId>org.testng</groupId>
+      <artifactId>testng</artifactId>
+      <version>6.7</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.google.guava</groupId>
+      <artifactId>guava-io</artifactId>
+      <version>r03</version>
+      <scope>test</scope>
     </dependency>
   </dependencies>
 
