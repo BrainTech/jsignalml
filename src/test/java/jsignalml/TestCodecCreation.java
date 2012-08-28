@@ -38,6 +38,16 @@ import static org.testng.Assert.assertTrue;
 public class TestCodecCreation {
 	protected static final Logger log = new Logger(TestCodecCreation.class);
 
+	@Test
+	public void test_generateFromResource()
+		throws Exception
+	{
+		JavaClassGen gen = CodecParser.generateFromResource("EASYS", "jsignalml.test");
+		assertNotNull(gen);
+		assertEquals(gen.getPackageName(), "jsignalml.test");
+		assertEquals(gen.getClassName(), "EASYS");
+	}
+
 	public class TestOneCodec {
 		public final File specfile;
 		TestOneCodec(File specfile) {
@@ -246,7 +256,7 @@ public class TestCodecCreation {
 			throws Exception
 		{
 			final JavaClassGen gen
-				= CodecParser.generateFromFile(specfile);
+				= CodecParser.generateFromFile(specfile, "");
 			assertNotNull(gen);
 			assertEquals(gen.getClassName(),
 				     FilenameUtils.getBaseName(specfile.toString()));

@@ -460,17 +460,13 @@ public class CodecParser {
 			return _null_or_parse(name);
 	}
 
-	public static JavaClassGen generateFromFile(File xml, String package_name)
+	public static JavaClassGen generateFromFile(String name_hint,
+						    XMLDocument xml,
+						    String package_name)
 		throws java.io.IOException,
 		       org.xml.sax.SAXException
 	{
-		ASTNode codec;
-		try {
-			codec = new CodecParser(xml).codec;
-		} catch (SAXException e) {
-			log.error("A problem occurred while parsing xml: %s", xml);
-			throw e;
-		}
+		ASTNode codec = new CodecParser(name_hint, xml).codec;
 		log.info("-- codec is parsed --");
 		System.out.print(ASTDumper.dump(codec));
 
@@ -490,11 +486,24 @@ public class CodecParser {
 		return gen;
 	}
 
-	public static JavaClassGen generateFromFile(File xml)
+	public static JavaClassGen generateFromFile(File file, String package_name)
 		throws java.io.IOException,
 		       org.xml.sax.SAXException
 	{
-		return generateFromFile(xml, "");
+		final String hint = util.basename_noext(file);
+		final XMLDocument xml = new XMLDocument(file);
+		return generateFromFile(hint, xml, package_name);
+	}
+
+	public static JavaClassGen generateFromResource(String codec_name,
+							String package_name)
+		throws java.io.IOException,
+		       org.xml.sax.SAXException
+	{
+		String resource = format("specs/%s.xml", codec_name);
+		InputStream stream = CodecParser.class.getResourceAsStream(resource);
+		XMLDocument xml = new XMLDocument(stream);
+		return generateFromFile(codec_name, xml, package_name);
 	}
 
 	static class Options {
@@ -514,6 +523,10 @@ public class CodecParser {
 			   description="Output dir")
 		public String outputdir = null;
 
+		@Parameter(names="--resource",
+			   description="XML files should be retrieved as resources")
+		public boolean resource = false;
+
 		@Parameter(required=true,
 			   description="XML codec file")
 		public List<String> xml;
@@ -532,8 +545,13 @@ public class CodecParser {
 
 		assert opts.xml != null;
 		for(String file: opts.xml) {
-			final JavaClassGen gen = generateFromFile(new File(file),
-								  opts.package_name);
+			final JavaClassGen gen;
+			if (opts.resource)
+				gen = generateFromResource(file,
+							   opts.package_name);
+			else
+				gen = generateFromFile(new File(file),
+						       opts.package_name);
 
 			if (opts.debug)
 				gen.write(System.out);

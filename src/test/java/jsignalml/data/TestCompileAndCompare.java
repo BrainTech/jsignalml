@@ -43,7 +43,7 @@ public class TestCompileAndCompare {
 		throws Exception
 	{
 		final File codec_path = new File("specs", codec + ".xml");
-		final JavaClassGen gen = CodecParser.generateFromFile(codec_path);
+		final JavaClassGen gen = CodecParser.generateFromFile(codec_path, "");
 		final String name = gen.getClassName();
 		final CharSequence code = gen.getSourceCode();
 
