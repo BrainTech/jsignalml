@@ -156,7 +156,7 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 	}
 
 	public JavaClassGen(ASTTypeResolver typeresolver) {
-		this(nullTypeResolver(), "");
+		this(typeresolver, "");
 	}
 
 	public JavaClassGen(ASTTypeResolver typeresolver, String package_name) {
