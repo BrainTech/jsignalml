@@ -24,8 +24,8 @@ public class TestHdrFile {
 	public void test_HdrFile()
 		throws IOException, FileNotFoundException
 	{
-		InputStream stream = getClass().getResourceAsStream("snokac.hdr");
-		this.info = new HdrFile("snokac.hdr", stream);
+		InputStream stream = getClass().getResourceAsStream("snokac.metainfo");
+		this.info = new HdrFile("snokac.metainfo", stream);
 	}
 
 	@Test(dependsOnMethods={"test_HdrFile"})

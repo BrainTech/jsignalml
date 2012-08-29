@@ -74,7 +74,7 @@ public class TestCodecs {
 					fileName = inDtaFileName;
 					boolean inDtaStatus = checkCodec.getInDta(inDtaFileName, useContextDumper, usePreCheckingOfTheDataFromCodec);
 					assertEquals(inDtaStatus, true);
-					//read output header file (.hdr) and output body file (.float)
+					//read output header file (.metainfo) and output body file (.float)
 					fileName = outHdrFileName + " (or) " + outDtaFileName;
 					boolean outDtaStatus = checkCodec.getOutDta(outHdrFileName, outDtaFileName, exitOnNrsOfChannelsError);
 					assertEquals(outDtaStatus, true);

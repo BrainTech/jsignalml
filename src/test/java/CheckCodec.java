@@ -1379,7 +1379,7 @@ public class CheckCodec {
 		}
 		if (outHdrScaled == null) {
 			if (CheckCodec.LOG_ERROR) System.out.println("Error! There was no specified value determining if samples were scaled. " +
-				"Please add line scaled=0 or line scaled=1 to the .hdr file!");
+				"Please add line scaled=0 or line scaled=1 to the .metainfo file!");
 			return false;
 		}
 		return true;
@@ -1538,14 +1538,14 @@ public class CheckCodec {
 		if (!inDtaChannelObjectChannelName.equals(outHdrLabelsOfChannels[channelNr])) {
 			if (CheckCodec.LOG_TEST) System.out.print("\nCODEC TEST RESULT: " + "WARNING"/* + "ERROR"*/ + ". Details: Label or name of the channel #"
 				+ channelNr + " get from codec (" + inDtaChannelObjectChannelName
-				+ ") differs from that specified in output file .hdr (" + outHdrLabelsOfChannels[channelNr] + ").");
+				+ ") differs from that specified in output file .metainfo (" + outHdrLabelsOfChannels[channelNr] + ").");
 			////TODO increment offset
 			//break channels; //return;
 		}
 		if (!inDtaChannelObjectChannelTypeName.equals(outHdrTypesOfChannels[channelNr])) {
 			if (CheckCodec.LOG_TEST) System.out.print("\nCODEC TEST RESULT: " + "WARNING"/* + "ERROR"*/ + ". Details: Type of the channel #"
 				+ channelNr + " get from codec (" + inDtaChannelObjectChannelTypeName
-				+ ") differs from that specified in output file .hdr (" + outHdrTypesOfChannels[channelNr] + ").");
+				+ ") differs from that specified in output file .metainfo (" + outHdrTypesOfChannels[channelNr] + ").");
 			////TODO increment offset
 			//break channels; //return;
 		}
@@ -1553,14 +1553,14 @@ public class CheckCodec {
 		if (!equalToCombined(inDtaChannelObjectSamplingFrequency, outHdrSamplingFrequencyPerChannel,
 				testPrecisionRelForSamplingFrequency, testPrecisionDeltaForSamplingFrequency, testPrecisionUlpForSamplingFrequency)) {
 			if (CheckCodec.LOG_TEST) System.out.print("\nCODEC TEST RESULT: " + "WARNING"/* + "ERROR"*/ + ". Details: Sampling frequency of the channel #"
-				+ channelNr + " get from codec (" + inDtaChannelObjectSamplingFrequency + ") differs from that specified in output file .hdr ("
+				+ channelNr + " get from codec (" + inDtaChannelObjectSamplingFrequency + ") differs from that specified in output file .metainfo ("
 				+ outHdrSamplingFrequencyPerChannel + ").");
 			////TODO increment offset
 			//break channels; //return;
 		}
 		if (inDtaChannelObjectNumberOfSamplesPerChannel != outDtaFisNrOfSamplesPerChannel) {
 			if (CheckCodec.LOG_TEST) System.out.println("\nCODEC TEST RESULT: " + "WARNING"/* + "ERROR"*/ + ". Details: Number of samples per channel #"
-				+ channelNr + " get from codec (" + inDtaChannelObjectNumberOfSamplesPerChannel + ") differs from that specified in output file .hdr ("
+				+ channelNr + " get from codec (" + inDtaChannelObjectNumberOfSamplesPerChannel + ") differs from that specified in output file .metainfo ("
 				+ outDtaFisNrOfSamplesPerChannel + ").");
 			//TODO increment offset
 			gotoNextChannel = true; //continue channels; //return;
@@ -1711,7 +1711,7 @@ public class CheckCodec {
 						if (CheckCodec.LOG_ERROR) System.out.println("\nError! In output header file there were specified "
 							+ outHdrNrOfSamples + " sample units for every channel. "
 							+ "Output data file has other value: " + outDtaFisNrOfSamplesPerChannel + ". "
-							+ "Please correct .hdr file or change output data file used!");
+							+ "Please correct .metainfo file or change output data file used!");
 						return false;
 					}
 				} else {
@@ -1862,14 +1862,14 @@ public class CheckCodec {
 			return false;
 		}
 		if (outDtaFisNrOfChannels != outHdrNrOfChannels.longValue()) {
-			if (CheckCodec.LOG_ERROR) System.out.println("Warning! Number of channels specified in output header file (.hdr)"
-				+ " differs from that specified in output data file (.float). Please correct .hdr file or use another .float file!");
+			if (CheckCodec.LOG_ERROR) System.out.println("Warning! Number of channels specified in output header file (.metainfo)"
+				+ " differs from that specified in output data file (.float). Please correct .metainfo file or use another .float file!");
 			if (exitOnNrsOfChannelsError) return false;
 			////outHdrNrOfChannels = inDtaChannelSetNrOfChannels;
 		}
 		if (inDtaChannelSetNrOfChannels != outDtaFisNrOfChannels) {
 			if (CheckCodec.LOG_TEST) System.out.println("CODEC TEST RESULT: WARNING. Details: Number of channels get from codec ("
-				+ inDtaChannelSetNrOfChannels + ") differs from that specified in output files .hdr and/or .float ("
+				+ inDtaChannelSetNrOfChannels + ") differs from that specified in output files .metainfo and/or .float ("
 				+ outDtaFisNrOfChannels + ").");
 			if (exitOnNrsOfChannelsError) return false;
 			////outDtaFisNrOfChannels = inDtaChannelSetNrOfChannels;
@@ -1888,7 +1888,7 @@ public class CheckCodec {
 	 */
 	public final boolean getOutDta(String dataHeaderFileName, String dataBodyFileName,
 			boolean exitOnNrsOfChannelsError) throws IOException {
-		//firstly read output header file (.hdr)
+		//firstly read output header file (.metainfo)
 		boolean outDtaHdrStatus = getOutDtaHdr(dataHeaderFileName);
 		if (!outDtaHdrStatus) return false;
 		//secondly read output body file (.float)
@@ -1917,12 +1917,12 @@ public class CheckCodec {
 	 */
 	public static void main(java.lang.String[] args) {
 		if (args.length < 4) {
-			System.out.println("Using:\njava " + CheckCodec.class.getSimpleName() + " input_header input_data output_header.hdr output_data.float");
+			System.out.println("Using:\njava " + CheckCodec.class.getSimpleName() + " input_header input_data output_header.metainfo output_data.float");
 			return;
 		}
 		String      codecName = args[0]; //String  inHdrFileName = args[0]; //codec to use (ALT, EASYS, M4D, New4D, New4DAscii, TextFile, XML, ...)
 		String  inDtaFileName = args[1]; //d:/grst/projects/UW/data/for_EASYS_codec/inb02.d                          //d:/grst/projects/UW/data/for_4D_format/m4d/example_data/Art_e,rfhp0.1Hz,n,ccfbp10-40-508-2,cag,c,n,tm,bahe001-1High350,a.m4d
-		String outHdrFileName = args[2]; //d:/grst/projects/UW/data/for_EASYS_codec/EASYS/inb02-unscaled/inb02.hdr   //d:/grst/projects/UW/data/for_4D_format/m4d/example_data/Art_e,rfhp0.1Hz,n,ccfbp10-40-508-2,cag,c,n,tm,bahe001-1High350,a.hdr
+		String outHdrFileName = args[2]; //d:/grst/projects/UW/data/for_EASYS_codec/EASYS/inb02-unscaled/inb02.metainfo   //d:/grst/projects/UW/data/for_4D_format/m4d/example_data/Art_e,rfhp0.1Hz,n,ccfbp10-40-508-2,cag,c,n,tm,bahe001-1High350,a.metainfo
 		String outDtaFileName = args[3]; //d:/grst/projects/UW/data/for_EASYS_codec/EASYS/inb02-unscaled/inb02.float //d:/grst/projects/UW/data/for_4D_format/m4d/example_data/Art_e,rfhp0.1Hz,n,ccfbp10-40-508-2,cag,c,n,tm,bahe001-1High350,a.float
 		final boolean useContextDumper = false; //true;
 		final boolean usePreCheckingOfTheDataFromCodec = false;
@@ -1965,7 +1965,7 @@ public class CheckCodec {
 			fileName = inDtaFileName;
 			boolean inDtaStatus = checkCodec.getInDta(inDtaFileName, useContextDumper, usePreCheckingOfTheDataFromCodec);
 			if (!inDtaStatus) return;
-			//read output header file (.hdr) and output body file (.float)
+			//read output header file (.metainfo) and output body file (.float)
 			fileName = outHdrFileName + " (or) " + outDtaFileName;
 			boolean outDtaStatus = checkCodec.getOutDta(outHdrFileName, outDtaFileName, exitOnNrsOfChannelsError);
 			if (!outDtaStatus) return;

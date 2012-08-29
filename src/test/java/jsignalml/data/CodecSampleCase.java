@@ -133,7 +133,7 @@ public class CodecSampleCase {
 
 	/**
 	 * Create testcases for all test files underneath a given dir.
-	 * All found .hdr files are assumed to be valid test cases.
+	 * All found .metainfo files are assumed to be valid test cases.
 	 */
 	public static Collection<Object> find(Source source, File dir,
 					      String extension)
@@ -156,7 +156,7 @@ public class CodecSampleCase {
 		log.debug("looking for %s with ext .%s in %s",
 			  source, extension, dir);
 		Iterator<File> hdrs
-			= FileUtils.iterateFiles(dir, new String[] {"hdr"}, true);
+			= FileUtils.iterateFiles(dir, new String[] {"metainfo"}, true);
 
 		LinkedList<Object> list = util.newLinkedList();
 
@@ -208,11 +208,11 @@ public class CodecSampleCase {
 		       java.io.IOException
 	{
 			final String hdr_path = hdr_file.toString();
-			assert hdr_path.endsWith(".hdr");
+			assert hdr_path.endsWith(".metainfo");
 			final HdrInfo hdr = new HdrFile(hdr_file);
 
 			final String basename =
-				hdr_path.substring(0, hdr_path.length()-4);
+				hdr_path.substring(0, hdr_path.length()-9);
 
 			File ascii_path = new File(basename + ".ascii");
 			final DataInfo data;
