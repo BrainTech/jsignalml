@@ -68,8 +68,14 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 		GET_P = "get_p",
 		CALL_P = "call_p";
 
-	public static final boolean _comments =
+	public static final boolean comments =
 		System.getProperties().getProperty("jsignalml.comments", "1").equals("1");
+
+	protected boolean _comments = comments;
+
+	public void setComments(boolean yesorno) {
+		this._comments = yesorno;
+	}
 
 	private int numbered_expression_number = 0;
 	private String makeGeneratedID(String part)
@@ -2078,9 +2084,9 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 		return this.model.ref(type != null ? type.getClass() : Type.class);
 	}
 
-	private static void comment(JGenerable where, String fmt, Object...args)
+	private void comment(JGenerable where, String fmt, Object...args)
 	{
-		if (!_comments)
+		if (!this._comments)
 			return;
 
 		final String out = format(fmt, args);
@@ -2101,9 +2107,9 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 	 * The stacktrace is snipped to include JavaClassGen methods
 	 * plus one before.
 	 */
-	private static void comment_stamp(JGenerable where)
+	private void comment_stamp(JGenerable where)
 	{
-		if (!_comments)
+		if (!this._comments)
 			return;
 
 		final StackTraceElement[] trace = new Throwable().getStackTrace();

@@ -462,7 +462,8 @@ public class CodecParser {
 
 	public static JavaClassGen generateFromFile(String name_hint,
 						    XMLDocument xml,
-						    String package_name)
+						    String package_name,
+						    Boolean comments)
 		throws java.io.IOException,
 		       org.xml.sax.SAXException
 	{
@@ -480,19 +481,41 @@ public class CodecParser {
 
 		final JavaClassGen gen =
 			new JavaClassGen(typer.getTypeResolver(), package_name);
+		if (comments != null)
+			gen.setComments(comments);
 		codec.accept(gen, null);
 		log.info("-- java has been generated --");
 
 		return gen;
 	}
 
-	public static JavaClassGen generateFromFile(File file, String package_name)
+	public static JavaClassGen generateFromFile(File file, String package_name,
+						    Boolean comments)
 		throws java.io.IOException,
 		       org.xml.sax.SAXException
 	{
 		final String hint = util.basename_noext(file);
 		final XMLDocument xml = new XMLDocument(file);
-		return generateFromFile(hint, xml, package_name);
+		return generateFromFile(hint, xml, package_name, comments);
+	}
+
+	public static JavaClassGen generateFromFile(File file, String package_name)
+		throws java.io.IOException,
+		       org.xml.sax.SAXException
+	{
+		return generateFromFile(file, package_name, null);
+	}
+
+	public static JavaClassGen generateFromResource(String codec_name,
+							String package_name,
+							Boolean comments)
+		throws java.io.IOException,
+		       org.xml.sax.SAXException
+	{
+		String resource = format("specs/%s.xml", codec_name);
+		InputStream stream = CodecParser.class.getResourceAsStream(resource);
+		XMLDocument xml = new XMLDocument(stream);
+		return generateFromFile(codec_name, xml, package_name, comments);
 	}
 
 	public static JavaClassGen generateFromResource(String codec_name,
@@ -500,10 +523,7 @@ public class CodecParser {
 		throws java.io.IOException,
 		       org.xml.sax.SAXException
 	{
-		String resource = format("specs/%s.xml", codec_name);
-		InputStream stream = CodecParser.class.getResourceAsStream(resource);
-		XMLDocument xml = new XMLDocument(stream);
-		return generateFromFile(codec_name, xml, package_name);
+		return generateFromResource(codec_name, package_name, null);
 	}
 
 	static class Options {
@@ -514,6 +534,10 @@ public class CodecParser {
 		@Parameter(names="--package",
 			   description="Put generated classes in this package")
 		public String package_name = "";
+
+		@Parameter(names="--comments", arity=1,
+			   description="Add comments about code origin")
+		public boolean comments = JavaClassGen.comments;
 
 		@Parameter(names="--help", help=true,
 			   description="Show help and exit")
@@ -548,10 +572,12 @@ public class CodecParser {
 			final JavaClassGen gen;
 			if (opts.resource)
 				gen = generateFromResource(file,
-							   opts.package_name);
+							   opts.package_name,
+							   opts.comments);
 			else
 				gen = generateFromFile(new File(file),
-						       opts.package_name);
+						       opts.package_name,
+						       opts.comments);
 
 			if (opts.debug)
 				gen.write(System.out);
