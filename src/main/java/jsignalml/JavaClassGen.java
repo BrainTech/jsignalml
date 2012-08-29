@@ -461,7 +461,8 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 		comment_stamp(body);
 
 		final JVar value = body.decl(Type_t, "value",
-					     body.invoke(makeGetter("header"))
+					     JExpr._this()
+					     .invoke(makeGetter("header"))
 					     .invoke(makeGetter("format_id"))
 					     .invoke("get"));
 		final JVar cast = body.decl(TypeString_t, "cast",
@@ -482,7 +483,8 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 		comment_stamp(body);
 
 		final JVar value = body.decl(Type_t, "value",
-					     body.invoke(makeGetter("header"))
+					     JExpr._this()
+					     .invoke(makeGetter("header"))
 					     .invoke(makeGetter(header_section))
 					     .ref(field_name).invoke("get"));
 		// XXX: this implementation is horrible. There's no reason
