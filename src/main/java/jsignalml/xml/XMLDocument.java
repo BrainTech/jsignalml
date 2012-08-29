@@ -11,13 +11,15 @@ import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
-
-import jsignalml.logging.Logger;
-
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
+import org.xml.sax.EntityResolver;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+
+import jsignalml.logging.Logger;
 
 public class XMLDocument
 {
@@ -25,6 +27,8 @@ public class XMLDocument
 
 	public static final String signalml_doctype_name = "signalml";
 	public static final String signalml_doctype_id = "SignalML_2_0.dtd";
+	public static final String signalml_doctype_resource =
+		"/jsignalml/specs/schema/" + signalml_doctype_id;
 
 	public static class NodeError extends Exception {
 		private static final long serialVersionUID = -473104514836817338L;
@@ -51,8 +55,27 @@ public class XMLDocument
 		} catch (javax.xml.parsers.ParserConfigurationException e) {
 			throw new RuntimeException(e);
 		}
+		docbuilder.setEntityResolver(new SimpleEntityResolver());
 
 		log.info("builderFactory is %s", builderFactory.getClass());
+	}
+
+	public static class SimpleEntityResolver implements EntityResolver {
+		@Override
+		public InputSource resolveEntity(String publicId, String systemId)
+			throws java.io.IOException,
+			       org.xml.sax.SAXException
+		{
+			log.info("resolving %s/%s", publicId, systemId);
+			if (systemId.endsWith("/" + signalml_doctype_id)) {
+				InputStream dtdStream = XMLDocument.class
+					.getResourceAsStream(signalml_doctype_resource);
+				return new InputSource(dtdStream);
+			} else {
+				// use default behaviour
+				return null;
+			}
+		}
 	}
 
 	final Document document;
