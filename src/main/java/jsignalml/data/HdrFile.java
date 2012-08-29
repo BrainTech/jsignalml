@@ -1,10 +1,13 @@
 package jsignalml.data;
 
+import static java.lang.String.format;
+
 import jsignalml.Type;
 import jsignalml.TypeInt;
 import jsignalml.TypeFloat;
 import jsignalml.TypeString;
 import jsignalml.TypeList;
+import jsignalml.SyntaxError;
 
 import java.io.InputStream;
 import java.io.FileInputStream;
@@ -31,13 +34,13 @@ public class HdrFile
 		= util.newHashMap();
 	static {
 		field_types.put("number_of_channels", TypeInt.I);
-		field_types.put("number_of_samples", TypeInt.I);
-		field_types.put("sampling_frequency", TypeFloat.I);
+		field_types.put("number_of_samples", TypeList.make(1));
+		field_types.put("sampling_frequency", TypeList.make(1.0));
 		field_types.put("channel_labels", TypeList.make(""));
 		field_types.put("channel_types", TypeList.make(""));
 		field_types.put("scaled", TypeInt.I);
-		field_types.put("scaling_offset", TypeFloat.I);
-		field_types.put("scaling_gain", TypeFloat.I);
+		field_types.put("scaling_offset", TypeList.make(1.0));
+		field_types.put("scaling_gain", TypeList.make(1.0));
 	}
 
 	public HdrFile(String ident, InputStream stream)
@@ -56,7 +59,15 @@ public class HdrFile
 				type = TypeString.I;
 			}
 
-			super.put(name, convert(value, type));
+			Type conv;
+			try {
+				conv = convert(value, type);
+			} catch(SyntaxError e) {
+				throw new SyntaxError(format("%s: %s: %s",
+							     ident, name, e));
+			}
+
+			super.put(name, conv);
 		}
 	}
 
