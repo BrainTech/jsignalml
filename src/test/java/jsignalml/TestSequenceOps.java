@@ -6,8 +6,33 @@ import static jsignalml.TestNumberOps.listEqual;
 import static jsignalml.TestNumberOps.verifyIsTrue;
 
 import org.testng.annotations.Test;
+import static org.testng.Assert.assertEquals;
 
 public class TestSequenceOps {
+
+	@Test public void list_equal()
+	{
+		assertEquals(TypeList.make(1, 2, 3),
+			     TypeList.make(1, 2, 3));
+	}
+
+	@Test public void empty_list_equal()
+	{
+		assertEquals(TypeList.make(),
+			     new TypeList());
+	}
+
+	@Test public void list_equal_different_types()
+	{
+		assertEquals(TypeList.make(1),
+			     TypeList.make(1.));
+	}
+
+	@Test public void list_equal_two_different_types()
+	{
+		assertEquals(TypeList.make(1, 2.),
+			     TypeList.make(1, 2));
+	}
 
 	@Test public void string_veracity() throws Exception
 	{
