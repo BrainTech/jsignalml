@@ -22,6 +22,7 @@ import jsignalml.codec.Signalml;
 import jsignalml.xml.XMLDocument;
 import jsignalml.logging.Logger;
 
+import org.w3c.dom.Node;
 import org.w3c.dom.Document;
 import org.w3c.dom.DocumentType;
 import javax.xml.parsers.DocumentBuilder;
@@ -64,6 +65,8 @@ public class TestCodecCreation {
 			assertTrue(specfile.exists(), specfile.toString());
 		}
 
+		XMLDocument doc = null;
+
 		@Test(dependsOnMethods={"test_filename_valid"})
 			public void test_xml()
 			throws Exception
@@ -73,6 +76,7 @@ public class TestCodecCreation {
 
 			// check required fields
 			doc.getElement_re("/signalml");
+			this.doc = doc;
 		}
 
 		Document xml_document = null;
@@ -236,29 +240,49 @@ public class TestCodecCreation {
 		}
 
 		@Test(dataProvider="format_fields",
-		      dependsOnMethods={"test_compilation_from_disk"})
-		public void test_codec_implements_header_field(String method_name, boolean nonempty)
+		      dependsOnMethods={"test_compilation_from_disk",
+					"test_filename_valid"})
+		public void test_codec_implements_header_field(
+			       String method_name, boolean nonempty,
+			       String xpath, String default_value)
 			throws Exception
 		{
 			assert this.signalml != null;
+			assert this.doc != null;
+
 			Method m = this.signalml.getClass().getMethod(method_name);
 			Object value = m.invoke(this.signalml);
 			helpers.assertInstanceOf(value, String.class);
 			String str = (String) value;
 			if (nonempty)
 				assertTrue(str.length() > 0);
+
+			if (xpath != null) {
+				Node node = this.doc._getNode_re(xpath);
+				String expected = node != null
+					? node.getTextContent() : default_value;
+				
+				assertEquals(str, expected);
+			}
 		}
 
 		@DataProvider
 		public Object[][] format_fields() {
+			String name = util.basename_noext(this.specfile);
 			return new Object[][] {
-				{"getFormatID", true},
-				{"getFormatInfo", false},
-				{"getFormatName", true},
-				{"getFormatProvider", true},
-				{"getFormatVersion", false},
-				{"getCodecProvider", true},
-				{"getCodecVersion", true},
+				{"getFormatID", true, null, null},
+				{"getFormatInfo", false,
+				 "/signalml/header/format_id/info", ""},
+				{"getFormatName", true,
+				 "/signalml/header/format_id/name", name},
+				{"getFormatProvider", true,
+				 "/signalml/header/format_id/provider", "unknown"},
+				{"getFormatVersion", false,
+				 "/signalml/header/format_id/version", ""},
+				{"getCodecProvider", true,
+				 "/signalml/header/codec_id/provider", "unknown"},
+				{"getCodecVersion", true,
+				 "/signalml/header/codec_id/version", "0"},
 			};
 		}
 

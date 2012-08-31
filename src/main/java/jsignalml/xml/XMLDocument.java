@@ -134,6 +134,13 @@ public class XMLDocument
 		}
 	}
 
+	public Node _getNode_re(String xpath)
+		throws NodeError
+	{
+		return _subNode_re(this.document, xpath);
+	}
+
+
 	/**
 	 * Retrieve subelement of where described by xpath.
 	 * Do not throw an an exception if not found, return null instead.
