@@ -8,6 +8,8 @@ import java.util.LinkedList;
 import java.util.Iterator;
 import java.util.Arrays;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 
 import jsignalml.Source;
@@ -205,10 +207,11 @@ public class CodecSampleCase {
 		}
 	}
 
-	static CodecSampleCase createTestcase(CompiledClass codec, File hdr_file,
+	static CodecSampleCase createTestcase(CompiledClass<? extends Source> codec,
+					      File hdr_file,
 					      String extension)
-		throws java.io.FileNotFoundException,
-		       java.io.IOException,
+		throws FileNotFoundException,
+		       IOException,
 		       ClassNotFoundException,
 		       NoSuchMethodException,
 		       InstantiationException,
@@ -234,7 +237,7 @@ public class CodecSampleCase {
 
 			final File main_path = new File(basename + "." + extension);
 
-			Source inst = (Source) codec.newInstance();
+			Source inst = codec.newInstance();
 			return new CodecSampleCase(inst, main_path, hdr, data);
 	}
 }

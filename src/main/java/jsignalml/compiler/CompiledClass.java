@@ -21,7 +21,7 @@ import org.apache.commons.io.FilenameUtils;
 import jsignalml.util;
 import jsignalml.logging.Logger;
 
-public class CompiledClass {
+public class CompiledClass<T> {
 	public static final Logger log = new Logger(CompiledClass.class);
 
 	/**
@@ -32,7 +32,7 @@ public class CompiledClass {
 	public final String fullName;
 	public final CharSequence src;
 
-	private Class<?> klass = null;
+	private Class<T> klass = null;
 	protected DiagnosticCollector<JavaFileObject> diagnostics =
 		new DiagnosticCollector<JavaFileObject>();
 
@@ -40,6 +40,16 @@ public class CompiledClass {
 		log.info("compiled class %s: %d chars", fullName, src.length());
 		this.fullName = fullName;
 		this.src = src;
+	}
+
+
+	/**
+	 * Convenience wrapper to not to have to write the cast twice.
+	 */
+	public static <T> CompiledClass<T> newCompiledClass(String fullName,
+							    CharSequence src)
+	{
+		return new CompiledClass<T>(fullName, src);
 	}
 
 	/**
@@ -51,7 +61,7 @@ public class CompiledClass {
 		return this.diagnostics.getDiagnostics();
 	}
 
-	synchronized Class<?> theClass()
+	synchronized Class<T> theClass()
 		throws ClassNotFoundException
 	{
 		if (this.klass != null)
@@ -91,7 +101,7 @@ public class CompiledClass {
 
 		// Creating an instance of our compiled class and
 		// running its toString() method
-		this.klass = fileManager.getClassLoader(null)
+		this.klass = (Class<T>) fileManager.getClassLoader(null)
 			.loadClass(fullName);
 
 		return this.klass;
@@ -128,7 +138,7 @@ public class CompiledClass {
 		return this.theClass().getConstructor(types);
 	}
 
-	public Object newInstance(Object... parameters)
+	public T newInstance(Object... parameters)
 		throws ClassNotFoundException,
 		       NoSuchMethodException,
 		       InstantiationException,
@@ -137,10 +147,10 @@ public class CompiledClass {
 		       InvocationTargetException
 	{
 		Constructor cons = this.getConstructor(parameters);
-		return cons.newInstance(parameters);
+		return (T) cons.newInstance(parameters);
 	}
 
-	public static CompiledClass fromFile(File path)
+	public static <T> CompiledClass<T> fromFile(File path)
 		throws java.io.IOException,
 		       java.io.FileNotFoundException,
 		       ClassNotFoundException,
@@ -152,7 +162,7 @@ public class CompiledClass {
 	{
 		String class_name = FilenameUtils.getBaseName(path.toString());
 		String text = FileUtils.readFileToString(path);
-		CompiledClass klass = new CompiledClass(class_name, text);
+		CompiledClass<T> klass = new CompiledClass<T>(class_name, text);
 		log.info("created CompiledClass from %s", path);
 		return klass;
 	}

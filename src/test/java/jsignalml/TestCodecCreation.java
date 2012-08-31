@@ -16,6 +16,7 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 
 import jsignalml.compiler.CompiledClass;
+import static jsignalml.compiler.CompiledClass.newCompiledClass;
 import jsignalml.compiler.MemoryWriter;
 import jsignalml.codec.Signalml;
 import jsignalml.xml.XMLDocument;
@@ -201,6 +202,19 @@ public class TestCodecCreation {
 								this.class_code);
 			Object instance = klass.newInstance();
 			helpers.assertInstanceOf(instance, jsignalml.codec.Signalml.class);
+			assertEquals(instance.getClass().getSimpleName(), this.class_name);
+		}
+
+		@Test(dependsOnMethods={"test_MemoryWriter"})
+		public void test_compilation_from_memory_cast()
+			throws Exception
+		{
+			assert this.class_name != null;
+			assert this.class_code != null;
+			assert this.class_code.length() > 0;
+			CompiledClass<jsignalml.codec.Signalml> klass
+				= newCompiledClass(this.class_name, this.class_code);
+			jsignalml.codec.Signalml instance = klass.newInstance();
 			assertEquals(instance.getClass().getSimpleName(), this.class_name);
 		}
 
