@@ -25,6 +25,9 @@ public interface Source { /* implements Iterable<> */
 
 	File getCurrentFilename();
 
+	int getNumberOfChannelSets();
+
+	ChannelSet get_set(int num);
 	ChannelSet get_set(/* for one only one, so no need to specify which one,
 			    * but XXX */);
 }

@@ -99,6 +99,29 @@ public class CodecSampleCase {
 		this.channel_set = set;
 	}
 
+	@Test(dependsOnMethods={"test_open"})
+	public void test_number_of_sets() {
+		int num = this.source.getNumberOfChannelSets();
+		assertEquals(num, 1); // for now, until we have codecs with
+				      // a bigger number of sets
+	}
+
+	@Test(dependsOnMethods={"test_open"})
+	public void test_get_sets() {
+		int num = this.source.getNumberOfChannelSets();
+		for(int i=0; i<num; i++) {
+			ChannelSet set = this.source.get_set(i);
+			assertNotNull(set);
+		}
+	}
+
+	@Test(dependsOnMethods={"test_get_set"})
+	public void test_get_set_1() {
+		ChannelSet set = this.source.get_set(1);
+		assertNotNull(set);
+		assertEquals(set, this.channel_set);
+	}
+
 	@Test(dependsOnMethods={"test_get_set"})
 	public void test_sampling_frequency() {
 		double expected = (Double) hdr.get("sampling_frequency").getValue();
