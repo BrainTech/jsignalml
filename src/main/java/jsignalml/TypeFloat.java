@@ -42,6 +42,11 @@ public class TypeFloat extends Type {
 	}
 
 	@Override
+	public TypeFloat parse(String repr) {
+		return new TypeFloat(repr);
+	}
+
+	@Override
 	public Double getValue() {
 		return this.value;
 	}

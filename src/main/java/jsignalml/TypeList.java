@@ -48,7 +48,8 @@ public class TypeList extends Type implements Iterable<Type> {
 			} else if (item instanceof TypeBytes.ByteSequence) {
 				list.add(new TypeBytes((TypeBytes.ByteSequence) item));
 			} else {
-				throw new RuntimeException();
+				throw new RuntimeException("bad type " +
+							   item.getClass());
 			}
 		}
 		return new TypeList(list);

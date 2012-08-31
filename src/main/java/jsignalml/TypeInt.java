@@ -81,6 +81,11 @@ public class TypeInt extends Type {
 			throw new ExpressionFault.TypeError(other, this);
 	}
 
+	@Override
+	public TypeInt parse(String repr) {
+		return new TypeInt(repr);
+	}
+
 	static TypeInt makeFromUnsignedReadAsSigned(long value) {
 		TypeInt ivalue = new TypeInt(value);
 		log.info("converting long %s", value);

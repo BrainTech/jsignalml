@@ -24,6 +24,11 @@ public class TypeString extends Type {
 	}
 
 	@Override
+	public TypeString parse(String repr) {
+		return new TypeString(repr);
+	}
+
+	@Override
 	public java.lang.String getValue() {
 		return this.value;
 	}

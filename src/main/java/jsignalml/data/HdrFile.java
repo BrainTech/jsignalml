@@ -21,6 +21,7 @@ import java.util.Set;
 import java.util.Set;
 import java.util.HashSet;
 import java.util.HashMap;
+import java.util.LinkedList;
 
 import jsignalml.util;
 import jsignalml.logging.Logger;
@@ -80,13 +81,14 @@ public class HdrFile
 	public Type convert(String value, Type type) {
 		if (type instanceof TypeList) {
 			String[] parts = value.split(",\\s*");
-			return TypeList.make(parts);
-		} else if (type instanceof TypeFloat) {
-			return new TypeFloat(value);
-		} else if (type instanceof TypeInt) {
-			return new TypeInt(value);
-		} else if (type instanceof TypeString) {
-			return new TypeString(value);
+			LinkedList<Type> conv = util.newLinkedList();
+			for(String part: parts)
+				conv.add(type.index(new TypeInt(0)).parse(part));
+			return new TypeList(conv);
+		} else if (type instanceof TypeFloat ||
+			   type instanceof TypeInt ||
+			   type instanceof TypeString) {
+			return type.parse(value);
 		} else {
 			throw new RuntimeException();
 		}

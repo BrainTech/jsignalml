@@ -115,6 +115,12 @@ public abstract class Type implements Comparable<Type> {
 
 	public abstract Type make(Type value);
 
+	public Type parse(String repr) {
+		throw new ExpressionFault.ValueError(format(
+				    "don't know how to convert {0} to {1}",
+				    repr, this.getClass().getSimpleName()));
+	}
+
 	public abstract Object getValue();
 
 	@Override

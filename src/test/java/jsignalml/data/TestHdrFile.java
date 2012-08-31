@@ -29,25 +29,43 @@ public class TestHdrFile {
 	}
 
 	@Test(dependsOnMethods={"test_HdrFile"})
-	public void test_values()
+	public void test_number_of_samples()
 	{
 		assert this.info != null;
 
 		Type number_of_samples = info.get("number_of_samples");
-		assertEquals(number_of_samples, new TypeInt(300750));
+		assertEquals(number_of_samples, TypeList.make(300750));
+	}
+
+	@Test(dependsOnMethods={"test_HdrFile"})
+	public void test_number_of_channels()
+	{
+		assert this.info != null;
 
 		Type number_of_channels = info.get("number_of_channels");
 		assertEquals(number_of_channels, new TypeInt(8));
+	}
+
+	@Test(dependsOnMethods={"test_HdrFile"})
+	public void test_sampling_frequency()
+	{
+		assert this.info != null;
 
 		Type sampling_frequency = info.get("sampling_frequency");
-		assertTrue(sampling_frequency.equals(new TypeInt(250)));
-		helpers.assertInstanceOf(sampling_frequency, TypeFloat.class);
+		assertEquals(sampling_frequency, TypeList.make(250));
+		helpers.assertInstanceOf(sampling_frequency, TypeList.class);
+	}
+
+	@Test(dependsOnMethods={"test_HdrFile"})
+	public void test_channel_labels()
+	{
+		assert this.info != null;
 
 		Type channel_labels = info.get("channel_labels");
 		assertEquals(channel_labels,
 			     TypeList.make("Fp1", "Fp2", "F7", "F3",
 					   "Fz", "F4", "F8", "T3"));
-		helpers.assertInstanceOf(sampling_frequency, TypeFloat.class);
+		helpers.assertInstanceOf(channel_labels, TypeList.class);
 	}
 
 	static final String[] fields = {
