@@ -53,8 +53,7 @@ public class TestCompileAndCompare {
 		File dirs[] = getTestcaseDirs(format);
 		Collection<Object> coll = util.newArrayList();
 		for(File dir: dirs) {
-			Source inst = (Source) klass.newInstance();
-			coll.addAll(CodecSampleCase.find(inst, dir, ext));
+			coll.addAll(CodecSampleCase.find(klass, dir, ext));
 		}
 
 		return coll;
