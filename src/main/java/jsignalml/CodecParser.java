@@ -202,7 +202,7 @@ public class CodecParser {
 		final String type_ = _attribute(element, "type");
 		final Type type = Type.getType(type_);
 		//final String fast_ = _attribute(element, "fast");
-		//final Expression fast = _null_or_parse(fast_);
+		//final Expression fast = _parse_attribute(fast_);
 
 		final Expression expr    = _extract(element, "expr");
 		final Expression format  = _extract(element, "format");
@@ -328,11 +328,11 @@ public class CodecParser {
 		assert element.getNodeName().equals("channel");
 
 		final Expression id = _identifier(element);
-		final Expression mapping = _null_or_parse(_attribute(element, "mapping"));
-		final Expression format = _null_or_parse(_attribute(element, "format"));
-		final Expression length = _null_or_parse(_attribute(element, "length"));
-		//final Expression fast = _null_or_parse(_attribute(element, "fast"));
-		final Expression data = _null_or_parse(_attribute(element, "data"));
+		final Expression mapping = _parse_attribute(element, "mapping");
+		final Expression format = _parse_attribute(element, "format");
+		final Expression length = _parse_attribute(element, "length");
+		//final Expression fast = _parse_attribute(element, "fast");
+		final Expression data = _parse_attribute(element, "data");
 
 		final ASTNode.Channel node = new ASTNode.Channel(parent, id, mapping, format,
 				length, data);
@@ -345,7 +345,7 @@ public class CodecParser {
 
 		final Expression id = _identifier(element);
 		final String type = _attribute(element, "type");
-		final Expression filename = _null_or_parse(_attribute(element, "filename"));
+		final Expression filename = _parse_attribute(element, "filename");
 
 		if (type == null)
 			throw new SyntaxError("<file> needs a type attribute");
@@ -369,8 +369,7 @@ public class CodecParser {
 			throw new SyntaxError(format("%s: unkown type='%s'", element, type_));
 		}
 
-		final String sequence = _attribute(element, "sequence");
-		final Expression expr = _null_or_parse(sequence);
+		final Expression expr = _parse_attribute(element, "sequence");
 		return new ASTNode.ForLoop(parent, id, var, type, expr);
 	}
 
@@ -379,9 +378,7 @@ public class CodecParser {
 		assert element.getNodeName().equals("if");
 
 		final Expression id = _identifier(element);
-		final String condition = _attribute(element, "test");
-
-		final Expression expr = _null_or_parse(condition);
+		final Expression expr = _parse_attribute(element, "test");
 		return new ASTNode.Conditional(parent, id, expr);
 	}
 
@@ -390,9 +387,7 @@ public class CodecParser {
 		assert element.getNodeName().equals("else-if");
 
 		final Expression id = _identifier(element);
-		final String condition = _attribute(element, "test");
-
-		final Expression expr = _null_or_parse(condition);
+		final Expression expr = _parse_attribute(element, "test");
 		return new ASTNode.ElseIfBranch(parent, id, expr);
 	}
 
@@ -423,7 +418,13 @@ public class CodecParser {
 	static Expression _extract(Node where, String xpath)
 	{
 		String expr = _extract_string(where, xpath);
-		return _null_or_parse(expr);
+		try {
+			return _null_or_parse(expr);
+		} catch (SyntaxError e) {
+			log.error("failed to parse %s/%s: %s:",
+				  where, xpath, expr, e);
+			throw e;
+		}
 	}
 
 	static Expression _null_or_parse(String expression)
@@ -446,6 +447,18 @@ public class CodecParser {
 			return null;
 		else
 			return value;
+	}
+
+	static Expression _parse_attribute(Element element, String attr)
+	{
+		String value = _attribute(element, attr);
+		try {
+			return _null_or_parse(value);
+		} catch(SyntaxError e) {
+			log.error("failed to parse expression '%s' from %s/%s",
+				  value, element, attr);
+			throw e;
+		}
 	}
 
 	static Expression _identifier(Element element)
