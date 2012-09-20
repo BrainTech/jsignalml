@@ -145,8 +145,29 @@ public abstract class Type implements Comparable<Type> {
 			return this.binaryOp(op, (TypeBool) other);
 		else if (other instanceof TypeBytes)
 			return this.binaryOp(op, (TypeBytes) other);
+		else if (other instanceof TypeObject)
+			return this.binaryOp(op, (TypeBytes) other);
 		else
 			throw new RuntimeException("unknown type in expression: " + other.getClass());
+	}
+
+	protected Type _compareOp(BinaryOp op, Type other)
+	{
+		assert other != null;
+
+		switch (op) {
+		case EQ: return this.compareTo(other) == 0 ? TypeInt.True : TypeInt.False;
+		case NE: return this.compareTo(other) != 0 ? TypeInt.True : TypeInt.False;
+		case LT: return this.compareTo(other) < 0 ? TypeInt.True : TypeInt.False;
+		case GT: return this.compareTo(other) > 0 ? TypeInt.True : TypeInt.False;
+		case LE: return this.compareTo(other) <= 0 ? TypeInt.True : TypeInt.False;
+		case GE: return this.compareTo(other) >= 0 ? TypeInt.True : TypeInt.False;
+		case LOG_AND:
+		case LOG_OR:
+			throw new ExpressionFault.Unsupported(this.getClass(), op.toString());
+		default:
+			throw new ExpressionFault.TypeError(this, other);
+		}
 	}
 
 	public Type binaryOp(BinaryOp op, TypeInt other)
@@ -162,17 +183,7 @@ public abstract class Type implements Comparable<Type> {
 		case BIN_OR: return this.bin_or(other);
 		case BIN_XOR: return this.bin_xor(other);
 		case POW: return this.pow(other);
-		case EQ: return new TypeInt(this.compareTo(other) == 0);
-		case NE: return new TypeInt(this.compareTo(other) != 0);
-		case LT: return new TypeInt(this.compareTo(other) < 0);
-		case GT: return new TypeInt(this.compareTo(other) > 0);
-		case LE: return new TypeInt(this.compareTo(other) <= 0);
-		case GE: return new TypeInt(this.compareTo(other) >= 0);
-		case LOG_AND:
-		case LOG_OR:
-			throw new ExpressionFault.Unsupported(this.getClass(), op.toString());
-		default:
-			throw new ExpressionFault.TypeError(this, other);
+		default: return this._compareOp(op, other);
 		}
 	}
 
@@ -189,17 +200,7 @@ public abstract class Type implements Comparable<Type> {
 		case BIN_OR: return this.bin_or(other);
 		case BIN_XOR: return this.bin_xor(other);
 		case POW: return this.pow(other);
-		case EQ: return new TypeInt(this.compareTo(other) == 0);
-		case NE: return new TypeInt(this.compareTo(other) != 0);
-		case LT: return new TypeInt(this.compareTo(other) < 0);
-		case GT: return new TypeInt(this.compareTo(other) > 0);
-		case LE: return new TypeInt(this.compareTo(other) <= 0);
-		case GE: return new TypeInt(this.compareTo(other) >= 0);
-		case LOG_AND:
-		case LOG_OR:
-			throw new ExpressionFault.Unsupported(this.getClass(), op.toString());
-		default:
-			throw new ExpressionFault.TypeError(this, other);
+		default: return this._compareOp(op, other);
 		}
 	}
 
@@ -216,37 +217,33 @@ public abstract class Type implements Comparable<Type> {
 		case BIN_OR: return this.bin_or(other);
 		case BIN_XOR: return this.bin_xor(other);
 		case POW: return this.pow(other);
-		case EQ: return new TypeBool(this.compareTo(other) == 0);
-		case NE: return new TypeBool(this.compareTo(other) != 0);
-		case LT: return new TypeBool(this.compareTo(other) < 0);
-		case GT: return new TypeBool(this.compareTo(other) > 0);
-		case LE: return new TypeBool(this.compareTo(other) <= 0);
-		case GE: return new TypeBool(this.compareTo(other) >= 0);
-		case LOG_AND: return this.bin_and(other);
-		case LOG_OR: return this.bin_or(other);
-		default:
-			throw new ExpressionFault.TypeError(this, other);
+		default: return this._compareOp(op, other);
 		}
 	}
 
 	public Type binaryOp(BinaryOp op, TypeBytes other)
 	{
-		throw new ExpressionFault.TypeError(this, other);
+		return this._compareOp(op, other);
+	}
+
+	public Type binaryOp(BinaryOp op, TypeObject other)
+	{
+		return this._compareOp(op, other);
 	}
 
 	public Type binaryOp(BinaryOp op, TypeString other)
 	{
-		throw new ExpressionFault.TypeError(this, other);
+		return this._compareOp(op, other);
 	}
 
 	public Type binaryOp(BinaryOp op, TypeList other)
 	{
-		throw new ExpressionFault.TypeError(this, other);
+		return this._compareOp(op, other);
 	}
 
 	public Type binaryOp(BinaryOp op, TypeMap other)
 	{
-		throw new ExpressionFault.TypeError(this, other);
+		return this._compareOp(op, other);
 	}
 
 	/**
@@ -295,6 +292,8 @@ public abstract class Type implements Comparable<Type> {
 			return this._binaryOpType(op, (TypeBool) other);
 		else if (other instanceof TypeBytes)
 			return this._binaryOpType(op, (TypeBytes) other);
+		else if (other instanceof TypeObject)
+			return this._binaryOpType(op, (TypeObject) other);
 		else
 			throw new RuntimeException("unknown type in expression: " + other);
 	}
@@ -338,6 +337,10 @@ public abstract class Type implements Comparable<Type> {
 	}
 
 	public Type _binaryOpType(BinaryOp op, TypeBytes other) {
+		throw new ExpressionFault.TypeError(other, this);
+	}
+
+	public Type _binaryOpType(BinaryOp op, TypeObject other) {
 		throw new ExpressionFault.TypeError(other, this);
 	}
 

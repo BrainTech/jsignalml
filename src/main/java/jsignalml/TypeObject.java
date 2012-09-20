@@ -85,8 +85,6 @@ public abstract class TypeObject extends Type {
 	@Override public int compareTo(Type other){
 		if(this == other)
 			return 0;
-		if(this.getClass() == other.getClass())
-			return 1;
 		throw new ExpressionFault.TypeError(other, this);
 	}
 }
