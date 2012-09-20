@@ -139,8 +139,8 @@ public class Builtins extends ASTNode {
 		}
 	}
 
-	private static TypeObject _trim = new trim();
-	public static TypeObject trim(){ return _trim; }
+	private static trim _trim = new trim();
+	public static trim trim(){ return _trim; }
 
 	/**
 	 * Fetch
@@ -175,8 +175,8 @@ public class Builtins extends ASTNode {
 		}
 	}
 
-	private static TypeObject _fetch = new fetch();
-	public static TypeObject fetch(){ return _fetch; }
+	private static fetch _fetch = new fetch();
+	public static fetch fetch(){ return _fetch; }
 
 
 	/**
@@ -197,8 +197,8 @@ public class Builtins extends ASTNode {
 		}
 	}
 
-	private static TypeObject _bool = new bool();
-	public static TypeObject bool(){ return _bool; }
+	private static bool _bool = new bool();
+	public static bool bool(){ return _bool; }
 
 	/**
 	 * Str
@@ -218,8 +218,8 @@ public class Builtins extends ASTNode {
 		}
 	}
 
-	private static TypeObject _str = new str();
-	public static TypeObject str(){ return _str; }
+	private static str _str = new str();
+	public static str str(){ return _str; }
 
 	/**
 	 * Get line for pattern
