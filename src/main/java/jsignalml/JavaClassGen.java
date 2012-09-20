@@ -176,7 +176,16 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 	 * What is the type of this node? Query our typeresolver and node.type.
 	 */
 	private Type nodeType(ASTNode node) {
-		return this.typeresolver.getType(node);
+		Type found = this.typeresolver.getType(node);
+		Type specified = node.getType();
+		if (specified != null) {
+			if(found != null &&
+			   !specified.getClass().isInstance(found))
+				throw new ExpressionFault.TypeError(found, specified);
+			return specified;
+		} else {
+			return found;
+		}
 	}
 
 	private String dynamicID(ASTNode start, Expression id)
@@ -570,7 +579,7 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 		nested._extends(param_class);
 		comment_stamp(nested);
 		comment(nested, "node.type=%s", typename(node.type));
-		comment(nested, "--> nodetype=%s", typename(nodetype));
+		comment(nested, "--> required=%s", typename(nodetype));
 
 		final JMethod getter = classCacheMethod(parent, theid, nested);
 
@@ -996,7 +1005,7 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 			return null;
 		}
 
-		return _cacheMethod(klass, type, GET_P, get);
+		return _cacheMethod(klass, type, null, GET_P, get);
 	}
 
 	public JMethod callExprMethod(JDefinedClass klass, ASTNode.ExprParam node)

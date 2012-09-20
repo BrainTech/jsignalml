@@ -69,6 +69,10 @@ public abstract class ASTNode {
 		this(parent, Expression.Const.make(id));
 	}
 
+	public Type getType() {
+		return null;
+	}
+
 	public ASTNode find(String id) {
 		_debug("looking for %s", id);
 		ASTNode ans = this.lookup(id);
@@ -200,6 +204,11 @@ public abstract class ASTNode {
 			if (parent==null)
 				throw new SyntaxError("<param> must have a parent");
 			this.type = type;
+		}
+
+		@Override
+		public Type getType() {
+			return this.type;
 		}
 
 		@Override
@@ -484,6 +493,11 @@ public abstract class ASTNode {
 		}
 
 		@Override
+		public Type getType() {
+			return this.type;
+		}
+
+		@Override
 		public String toString()
 		{
 			return format("ASTNode.Positional %s:%s",
@@ -512,6 +526,11 @@ public abstract class ASTNode {
 		{
 			return format("ASTNode.Itername %s:%s",
 				      id, Type.typename(type));
+		}
+
+		@Override
+		public Type getType() {
+			return this.type;
 		}
 
 		@Override
