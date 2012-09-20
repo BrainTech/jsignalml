@@ -173,6 +173,21 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 		this.thepackage = this.model._package(package_name);
 	}
 
+	public static class NodeTypeError extends ExpressionFault.TypeError {
+		public final ASTNode node;
+		public final String info;
+		public NodeTypeError(ASTNode node, String info, Type from, Type to)
+		{
+			super(from, to);
+			this.node = node;
+			this.info = info;
+		}
+
+		public String toString() {
+			return super.toString() + " in " + node + "/" + info;
+		}
+	}
+
 	/**
 	 * What is the type of this node? Query our typeresolver and node.type.
 	 */
@@ -182,7 +197,7 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 		if (specified != null) {
 			if(found != null &&
 			   !specified.getClass().isInstance(found))
-				throw new ExpressionFault.TypeError(found, specified);
+				throw new NodeTypeError(node, "type", found, specified);
 			return specified;
 		} else {
 			return found;
