@@ -2,6 +2,8 @@ package jsignalml;
 
 import java.math.BigInteger;
 
+import static java.lang.String.format;
+
 public class TypeInt extends Type {
 	public static final TypeInt I = new TypeInt();
 	public static final TypeInt ZERO = new TypeInt(BigInteger.ZERO);
@@ -45,7 +47,8 @@ public class TypeInt extends Type {
 		try {
 			this.value = new BigInteger(text, base);
 		} catch (NumberFormatException e) {
-			throw new SyntaxError(e);
+			final String msg = format("couldn't parse '%s'", text);
+			throw new SyntaxError(msg + ": " + e);
 		}
 	}
 

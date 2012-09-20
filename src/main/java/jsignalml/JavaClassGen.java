@@ -32,6 +32,7 @@ import com.sun.codemodel.JFieldVar;
 import com.sun.codemodel.JForLoop;
 import com.sun.codemodel.JGenerable;
 import com.sun.codemodel.JInvocation;
+import com.sun.codemodel.JStatement;
 import com.sun.codemodel.JMethod;
 import com.sun.codemodel.JMod;
 import com.sun.codemodel.JType;
@@ -250,6 +251,14 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 		return klass;
 	}
 
+	protected JStatement logMethodEntry(JMethod method) {
+		assert JavaClassGen.this.log_var != null;
+
+		final String msg = format("%%s.%s()", method.name());
+		return this.log_var
+			.invoke("debug").arg(msg).arg(JExpr._this());
+	}
+
 	class Metadata {
 		final JBlock create_params;
 		final JBlock create_channels;
@@ -265,10 +274,7 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 						     "createParams" + method_suffix);
 				comment_stamp(method.body());
 				this.create_params = method.body();
-				final String msg = format("%s.%s()", klass.name(), method.name());
-				assert JavaClassGen.this.log_var != null;
-				this.create_params.add(JavaClassGen.this.log_var
-						       .invoke("debug").arg(msg));
+				this.create_params.add(logMethodEntry(method));
 			}
 
 			{
@@ -277,10 +283,7 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 						     "createChannels" + method_suffix);
 				comment_stamp(method.body());
 				this.create_channels = method.body();
-				final String msg = format("%s.%s()", klass.name(), method.name());
-				assert JavaClassGen.this.log_var != null;
-				this.create_channels.add(JavaClassGen.this.log_var
-							 .invoke("debug").arg(msg));
+				this.create_channels.add(logMethodEntry(method));
 			}
 		}
 
@@ -1569,6 +1572,7 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 		idMethod(klass, node, id);
 
 		loopClassConstructor(parent, id, nodetype, klass);
+		loopDetailsMethod(parent);
 
 		createLoopMethod((JDefinedClass) parent.outer(), parent, nodetype);
 
@@ -1595,6 +1599,20 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 		constructor.body().assign(JExpr.refthis("index"),
 					  JExpr._new(indexClass).arg(index));
 		return constructor;
+
+	public JMethod loopDetailsMethod(JDefinedClass klass)
+	{
+		final JMethod method = klass.method(JMod.PROTECTED, String_t, "details");
+		method.annotate(Override.class);
+		comment_stamp(method.body());
+		final JExpression ret =
+			JExpr.lit("index=")
+			.plus(JExpr._this().invoke(makeGetter("index"))
+			      .invoke("get").invoke("toString"))
+			.plus(JExpr.lit(" "))
+			.plus(JExpr._super().invoke("details"));
+		method.body()._return(ret);
+		return method;
 	}
 
 	@Override

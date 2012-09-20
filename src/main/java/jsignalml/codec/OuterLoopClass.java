@@ -56,8 +56,8 @@ public abstract class OuterLoopClass extends Param<TypeList> {
 	}
 
 	public void createLoopChannels() {
-		log.debug("createLoopChannels()");
 		TypeList items = this.get();
+		log.debug("createLoopChannels() [%s items]", items.len());
 		for(Type item: items)
 			((LoopClass)item).createChannels();
 	}

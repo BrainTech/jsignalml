@@ -3,6 +3,8 @@ package jsignalml.codec;
 import java.util.Map;
 import java.util.Set;
 
+import static java.lang.String.format;
+
 import jsignalml.ContextVisitor;
 import jsignalml.ExpressionFault;
 import jsignalml.SyntaxError;
@@ -76,18 +78,10 @@ public abstract class Context extends TypeObject {
 
 	@Override
 	public String toString() {
-		String result = /*"Context id=" +*/ this.id() + " = [";
-		Set<Map.Entry<String, Context>> entries = this.param_map.entrySet();
-		int i = 0;
-		for(Map.Entry<String, Context> entry: entries) {
-			String key = entry.getKey();
-			Context val = entry.getValue();
-			if (i > 0) result += ", ";
-			result += key + " = " + val;
-			i ++;
-		}
-		result += "]";
-		return result;
+		return format("<%s \"%s\" %s>", getClass().getName(), id(), details());
 	}
 
+	protected String details() {
+		return "[" + this.param_map.size() + " items]";
+	}
 }
