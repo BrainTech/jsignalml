@@ -55,11 +55,10 @@ public abstract class OuterLoopClass extends Param<TypeList> {
 		return newdata;
 	}
 
-	public void createLoopChannels() {
+	public void createLoopChannels()
+	{
 		TypeList items = this.get();
-		log.debug("createLoopChannels() [%s items]", items.len());
-		for(Type item: items)
-			((LoopClass)item).createChannels();
+		log.debug("createParams() [%s items]", items.len());
 	}
 
 	public abstract class LoopClass extends Context {

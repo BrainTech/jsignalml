@@ -27,16 +27,6 @@ public abstract class ConditionalClass extends Context {
 		}
 	}
 
-	public void createChannels() {
-		if(this.getCondition().isTrue()) {
-			this.createChannelsIf();
-		} else if (this.hasElseIf()) {
-			this.createChannelsElseIf();
-		} else {
-			this.createChannelsElse();
-		}
-	}
-
 	/**
 	 * Create params defined in the 'if' branch of this conditional.
 	 */
@@ -51,21 +41,6 @@ public abstract class ConditionalClass extends Context {
 	 * Create params defined in the 'else' branch of this conditional.
 	 */
 	public abstract void createParamsElse();
-
-	/**
-	 * Create channels defined in the 'if' branch of this conditional.
-	 */
-	public abstract void createChannelsIf();
-
-	/**
-	 * Create channels defined in the 'else-if' branch of this conditional.
-	 */
-	public abstract void createChannelsElseIf();
-
-	/**
-	 * Create channels defined in the 'else' branch of this conditional.
-	 */
-	public abstract void createChannelsElse();
 
 	public abstract class ElseBranchClass extends Context {
 		@Override
@@ -95,16 +70,6 @@ public abstract class ConditionalClass extends Context {
 			}
 		}
 
-		public void createChannels() {
-			if(this.getCondition().isTrue()) {
-				this.createChannelsIf();
-			} else if (this.hasElseIf()) {
-				this.createChannelsElseIf();
-			} else {
-				this.createChannelsElse();
-			}
-		}
-
 		/**
 		 * Create params defined in the 'if' branch of this conditional.
 		 */
@@ -119,21 +84,6 @@ public abstract class ConditionalClass extends Context {
 		 * Create params defined in the 'else' branch of this conditional.
 		 */
 		public abstract void createParamsElse();
-
-		/**
-		 * Create channels defined in the 'if' branch of this conditional.
-		 */
-		public abstract void createChannelsIf();
-
-		/**
-		 * Create channels defined in the 'else-if' branch of this conditional.
-		 */
-		public abstract void createChannelsElseIf();
-
-		/**
-		 * Create channels defined in the 'else' branch of this conditional.
-		 */
-		public abstract void createChannelsElse();
 
 		@Override
 		public void register(String name, Context child) {

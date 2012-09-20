@@ -56,9 +56,4 @@ public class DefaultHeader extends Header {
 	@Override
 	public void createParams() {
 	}
-
-	@Override
-	public void createChannels() {
-	}
-
 }

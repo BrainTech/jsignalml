@@ -1792,7 +1792,6 @@ public class CheckCodec {
 		codec.open(inDtaFile);
 		codec.createParams();
 	//	reader.setRange(0, inDtaFileFragmentSize);
-		codec.createChannels();
 		if (useContextDumper) {
 			String allCodecDataDumped = ContextDumper.dump(codec); //it takes too much time
 			System.out.print(allCodecDataDumped);

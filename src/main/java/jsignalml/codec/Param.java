@@ -30,10 +30,4 @@ public abstract class Param<T extends Type> extends Context {
 	{
 		// nothing to be done here
 	}
-
-	@Override
-	public void createChannels()
-	{
-		// do nothing
-	}
 }

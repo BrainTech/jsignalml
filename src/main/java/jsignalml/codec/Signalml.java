@@ -182,9 +182,7 @@ public abstract class Signalml extends Context implements jsignalml.Source {
 	}
 
 	public void maybeInitParams() {
-		if(this.channel_set_list.isEmpty()) {
+		if (this.channel_set_list.isEmpty())
 			this.createParams();
-			this.createChannels();
-		}
 	}
 }

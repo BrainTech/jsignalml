@@ -72,9 +72,6 @@ public class ContextDumper implements ContextVisitor<Integer> {
 	@Override public Integer visit(ChannelSetClass node, String name, Integer level)
 	{
 		int nrOfChannels = node.getNumberOfChannels();
-		if (nrOfChannels == 0) {
-			node.createChannels();
-		}
 		return dumper.put(level, "ChannelSet %s number_of_channels=%d\n",
 				  name, nrOfChannels);
 	}

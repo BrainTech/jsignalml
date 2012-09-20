@@ -20,10 +20,4 @@ public abstract class FunctionParam<T extends Type> extends Context {
 	{
 		// nothing to be done here
 	}
-
-	@Override
-	public void createChannels()
-	{
-		// do nothing
-	}
 }

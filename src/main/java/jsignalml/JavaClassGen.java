@@ -114,6 +114,7 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 	final JClass ContextDumper_t = this.model.ref(ContextDumper.class);
 	final JClass ChannelSet_t = this.model.ref(ChannelSet.class);
 	final JClass Channel_t = this.model.ref(Channel.class);
+	final JClass OuterLoopClass_t = this.model.ref(jsignalml.codec.OuterLoopClass.class);
 	final JClass MyBuffer_t = this.model.ref(MyBuffer.class);
 	final JClass TextBuffer_t = this.model.ref(TextBuffer.class);
 	final JClass XMLBuffer_t = this.model.ref(XMLBuffer.class);
@@ -276,7 +277,6 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 
 	class Metadata {
 		final JBlock create_params;
-		final JBlock create_channels;
 		final JDefinedClass klass;
 
 		Metadata(JDefinedClass klass, String method_suffix)
@@ -290,15 +290,8 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 				comment_stamp(method.body());
 				this.create_params = method.body();
 				this.create_params.add(logMethodEntry(method));
-			}
-
-			{
-				final JMethod method =
-					klass.method(JMod.PUBLIC, JavaClassGen.this.model.VOID,
-						     "createChannels" + method_suffix);
-				comment_stamp(method.body());
-				this.create_channels = method.body();
-				this.create_channels.add(logMethodEntry(method));
+				if (OuterLoopClass_t.isAssignableFrom(klass))
+					this.create_params.add(JExpr._this().invoke("createLoopChannels"));
 			}
 		}
 
@@ -313,41 +306,16 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 			final JBlock block = this.create_params.block();
 			comment_stamp(block);
 			block.add(param_inv);
-			log.debug("register %s", name);
 		}
 
 		void registerContext(String name, JDefinedClass context_class, JExpression get)
 		{
 			log.info("register context %s=>%s", name, context_class);
-			{
-				final JBlock block = this.create_params.block();
-				comment_stamp(block);
-				final JVar obj = block.decl(context_class, "obj", get);
-				block.add(obj.invoke("createParams"));
-			}
-			{
-				final JBlock block = this.create_channels.block();
-				comment_stamp(block);
-				final JVar obj = block.decl(context_class, "obj", get);
-				block.add(obj.invoke("createChannels"));
 
-				final JClass outerloop_class = JavaClassGen.this.model
-					.ref(jsignalml.codec.OuterLoopClass.class);
-				if(context_class._extends().equals(outerloop_class))
-					block.add(obj.invoke("createLoopChannels"));
-			}
-		}
-
-		void registerChannel(String name, JExpression channel)
-		{
-			log.info("register channel %s", name);
-			this.create_channels.add(JExpr.invoke("registerChannel").arg(channel));
-		}
-
-		void registerChannelSet(String name, JExpression set)
-		{
-			log.info("register channel set %s", name);
-			this.create_channels.add(JExpr.invoke("registerChannelSet").arg(set));
+			final JBlock block = this.create_params.block();
+			comment_stamp(block);
+			final JVar obj = block.decl(context_class, "obj", get);
+			block.add(obj.invoke("createParams"));
 		}
 	}
 
@@ -389,7 +357,6 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 		body.add(reader.invoke("open").arg(file));
 
 		body.add(reader.invoke("createParams"));
-		body.add(reader.invoke("createChannels"));
 
 		comment(body, "%s", "System.out.print(ContextDumper.dump(reader));");
 		//final JExpression dumper_dump =
@@ -1006,7 +973,7 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 	public JMethod getMethod_p(JDefinedClass klass, Type wanted)
 	{
 		JExpression get = JExpr._this().invoke(GET);
-		final JType type;
+		final JClass type;
 		if (wanted instanceof TypeInt) {
 			get = get.invoke("safeLongValue");
 			type = Long_t;
@@ -1281,7 +1248,7 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 				    JExpr._new(klass));
         }
 
-	JMethod _cacheMethod(JDefinedClass parent, JType klass, String id,
+	JMethod _cacheMethod(JDefinedClass parent, JClass klass, String id,
 			     String methodname, JExpression init)
 	{
 		final JFieldVar stor = parent.field(JMod.NONE, klass, methodname,
@@ -1294,6 +1261,10 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 		then.assign(stor, init);
 		if (id != null)
 			then.add(JExpr.invoke("register").arg(id).arg(stor));
+		if (ChannelSet_t.isAssignableFrom(klass))
+			then.add(JExpr.invoke("registerChannelSet").arg(stor));
+		if (Channel_t.isAssignableFrom(klass))
+			then.add(JExpr.invoke("registerChannel").arg(stor));
 
 		getter.body()._return(stor);
 		return getter;
@@ -1665,7 +1636,6 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 
 		Metadata metadata = (Metadata) parent.metadata;
 		metadata.registerContext(id, klass, JExpr.invoke(getter));
-		metadata.registerChannelSet(id, JExpr.invoke(getter));
 
 		return klass;
 	}
@@ -1713,7 +1683,6 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 
 		Metadata metadata = (Metadata) parent.metadata;
 		metadata.registerContext(id, klass, JExpr.invoke(getter));
-		metadata.registerChannel(id, JExpr.invoke(getter));
 
 		// Private variable for channel number
 		klass.field(4, model.INT, "channelNum", JExpr.ref("channelCounter").incr());
