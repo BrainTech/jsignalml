@@ -234,8 +234,8 @@ atom
 	;
 
 BOOL
-    : ('f'|'F') ('a'|'A') ('l'|'L') ('s'|'S') ('e'|'E')
-    | ('t'|'T') ('r'|'R') ('u'|'U') ('e'|'E')
+    : 'False'
+    | 'True'
     ;
 
 ID  :	(LETTER|'_') (LETTER|DIGIT|'_')*

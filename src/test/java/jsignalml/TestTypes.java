@@ -74,24 +74,30 @@ public class TestTypes {
 		assertEquals(new TypeBool(true), new TypeBool("TRUE"));
 		assertEquals(new TypeBool(true), new TypeBool("TrUe"));
 		assertEquals(new TypeBool(true), new TypeBool("true"));
-		assertEquals(new TypeBool(false), new TypeBool("FALSE"));
-		assertEquals(new TypeBool(false), new TypeBool("False"));
-		assertEquals(new TypeBool(false), new TypeBool("false"));
-		assertEquals(new TypeBool(false), new TypeBool("x"));
-		assertEquals(new TypeBool(false), new TypeBool("0"));
-		assertEquals(new TypeBool(false), new TypeBool("1"));
+		assertEquals(new TypeBool(true), new TypeBool("FALSE"));
+		assertEquals(new TypeBool(true), new TypeBool("False"));
+		assertEquals(new TypeBool(true), new TypeBool("false"));
+		assertEquals(new TypeBool(true), new TypeBool("x"));
+		assertEquals(new TypeBool(true), new TypeBool("0"));
+		assertEquals(new TypeBool(true), new TypeBool("1"));
 	}
 
 	@Test public void test_boolean_make_from_typestring() {
 		assertEquals(new TypeBool(true), new TypeBool(new TypeString("TRUE")));
 		assertEquals(new TypeBool(true), new TypeBool(new TypeString("TrUe")));
 		assertEquals(new TypeBool(true), new TypeBool(new TypeString("true")));
-		assertEquals(new TypeBool(false), new TypeBool(new TypeString("FALSE")));
-		assertEquals(new TypeBool(false), new TypeBool(new TypeString("False")));
-		assertEquals(new TypeBool(false), new TypeBool(new TypeString("false")));
-		assertEquals(new TypeBool(false), new TypeBool(new TypeString("x")));
-		assertEquals(new TypeBool(false), new TypeBool(new TypeString("0")));
-		assertEquals(new TypeBool(false), new TypeBool(new TypeString("1")));
+		assertEquals(new TypeBool(true), new TypeBool(new TypeString("FALSE")));
+		assertEquals(new TypeBool(true), new TypeBool(new TypeString("False")));
+		assertEquals(new TypeBool(true), new TypeBool(new TypeString("false")));
+		assertEquals(new TypeBool(true), new TypeBool(new TypeString("x")));
+		assertEquals(new TypeBool(true), new TypeBool(new TypeString("0")));
+		assertEquals(new TypeBool(true), new TypeBool(new TypeString("1")));
+	}
+
+	@Test public void test_boolean_parse() {
+		assertEquals(new TypeBool(true), TypeBool.I.parse("True"));
+		assertEquals(new TypeBool(false), TypeBool.I.parse("False"));
+		// Add checks that everything else throws
 	}
 
 	@Test public void test_boolean_make_from_float() {
@@ -110,5 +116,17 @@ public class TestTypes {
 		assertEquals(new TypeBool(false), new TypeBool(new TypeInt(0)));
 		assertEquals(new TypeBool(true), new TypeBool(1L));
 		assertEquals(new TypeBool(false), new TypeBool(0L));
+	}
+
+	@Test public void test_edf_nr_of_channels() {
+                TypeString input = new TypeString("17  ");
+                TypeInt value = TypeInt.I.make(input);
+		assertEquals(value.safeIntValue(), 17);
+	}
+
+	@Test public void test_edf_channel_label() {
+                TypeString input = new TypeString(" Sa02");
+		TypeString output = Builtins.trim().call(input);
+		assertEquals(output.getValue(), "Sa02");
 	}
 }

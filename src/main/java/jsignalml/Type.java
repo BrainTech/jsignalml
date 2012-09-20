@@ -271,7 +271,7 @@ public abstract class Type implements Comparable<Type> {
 	public Type binaryOpType(BinaryOp op, Type other)
 	{
 		if (op.priority == COMPARISON)
-			return TypeInt.I;
+			return TypeBool.I;
 		if (other == null)
 			return null;
 		if (op == BinaryOp.LOG_AND || op == BinaryOp.LOG_OR){

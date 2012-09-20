@@ -2,12 +2,14 @@ package jsignalml;
 
 import java.math.BigInteger;
 
+import static java.lang.String.format;
+
 /**
  * Represents boolean type object in SignalML.
  *
  * @author Jakub.Halun@ericpol.com
  */
-public class TypeBool extends Type {
+public class TypeBool extends TypeInt {
 
 	/**
 	 * Static reference
@@ -15,119 +17,74 @@ public class TypeBool extends Type {
 	public static final TypeBool I = new TypeBool();
 
 	/**
-	 * Value
-	 */
-	private final Boolean value;
-
-	/**
 	 * Constructs instance of class <code>TypeBool</code> based on integer
 	 * value. Zero is <code>False</code>, any other value is <code>True</code>.
 	 *
-	 * @param longValue
-	 *            integer value
+	 * @param value  integer value
 	 */
-	public TypeBool(long longValue) {
-		if (longValue == 0) {
-			value = false;
-		} else {
-			value = true;
-		}
-	}
-
-	/**
-	 * Constructs instance of class <code>TypeBool</code> based on integer
-	 * value. Zero is <code>False</code>, any other value is <code>True</code>.
-	 *
-	 * @param intValue
-	 *            integer value
-	 */
-	public TypeBool(TypeInt intValue) {
-		if (intValue.getValue().equals(BigInteger.ZERO)) {
-			value = false;
-		} else {
-			value = true;
-		}
+	public TypeBool(long value) {
+		super(value != 0);
 	}
 
 	/**
 	 * Constructs instance of class <code>TypeBool</code> based on float value.
 	 * Zero is <code>False</code>, any other value is <code>True</code>.
 	 *
-	 * @param doubleVal
-	 *            float value
+	 * @param value  float value
 	 */
-	public TypeBool(double doubleVal) {
-		if (doubleVal == 0) {
-			value = false;
-		} else {
-			value = true;
-		}
+	public TypeBool(double value) {
+		this(value != 0.0);
 	}
 
 	/**
-	 * Constructs instance of class <code>TypeBool</code> based on float value.
-	 * Zero is <code>False</code>, any other value is <code>True</code>.
+	 * Constructs instance of class <code>TypeBool</code> based on a String.
+	 * Empty is <code>False</code>, non-empty is <code>True</code>.
 	 *
-	 * @param floatVal
-	 *            float value
+	 * @param value  float value
 	 */
-	public TypeBool(TypeFloat floatVal) {
-		this(floatVal.getValue());
+	public TypeBool(String value) {
+		this(!value.isEmpty());
 	}
 
 	/**
-	 * Constructs instance of class <code>TypeBool</code> based on
-	 * <code>TypeBytes</code> instance value.
+	 * Constructs instance of class <code>TypeBool</code> from Type.
 	 *
-	 * @param bytesVal
-	 *            <code>TypeBytes</code> instance
+	 * @param value the value
 	 */
-	public TypeBool(TypeBytes bytesVal) {
-		this(bytesVal.getValue().toString());
+	public TypeBool(Type value) {
+		this(value.isTrue());
 	}
 
 	/**
-	 * Constructs instance of class <code>TypeBool</code> directly from a given
-	 * boolean value.
+	 * Constructs instance of class <code>TypeBool</code> based on parsing of
+	 * string. "True" is <code>true</code>, "False" is <code>false</code>.
+	 *
+	 * @param repr  string value to parse
+	 */
+	public TypeBool parse(String repr) {
+		if (repr.equals("True"))
+			return True;
+		if (repr.equals("False"))
+			return False;
+		throw new ExpressionFault.ValueError(format(
+				    "'{0}' is not a valid boolean", repr));
+	}
+
+	/**
+	 * Constructs instance of class <code>TypeBool</code> based on boolean value.
 	 *
 	 * @param value
-	 *            boolean value
+	 *            float value
 	 */
 	public TypeBool(boolean value) {
-		this.value = value;
-	}
-
-	/**
-	 * Constructs instance of class <code>TypeBool</code> based on parsing of
-	 * string. Every string which matches "true" (regardless of lower case/upper
-	 * case letters) gives <code>True</code>, any other gives <code>False</code>
-	 * value.
-	 *
-	 * @param strValue
-	 *            string value for parsing
-	 */
-	public TypeBool(String strValue) {
-		this.value = Boolean.valueOf(strValue);
-	}
-
-	/**
-	 * Constructs instance of class <code>TypeBool</code> based on parsing of
-	 * string. Every string which matches "true" (regardless of lower case/upper
-	 * case letters) gives <code>True</code>, any other gives <code>False</code>
-	 * value.
-	 *
-	 * @param strValue
-	 *            string value for parsing
-	 */
-	public TypeBool(TypeString strValue) {
-		this(strValue.getValue());
+		super(value);
 	}
 
 	/**
 	 * Constructs default boolean object, with <code>False</code> value.
 	 */
 	public TypeBool() {
-		value = false;
+		this(false);
 	}
 
 	/**
@@ -196,16 +153,6 @@ public class TypeBool extends Type {
 	}
 
 	/**
-	 * Returns value of <code>this</code> object
-	 *
-	 * @return <code>this</code> object value
-	 */
-	@Override
-	public Boolean getValue() {
-		return value;
-	}
-
-	/**
 	 * @see jsignalml.Type#_binaryOpType(jsignalml.Type.BinaryOp,
 	 *      jsignalml.TypeInt)
 	 */
@@ -234,7 +181,7 @@ public class TypeBool extends Type {
 	 */
 	@Override
 	public boolean isTrue() {
-		return value;
+		return this.value.signum() != 0;
 	}
 
 	/**
@@ -245,181 +192,6 @@ public class TypeBool extends Type {
 	@Override
 	public String repr() {
 		return String.valueOf(value);
-	}
-
-	/**
-	 * @see jsignalml.Type#add(jsignalml.Type)
-	 */
-	@Override
-	public Type add(Type b) {
-		throw new ExpressionFault.Unsupported(this.getClass(), "add");
-	}
-
-	/**
-	 * @see jsignalml.Type#sub(jsignalml.Type)
-	 */
-	@Override
-	public Type sub(Type b) {
-		throw new ExpressionFault.Unsupported(this.getClass(), "sub");
-	}
-
-	/**
-	 * @see jsignalml.Type#mul(jsignalml.Type)
-	 */
-	@Override
-	public Type mul(Type b) {
-		throw new ExpressionFault.Unsupported(this.getClass(), "mul");
-	}
-
-	/**
-	 * @see jsignalml.Type#div(jsignalml.Type)
-	 */
-	@Override
-	public Type div(Type b) {
-		throw new ExpressionFault.Unsupported(this.getClass(), "div");
-	}
-
-	/**
-	 * @see jsignalml.Type#floordiv(jsignalml.Type)
-	 */
-	@Override
-	public Type floordiv(Type b) {
-		throw new ExpressionFault.Unsupported(this.getClass(), "floordiv");
-	}
-
-	/**
-	 * @see jsignalml.Type#mod(jsignalml.Type)
-	 */
-	@Override
-	public Type mod(Type b) {
-		throw new ExpressionFault.Unsupported(this.getClass(), "mod");
-	}
-
-	/**
-	 * Performs AND operation on <code>this</code> object and other instance of
-	 * <code>TypeBool</code> class.
-	 *
-	 * @param other
-	 *            other instance of <code>TypeBool</code> class
-	 * @return AND operation result
-	 * @throws ExpressionFault.TypeError
-	 *             if other instance is not of class <code>TypeBool</code>
-	 */
-	@Override
-	public Type bin_and(Type other) {
-		if (other instanceof TypeBool) {
-			return this.bin_and((TypeBool) other);
-		}
-		throw new ExpressionFault.TypeError(other, this);
-	}
-
-	/**
-	 * Performs AND operation on <code>this</code> object and other instance of
-	 * <code>TypeBool</code> class.
-	 *
-	 * @param other
-	 *            other instance of <code>TypeBool</code> class
-	 * @return AND operation result
-	 */
-	public Type bin_and(TypeBool other) {
-		return new TypeBool(this.value && other.value);
-	}
-
-	/**
-	 * Performs OR operation on <code>this</code> object and other instance of
-	 * <code>TypeBool</code> class.
-	 *
-	 * @param other
-	 *            other instance of <code>TypeBool</code> class
-	 * @return OR operation result
-	 * @throws ExpressionFault.TypeError
-	 *             if other instance is not of class <code>TypeBool</code>
-	 */
-	public Type bin_or(Type other) {
-		if (other instanceof TypeBool) {
-			return this.bin_or((TypeBool) other);
-		}
-		throw new ExpressionFault.TypeError(other, this);
-	}
-
-	/**
-	 * Performs OR operation on <code>this</code> object and other instance of
-	 * <code>TypeBool</code> class.
-	 *
-	 * @param other
-	 *            other instance of <code>TypeBool</code> class
-	 * @return OR operation result
-	 */
-	public Type bin_or(TypeBool other) {
-		return new TypeBool(this.value || other.value);
-	}
-
-	/**
-	 * Performs XOR operation on <code>this</code> object and other instance of
-	 * <code>TypeBool</code> class.
-	 *
-	 * @param other
-	 *            other instance of <code>TypeBool</code> class
-	 * @return XOR operation result
-	 * @throws ExpressionFault.TypeError
-	 *             if other instance is not of class <code>TypeBool</code>
-	 */
-	@Override
-	public Type bin_xor(Type other) {
-		if (other instanceof TypeBool) {
-			return this.bin_xor((TypeBool) other);
-		}
-		throw new ExpressionFault.TypeError(other, this);
-	}
-
-	/**
-	 * Performs XOR operation on <code>this</code> object and other instance of
-	 * <code>TypeBool</code> class.
-	 *
-	 * @param other
-	 *            other instance of <code>TypeBool</code> class
-	 * @return XOR operation result
-	 */
-	public Type bin_xor(TypeBool other) {
-		return new TypeBool(this.value ^ other.value);
-	}
-
-	/**
-	 * @see jsignalml.Type#pow(jsignalml.Type)
-	 */
-	@Override
-	public Type pow(Type b) {
-		throw new ExpressionFault.Unsupported(this.getClass(), "pow");
-	}
-
-	/**
-	 * @see jsignalml.Type#pos()
-	 */
-	@Override
-	public Type pos() {
-		throw new ExpressionFault.Unsupported(this.getClass(), "pos");
-	}
-
-	/**
-	 * Return new <code>TypeBool</code> instance with a reversed value of
-	 * <code>this</code>.
-	 *
-	 * @return <code>TypeBool</code> instance with a reversed value.
-	 */
-	@Override
-	public Type neg() {
-		return new TypeBool(!value.booleanValue());
-	}
-
-	/**
-	 * Return new <code>TypeBool</code> instance with a reversed value of
-	 * <code>this</code>.
-	 *
-	 * @return <code>TypeBool</code> instance with a reversed value.
-	 */
-	@Override
-	public Type bin_neg() {
-		return new TypeBool(!value.booleanValue());
 	}
 
 	/**

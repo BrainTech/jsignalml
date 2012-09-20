@@ -10,8 +10,8 @@ public class TypeInt extends Type {
 
 	public final BigInteger value;
 
-	public static final TypeInt False = new TypeInt(0);
-	public static final TypeInt True = new TypeInt(1);
+	public static final TypeBool False = new TypeBool(false);
+	public static final TypeBool True = new TypeBool(true);
 
 	public TypeInt(BigInteger value){
 		this.value = value;

@@ -194,7 +194,7 @@ public class JavaExprGen extends ExpressionVisitor<JExpression> {
 			repr = JExpr.lit(((TypeString)val.value).getValue());
 		} else if (val.value instanceof TypeBool) {
 			type = TypeBool.class;
-			repr = JExpr.lit(((TypeBool)val.value).getValue());
+			repr = JExpr.lit(val.value.isTrue());
 		} else if (val.value instanceof TypeBytes) {
 			type = TypeBytes.class;
 			repr = TypeBytes.ByteSequence.lit(((TypeBytes)val.value).getValue());

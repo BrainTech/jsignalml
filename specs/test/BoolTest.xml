@@ -21,15 +21,11 @@
 	</param>
 
 	<param id='boolp1' type='bool'>
-		<expr>true</expr>
+		<expr>True</expr>
 	</param>
 
 	<param id='boolp2' type='bool'>
-		<expr>false</expr>
-	</param>
-
-	<param id='boolp3' type='bool'>
-		<expr>TRUE</expr>
+		<expr>False</expr>
 	</param>
 
 	<if id='if1' test='paramint1 == paramint2'>
@@ -44,7 +40,7 @@
 	</if>
 
 	<param id='boolparam' type='bool'>
-		<expr>if1.p1 or boolp1 or boolp2 or boolp3</expr>
+		<expr>if1.p1 or boolp1 or boolp2 or boolp2</expr>
 	</param>
 
 </signalml>

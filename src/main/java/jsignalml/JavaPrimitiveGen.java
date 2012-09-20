@@ -101,7 +101,7 @@ public class JavaPrimitiveGen extends JavaExprGen {
 		} else if (val.value instanceof TypeString) {
 			repr = JExpr.lit(((TypeString)val.value).getValue());
 		} else if (val.value instanceof TypeBool) {
-			repr = JExpr.lit(((TypeBool)val.value).getValue());
+			repr = JExpr.lit(val.value.isTrue());
 		} else if (val.value instanceof TypeBytes) {
 			repr = TypeBytes.ByteSequence.lit(((TypeBytes)val.value).getValue());
 		} else {
