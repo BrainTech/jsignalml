@@ -292,12 +292,13 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 			this(klass, "");
 		}
 
-		void registerParam(String name, JClass klass, JExpression param_inv)
+		void registerParam(String name, JClass klass, JInvocation param_inv)
 		{
 			log.info("register %s", name);
 			final JBlock block = this.create_params.block();
 			comment_stamp(block);
-			block.add(JExpr.invoke("register").arg(name).arg(param_inv));
+			block.add(param_inv);
+			log.debug("register %s", name);
 		}
 
 		void registerContext(String name, JDefinedClass context_class, JExpression get)
@@ -307,7 +308,6 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 				final JBlock block = this.create_params.block();
 				comment_stamp(block);
 				final JVar obj = block.decl(context_class, "obj", get);
-				block.add(JExpr.invoke("register").arg(name).arg(obj));
 				block.add(obj.invoke("createParams"));
 			}
 			{
@@ -1262,23 +1262,26 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 
         public JMethod classCacheMethod(JDefinedClass parent, String id, JDefinedClass klass)
         {
-		return _cacheMethod(parent, klass, makeGetter(id),
+		return _cacheMethod(parent, klass, id, makeGetter(id),
 				    JExpr._new(klass));
         }
 
-	JMethod _cacheMethod(JDefinedClass parent, JType klass, String methodname,
-			     JExpression init)
+	JMethod _cacheMethod(JDefinedClass parent, JType klass, String id,
+			     String methodname, JExpression init)
 	{
-                final JFieldVar stor = parent.field(JMod.NONE, klass, methodname,
+		final JFieldVar stor = parent.field(JMod.NONE, klass, methodname,
 						    JExpr._null());
-                final JMethod getter = parent.method(JMod.PUBLIC, klass, methodname);
+		final JMethod getter = parent.method(JMod.PUBLIC, klass, methodname);
 		comment_stamp(getter.body());
 
-                getter.body()
-			._if(stor.eq(JExpr._null()))
-			._then().assign(stor, init);
-                getter.body()._return(stor);
-                return getter;
+		final JBlock then =
+			getter.body()._if(stor.eq(JExpr._null()))._then();
+		then.assign(stor, init);
+		if (id != null)
+			then.add(JExpr.invoke("register").arg(id).arg(stor));
+
+		getter.body()._return(stor);
+		return getter;
 	}
 
 	@Override
@@ -1298,7 +1301,6 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 		getter.body()._return(JExpr.refthis("index"));
 
 		Metadata metadata = (Metadata) klass.metadata;
-		metadata.registerParam(id, indexclass, JExpr.refthis("index"));
 		return getter;
 	}
 
@@ -1590,15 +1592,19 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 					    String id, Type type,
 					    JDefinedClass indexClass)
 	{
-		JMethod constructor = klass.constructor(JMod.NONE);
-		JVar index = constructor.param(convertTypeToJClass(type), id);
-		comment_stamp(constructor.body());
-		/*JFieldVar stor = */klass.field(JMod.FINAL, indexClass, "index");
+		final JMethod cons = klass.constructor(JMod.NONE);
+		final JVar index = cons.param(convertTypeToJClass(type), id);
+		final JBlock body = cons.body();
+		comment_stamp(body);
+		klass.field(JMod.FINAL, indexClass, "index");
 
 		// work around bug in jcodemodel on using index instead of this.index
-		constructor.body().assign(JExpr.refthis("index"),
-					  JExpr._new(indexClass).arg(index));
-		return constructor;
+		body.assign(JExpr.refthis("index"),
+			    JExpr._new(indexClass).arg(index));
+		body.add(JExpr.invoke("register").arg(id)
+			 .arg(JExpr.refthis("index")));
+		return cons;
+	}
 
 	public JMethod loopDetailsMethod(JDefinedClass klass)
 	{
@@ -1607,7 +1613,7 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 		comment_stamp(method.body());
 		final JExpression ret =
 			JExpr.lit("index=")
-			.plus(JExpr._this().invoke(makeGetter("index"))
+			.plus(JExpr.refthis("index")
 			      .invoke("get").invoke("toString"))
 			.plus(JExpr.lit(" "))
 			.plus(JExpr._super().invoke("details"));
