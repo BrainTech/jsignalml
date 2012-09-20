@@ -13,7 +13,7 @@
     </param>
     <else>
       <param id='p1' type='str'>
-	<expr>333</expr>
+	<expr>str(333)</expr>
       </param>
     </else>
   </if>
