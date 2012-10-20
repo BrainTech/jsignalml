@@ -30,6 +30,7 @@ public abstract class Signalml extends Context implements jsignalml.Source {
 		this.channel_set_list.add(set);
 		log.info("registered channel set %s (total %d)", set,
 			 this.getNumberOfChannelSets());
+		assert this.getNumberOfChannelSets() == 1;
 	}
 
 	public int getNumberOfChannelSets() throws ExpressionFault {
@@ -37,9 +38,7 @@ public abstract class Signalml extends Context implements jsignalml.Source {
 	}
 
 	public ChannelSet get_set() {
-		this.maybeInitParams();
-		assert !this.channel_set_list.isEmpty();
-		return this.channel_set_list.get(0);
+		return this.get_set(0);
 	}
 
 	public ChannelSet get_set(int id) {

@@ -99,6 +99,12 @@ public class CodecSampleCase {
 		this.channel_set = set;
 	}
 
+	@Test(dependsOnMethods={"test_get_set"})
+	public void test_get_set_is_idempotent() {
+		ChannelSet set = this.source.get_set();
+		assertEquals(set, this.channel_set);
+	}
+
 	@Test(dependsOnMethods={"test_open"})
 	public void test_number_of_sets() {
 		int num = this.source.getNumberOfChannelSets();
@@ -116,8 +122,8 @@ public class CodecSampleCase {
 	}
 
 	@Test(dependsOnMethods={"test_get_set"})
-	public void test_get_set_1() {
-		ChannelSet set = this.source.get_set(1);
+	public void test_get_set_0() {
+		ChannelSet set = this.source.get_set(0);
 		assertNotNull(set);
 		assertEquals(set, this.channel_set);
 	}
