@@ -108,6 +108,33 @@
 	<property id='digital_maximum' type='ascii' width='8' index='1..{number_of_channels}' offset='256+128*{number_of_channels}+8*({index}-1)'/>
 	<property id='prefiltering' type='ascii' width='80' index='1..{number_of_channels}' offset='256+136*{number_of_channels}+80*({index}-1)'/>
 	-->
+	<param id='physical_dimension'>
+	  <format>'|S8'</format>
+	  <offset>256 + 96*number_of_channels + 8*index</offset>
+	</param>
+	<param id='physical_minimum' type='float'>
+	  <format>'|S8'</format>
+	  <offset>256 + 104*number_of_channels + 8*index</offset>
+	</param>
+	<param id='physical_maximum' type='float'>
+	  <format>'|S8'</format>
+	  <offset>256 + 112*number_of_channels + 8*index</offset>
+	</param>
+	<param id='digital_minimum' type='float'>
+	  <format>'|S8'</format>
+	  <offset>256 + 120*number_of_channels + 8*index</offset>
+	</param>
+	<param id='digital_maximum' type='float'>
+	  <format>'|S8'</format>
+	  <offset>256 + 128*number_of_channels + 8*index</offset>
+	</param>
+
+	<param id='calibration_gain' type='float'>
+	  <expr>(physical_maximum - physical_minimum) / (digital_maximum - digital_minimum)</expr>
+	</param>
+	<param id='calibration_offset' type='float'>
+	  <expr>physical_minimum - digital_minimum * calibration_gain</expr>
+	</param>
 
 	<param id='samples_per_frame' type='int'>
 	  <format>'|S8'</format>
@@ -121,6 +148,7 @@
 	<param id='mapping' type='int'>
 	  <arg type='int' name='sample' />
 	  <expr>
+	    header_size +
 	    sample//samples_per_frame * frame_size + 
 	    channel_offset +
 	    sample%samples_per_frame * datatype_width
