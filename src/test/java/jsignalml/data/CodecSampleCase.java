@@ -17,6 +17,7 @@ import jsignalml.ChannelSet;
 import jsignalml.logging.Logger;
 import jsignalml.compiler.CompiledClass;
 import jsignalml.TypeInt;
+import jsignalml.TypeList;
 import jsignalml.util;
 import jsignalml.helpers;
 
@@ -135,6 +136,17 @@ public class CodecSampleCase {
 		double expected = helpers.average((Collection)
 			  hdr.get("sampling_frequency").getValue());
 		double current = channel_set.getSamplingFrequency();
+		helpers.assertEquals(current, expected);
+	}
+
+	@Test(dependsOnMethods={"test_get_set"})
+	public void test_number_of_samples() {
+		if (!channel_set.hasUniformSamplingFrequency())
+			return;
+		long expected =
+			((TypeInt)((TypeList) hdr.get("number_of_samples"))
+			 .index(TypeInt.ZERO)).safeIntValue();
+		long current = channel_set.getNumberOfSamples();
 		helpers.assertEquals(current, expected);
 	}
 
