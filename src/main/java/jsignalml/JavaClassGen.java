@@ -343,25 +343,40 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 		final JBlock body = main.body();
 
 		final JVar argc = body.decl(this.model.INT, "argc", args.ref("length"));
-		final JConditional _if = body._if(argc.lt(JExpr.lit(1)));
-		final JBlock _ifBlock = _if._then();
-		final JExpression syntax = JExpr.lit("Syntax:\n\t" + klass.name()
-				+ " inputFile channelNr1 channelNr2 ...");
-		_ifBlock.add(System_t.staticRef("out").invoke("println").arg(syntax));
-		_ifBlock._return();
+		final JVar do_dump = body.decl(this.model.BOOLEAN, "do_dump");
+		final JVar used = body.decl(this.model.INT, "used", JExpr.lit(0));
+		{
+			do_dump.init(argc.gte(JExpr.lit(1))
+				     .cand( JExpr.lit("-d")
+					   .invoke("equals")
+					   .arg(args.component(JExpr.lit(0)))));
+			body._if(do_dump)._then().assignPlus(used, JExpr.lit(1));
+		}
+
+		{
+			final JConditional _if = body._if(argc.minus(used).lt(JExpr.lit(1)));
+			final JBlock block = _if._then();
+			final JExpression syntax = JExpr.lit("Syntax:\n\t" + klass.name()
+					   + " [-d] inputFile channelNr1 channelNr2 ...");
+			block.add(System_t.staticRef("out").invoke("println").arg(syntax));
+			block._return();
+		}
 
 		body.add(BasicConfigurator_t.staticInvoke("configure"));
 
 		final JVar reader = body.decl(klass, "reader", JExpr._new(klass));
-		final JExpression file = JExpr._new(File_t).arg(args.component(JExpr.lit(0)));
+		final JExpression file = JExpr._new(File_t).arg(args.component(used));
 		body.add(reader.invoke("open").arg(file));
 
 		body.add(reader.invoke("createParams"));
 
-		comment(body, "%s", "System.out.print(ContextDumper.dump(reader));");
-		//final JExpression dumper_dump =
-		//	ContextDumper_t.staticInvoke("dump").arg(reader);
-		//body.add(System_t.staticRef("out").invoke("print").arg(dumper_dump));
+		// System.out.print(ContextDumper.dump(reader));
+		{
+			final JBlock block = body._if(do_dump)._then();
+			final JExpression dumper_dump =
+				ContextDumper_t.staticInvoke("dump").arg(reader);
+			block.add(System_t.staticRef("out").invoke("print").arg(dumper_dump));
+		}
 
 		final JVar nrOfChannelSets = body.decl(this.model.INT, "nrOfChannelSets",
 			reader.invoke("getNumberOfChannelSets"));
@@ -377,10 +392,12 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 					channelSet.invoke("getNumberOfChannels"));
 			final JVar nrOfChannelsToShow = forsetbody.decl(this.model.INT, "nrOfChannelsToShow",
 					nrOfChannels);
-			final JExpression inputFileName = JExpr.lit("Input file for " + klass.name() + " codec: ")
-					.plus(args.component(JExpr.lit(0)));
-			final JExpression inputFileChannels = JExpr.lit("Input file has ")
-					.plus(nrOfChannels).plus(JExpr.lit(" channels"));
+			final JExpression inputFileName = JExpr
+				.lit("Input file for " + klass.name() + " codec: ")
+				.plus(args.component(used));
+			final JExpression inputFileChannels = JExpr
+				.lit("Input file has ")
+				.plus(nrOfChannels).plus(JExpr.lit(" channels"));
 			forsetbody.add(System_t.staticRef("out").invoke("println").arg(inputFileName));
 			forsetbody.add(System_t.staticRef("out").invoke("println").arg(inputFileChannels));
 			final JConditional _ifArgc = forsetbody._if(argc.gt(JExpr.lit(1)));
@@ -389,15 +406,19 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 
 			{
 				final JForLoop for_ =  forsetbody._for();
-				final JVar j = for_.init(this.model.INT, "j", JExpr.lit(1));
+				final JVar j = for_.init(this.model.INT, "j",
+							 used.plus(JExpr.lit(1)));
 				for_.test(j.lte(nrOfChannelsToShow));
 				for_.update(j.incr());
 				final JBlock forbody = for_.body();
 
 				final JInvocation channel_num =
-					Integer_t.staticInvoke("decode").arg(args.component(j)).invoke("intValue");
+					Integer_t.staticInvoke("decode")
+					.arg(args.component(used.plus(j)))
+					.invoke("intValue");
 				final JVar channelNr = forbody.decl(this.model.INT, "channelNr", j.minus(JExpr.lit(1)));
-				final JConditional _ifChannelsArgc = forbody._if(argc.gt(JExpr.lit(1)));
+				final JConditional _ifChannelsArgc = forbody
+					._if(argc.minus(used).gt(JExpr.lit(1)));
 				final JBlock _ifBlockChannelsArgc = _ifChannelsArgc._then();
 				_ifBlockChannelsArgc.assign(channelNr, channel_num);
 

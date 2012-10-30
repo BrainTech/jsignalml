@@ -116,5 +116,4 @@ public class ContextDumper implements ContextVisitor<Integer> {
 	public Integer visit(Header node, String name, Integer level) {
 		return dumper.put(level, "%s => %s\n", name, node.get().repr());
 	}
-
 }
