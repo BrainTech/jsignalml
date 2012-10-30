@@ -2,6 +2,7 @@ package jsignalml;
 
 import java.io.File;
 import java.io.FilenameFilter;
+import java.util.Collection;
 
 import com.google.common.io.Files;
 import org.apache.commons.io.FileUtils;
@@ -43,6 +44,16 @@ public class helpers {
 			throw new AssertionError("numbers differ (" +
 						 left + "!=" +
 						 right + ")");
+	}
+
+	public static double average(Collection<TypeFloat> coll) {
+		double sum = 0;
+		int count = 0;
+		for (TypeFloat d: coll) {
+			sum += d.getValue();
+			count++;
+		}
+		return sum / count;
 	}
 
 	public static String format(float[] array) {

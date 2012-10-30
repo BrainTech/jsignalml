@@ -130,7 +130,10 @@ public class CodecSampleCase {
 
 	@Test(dependsOnMethods={"test_get_set"})
 	public void test_sampling_frequency() {
-		double expected = (Double) hdr.get("sampling_frequency").getValue();
+		if (!channel_set.hasUniformSamplingFrequency())
+			return;
+		double expected = helpers.average((Collection)
+			  hdr.get("sampling_frequency").getValue());
 		double current = channel_set.getSamplingFrequency();
 		helpers.assertEquals(current, expected);
 	}
