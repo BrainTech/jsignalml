@@ -72,7 +72,7 @@
 		sequence='range(number_of_channels)'>
 
 	<param id='sampling_frequency' type='float'>
-	  <expr>number_of_samples / duration_of_data_record</expr>
+	  <expr>samples_per_frame / duration_of_data_record</expr>
 	</param>
 
 	<param id='number_of_samples'>
