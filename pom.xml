@@ -109,20 +109,25 @@
 	      <resources>
 		<resource>
 		  <directory>${basedir}/specs</directory>
-		  <include>*.xml</include>
-		  <exclude>test/*.xml</exclude>
+		  <includes>
+		    <include>*.xml</include>
+		  </includes>
+		  <excludes>
+		    <exclude>test/*.xml</exclude>
+		  </excludes>
 		  <targetPath>specs</targetPath>
 		</resource>
 		<resource>
 		  <directory>${basedir}</directory>
-		  <include>SignalML_2_0.dtd</include>
+		  <includes>
+		    <include>SignalML_2_0.dtd</include>
+		  </includes>
 		  <targetPath>specs/schema</targetPath>
 		</resource>
 	      </resources>
 	    </configuration>
-
-          </execution>
-        </executions>
+	  </execution>
+	</executions>
       </plugin>
 
       <plugin>
