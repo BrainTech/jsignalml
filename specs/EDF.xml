@@ -1,0 +1,149 @@
+<?xml version="1.0"?>
+<!DOCTYPE signalml SYSTEM "SignalML_2_0.dtd">
+
+<signalml>
+  <header>
+    <url>http://edfplus.info/</url>
+    <format_id>
+      <name>European Data Format</name>
+      <provider>Bob Kemp</provider>
+    </format_id>
+    <codec_id>
+      <provider>UW</provider>
+      <version>0.1</version>
+    </codec_id>
+  </header>
+
+
+  <file type='binary' id='main'>
+
+    <param id='version'>
+      <format>'|S8'</format>
+      <offset>0</offset>
+    </param>
+
+    <param id='patient_ident'>
+      <format>'|S80'</format>
+      <offset>8</offset>
+    </param>
+
+    <param id='record_ident'>
+      <format>'|S80'</format>
+      <offset>88</offset>
+    </param>
+
+    <param id='start_date'>
+      <format>'|S8'</format>
+      <offset>168</offset>
+    </param>
+
+    <param id='start_time'>
+      <format>'|S8'</format>
+      <offset>176</offset>
+    </param>
+
+    <param id='header_size' type='int'>
+      <format>'|S8'</format>
+      <offset>184</offset>
+    </param>
+
+    <param id='reserved'>
+      <format>'|S44'</format>
+      <offset>192</offset>
+    </param>
+
+    <param id='number_of_data_records' type='int'>
+      <format>'|S8'</format>
+      <offset>236</offset>
+    </param>
+
+    <param id='duration_of_data_record' type='float' units='s'>
+      <format>'|S8'</format>
+      <offset>244</offset>
+    </param>
+
+    <param id='number_of_channels' type='int'>
+      <format>'|S4'</format>
+      <offset>252</offset>
+    </param>
+
+    <channelset id='data'>
+      <for-each id='channel_header' var='index' type='int'
+		sequence='range(number_of_channels)'>
+
+	<param id='sampling_frequency' type='float'>
+	  <expr>number_of_samples / duration_of_data_record</expr>
+	</param>
+
+	<param id='number_of_samples'>
+	  <expr>number_of_data_records * samples_per_frame</expr>
+	</param>
+
+	<channel mapping='mapping' length='number_of_samples'
+		 format='"&lt;i" + str(datatype_width)' />
+
+	<param id='datatype_width'>
+	  <expr>2</expr>
+	</param>
+
+	<param id='_channel_name'>
+	  <format>'|S16'</format>
+	  <offset>256 + 16 * index</offset>
+	</param>
+
+	<param id='channel_name'>
+	  <expr>trim(_channel_name)</expr>
+	</param>
+
+	<param id='transducer_type'>
+	  <format>'|S80'</format>
+	  <offset>256 + 16*number_of_channels + 80*index</offset>
+	</param>
+
+	<!--
+	<property id='physical_dimension' type='ascii' width='8' index='1..{number_of_channels}' offset='256+96*{number_of_channels}+8*({index}-1)'/>
+	<property id='physical_minimum' type='ascii' width='8' index='1..{number_of_channels}' offset='256+104*{number_of_channels}+8*({index}-1)'/>
+	<property id='physical_maximum' type='ascii' width='8' index='1..{number_of_channels}' offset='256+112*{number_of_channels}+8*({index}-1)'/>
+	<property id='digital_minimum' type='ascii' width='8' index='1..{number_of_channels}' offset='256+120*{number_of_channels}+8*({index}-1)'/>
+	<property id='digital_maximum' type='ascii' width='8' index='1..{number_of_channels}' offset='256+128*{number_of_channels}+8*({index}-1)'/>
+	<property id='prefiltering' type='ascii' width='80' index='1..{number_of_channels}' offset='256+136*{number_of_channels}+80*({index}-1)'/>
+	-->
+
+	<param id='samples_per_frame' type='int'>
+	  <format>'|S8'</format>
+	  <offset>256 + 216*number_of_channels + 8*index</offset>
+	</param>
+
+	<!--
+	<property id='reserved2' type='ascii' width='32' index='1..{number_of_channels}' offset='256+224*{number_of_channels}+32*({index}-1)'/>
+	-->
+    
+	<param id='mapping' type='int'>
+	  <arg type='int' name='sample' />
+	  <expr>
+	    sample//samples_per_frame * frame_size + 
+	    channel_offset +
+	    sample%samples_per_frame * datatype_width
+	  </expr>
+	</param>
+	<param id='channel_offset' type='int'>
+	  <expr>
+	    index == 0 ? 0 :
+	    channel_header[index-1].channel_next_offset
+	  </expr>
+	</param>
+	<param id='channel_next_offset' type='int'>
+	  <expr>
+	    channel_offset +  samples_per_frame * datatype_width
+	  </expr>
+	</param>
+      </for-each>
+
+      <param id='frame_size' type='int'>
+	<expr>
+	  channel_header[-1].channel_next_offset
+	</expr>
+      </param>
+    </channelset>
+  </file>
+</signalml>
