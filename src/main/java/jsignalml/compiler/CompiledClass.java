@@ -61,7 +61,7 @@ public class CompiledClass<T> {
 		return this.diagnostics.getDiagnostics();
 	}
 
-	synchronized Class<T> theClass()
+	public synchronized Class<T> theClass()
 		throws ClassNotFoundException
 	{
 		if (this.klass != null)
