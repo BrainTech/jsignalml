@@ -151,6 +151,14 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 		return this.thepackage.name();
 	}
 
+	public String getFullClassName() {
+		String pkg = this.getPackageName();
+		if (pkg.isEmpty())
+			return this.getClassName();
+		else
+			return pkg + "." + this.getClassName();
+	}
+
 	private static ASTTypeResolver nullTypeResolver() {
 		return new ASTTypeResolver() {
 			public Type getType(ASTNode node) {
