@@ -296,6 +296,17 @@
     <url>https://escher.fuw.edu.pl/git/jsignalml</url>
   </scm>
 
+  <distributionManagement>
+    <repository>
+      <id>escher.fuw.edu.pl</id>
+      <url>scpexe://escher.fuw.edu.pl/home/srv/www/signalml-site/maven/repository</url>
+    </repository>
+    <snapshotRepository>
+      <id>escher.fuw.edu.pl</id>
+      <url>scpexe://escher.fuw.edu.pl/home/srv/www/signalml-site/maven/repository</url>
+    </snapshotRepository>
+  </distributionManagement>
+
   <licenses>
     <license>
       <name>GNU General Public License, Version 3</name>
