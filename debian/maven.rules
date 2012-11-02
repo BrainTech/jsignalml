@@ -17,3 +17,5 @@
 #   junit junit jar s/3\\..*/3.x/
 
 com.beust jcommander jar s/.*/1.x/ * *
+log4j log4j jar s/1.2.*/1.2.x/ * *
+org.antlr antlr-runtime jar s/3.2/3.2/ * *
