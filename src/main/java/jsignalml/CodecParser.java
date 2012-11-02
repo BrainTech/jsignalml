@@ -552,7 +552,7 @@ public class CodecParser {
 			   description="Add comments about code origin")
 		public boolean comments = JavaClassGen.comments;
 
-		@Parameter(names="--help", help=true,
+		@Parameter(names="--help",
 			   description="Show help and exit")
 		public boolean help;
 
