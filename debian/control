@@ -3,25 +3,27 @@ Section: java
 Priority: extra
 Maintainer: Karol Auguštin <karol@augustin.pl>
 Build-Depends: debhelper (>= 8.0.0),
-               maven-debian-helper,
-               maven2,
+	       maven-debian-helper,
+	       maven2,
 Build-Depends-Indep:
-               libantlr-java,
-	       liblog4j1.2-java,
-	       libjaxp1.3-java,
-	       libcodemodel-java,
-	       libcommons-math-java,
-	       libcommons-lang3-java,
-	       libcommons-io-java,
-	       libjline-java,
-	       libxz-java,
-	       libjcommander-java,	       	     
-	       libmaven-compiler-plugin-java,
-	       libmaven-resources-plugin-java,
-	       libsurefire-java,
+	       antlr3-maven-plugin,
 	       libantlr-maven-plugin-java,
 	       libmaven-antrun-plugin-java,
-	       antlr3-maven-plugin,
+	       libmaven-compiler-plugin-java,
+	       libmaven-resources-plugin-java,
+	       libantlr-java,
+	       libcodemodel-java,
+	       libcommons-io-java,
+	       libcommons-lang3-java,
+	       libcommons-math-java,
+	       libguava-java,
+	       libjaxp1.3-java,
+	       libjcommander-java,
+	       libjline-java,
+	       liblog4j1.2-java,
+	       libsurefire-java,
+	       libxz-java,
+	       testng
 Standards-Version: 3.9.2
 Vcs-Git: git://git.braintech.pl/jsignalml.git
 Vcs-Browser: http://git.braintech.pl/jsignalml.git
@@ -29,17 +31,19 @@ Vcs-Browser: http://git.braintech.pl/jsignalml.git
 Package: libjsignalml-java
 Architecture: all
 Depends: ${misc:Depends},
-               libantlr-java,
-	       liblog4j1.2-java,
-	       libjaxp1.3-java,
+	       libantlr-java,
 	       libcodemodel-java,
-	       libcommons-math-java,
-	       libcommons-lang3-java,
 	       libcommons-io-java,
+	       libcommons-lang3-java,
+	       libcommons-math-java,
+	       libguava-java,
+	       libjaxp1.3-java,
+	       libjcommander-java,
 	       libjline-java,
-	       libxz-java,
-	       libjcommander-java,	       	     
+	       liblog4j1.2-java,
 	       libsurefire-java,
+	       libxz-java,
+	       testng
 Description: A library implementing the Signalml 2.0 specification.
  XML descriptions of formats are converted to Java source code and then
  compiled to normal bytecode. This package includes the Java JAR which
