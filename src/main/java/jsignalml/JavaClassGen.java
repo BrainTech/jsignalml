@@ -30,7 +30,6 @@ import com.sun.codemodel.JExpression;
 import com.sun.codemodel.JFieldRef;
 import com.sun.codemodel.JFieldVar;
 import com.sun.codemodel.JForLoop;
-import com.sun.codemodel.JGenerable;
 import com.sun.codemodel.JInvocation;
 import com.sun.codemodel.JStatement;
 import com.sun.codemodel.JMethod;
@@ -2132,22 +2131,22 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 		return this.model.ref(type != null ? type.getClass() : Type.class);
 	}
 
-	private void comment(JGenerable where, String fmt, Object...args)
+	private void comment(JBlock body, String fmt, Object...args)
 	{
 		if (!this._comments)
 			return;
 
 		final String out = format(fmt, args);
-		if (where instanceof JBlock) {
-			final JBlock body = (JBlock) where;
-			body.directStatement("// " + out);
-		} else if (where instanceof JDefinedClass) {
-			final JDefinedClass klass = (JDefinedClass) where;
-			klass.javadoc().append("\n" + out);
-		} else {
-			throw new SyntaxError("Comment not applicable for object of class " +
-					where.getClass().getCanonicalName());
-		}
+		body.directStatement("// " + out);
+	}
+
+	private void comment(JDefinedClass klass, String fmt, Object...args)
+	{
+		if (!this._comments)
+			return;
+
+		final String out = format(fmt, args);
+		klass.javadoc().append("\n" + out);
 	}
 
 	/**
@@ -2155,7 +2154,7 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 	 * The stacktrace is snipped to include JavaClassGen methods
 	 * plus one before.
 	 */
-	private void comment_stamp(JGenerable where)
+	private void comment_stamp(Object where)
 	{
 		if (!this._comments)
 			return;
@@ -2166,7 +2165,12 @@ public class JavaClassGen extends ASTVisitor<JDefinedClass> {
 		for(int i=trace.length-1; i>=1; i--) {
 			flag |= trace[i-1].getClassName().startsWith(trigger);
 			if (flag || i==1) // print at least one
-				comment(where, "%s", trace[i]);
+				if (where instanceof JBlock)
+					comment((JBlock)where, "%s", trace[i]);
+				else if (where instanceof JDefinedClass)
+					comment((JDefinedClass)where, "%s", trace[i]);
+				else
+					throw new RuntimeException();
 		}
 	}
 }
