@@ -75,7 +75,7 @@
     </dependency>
     <dependency>
       <groupId>com.google.guava</groupId>
-      <artifactId>guava-io</artifactId>
+      <artifactId>guava</artifactId>
       <version>r03</version>
       <scope>test</scope>
     </dependency>
