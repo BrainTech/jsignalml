@@ -6,12 +6,10 @@ Build-Depends: debhelper (>= 8.0.0),
 	       maven-debian-helper,
 	       maven,
 Build-Depends-Indep:
+               antlr3 (>= 3.2.is.3.2-7),
 	       antlr3-maven-plugin,
-	       libantlr-maven-plugin-java,
-	       libmaven-antrun-plugin-java,
 	       libmaven-compiler-plugin-java,
 	       libmaven-resources-plugin-java,
-	       libantlr-java,
 	       libcodemodel-java,
 	       libcommons-io-java,
 	       libcommons-lang3-java,
@@ -31,7 +29,7 @@ Vcs-Browser: http://git.braintech.pl/jsignalml.git
 Package: libjsignalml-java
 Architecture: all
 Depends: ${misc:Depends},
-	       libantlr-java,
+               antlr(>= 3.2.is.3.2-7),
 	       libcodemodel-java,
 	       libcommons-io-java,
 	       libcommons-lang3-java,
