@@ -8,6 +8,7 @@ Build-Depends: debhelper (>= 8.0.0),
 Build-Depends-Indep:
 	       antlr3 (>= 3.2-7),
 	       antlr3-maven-plugin,
+	       libmaven-antrun-plugin-java,
 	       libmaven-compiler-plugin-java,
 	       libmaven-resources-plugin-java,
 	       libcodemodel-java,
