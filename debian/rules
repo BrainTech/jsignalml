@@ -22,6 +22,10 @@ copy_repo = /usr/share/maven-debian-helper/copy-repo.sh
 
 override_dh_auto_configure:
 	$(copy_repo) debian/
+	mv debian/maven-repo/org/testng/testng/5.11 debian/maven-repo/org/testng/testng/5.11-orig
+	mkdir debian/maven-repo/org/testng/testng/5.11
+	cp debian/maven-repo/org/testng/testng/5.11-orig/testng-5.11-jdk15.jar debian/maven-repo/org/testng/testng/5.11/testng-5.11.jar
+	cp debian/maven-repo/org/testng/testng/5.11-orig/testng-5.11.pom debian/maven-repo/org/testng/testng/5.11/
 	mh_patchpoms -p$(DEB_JAR_PACKAGE) -v --debian-build \
 	    --keep-pom-version --maven-repo=$(DEB_MAVEN_REPO)
 
