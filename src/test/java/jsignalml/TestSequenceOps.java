@@ -313,7 +313,7 @@ public class TestSequenceOps {
 		equal("'string'>'strinG'", 1);
 		equal("'strin'>'strinG'", 0);
 		equal("'a'>'b'", 0);
-		equal("'ą'>'a'", 1);
+		equal("'\u0105'>'a'", 1);
 	}
 	@Test(expectedExceptions=java.lang.AssertionError.class)
 	public void greater_string_invalid() throws Exception
@@ -325,7 +325,7 @@ public class TestSequenceOps {
 		equal("'string'<'strinG'", 0);
 		equal("'strin'<'strinG'", 1);
 		equal("'a'<'b'", 1);
-		equal("'ą'<'a'", 0);
+		equal("'\u0105'<'a'", 0);
 	}
 	@Test(expectedExceptions=java.lang.AssertionError.class)
 	public void lesser_string_invalid() throws Exception
@@ -337,7 +337,7 @@ public class TestSequenceOps {
 		equal("'string'>='strinG'", 1);
 		equal("'strin'>='strinG'", 0);
 		equal("'a'>='b'", 0);
-		equal("'ą'>='a'", 1);
+		equal("'\u0105'>='a'", 1);
 		equal("'a'>='a'", 1);
 		equal("'b'>='a'", 1);
 	}
@@ -353,7 +353,7 @@ public class TestSequenceOps {
 		equal("'string'<='strinG'", 0);
 		equal("'strin'<='strinG'", 1);
 		equal("'a'<='b'", 1);
-		equal("'ą'<='a'", 0);
+		equal("'\u0105'<='a'", 0);
 		equal("'a'<='a'", 1);
 		equal("'b'<='a'", 0);
 	}
