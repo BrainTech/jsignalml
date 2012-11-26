@@ -164,7 +164,8 @@ public class Processor {
 			final DynamicJavaNameResolver res = new DynamicJavaNameResolver(frame);
 			final JavaExprGen javagen = res.createExprGen();
 			try {
-				code.p("code: ").g(expr.accept(javagen)).nl();
+				com.sun.codemodel.JExpression je = expr.accept(javagen);
+				code.p("code: ").g(je).nl();
 				pw.flush();
 			} catch (ExpressionFault e) {
 				log.exception("code generation:", e);
