@@ -82,7 +82,7 @@ public class CompiledClass<T> {
 		List<JavaFileObject> jfiles =
 			StringJavaFile.createList(this.fullName, this.src);
 
-		String classpath = System.getProperty("java.class.path");
+		String classpath = new ClassFileManager.ClassPathWrapper().classpath();
 		List<String> optionList = util.newArrayList();
 		// set compiler's classpath to be same as the runtime's
 		optionList.add("-classpath");
