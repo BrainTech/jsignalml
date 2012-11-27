@@ -1,3 +1,9 @@
+jsignalml (1.0-2) UNRELEASED; urgency=low
+
+  * Fix classpath issues. 
+
+ -- Zbigniew Jędrzejewski-Szmek <zbyszek@in.waw.pl>  Tue, 27 Nov 2012 02:47:24 +0100
+
 jsignalml (1.0-1) precise; urgency=low
 
   * Initial release.
