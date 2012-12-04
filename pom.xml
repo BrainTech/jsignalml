@@ -12,6 +12,54 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <main>jsignalml.Processor</main>
   </properties>
+    <repositories>
+      <repository>
+            <id>braintech.pl</id>
+            <name>BrainTech Maven Repository</name>
+            <url>http://maven.braintech.pl</url>
+      </repository>
+        <repository>
+	      <id>signalml.org</id>
+	          <name>SignalML Maven Repository</name>
+            <url>https://escher.fuw.edu.pl/maven/repository</url>
+        </repository>
+
+	<repository>
+            <id>apache</id>
+            <name>Apache Commons</name>
+            <url>http://mirrors.ibiblio.org/pub/mirrors/maven2</url>
+        </repository>
+
+        <repository>
+            <id>gettext-commons</id>
+            <name>gettext-commons</name>
+            <url>http://gettext-commons.googlecode.com/svn/maven-repository/</url>
+        </repository>
+    </repositories>
+
+    <pluginRepositories>
+        <pluginRepository>
+            <id>braintech.pl</id>
+            <name>BrainTech Maven Repository</name>
+            <url>http://maven.braintech.pl</url>
+        </pluginRepository>
+        <pluginRepository>
+            <id>onejar-maven-plugin.googlecode.com</id>
+            <url>http://onejar-maven-plugin.googlecode.com/svn/mavenrepo</url>
+        </pluginRepository>
+        <pluginRepository>
+            <id>signalml.org</id>
+            <name>SignalML Maven Repository</name>
+            <url>http://escher.fuw.edu.pl/maven/repository</url>
+        </pluginRepository>
+        <pluginRepository>
+            <id>gettext-commons</id>
+            <url>http://gettext-commons.googlecode.com/svn/maven-repository/</url>
+        </pluginRepository>
+    </pluginRepositories>
+
+
+
 
   <dependencies>
     <!-- main -->
