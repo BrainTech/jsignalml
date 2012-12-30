@@ -3,8 +3,7 @@ Section: java
 Priority: extra
 Maintainer: Karol Auguštin <karol@augustin.pl>
 Build-Depends: debhelper (>= 8.0.0),
-	       maven-debian-helper,
-	       maven,
+	       maven-debian-helper
 Build-Depends-Indep:
 	       antlr3 (>= 3.2-7),
 	       antlr3-maven-plugin,
