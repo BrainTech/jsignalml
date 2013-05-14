@@ -36,12 +36,11 @@ public class TestFileType {
 		F.read(format, 4);
 	}
 
-	@Test(expectedExceptions=ExpressionFault.IndexError.class)
-	public void test_binary_file_read_before() throws Exception {
+	@Test public void test_binary_file_read_from_end() throws Exception {
 		FileType.BinaryFile F = new FileType.BinaryFile(filename);
 
 		BitForm format = new BitForm.Int.Int8();
-		F.read(format, -1);
+		assertEquals(new TypeInt('4'), F.read(format, -1));
 	}
 
 	@Test(expectedExceptions=ExpressionFault.IndexError.class)
