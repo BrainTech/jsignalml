@@ -25,6 +25,7 @@ tokens {
 
     MULTIPLY    = '*';
     FLOORDIV    = '//';
+    CEILDIV    = '///';
     TRUEDIV     = '/';
     MODULO      = '%';
 
@@ -160,7 +161,7 @@ compexpr
 addexpr	:	multexpr ((ADD^ |SUBTRACT^) multexpr)*
 	;
 
-multexpr:	unaryexpr ((MULTIPLY^ | FLOORDIV^ | TRUEDIV^ | MODULO^ |
+multexpr:	unaryexpr ((MULTIPLY^ | FLOORDIV^ | CEILDIV^ | TRUEDIV^ | MODULO^ |
                        BINARY_AND^ | BINARY_OR^ | BINARY_XOR^) unaryexpr)*
 	;
 

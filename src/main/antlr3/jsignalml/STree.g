@@ -59,7 +59,7 @@ expr returns [Expression value]
          | op=UNARY_SUBTRACT ) a=expr)
         { $value = new Expression.UnaryOp($op.type, $a.value); }
     | ^(    ( op=ADD
-            | op=SUBTRACT | op=MULTIPLY
+            | op=SUBTRACT | op=MULTIPLY | op=CEILDIV
             | op=FLOORDIV | op=TRUEDIV | op=MODULO
             | op=BINARY_AND | op=BINARY_OR | op=BINARY_XOR
             | op=EQUALS | op=NOTEQUALS

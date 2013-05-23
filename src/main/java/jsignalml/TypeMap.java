@@ -209,6 +209,10 @@ public class TypeMap extends Type /* implements Map<Type, Type>  */ {
 		throw new ExpressionFault.Unsupported(this.getClass(), "floordiv");
 	}
 
+	public TypeInt ceildiv(Type other){
+		throw new ExpressionFault.Unsupported(this.getClass(), "floordiv");
+	}
+	
 	public Type mod(Type other){
 		throw new ExpressionFault.Unsupported(this.getClass(), "mod");
 	}

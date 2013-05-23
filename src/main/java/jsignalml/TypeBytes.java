@@ -283,6 +283,11 @@ public class TypeBytes extends Type {
 	public Type floordiv(Type b) {
 		throw new ExpressionFault.Unsupported(this.getClass(), "floordiv");
 	}
+	
+	@Override
+	public Type ceildiv(Type b) {
+		throw new ExpressionFault.Unsupported(this.getClass(), "floordiv");
+	}
 
 	/**
 	 *
