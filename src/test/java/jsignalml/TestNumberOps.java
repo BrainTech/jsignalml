@@ -157,6 +157,8 @@ public class TestNumberOps {
 		equal("3.///2.", 2);
 		equal("-3///2", -1);
 		equal("-3.///2.", -1);
+		equal("6///2", 3);
+		equal("0///3", 0);
 	}
 
 	@Test public void eval_truediv() throws Exception

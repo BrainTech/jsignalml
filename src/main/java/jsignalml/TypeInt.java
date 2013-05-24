@@ -299,7 +299,7 @@ public class TypeInt extends Type {
 		throw new ExpressionFault.TypeError(other, this);
 	}
 	public TypeInt ceildiv(TypeInt other){
-		if(this.mod(other).equals(0))
+		if(this.value.mod(other.value).equals(BigInteger.ZERO))
 			return make(this.div(other));
 		return this.floordiv(other).add(new TypeInt(1));
 	}
