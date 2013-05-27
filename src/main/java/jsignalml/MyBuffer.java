@@ -32,6 +32,10 @@ public class MyBuffer {
 		source.order(byteorder);
 	}
 
+	public int getLimit() {
+		return source.limit();
+	}
+	
 	public Type read(BitForm format, TypeInt byteoffset) {
 		return format.read(this.source, byteoffset);
 	}
