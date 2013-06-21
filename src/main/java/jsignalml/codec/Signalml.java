@@ -10,6 +10,7 @@ import jsignalml.ContextVisitor;
 import jsignalml.ExpressionFault;
 import jsignalml.MyBuffer;
 import jsignalml.TextBuffer;
+import jsignalml.TypeInt;
 import jsignalml.XMLBuffer;
 import jsignalml.util;
 
@@ -56,6 +57,11 @@ public abstract class Signalml extends Context implements jsignalml.Source {
 		protected boolean isBinary = true; // this is the default type
 		final int file_index;
 
+		@Override
+		public TypeInt len() {
+			return isBinary ? new TypeInt(buffer().getLimit()) : super.len();
+		}
+		
 		public boolean isBinary(){
 			return isBinary;
 		}

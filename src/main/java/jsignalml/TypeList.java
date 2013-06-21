@@ -156,6 +156,10 @@ public class TypeList extends Type implements Iterable<Type> {
 	public TypeInt floordiv(Type other){
 		throw new ExpressionFault.Unsupported(this.getClass(), "floordiv");
 	}
+	
+	public TypeInt ceildiv(Type other){
+		throw new ExpressionFault.Unsupported(this.getClass(), "floordiv");
+	}
 
 	public Type mod(Type other){
 		throw new ExpressionFault.Unsupported(this.getClass(), "mod");

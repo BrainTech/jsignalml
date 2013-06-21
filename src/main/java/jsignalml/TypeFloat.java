@@ -145,6 +145,20 @@ public class TypeFloat extends Type {
 	public TypeInt floordiv(TypeFloat other){
 		return new TypeInt(Math.round(Math.floor(this.value / other.value)));
 	}
+	
+	public TypeInt ceildiv(Type other){
+		if(other instanceof TypeInt)
+			return this.ceildiv((TypeInt)other);
+		if(other instanceof TypeFloat)
+			return this.ceildiv((TypeFloat)other);
+		throw new ExpressionFault.TypeError(other, this);
+	}
+	public TypeInt ceildiv(TypeInt other){
+		return new TypeInt(Math.round(Math.ceil(this.value / other.value.doubleValue())));
+	}
+	public TypeInt ceildiv(TypeFloat other){
+		return new TypeInt(Math.round(Math.ceil(this.value / other.value)));
+	}
 
 	public TypeFloat mod(Type other){
 		if(other instanceof TypeInt)

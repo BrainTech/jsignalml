@@ -26,6 +26,10 @@ public abstract class TypeObject extends Type {
 	@Override public Type floordiv(Type b) {
 		throw new ExpressionFault.Unsupported(this.getClass(), "floordiv");
 	}
+	
+	@Override public Type ceildiv(Type b) {
+		throw new ExpressionFault.Unsupported(this.getClass(), "floordiv");
+	}
 
 	@Override public Type mod(Type b) {
 		throw new ExpressionFault.Unsupported(this.getClass(), "mod");

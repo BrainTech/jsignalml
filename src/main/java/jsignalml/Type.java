@@ -52,6 +52,7 @@ public abstract class Type implements Comparable<Type> {
 		MUL("*", "mul", SExpressionParser.MULTIPLY, 4),
 		DIV("/", "div", SExpressionParser.TRUEDIV, 4),
 		FLOORDIV("//", "floordiv", SExpressionParser.FLOORDIV, 4),
+		CEILDIV("///", "ceildiv", SExpressionParser.CEILDIV, 4),
 		MOD("%", "mod", SExpressionParser.MODULO, 4),
 		BIN_AND("&", "bin_and", SExpressionParser.BINARY_AND, 3),
 		BIN_OR("|", "bin_or", SExpressionParser.BINARY_OR, 3),
@@ -178,6 +179,7 @@ public abstract class Type implements Comparable<Type> {
 		case MUL: return this.mul(other);
 		case DIV: return this.div(other);
 		case FLOORDIV: return this.floordiv(other);
+		case CEILDIV: return this.ceildiv(other);
 		case MOD: return this.mod(other);
 		case BIN_AND: return this.bin_and(other);
 		case BIN_OR: return this.bin_or(other);
@@ -195,6 +197,7 @@ public abstract class Type implements Comparable<Type> {
 		case MUL: return this.mul(other);
 		case DIV: return this.div(other);
 		case FLOORDIV: return this.floordiv(other);
+		case CEILDIV: return this.ceildiv(other);
 		case MOD: return this.mod(other);
 		case BIN_AND: return this.bin_and(other);
 		case BIN_OR: return this.bin_or(other);
@@ -212,6 +215,7 @@ public abstract class Type implements Comparable<Type> {
 		case MUL: return this.mul(other);
 		case DIV: return this.div(other);
 		case FLOORDIV: return this.floordiv(other);
+		case CEILDIV: return this.ceildiv(other);
 		case MOD: return this.mod(other);
 		case BIN_AND: return this.bin_and(other);
 		case BIN_OR: return this.bin_or(other);
@@ -455,6 +459,7 @@ public abstract class Type implements Comparable<Type> {
 	public abstract Type mul(Type b);
 	public abstract Type div(Type b);
 	public abstract Type floordiv(Type b);
+	public abstract Type ceildiv(Type b);
 	public abstract Type mod(Type b);
 
 	public abstract Type bin_and(Type b);

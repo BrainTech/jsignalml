@@ -146,6 +146,20 @@ public class TestNumberOps {
 		equal("-3//2", -2);
 		equal("-3.//2.", -2);
 	}
+	
+	@Test public void eval_ceildiv() throws Exception
+	{
+		equal("1///2", 1);
+		equal("11///2", 6);
+		equal("11.///2", 6);
+		equal("1.///2", 1);
+		equal("1.///2.", 1);
+		equal("3.///2.", 2);
+		equal("-3///2", -1);
+		equal("-3.///2.", -1);
+		equal("6///2", 3);
+		equal("0///3", 0);
+	}
 
 	@Test public void eval_truediv() throws Exception
 	{
