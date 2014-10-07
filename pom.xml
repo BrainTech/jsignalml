@@ -18,6 +18,11 @@
             <name>BrainTech Maven Repository</name>
             <url>http://maven.braintech.pl</url>
       </repository>
+      <repository>
+            <id>nimitz.pl</id>
+            <name>Nimitz Maven Repository</name>
+            <url>http://maven.nimitz.pl</url>
+      </repository>
         <repository>
 	      <id>signalml.org</id>
 	          <name>SignalML Maven Repository</name>
@@ -42,6 +47,11 @@
             <id>braintech.pl</id>
             <name>BrainTech Maven Repository</name>
             <url>http://maven.braintech.pl</url>
+        </pluginRepository>
+        <pluginRepository>
+            <id>nimitz.pl</id>
+            <name>Nimitz Maven Repository</name>
+            <url>http://maven.nimitz.pl</url>
         </pluginRepository>
         <pluginRepository>
             <id>onejar-maven-plugin.googlecode.com</id>
